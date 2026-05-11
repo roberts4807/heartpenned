@@ -297,7 +297,7 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
      <div class="qstep" id="q13">
       <div class="question">How would you like to sign it? <span class="opt-tag">optional</span></div>
       <div class="subtext">e.g. Love, Mom — or just your name.</div>
-      <textarea class="text-input" id="t-signoff" rows="2" placeholder="e.g. Love, Mom"></textarea>
+      <textarea class="text-input" id="t-signoff" rows="2" placeholder="e.g. Love, Mom" oninput="A.signoff=this.value.trim()"></textarea>
       <div class="qnav"><button class="btn-back" onclick="qGo(12)">← Back</button><button class="btn-next" id="qn14" onclick="submitCard()">Generate my card →</button></div>
     </div>
 

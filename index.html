@@ -7,7 +7,7 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Inter:wght@300;400;500;600&display=swap');
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Inter',sans-serif;background:white;}
+body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
 .app{min-height:600px;}
 .screen{display:none;}
 .screen.active{display:block;animation:fi 0.3s ease;}
@@ -41,21 +41,19 @@ body{font-family:'Inter',sans-serif;background:white;}
 .chip{padding:9px 16px;border:0.5px solid #C0CCE0;border-radius:20px;font-size:14px;color:#0A1A2A;cursor:pointer;background:white;transition:all 0.15s;user-select:none;}
 .chip:hover{border-color:#2A4A80;}
 .chip.selected{background:#EEF2FA;border-color:#2A4A80;color:#1A3060;}
-.chip.featured{border-color:#2A4A80;color:#1A3060;background:#EEF2FA;font-weight:500;}
-.chip.featured.selected{background:#C8D8F0;border-color:#1A3060;color:#0A2040;}
 .chip.gentle{border-color:#C0C0B8;color:#5A5A52;background:#F4F4F0;}
 .chip.gentle.selected{background:#D8D8D0;border-color:#888;color:#2A2A22;}
 .exp{display:none;margin-top:10px;padding:12px 14px;background:#F4F6FA;border-radius:8px;border:0.5px solid #D0D8E8;}
 .exp.open{display:block;}
 .harder{margin-top:1.25rem;padding-top:1.25rem;border-top:0.5px solid #D0D8E8;}
 .harder-label{font-size:12px;color:#888;margin-bottom:0.6rem;}
-.text-input{width:100%;padding:12px 14px;font-size:15px;border:0.5px solid #C0CCE0;border-radius:8px;background:white;color:#0A1A2A;font-family:'Inter',sans-serif;resize:none;line-height:1.6;transition:border-color 0.15s;}
-.text-input:focus{outline:none;border-color:#2A4A80;}
-.name-input{width:100%;padding:14px 4px;font-size:26px;border:none;border-bottom:0.5px solid #C0CCE0;background:transparent;color:#0A1A2A;font-family:'Playfair Display',serif;transition:border-color 0.15s;}
-.name-input:focus{outline:none;border-bottom-color:#2A4A80;}
-.number-input{width:80px;padding:10px 12px;font-size:16px;border:0.5px solid #C0CCE0;border-radius:8px;background:white;color:#0A1A2A;font-family:'Inter',sans-serif;}
+.text-input{width:100%;padding:12px 14px;font-size:15px;border:0.5px solid #C0CCE0 !important;border-radius:8px;background:#FFFFFF !important;color:#0A1A2A !important;font-family:'Inter',sans-serif;resize:none;line-height:1.6;transition:border-color 0.15s;color-scheme:light;}
+.text-input:focus{outline:none;border-color:#2A4A80 !important;}
+.name-input{width:100%;padding:14px 4px;font-size:26px;border:none !important;border-bottom:0.5px solid #C0CCE0 !important;background:transparent !important;color:#0A1A2A !important;font-family:'Playfair Display',serif;transition:border-color 0.15s;color-scheme:light;}
+.name-input:focus{outline:none;border-bottom-color:#2A4A80 !important;}
+.number-input{width:80px;padding:10px 12px;font-size:16px;border:0.5px solid #C0CCE0 !important;border-radius:8px;background:#FFFFFF !important;color:#0A1A2A !important;font-family:'Inter',sans-serif;color-scheme:light;}
 .qnav{display:flex;justify-content:space-between;align-items:center;margin-top:1.75rem;}
-.btn-back{background:transparent;border:0.5px solid #C0CCE0;color:#3A4A5A;padding:10px 20px;border-radius:8px;font-size:14px;cursor:pointer;font-family:'Inter',sans-serif;}
+.btn-back{background:#FFFFFF !important;border:0.5px solid #C0CCE0 !important;color:#3A4A5A !important;padding:10px 20px;border-radius:8px;font-size:14px;cursor:pointer;font-family:'Inter',sans-serif;}
 .btn-next{background:#1A3A6A !important;color:#FFFFFF !important;border:none !important;font-weight:700;padding:10px 28px;border-radius:8px;font-size:14px;cursor:pointer;font-family:'Inter',sans-serif;}
 .btn-next:disabled{opacity:0.35;cursor:not-allowed;}
 .skip-link{font-size:13px;color:#888;cursor:pointer;text-decoration:underline;text-underline-offset:2px;}
@@ -98,12 +96,12 @@ body{font-family:'Inter',sans-serif;background:white;}
 .reminder-text{font-size:13px;color:#0A1A2A;}
 .reminder-sub{font-size:12px;color:#888;margin-top:2px;}
 .back-start{font-size:13px;color:#888;text-decoration:underline;cursor:pointer;text-underline-offset:2px;display:inline-block;margin-top:0.5rem;}
+.age-label{font-size:13px;font-weight:500;color:#0A1A2A;margin:1rem 0 0.5rem;}
 </style>
 </head>
 <body>
 <div class="app">
 
-<!-- LANDING -->
 <div class="screen active" id="screen-landing">
   <div class="top-nav">
     <div class="nav-brand">Heart<em>penned</em></div>
@@ -113,12 +111,11 @@ body{font-family:'Inter',sans-serif;background:white;}
     <div class="hero-eyebrow">A new kind of greeting card</div>
     <div class="hero-title"><em>Helping you say what you already know</em></div>
     <div class="hero-sub">The words are already there — we'll help you find them. Answer a few honest questions about the person receiving the card.</div>
-    <button class="hero-btn" onclick="startQ()" style="background:#1A3A6A;color:white;border:none;">Write my card →</button>
+    <button class="hero-btn" onclick="startQ()">Write my card →</button>
     <div class="hero-link" onclick="showScreen('about')">What is Heartpenned?</div>
   </div>
 </div>
 
-<!-- ABOUT -->
 <div class="screen" id="screen-about">
   <div class="top-nav">
     <div class="nav-brand">Heart<em>penned</em></div>
@@ -137,15 +134,14 @@ body{font-family:'Inter',sans-serif;background:white;}
       <p>That's what we built. Answer a few honest questions and we'll help you write something personal, specific, and true. The kind of card people keep.</p>
       <div class="about-tagline">Real relationships deserve the right words.<br>For those the card aisle was not built for.</div>
     </div>
-    <div style="margin-top:2rem;"><button class="hero-btn" onclick="startQ()" style="background:#1A3A6A;color:white;border:none;">Write my card →</button></div>
+    <div style="margin-top:2rem;"><button class="hero-btn" onclick="startQ()">Write my card →</button></div>
   </div>
 </div>
 
-<!-- QUESTIONNAIRE -->
 <div class="screen" id="screen-q">
   <div class="top-nav">
     <div class="nav-brand" onclick="showScreen('landing')">Heart<em>penned</em></div>
-    <div class="q-counter" id="q-counter">Step 1 of 14</div>
+    <div class="q-counter" id="q-counter">Step 1 of 13</div>
   </div>
   <div class="q-wrap">
     <div class="progress-bar"><div class="progress-fill" id="prog" style="width:7%"></div></div>
@@ -154,130 +150,154 @@ body{font-family:'Inter',sans-serif;background:white;}
       <div class="question">Who are you writing to?</div>
       <div class="subtext">Just their first name — this makes every question that follows feel personal.</div>
       <input class="name-input" id="t-name" type="text" placeholder="Their name..." oninput="handleName()" autocomplete="off">
-      <div class="qnav"><div></div><div style="display:flex;align-items:center;gap:16px;"><span class="skip-link" onclick="qSkip(1)">Skip</span><button class="btn-next" id="qn1" disabled onclick="qGo(2)" style="background:#1A3A6A;color:white;border:none;">Next →</button></div></div>
+      <div class="qnav"><div></div><div style="display:flex;align-items:center;gap:16px;"><span class="skip-link" onclick="qSkip(1)">Skip</span><button class="btn-next" id="qn1" disabled onclick="qGo(2)">Next →</button></div></div>
     </div>
 
     <div class="qstep" id="q2">
       <div class="question">Who is this card from?</div>
       <div class="subtext">This shapes the voice of everything that follows.</div>
-      <div class="chips" id="qc2"><div class="chip" data-val="Just me">Just me</div><div class="chip" data-val="Me and my partner">Me and my partner</div><div class="chip" data-val="On behalf of someone else">On behalf of someone else</div></div>
-      <div class="qnav"><button class="btn-back" onclick="qGo(1)">← Back</button><button class="btn-next" id="qn2" disabled onclick="qGo('2b')" style="background:#1A3A6A;color:white;border:none;">Next →</button></div>
+      <div class="chips" id="qc2">
+        <div class="chip" data-val="Just me">Just me</div>
+        <div class="chip" data-val="Me and my partner">Me and my partner</div>
+        <div class="chip" data-val="From family">From family</div>
+        <div class="chip" data-val="On behalf of someone else">On behalf of someone else</div>
+      </div>
+      <div class="qnav"><button class="btn-back" onclick="qGo(1)">← Back</button><button class="btn-next" id="qn2" disabled onclick="qGo('2b')">Next →</button></div>
     </div>
 
     <div class="qstep" id="q2b">
-      <div class="question">How old are you — or the person this card is from?</div>
+      <div class="question">Ages</div>
       <div class="subtext">This helps us get the voice exactly right.</div>
-      <div class="chips" id="qc2b"><div class="chip" data-val="under 12">Under 12</div><div class="chip" data-val="a teenager">Teen</div><div class="chip" data-val="18 to 30">18–30</div><div class="chip" data-val="31 to 45">31–45</div><div class="chip" data-val="46 to 60">46–60</div><div class="chip" data-val="over 60">60+</div></div>
-      <div class="qnav"><button class="btn-back" onclick="qGo(2)">← Back</button><div style="display:flex;align-items:center;gap:16px;"><span class="skip-link" onclick="qGo(3)">Skip</span><button class="btn-next" onclick="qGo(3)" style="background:#1A3A6A;color:white;border:none;">Next →</button></div></div>
+      <div class="age-label">Age of sender</div>
+      <div class="chips" id="qc2b">
+        <div class="chip" data-val="under 12">Under 12</div><div class="chip" data-val="a teenager">Teen</div><div class="chip" data-val="18 to 30">18–30</div><div class="chip" data-val="31 to 45">31–45</div><div class="chip" data-val="46 to 60">46–60</div><div class="chip" data-val="over 60">60+</div><div class="chip" data-val="varies — from family">From family</div>
+      </div>
+      <div class="age-label">Age of recipient</div>
+      <div class="chips" id="qc-rage">
+        <div class="chip" data-val="under 12">Under 12</div><div class="chip" data-val="a teenager">Teen</div><div class="chip" data-val="in their 20s or 30s">20s–30s</div><div class="chip" data-val="in their 40s or 50s">40s–50s</div><div class="chip" data-val="in their 60s or 70s">60s–70s</div><div class="chip" data-val="80 or older">80+</div>
+      </div>
+      <div class="qnav"><button class="btn-back" onclick="qGo(2)">← Back</button><div style="display:flex;align-items:center;gap:16px;"><span class="skip-link" onclick="qGo(3)">Skip</span><button class="btn-next" onclick="qGo(3)">Next →</button></div></div>
     </div>
 
     <div class="qstep" id="q3">
       <div class="question" id="q3-text">I am their...</div>
       <div class="subtext">Be specific — it shapes the voice of everything that follows.</div>
       <div class="cgl">Family</div>
-      <div class="chips" id="qc3-fam"><div class="chip" data-val="Mom">Mom</div><div class="chip" data-val="Dad">Dad</div><div class="chip" data-val="Grandmother">Grandmother</div><div class="chip" data-val="Grandfather">Grandfather</div><div class="chip" data-val="Son">Son</div><div class="chip" data-val="Daughter">Daughter</div><div class="chip" data-val="Brother">Brother</div><div class="chip" data-val="Sister">Sister</div></div>
+      <div class="chips" id="qc3-fam">
+        <div class="chip" data-val="Mom">Mom</div><div class="chip" data-val="Dad">Dad</div><div class="chip" data-val="Grandmother">Grandmother</div><div class="chip" data-val="Grandfather">Grandfather</div><div class="chip" data-val="Son">Son</div><div class="chip" data-val="Daughter">Daughter</div><div class="chip" data-val="Brother">Brother</div><div class="chip" data-val="Sister">Sister</div>
+      </div>
       <div class="cgl">Partner or spouse</div>
-      <div class="chips" id="qc3-partner"><div class="chip" data-val="Husband">Husband</div><div class="chip" data-val="Wife">Wife</div><div class="chip" data-val="Partner">Partner</div></div>
+      <div class="chips" id="qc3-partner">
+        <div class="chip" data-val="Husband">Husband</div><div class="chip" data-val="Wife">Wife</div><div class="chip" data-val="Partner">Partner</div>
+      </div>
       <div class="cgl">Other</div>
-      <div class="chips" id="qc3-other"><div class="chip" data-val="Best friend">Best friend</div><div class="chip" data-val="Colleague">Colleague</div><div class="chip" data-val="Mentor">Mentor</div><div class="chip" data-val="Someone else">Someone else</div></div>
-      <div class="qnav"><button class="btn-back" onclick="qGo('2b')">← Back</button><button class="btn-next" id="qn3" disabled onclick="qGo(4)" style="background:#1A3A6A;color:white;border:none;">Next →</button></div>
+      <div class="chips" id="qc3-other">
+        <div class="chip" data-val="Best friend">Best friend</div><div class="chip" data-val="Friend">Friend</div><div class="chip" data-val="Caregiver">Caregiver</div><div class="chip" data-val="Acquaintance">Acquaintance</div><div class="chip" data-val="Colleague">Colleague</div><div class="chip" data-val="Mentor">Mentor</div><div class="chip" data-val="Someone else">Someone else</div>
+      </div>
+      <div class="qnav"><button class="btn-back" onclick="qGo('2b')">← Back</button><button class="btn-next" id="qn3" disabled onclick="qGo(4)">Next →</button></div>
     </div>
 
     <div class="qstep" id="q4">
-      <div class="question">How old are they? <span class="opt-tag">ok to estimate</span></div>
-      <div class="subtext">Age helps us calibrate the tone exactly right.</div>
-      <div class="chips" id="qc4"><div class="chip" data-val="under 12">Under 12</div><div class="chip" data-val="a teenager">Teen</div><div class="chip" data-val="in their 20s or 30s">20s–30s</div><div class="chip" data-val="in their 40s or 50s">40s–50s</div><div class="chip" data-val="in their 60s or 70s">60s–70s</div><div class="chip" data-val="80 or older">80+</div></div>
-      <div class="qnav"><button class="btn-back" onclick="qGo(3)">← Back</button><div style="display:flex;align-items:center;gap:16px;"><span class="skip-link" onclick="qGo(5)">Skip</span><button class="btn-next" id="qn4" onclick="qGo(5)" style="background:#1A3A6A;color:white;border:none;">Next →</button></div></div>
-    </div>
-
-    <div class="qstep" id="q5">
       <div class="question">What's the occasion?</div>
       <div class="subtext">This sets the emotional gravity of the message.</div>
       <div class="chips" id="qc5-main">
-        <div class="chip" data-val="Birthday">Birthday</div><div class="chip" data-val="Anniversary">Anniversary</div><div class="chip" data-val="Valentine's Day">Valentine's Day</div><div class="chip" data-val="Christmas">Christmas</div><div class="chip" data-val="Hanukkah">Hanukkah</div><div class="chip" data-val="Thank you">Thank you</div><div class="chip" data-val="Get well">Get well</div><div class="chip" data-val="Just because">Just because</div><div class="chip featured" data-val="Father's Day">Father's Day</div><div class="chip featured" data-val="Mother's Day">Mother's Day</div><div class="chip" data-val="Graduation">Graduation</div><div class="chip" data-val="New milestone">New milestone</div><div class="chip featured" data-val="National Nurses Day">National Nurses Day</div><div class="chip" data-val="Other Holidays">Other Holidays</div><div class="chip" data-val="Other">Other</div>
+        <div class="chip" data-val="Birthday">Birthday</div><div class="chip" data-val="Anniversary">Anniversary</div><div class="chip" data-val="Valentine's Day">Valentine's Day</div><div class="chip" data-val="Christmas">Christmas</div><div class="chip" data-val="Hanukkah">Hanukkah</div><div class="chip" data-val="Thank you">Thank you</div><div class="chip" data-val="Get well">Get well</div><div class="chip" data-val="Just because">Just because</div><div class="chip" data-val="Father's Day">Father's Day</div><div class="chip" data-val="Mother's Day">Mother's Day</div><div class="chip" data-val="Graduation">Graduation</div><div class="chip" data-val="New milestone">New milestone</div><div class="chip" data-val="National Nurses Day">National Nurses Day</div><div class="chip" data-val="Other Holidays">Other Holidays</div><div class="chip" data-val="Other">Other</div>
       </div>
       <div class="exp" id="qe-hols"><div class="cgl" style="margin-top:0;">Select the holiday</div><div class="chips" id="qc5-hols"><div class="chip" data-val="Thanksgiving">Thanksgiving</div><div class="chip" data-val="Easter">Easter</div><div class="chip" data-val="New Year">New Year</div><div class="chip" data-val="Halloween">Halloween</div><div class="chip" data-val="Diwali">Diwali</div><div class="chip" data-val="Eid">Eid</div><div class="chip" data-val="Passover">Passover</div></div></div>
       <div class="exp" id="qe-other-occ"><input class="text-input" id="t5-other" type="text" placeholder="e.g. Retirement, New baby, Promotion..." oninput="handleOtherOcc()"></div>
       <div class="harder"><div class="harder-label">For harder moments</div><div class="chips" id="qc5-hard"><div class="chip gentle" data-val="Loss or grief">Loss or grief</div><div class="chip gentle" data-val="Apology">Apology</div></div></div>
-      <div class="qnav"><button class="btn-back" onclick="qGo(4)">← Back</button><button class="btn-next" id="qn5" disabled onclick="routeAfterOcc()" style="background:#1A3A6A;color:white;border:none;">Next →</button></div>
+      <div class="qnav"><button class="btn-back" onclick="qGo(3)">← Back</button><button class="btn-next" id="qn5" disabled onclick="routeAfterOcc()">Next →</button></div>
     </div>
 
-    <div class="qstep" id="q5b">
+    <div class="qstep" id="q4b">
       <div class="question">How old are they turning? <span class="opt-tag">optional</span></div>
       <div class="subtext">Milestone birthdays carry a different weight.</div>
       <input class="number-input" id="t5b" type="number" min="1" max="120" placeholder="Age" oninput="A.birthdayAge=this.value">
-      <div class="qnav"><button class="btn-back" onclick="qGo(5)">← Back</button><div style="display:flex;align-items:center;gap:16px;"><span class="skip-link" onclick="qGo(6)">Skip</span><button class="btn-next" onclick="qGo(6)" style="background:#1A3A6A;color:white;border:none;">Next →</button></div></div>
+      <div class="qnav"><button class="btn-back" onclick="qGo(4)">← Back</button><div style="display:flex;align-items:center;gap:16px;"><span class="skip-link" onclick="qGo(5)">Skip</span><button class="btn-next" onclick="qGo(5)">Next →</button></div></div>
     </div>
 
-    <div class="qstep" id="q5c">
+    <div class="qstep" id="q4c">
       <div class="question">Tell us about your children <span class="opt-tag">optional</span></div>
       <div class="subtext">Ages help us calibrate what the card says about them as a parent. Names optional.</div>
       <div id="kids-list"><div class="child-row"><div class="chips" style="gap:6px;"><div class="chip kid-s" data-kid="1" data-sex="Son">Son</div><div class="chip kid-s" data-kid="1" data-sex="Daughter">Daughter</div></div><input class="number-input" type="number" min="1" max="60" placeholder="Age" oninput="setKid(1,'age',this.value)"><input class="text-input" type="text" placeholder="Name (optional)" style="flex:1;min-width:80px;" oninput="setKid(1,'name',this.value)"></div></div>
       <div class="add-child" id="add-kid" onclick="addKid()">+ Add another child</div>
-      <div class="qnav"><button class="btn-back" onclick="qGo(5)">← Back</button><div style="display:flex;align-items:center;gap:16px;"><span class="skip-link" onclick="qGo(6)">Skip</span><button class="btn-next" onclick="qGo(6)" style="background:#1A3A6A;color:white;border:none;">Next →</button></div></div>
+      <div class="qnav"><button class="btn-back" onclick="qGo(4)">← Back</button><div style="display:flex;align-items:center;gap:16px;"><span class="skip-link" onclick="qGo(5)">Skip</span><button class="btn-next" onclick="qGo(5)">Next →</button></div></div>
+    </div>
+
+    <div class="qstep" id="q5">
+      <div class="question">Tone of card (choose up to two)</div>
+      <div class="subtext">How it will feel to read.</div>
+      <div class="chips" id="qc6">
+        <div class="chip" data-val="Warm and heartfelt">Warm and heartfelt</div><div class="chip" data-val="Funny and playful">Funny and playful</div><div class="chip" data-val="Honest and direct">Honest and direct</div><div class="chip" data-val="Poetic and sentimental">Poetic and sentimental</div><div class="chip" data-val="Lighthearted but real">Lighthearted but real</div><div class="chip" data-val="Reserved but sincere">Reserved but sincere</div><div class="chip" data-val="Celebratory and upbeat">Celebratory and upbeat</div><div class="chip" data-val="Tender and gentle">Tender and gentle</div>
+      </div>
+      <div style="margin-top:1rem;">
+        <div class="cgl" style="margin-top:0;">Or describe your own</div>
+        <input class="text-input" id="t6-other" type="text" placeholder="e.g. Dry wit with real warmth underneath..." oninput="handleToneOther()">
+      </div>
+      <div class="qnav"><button class="btn-back" onclick="backFromTone()">← Back</button><button class="btn-next" id="qn6" disabled onclick="qGo(6)">Next →</button></div>
     </div>
 
     <div class="qstep" id="q6">
-      <div class="question">How do you two talk?</div>
-      <div class="subtext">This is the voice of the card — how it will feel to read.</div>
-      <div class="chips" id="qc6"><div class="chip" data-val="Warm and heartfelt">Warm and heartfelt</div><div class="chip" data-val="Funny and playful">Funny and playful</div><div class="chip" data-val="Honest and direct">Honest and direct</div><div class="chip" data-val="Poetic and sentimental">Poetic and sentimental</div><div class="chip" data-val="Lighthearted but real">Lighthearted but real</div><div class="chip" data-val="Reserved but sincere">Reserved but sincere</div></div>
-      <div class="qnav"><button class="btn-back" onclick="backFromTone()">← Back</button><button class="btn-next" id="qn6" disabled onclick="qGo(7)" style="background:#1A3A6A;color:white;border:none;">Next →</button></div>
+      <div class="question">What do you most want them to feel?</div>
+      <div class="subtext">Choose up to three.</div>
+      <div class="chips" id="qc8">
+        <div class="chip" data-val="deeply loved">Deeply loved</div><div class="chip" data-val="truly seen and known">Truly seen</div><div class="chip" data-val="proud of themselves">Proud of themselves</div><div class="chip" data-val="celebrated">Celebrated</div><div class="chip" data-val="supported and not alone">Not alone</div><div class="chip" data-val="understood">Understood</div><div class="chip" data-val="grateful to know you">Grateful to know you</div><div class="chip" data-val="joyful">Joyful</div>
+      </div>
+      <div class="qnav"><button class="btn-back" onclick="qGo(5)">← Back</button><button class="btn-next" id="qn8" disabled onclick="qGo(7)">Next →</button></div>
     </div>
 
     <div class="qstep" id="q7">
-      <div class="question">What's the tone around faith or spirituality?</div>
+      <div class="question">Faith or spirituality vibe?</div>
       <div class="subtext">This helps us match the card to what feels natural for this relationship.</div>
-      <div class="chips" id="qc7"><div class="chip" data-val="Not spiritual">Not spiritual</div><div class="chip" data-val="Gently spiritual">Gently spiritual</div><div class="chip" data-val="Openly faith-based">Openly faith-based</div></div>
+      <div class="chips" id="qc7">
+        <div class="chip" data-val="None">None</div><div class="chip" data-val="Gently spiritual">Gently spiritual</div><div class="chip" data-val="Openly faith-based">Openly faith-based</div>
+      </div>
       <div class="exp" id="qe-faith"><input class="text-input" id="t7-faith" type="text" placeholder="Any tradition? e.g. Christian, Jewish, Muslim, Hindu — or leave blank" oninput="A.faithTradition=this.value"></div>
-      <div class="qnav"><button class="btn-back" onclick="qGo(6)">← Back</button><button class="btn-next" id="qn7" disabled onclick="qGo(8)" style="background:#1A3A6A;color:white;border:none;">Next →</button></div>
+      <div class="qnav"><button class="btn-back" onclick="qGo(6)">← Back</button><button class="btn-next" id="qn7" disabled onclick="qGo(8)">Next →</button></div>
     </div>
 
     <div class="qstep" id="q8">
-      <div class="question">What do you most want them to feel?</div>
-      <div class="subtext">Every great card has a single emotional target.</div>
-      <div class="chips" id="qc8"><div class="chip" data-val="deeply loved">Deeply loved</div><div class="chip" data-val="truly seen and known">Truly seen</div><div class="chip" data-val="proud of themselves">Proud of themselves</div><div class="chip" data-val="celebrated">Celebrated</div><div class="chip" data-val="supported and not alone">Not alone</div><div class="chip" data-val="understood">Understood</div><div class="chip" data-val="grateful to know you">Grateful to know you</div><div class="chip" data-val="joyful">Joyful</div></div>
-      <div class="qnav"><button class="btn-back" onclick="qGo(7)">← Back</button><button class="btn-next" id="qn8" disabled onclick="qGo(9)" style="background:#1A3A6A;color:white;border:none;">Next →</button></div>
+      <div class="question" id="q9-text">Tell us about your relationship</div>
+      <div class="honest-note">Cards should reflect real relationships — not perfect ones. Be honest. This helps us get the tone right — <strong>it's for our eyes only</strong>, not the card.</div>
+      <textarea class="text-input" id="t9" rows="3" placeholder="e.g. She has always made every person in the room feel like the most important one there. Or — it's complicated, but she showed up when it mattered." oninput="checkReq(9)"></textarea>
+      <div class="qnav"><button class="btn-back" onclick="qGo(7)">← Back</button><button class="btn-next" id="qn9" disabled onclick="qGo(9)">Next →</button></div>
     </div>
 
     <div class="qstep" id="q9">
-      <div class="question" id="q9-text">Tell us about your relationship</div>
-      <div class="honest-note">Cards should reflect real relationships — not perfect ones. Be honest. This helps us get the tone right — it's for our eyes only, not the card.</div>
-      <textarea class="text-input" id="t9" rows="3" placeholder="e.g. She has always made every person in the room feel like the most important one there. Or — it's complicated, but she showed up when it mattered." oninput="checkReq(9)"></textarea>
-      <div class="qnav"><button class="btn-back" onclick="qGo(8)">← Back</button><button class="btn-next" id="qn9" disabled onclick="qGo(10)" style="background:#1A3A6A;color:white;border:none;">Next →</button></div>
-    </div>
-
-    <div class="qstep" id="q10">
       <div class="question" id="q10-text">Is there a moment you'd want woven in? <span class="opt-tag">optional</span></div>
       <div class="subtext">The cards that include a real moment are the ones people keep.</div>
       <textarea class="text-input" id="t10" rows="3" placeholder="e.g. The night she drove four hours to help me move and never once complained." oninput="A.memory=this.value"></textarea>
-      <div class="qnav"><button class="btn-back" onclick="qGo(9)">← Back</button><div style="display:flex;align-items:center;gap:16px;"><span class="skip-link" onclick="qGo(11)">Skip</span><button class="btn-next" onclick="qGo(11)" style="background:#1A3A6A;color:white;border:none;">Next →</button></div></div>
+      <div class="qnav"><button class="btn-back" onclick="qGo(8)">← Back</button><div style="display:flex;align-items:center;gap:16px;"><span class="skip-link" onclick="qGo(10)">Skip</span><button class="btn-next" onclick="qGo(10)">Next →</button></div></div>
     </div>
 
-    <div class="qstep" id="q11">
+    <div class="qstep" id="q10">
       <div class="question">Anything else to include? <span class="opt-tag">optional</span></div>
       <div class="subtext">A detail, a quality, a moment — whatever you put here goes in the card.</div>
       <textarea class="text-input" id="t11" rows="3" placeholder="e.g. She just got promoted after years of working toward it. He always cries at commercials but pretends he doesn't." oninput="A.misc=this.value"></textarea>
-      <div class="qnav"><button class="btn-back" onclick="qGo(10)">← Back</button><div style="display:flex;align-items:center;gap:16px;"><span class="skip-link" onclick="qGo(12)">Skip</span><button class="btn-next" onclick="qGo(12)" style="background:#1A3A6A;color:white;border:none;">Next →</button></div></div>
+      <div class="qnav"><button class="btn-back" onclick="qGo(9)">← Back</button><div style="display:flex;align-items:center;gap:16px;"><span class="skip-link" onclick="qGo(11)">Skip</span><button class="btn-next" onclick="qGo(11)">Next →</button></div></div>
+    </div>
+
+    <div class="qstep" id="q11">
+      <div class="question">Length of message</div>
+      <div class="chips" id="qc12">
+        <div class="chip" data-val="short and sweet — 25 to 40 words">Short and sweet</div><div class="chip" data-val="standard card length — 50 to 80 words">Standard card length</div><div class="chip" data-val="handwritten note — 90 to 130 words">Handwritten note</div>
+      </div>
+      <div style="margin-top:0.75rem;font-size:12px;color:#888;line-height:2;">Short and sweet — one thought, said perfectly<br>Standard card length — complete and warm, nothing wasted<br>Handwritten note — personal and spacious, like something written at a kitchen table</div>
+      <div class="qnav"><button class="btn-back" onclick="qGo(10)">← Back</button><button class="btn-next" id="qn12" disabled onclick="qGo(12)">Next →</button></div>
     </div>
 
     <div class="qstep" id="q12">
-      <div class="question">How long should the message feel?</div>
-      <div class="chips" id="qc12"><div class="chip" data-val="short and sweet — 25 to 40 words">Short and sweet</div><div class="chip" data-val="card length — 50 to 80 words">Card length</div><div class="chip" data-val="handwritten note — 90 to 130 words">Handwritten note</div></div>
-      <div style="margin-top:0.75rem;font-size:12px;color:#888;line-height:2;">Short and sweet — one thought, said perfectly<br>Card length — complete and warm, nothing wasted<br>Handwritten note — personal and spacious, like something written at a kitchen table</div>
-      <div class="qnav"><button class="btn-back" onclick="qGo(11)">← Back</button><button class="btn-next" id="qn12" disabled onclick="qGo(13)" style="background:#1A3A6A;color:white;border:none;">Next →</button></div>
-    </div>
-
-    <div class="qstep" id="q13">
       <div class="question">Should it rhyme?</div>
       <div class="subtext">Rhyme can feel magical or forced — you know which one this person would love.</div>
-      <div class="chips" id="qc13"><div class="chip" data-val="Yes — rhyme it">Yes, rhyme it</div><div class="chip" data-val="No — write it like a letter">No, write it like a letter</div><div class="chip" data-val="Surprise me">Surprise me</div></div>
-      <div class="qnav"><button class="btn-back" onclick="qGo(12)">← Back</button><button class="btn-next" id="qn13" disabled onclick="submitCard()" style="background:#1A3A6A;color:white;border:none;">Generate my card →</button></div>
+      <div class="chips" id="qc13">
+        <div class="chip" data-val="Yes — rhyme it">Yes, rhyme it</div><div class="chip" data-val="No — write it like a letter">No, write it like a letter</div><div class="chip" data-val="Surprise me">Surprise me</div>
+      </div>
+      <div class="qnav"><button class="btn-back" onclick="qGo(11)">← Back</button><button class="btn-next" id="qn13" disabled onclick="submitCard()">Generate my card →</button></div>
     </div>
 
   </div>
 </div>
 
-<!-- GENERATING -->
 <div class="screen" id="screen-gen">
   <div class="gen-screen">
     <div class="gen-brand">Heart<em>penned</em></div>
@@ -286,7 +306,6 @@ body{font-family:'Inter',sans-serif;background:white;}
   </div>
 </div>
 
-<!-- CARD -->
 <div class="screen" id="screen-card">
   <div class="top-nav"><div class="nav-brand" onclick="showScreen('landing')">Heart<em>penned</em></div><div class="q-counter" id="card-version">Version 1</div></div>
   <div style="max-width:560px;margin:0 auto;padding:1.5rem 2rem;">
@@ -299,19 +318,18 @@ body{font-family:'Inter',sans-serif;background:white;}
     <div class="action-row">
       <button class="action-btn" onclick="toggleRev()">Something doesn't<br>feel right</button>
       <button class="action-btn" onclick="tryAnother()">Try a different<br>version</button>
-      <button class="action-btn primary" onclick="showDelivery()" style="background:#1A3A6A;color:white;border:none;">This is<br>the one ✓</button>
+      <button class="action-btn primary" onclick="showDelivery()">This is<br>the one ✓</button>
     </div>
     <div class="rev-box" id="rev-box">
       <div class="rev-label">What's not landing?</div>
       <div class="rev-sub">Tell us specifically — we'll fix just that and keep everything else.</div>
       <div class="ex-chips"><div class="ex-chip" onclick="setEx('The last line doesn\'t feel right')">Last line</div><div class="ex-chip" onclick="setEx('The opening feels too generic')">Opening</div><div class="ex-chip" onclick="setEx('The tone is too heavy')">Too heavy</div><div class="ex-chip" onclick="setEx('It feels too short')">Too short</div><div class="ex-chip" onclick="setEx('It feels too long')">Too long</div><div class="ex-chip" onclick="setEx('It sounds too formal')">Too formal</div><div class="ex-chip" onclick="setEx('It made an assumption that isn\'t true')">Wrong assumption</div></div>
       <textarea class="text-input" id="rev-input" rows="2" placeholder="e.g. The last line feels like a judgment. Lighten it up." oninput="checkRev()"></textarea>
-      <button class="rev-btn" id="rev-btn" disabled onclick="submitRev()" style="background:#1A3A6A;color:white;border:none;">Revise this card →</button>
+      <button class="rev-btn" id="rev-btn" disabled onclick="submitRev()">Revise this card →</button>
     </div>
   </div>
 </div>
 
-<!-- DELIVERY -->
 <div class="screen" id="screen-delivery">
   <div class="top-nav"><div class="nav-brand" onclick="showScreen('landing')">Heart<em>penned</em></div></div>
   <div style="max-width:560px;margin:0 auto;padding:1.5rem 2rem;">
@@ -337,44 +355,157 @@ body{font-family:'Inter',sans-serif;background:white;}
 </div>
 
 </div>
-
 <script>
-// ==========================================
-// CONFIGURATION — Replace with your API key
-// ==========================================
-
-
-const A={kids:[]};
+const A={kids:[],tones:[],feels:[]};
 let kidCount=1,versionCount=1,currentCardText='';
 const PARTNER_VALS=['Husband','Wife','Partner'];
+const Q_ORDER=[1,2,'2b',3,4,'4b','4c',5,6,7,8,9,10,11,12];
 
 function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById('screen-'+id).classList.add('active');}
 function startQ(){showScreen('q');qShowStep(1);}
-const Q_ORDER=[1,2,'2b',3,4,5,'5b','5c',6,7,8,9,10,11,12,13];
-function qShowStep(n){document.querySelectorAll('.qstep').forEach(s=>{s.classList.remove('active');s.style.display='none';});const el=document.getElementById('q'+n);if(el){el.classList.add('active');el.style.display='block';}const idx=Q_ORDER.indexOf(typeof n==='string'?n:Number(n));document.getElementById('prog').style.width=Math.min(100,Math.round(((idx+1)/Q_ORDER.length)*100))+'%';const num=typeof n==='number'?n:(n==='2b'?2:5);document.getElementById('q-counter').textContent='Step '+num+' of 14';}
+
+function qShowStep(n){
+  document.querySelectorAll('.qstep').forEach(s=>{s.classList.remove('active');s.style.display='none';});
+  const el=document.getElementById('q'+n);
+  if(el){el.classList.add('active');el.style.display='block';}
+  const idx=Q_ORDER.indexOf(typeof n==='string'?n:Number(n));
+  document.getElementById('prog').style.width=Math.min(100,Math.round(((idx+1)/Q_ORDER.length)*100))+'%';
+  document.getElementById('q-counter').textContent='Step '+(idx+1)+' of '+Q_ORDER.length;
+}
+
 function qGo(n){qShowStep(n);}
 function qSkip(n){if(n===1){A.name='';qGo(2);}}
-function handleName(){const v=document.getElementById('t-name').value.trim();A.name=v;document.getElementById('qn1').disabled=v.length<1;document.getElementById('q9-text').textContent=v?'Tell us about your relationship with '+v:'Tell us about your relationship';document.getElementById('q10-text').innerHTML=v?'Is there a moment with '+v+' you\'d want woven in? <span class="opt-tag">optional</span>':'Is there a moment you\'d want woven in? <span class="opt-tag">optional</span>';}
-function handleOtherOcc(){const v=document.getElementById('t5-other').value.trim();A.occasion=v;document.getElementById('qn5').disabled=v.length<2;}
-function checkReq(n){const v=document.getElementById('t'+n).value.trim();if(n===9){A.relationshipCtx=v;document.getElementById('qn9').disabled=v.length<3;}}
-function routeAfterOcc(){const occ=A.occasion,rel=A.relationship;if(occ==='Birthday')qGo('5b');else if((occ==="Mother's Day"||occ==="Father's Day")&&PARTNER_VALS.includes(rel))qGo('5c');else qGo(6);}
-function backFromTone(){const occ=A.occasion,rel=A.relationship;if(occ==='Birthday')qGo('5b');else if((occ==="Mother's Day"||occ==="Father's Day")&&PARTNER_VALS.includes(rel))qGo('5c');else qGo(5);}
-function setKid(n,f,v){if(!A.kids[n-1])A.kids[n-1]={};A.kids[n-1][f]=v;}
-function addKid(){if(kidCount>=4){document.getElementById('add-kid').style.display='none';return;}kidCount++;const list=document.getElementById('kids-list');const row=document.createElement('div');row.className='child-row';row.innerHTML='<div class="chips" style="gap:6px;"><div class="chip kid-s" data-kid="'+kidCount+'" data-sex="Son">Son</div><div class="chip kid-s" data-kid="'+kidCount+'" data-sex="Daughter">Daughter</div></div><input class="number-input" type="number" min="1" max="60" placeholder="Age" oninput="setKid('+kidCount+',\'age\',this.value)"><input class="text-input" type="text" placeholder="Name (optional)" style="flex:1;min-width:80px;" oninput="setKid('+kidCount+',\'name\',this.value)">';list.appendChild(row);row.querySelectorAll('.kid-s').forEach(c=>c.addEventListener('click',()=>{row.querySelectorAll('.kid-s').forEach(x=>x.classList.remove('selected'));c.classList.add('selected');setKid(c.dataset.kid,'sex',c.dataset.sex);}));if(kidCount>=4)document.getElementById('add-kid').style.display='none';}
-document.querySelectorAll('.kid-s').forEach(c=>c.addEventListener('click',()=>{const kid=c.dataset.kid;document.querySelectorAll('[data-kid="'+kid+'"].kid-s').forEach(x=>x.classList.remove('selected'));c.classList.add('selected');setKid(kid,'sex',c.dataset.sex);}));
 
-const chipCfg={'qc2':{key:'from',btn:'qn2'},'qc2b':{key:'senderAge'},'qc4':{key:'recipientAge',btn:'qn4'},'qc6':{key:'tone',btn:'qn6'},'qc7':{key:'spirituality',btn:'qn7',exp:'qe-faith',expVal:'Openly faith-based'},'qc8':{key:'feel',btn:'qn8'},'qc12':{key:'length',btn:'qn12'},'qc13':{key:'rhyme',btn:'qn13'}};
-Object.entries(chipCfg).forEach(([gid,cfg])=>{const g=document.getElementById(gid);if(!g)return;g.querySelectorAll('.chip').forEach(chip=>chip.addEventListener('click',()=>{g.querySelectorAll('.chip').forEach(c=>c.classList.remove('selected'));chip.classList.add('selected');A[cfg.key]=chip.dataset.val;if(cfg.btn)document.getElementById(cfg.btn).disabled=false;if(cfg.exp)document.getElementById(cfg.exp).classList.toggle('open',chip.dataset.val===cfg.expVal);if(gid==='qc2')document.getElementById('qn2').disabled=false;}));});
-['qc3-fam','qc3-partner','qc3-other'].forEach(gid=>{document.getElementById(gid)?.querySelectorAll('.chip').forEach(chip=>chip.addEventListener('click',()=>{['qc3-fam','qc3-partner','qc3-other'].forEach(g=>document.getElementById(g)?.querySelectorAll('.chip').forEach(c=>c.classList.remove('selected')));chip.classList.add('selected');A.relationship=chip.dataset.val;document.getElementById('qn3').disabled=false;}));});
-document.getElementById('qc5-main')?.querySelectorAll('.chip').forEach(chip=>chip.addEventListener('click',()=>{document.getElementById('qc5-main').querySelectorAll('.chip').forEach(c=>c.classList.remove('selected'));document.getElementById('qc5-hard').querySelectorAll('.chip').forEach(c=>c.classList.remove('selected'));chip.classList.add('selected');if(chip.dataset.val==='Other Holidays'){document.getElementById('qe-hols').classList.add('open');document.getElementById('qe-other-occ').classList.remove('open');A.occasion='';document.getElementById('qn5').disabled=true;}else if(chip.dataset.val==='Other'){document.getElementById('qe-other-occ').classList.add('open');document.getElementById('qe-hols').classList.remove('open');A.occasion='';document.getElementById('qn5').disabled=true;}else{document.getElementById('qe-hols').classList.remove('open');document.getElementById('qe-other-occ').classList.remove('open');A.occasion=chip.dataset.val;document.getElementById('qn5').disabled=false;}}));
-document.getElementById('qc5-hols')?.querySelectorAll('.chip').forEach(chip=>chip.addEventListener('click',()=>{document.getElementById('qc5-hols').querySelectorAll('.chip').forEach(c=>c.classList.remove('selected'));chip.classList.add('selected');A.occasion=chip.dataset.val;document.getElementById('qn5').disabled=false;}));
-document.getElementById('qc5-hard')?.querySelectorAll('.chip').forEach(chip=>chip.addEventListener('click',()=>{document.getElementById('qc5-hard').querySelectorAll('.chip').forEach(c=>c.classList.remove('selected'));document.getElementById('qc5-main').querySelectorAll('.chip').forEach(c=>c.classList.remove('selected'));document.getElementById('qe-hols').classList.remove('open');document.getElementById('qe-other-occ').classList.remove('open');chip.classList.add('selected');A.occasion=chip.dataset.val;document.getElementById('qn5').disabled=false;}));
+function handleName(){
+  const v=document.getElementById('t-name').value.trim();
+  A.name=v;
+  document.getElementById('qn1').disabled=v.length<1;
+  document.getElementById('q9-text').textContent=v?'Tell us about your relationship with '+v:'Tell us about your relationship';
+  document.getElementById('q10-text').innerHTML=v?'Is there a moment with '+v+' you\'d want woven in? <span class="opt-tag">optional</span>':'Is there a moment you\'d want woven in? <span class="opt-tag">optional</span>';
+}
+
+function handleOtherOcc(){
+  const v=document.getElementById('t5-other').value.trim();
+  A.occasion=v;document.getElementById('qn5').disabled=v.length<2;
+}
+
+function handleToneOther(){
+  const v=document.getElementById('t6-other').value.trim();
+  A.toneOther=v;
+  document.getElementById('qn6').disabled=(A.tones.length===0&&v.length===0);
+}
+
+function checkReq(n){
+  const v=document.getElementById('t'+n).value.trim();
+  if(n===9){A.relationshipCtx=v;document.getElementById('qn9').disabled=v.length<3;}
+}
+
+function routeAfterOcc(){
+  const occ=A.occasion,rel=A.relationship;
+  if(occ==='Birthday')qGo('4b');
+  else if((occ==="Mother's Day"||occ==="Father's Day")&&PARTNER_VALS.includes(rel))qGo('4c');
+  else qGo(5);
+}
+
+function backFromTone(){
+  const occ=A.occasion,rel=A.relationship;
+  if(occ==='Birthday')qGo('4b');
+  else if((occ==="Mother's Day"||occ==="Father's Day")&&PARTNER_VALS.includes(rel))qGo('4c');
+  else qGo(4);
+}
+
+function setKid(n,f,v){if(!A.kids[n-1])A.kids[n-1]={};A.kids[n-1][f]=v;}
+
+function addKid(){
+  if(kidCount>=4){document.getElementById('add-kid').style.display='none';return;}
+  kidCount++;
+  const list=document.getElementById('kids-list');
+  const row=document.createElement('div');
+  row.className='child-row';
+  row.innerHTML='<div class="chips" style="gap:6px;"><div class="chip kid-s" data-kid="'+kidCount+'" data-sex="Son">Son</div><div class="chip kid-s" data-kid="'+kidCount+'" data-sex="Daughter">Daughter</div></div><input class="number-input" type="number" min="1" max="60" placeholder="Age" oninput="setKid('+kidCount+',\'age\',this.value)"><input class="text-input" type="text" placeholder="Name (optional)" style="flex:1;min-width:80px;" oninput="setKid('+kidCount+',\'name\',this.value)">';
+  list.appendChild(row);
+  row.querySelectorAll('.kid-s').forEach(c=>c.addEventListener('click',()=>{row.querySelectorAll('.kid-s').forEach(x=>x.classList.remove('selected'));c.classList.add('selected');setKid(c.dataset.kid,'sex',c.dataset.sex);}));
+  if(kidCount>=4)document.getElementById('add-kid').style.display='none';
+}
+
+document.querySelectorAll('.kid-s').forEach(c=>c.addEventListener('click',()=>{
+  const kid=c.dataset.kid;
+  document.querySelectorAll('[data-kid="'+kid+'"].kid-s').forEach(x=>x.classList.remove('selected'));
+  c.classList.add('selected');setKid(kid,'sex',c.dataset.sex);
+}));
+
+const chipCfg={'qc2':{key:'from',btn:'qn2'},'qc12':{key:'length',btn:'qn12'},'qc13':{key:'rhyme',btn:'qn13'}};
+Object.entries(chipCfg).forEach(([gid,cfg])=>{
+  const g=document.getElementById(gid);if(!g)return;
+  g.querySelectorAll('.chip').forEach(chip=>chip.addEventListener('click',()=>{
+    g.querySelectorAll('.chip').forEach(c=>c.classList.remove('selected'));
+    chip.classList.add('selected');A[cfg.key]=chip.dataset.val;
+    if(cfg.btn)document.getElementById(cfg.btn).disabled=false;
+  }));
+});
+
+document.getElementById('qc2b')?.querySelectorAll('.chip').forEach(chip=>chip.addEventListener('click',()=>{
+  document.getElementById('qc2b').querySelectorAll('.chip').forEach(c=>c.classList.remove('selected'));
+  chip.classList.add('selected');A.senderAge=chip.dataset.val;
+}));
+
+document.getElementById('qc-rage')?.querySelectorAll('.chip').forEach(chip=>chip.addEventListener('click',()=>{
+  document.getElementById('qc-rage').querySelectorAll('.chip').forEach(c=>c.classList.remove('selected'));
+  chip.classList.add('selected');A.recipientAge=chip.dataset.val;
+}));
+
+['qc3-fam','qc3-partner','qc3-other'].forEach(gid=>{
+  document.getElementById(gid)?.querySelectorAll('.chip').forEach(chip=>chip.addEventListener('click',()=>{
+    ['qc3-fam','qc3-partner','qc3-other'].forEach(g=>document.getElementById(g)?.querySelectorAll('.chip').forEach(c=>c.classList.remove('selected')));
+    chip.classList.add('selected');A.relationship=chip.dataset.val;document.getElementById('qn3').disabled=false;
+  }));
+});
+
+document.getElementById('qc5-main')?.querySelectorAll('.chip').forEach(chip=>chip.addEventListener('click',()=>{
+  document.getElementById('qc5-main').querySelectorAll('.chip').forEach(c=>c.classList.remove('selected'));
+  document.getElementById('qc5-hard').querySelectorAll('.chip').forEach(c=>c.classList.remove('selected'));
+  chip.classList.add('selected');
+  if(chip.dataset.val==='Other Holidays'){document.getElementById('qe-hols').classList.add('open');document.getElementById('qe-other-occ').classList.remove('open');A.occasion='';document.getElementById('qn5').disabled=true;}
+  else if(chip.dataset.val==='Other'){document.getElementById('qe-other-occ').classList.add('open');document.getElementById('qe-hols').classList.remove('open');A.occasion='';document.getElementById('qn5').disabled=true;}
+  else{document.getElementById('qe-hols').classList.remove('open');document.getElementById('qe-other-occ').classList.remove('open');A.occasion=chip.dataset.val;document.getElementById('qn5').disabled=false;}
+}));
+document.getElementById('qc5-hols')?.querySelectorAll('.chip').forEach(chip=>chip.addEventListener('click',()=>{
+  document.getElementById('qc5-hols').querySelectorAll('.chip').forEach(c=>c.classList.remove('selected'));
+  chip.classList.add('selected');A.occasion=chip.dataset.val;document.getElementById('qn5').disabled=false;
+}));
+document.getElementById('qc5-hard')?.querySelectorAll('.chip').forEach(chip=>chip.addEventListener('click',()=>{
+  document.getElementById('qc5-hard').querySelectorAll('.chip').forEach(c=>c.classList.remove('selected'));
+  document.getElementById('qc5-main').querySelectorAll('.chip').forEach(c=>c.classList.remove('selected'));
+  document.getElementById('qe-hols').classList.remove('open');document.getElementById('qe-other-occ').classList.remove('open');
+  chip.classList.add('selected');A.occasion=chip.dataset.val;document.getElementById('qn5').disabled=false;
+}));
+
+document.getElementById('qc6')?.querySelectorAll('.chip').forEach(chip=>chip.addEventListener('click',()=>{
+  if(chip.classList.contains('selected')){chip.classList.remove('selected');A.tones=A.tones.filter(v=>v!==chip.dataset.val);}
+  else{if(A.tones.length>=2)return;chip.classList.add('selected');A.tones.push(chip.dataset.val);}
+  document.getElementById('qn6').disabled=(A.tones.length===0&&(!A.toneOther||A.toneOther.length===0));
+}));
+
+document.getElementById('qc8')?.querySelectorAll('.chip').forEach(chip=>chip.addEventListener('click',()=>{
+  if(chip.classList.contains('selected')){chip.classList.remove('selected');A.feels=A.feels.filter(v=>v!==chip.dataset.val);}
+  else{if(A.feels.length>=3)return;chip.classList.add('selected');A.feels.push(chip.dataset.val);}
+  document.getElementById('qn8').disabled=A.feels.length===0;
+}));
+
+document.getElementById('qc7')?.querySelectorAll('.chip').forEach(chip=>chip.addEventListener('click',()=>{
+  document.getElementById('qc7').querySelectorAll('.chip').forEach(c=>c.classList.remove('selected'));
+  chip.classList.add('selected');A.spirituality=chip.dataset.val;
+  document.getElementById('qe-faith').classList.toggle('open',chip.dataset.val==='Openly faith-based');
+  document.getElementById('qn7').disabled=false;
+}));
 
 function buildPrompt(isRev,note){
   const name=A.name||'';
   const isMD=A.occasion==="Mother's Day",isFD=A.occasion==="Father's Day",isNND=A.occasion==="National Nurses Day",isLoss=A.occasion==="Loss or grief",isApology=A.occasion==="Apology",isBirthday=A.occasion==="Birthday";
   const kidsText=A.kids.filter(k=>k&&(k.age||k.sex)).map(k=>{const p=[];if(k.sex)p.push(k.sex);if(k.age)p.push('age '+k.age);if(k.name)p.push('('+k.name+')');return p.join(' ');}).join(' | ');
-  const spiritualRule=A.spirituality==='Not spiritual'?'No spiritual language of any kind.':A.spirituality==='Gently spiritual'?'Use gently universal spiritual language — grace, light, presence, purpose — without naming any religion.':'Use warm faith-based language.'+(A.faithTradition?' Tradition: '+A.faithTradition+'.':' Universal faith language.');
+  const toneVal=[...A.tones,...(A.toneOther?[A.toneOther]:[])].join(' + ')||'Warm and heartfelt';
+  const feelVal=A.feels.join(', ')||'loved';
+  const spiritualRule=A.spirituality==='None'||!A.spirituality?'No spiritual language of any kind.':A.spirituality==='Gently spiritual'?'Use gently universal spiritual language — grace, light, presence, purpose — without naming any religion.':'Use warm faith-based language.'+(A.faithTradition?' Tradition: '+A.faithTradition+'.':' Universal faith language.');
   const occasionRules=isLoss?'Loss or grief. Gentleness and presence only. No silver linings. No fixing. Let them feel less alone.':isApology?'Apology. Sincere and direct. No deflecting. Own the moment.':isMD?'Mother\'s Day. Do not mention holiday by name. No clichés: no Happy Mother\'s Day, no unconditional love, no SuperMom. Honor the day through specificity.'+(kidsText?' Children: '+kidsText+'. Adult children reflect on what was already built. Young children tenderness about now.':''):isFD?'Father\'s Day. Do not mention holiday by name. No clichés.'+(kidsText?' Children: '+kidsText+'.':''):isNND?'National Nurses Day. Specific and respectful. No generic heroism.':isBirthday&&A.birthdayAge?'Birthday. Turning '+A.birthdayAge+'.'+(([30,40,50,60,70,80].includes(Number(A.birthdayAge)))?' Milestone.':''):'';
   if(isRev)return'This is a targeted revision.\n\nCURRENT CARD:\n"'+currentCardText+'"\n\nWHAT TO FIX:\n"'+note+'"\n\nKeep everything working. Fix only what was flagged. Same tone, length, emotional target. Write ONLY the revised card message.';
   return`ROLE AND STANDARD:
@@ -389,10 +520,10 @@ ${A.recipientAge?'RECIPIENT AGE: '+A.recipientAge:''}
 OCCASION: ${A.occasion||'—'}
 ${A.birthdayAge?'TURNING: '+A.birthdayAge:''}
 ${kidsText?'CHILDREN: '+kidsText:''}
-TONE: ${A.tone||'Warm and heartfelt'}
-SPIRITUALITY: ${A.spirituality||'Not spiritual'}
-WANT THEM TO FEEL: ${A.feel||'loved'}
-LENGTH: ${A.length||'card length — 50 to 80 words'}
+TONE: ${toneVal}
+SPIRITUALITY: ${A.spirituality||'None'}
+WANT THEM TO FEEL: ${feelVal}
+LENGTH: ${A.length||'standard card length — 50 to 80 words'}
 FORMAT: ${A.rhyme||'write it like a letter'}
 ${A.memory?'SHARED MEMORY (card content): "'+A.memory+'"':''}
 ${A.misc?'INCLUDE IN CARD (fair game): "'+A.misc+'"':''}
@@ -417,8 +548,10 @@ Honest and direct: Plain language, no flourish, feels said aloud.
 Poetic and sentimental: Rhythm and imagery, earned emotion, beauty through specificity.
 Lighthearted but real: Starts light, lands with genuine feeling.
 Reserved but sincere: Understated, says less means more.
+Celebratory and upbeat: Energetic, warm, joy-forward.
+Tender and gentle: Soft, careful, quietly loving.
 
-LENGTH: Short and sweet 25-40 words. Card length 50-80 words. Handwritten note 90-130 words.
+LENGTH: Short and sweet 25-40 words. Standard card length 50-80 words. Handwritten note 90-130 words.
 SPIRITUALITY: ${spiritualRule}
 OCCASION: ${occasionRules}
 NAME RULE: ${name?'Use "'+name+'" once only — opening or closing. Never mid-card. Never more than once.':'No name provided.'}
@@ -435,30 +568,20 @@ ABSOLUTE RULES:
 - Do not mention Mother's Day or Father's Day by name inside the message`;
 }
 
-async function callAPI(prompt) {
-  const response = await fetch('/api/generate', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ prompt })
-  });
-  const data = await response.json();
-  if (data.error) throw new Error(data.error);
+async function callAPI(prompt){
+  const response=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt})});
+  const data=await response.json();
+  if(data.error)throw new Error(data.error);
   return data.text;
 }
+
 async function submitCard(){
-  showScreen('gen');
-  document.getElementById('gen-label').textContent='Finding the right words...';
+  showScreen('gen');document.getElementById('gen-label').textContent='Finding the right words...';
   versionCount=1;document.getElementById('card-version').textContent='Version 1';
   try{
-    const text = await callAPI(buildPrompt(false));
-    currentCardText=text;
-    document.getElementById('card-text').textContent=text;
-    document.getElementById('del-card-text').textContent=text;
-    showScreen('card');
-  }catch(e){
-    alert('Something went wrong: '+e.message);
-    showScreen('q');
-  }
+    const text=await callAPI(buildPrompt(false));
+    currentCardText=text;document.getElementById('card-text').textContent=text;document.getElementById('del-card-text').textContent=text;showScreen('card');
+  }catch(e){alert('Something went wrong: '+e.message);showScreen('q');}
 }
 
 function toggleRev(){document.getElementById('rev-box').classList.toggle('open');}
@@ -471,15 +594,9 @@ async function submitRev(){
   showScreen('gen');document.getElementById('gen-label').textContent='Revising your card...';
   versionCount++;document.getElementById('card-version').textContent='Version '+versionCount;
   try{
-    const text = await callAPI(buildPrompt(true,note));
-    currentCardText=text;
-    document.getElementById('card-text').textContent=text;
-    document.getElementById('del-card-text').textContent=text;
-    showScreen('card');
-  }catch(e){
-    alert('Something went wrong: '+e.message);
-    showScreen('card');
-  }
+    const text=await callAPI(buildPrompt(true,note));
+    currentCardText=text;document.getElementById('card-text').textContent=text;document.getElementById('del-card-text').textContent=text;showScreen('card');
+  }catch(e){alert('Something went wrong: '+e.message);showScreen('card');}
 }
 
 async function tryAnother(){
@@ -487,33 +604,21 @@ async function tryAnother(){
   showScreen('gen');document.getElementById('gen-label').textContent='Writing a fresh version...';
   versionCount++;document.getElementById('card-version').textContent='Version '+versionCount;
   try{
-    const text = await callAPI(buildPrompt(false)+'\n\nIMPORTANT: Completely different opening, structure, and closing. Do not repeat or echo the previous version.');
-    currentCardText=text;
-    document.getElementById('card-text').textContent=text;
-    document.getElementById('del-card-text').textContent=text;
-    showScreen('card');
-  }catch(e){
-    alert('Something went wrong: '+e.message);
-    showScreen('card');
-  }
+    const text=await callAPI(buildPrompt(false)+'\n\nIMPORTANT: Completely different opening, structure, and closing. Do not repeat or echo the previous version.');
+    currentCardText=text;document.getElementById('card-text').textContent=text;document.getElementById('del-card-text').textContent=text;showScreen('card');
+  }catch(e){alert('Something went wrong: '+e.message);showScreen('card');}
 }
 
 function showDelivery(){document.getElementById('del-card-text').textContent=currentCardText;showScreen('delivery');}
 
 function handleDel(type){
-  const msgs={
-    digital:'Copy the card text above and paste it into a text or email to share it with your recipient.',
-    print:'To print: press Ctrl+P or Cmd+P in your browser and select Print or Save as PDF.',
-    mail:'Mailing physical cards is coming soon to Heartpenned.',
-    gift:'Gift card integration is coming soon to Heartpenned.',
-    reminder:'Account creation and reminders are coming soon to Heartpenned. Save this page to return later.'
-  };
+  const msgs={digital:'Copy the card text above and paste it into a text or email.',print:'To print: press Ctrl+P or Cmd+P and select Save as PDF.',mail:'Mailing physical cards is coming soon to Heartpenned.',gift:'Gift card integration is coming soon to Heartpenned.',reminder:'Account creation and reminders are coming soon. Save this page to return later.'};
   alert(msgs[type]);
 }
 
 function startOver(){
-  Object.keys(A).forEach(k=>{if(k!=='kids')delete A[k];});
-  A.kids=[];kidCount=1;versionCount=1;currentCardText='';
+  Object.keys(A).forEach(k=>{if(k==='kids')A.kids=[];else if(k==='tones')A.tones=[];else if(k==='feels')A.feels=[];else delete A[k];});
+  kidCount=1;versionCount=1;currentCardText='';
   document.querySelectorAll('.chip').forEach(c=>c.classList.remove('selected'));
   document.querySelectorAll('textarea,input[type=text],input[type=number]').forEach(t=>t.value='');
   document.querySelectorAll('.btn-next').forEach(b=>b.disabled=true);

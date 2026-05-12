@@ -376,7 +376,7 @@ function qShowStep(n){
   if(el){el.classList.add('active');el.style.display='block';}
   const idx=Q_ORDER.indexOf(typeof n==='string'?n:Number(n));
   document.getElementById('prog').style.width=Math.min(100,Math.round(((idx+1)/Q_ORDER.length)*100))+'%';
-  document.getElementById('q-counter').textContent='';
+
 
 function qGo(n){qShowStep(n);}
 function qSkip(n){if(n===1){A.name='';qGo(2);}}

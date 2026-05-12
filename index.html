@@ -365,7 +365,7 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
 const A={kids:[],tones:[],feels:[]};
 let kidCount=1,versionCount=1,currentCardText='';
 const PARTNER_VALS=['Husband','Wife','Partner'];
-const Q_ORDER=[1,2,'2b',3,4,'4b','4c',5,6,7,8,9,10,11,12];
+const Q_ORDER=[1,2,'2b',3,4,'4b','4c',5,6,7,8,9,10,11,12,13];
 
 function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById('screen-'+id).classList.add('active');}
 function startQ(){showScreen('q');qShowStep(1);}
@@ -376,8 +376,7 @@ function qShowStep(n){
   if(el){el.classList.add('active');el.style.display='block';}
   const idx=Q_ORDER.indexOf(typeof n==='string'?n:Number(n));
   document.getElementById('prog').style.width=Math.min(100,Math.round(((idx+1)/Q_ORDER.length)*100))+'%';
-  document.getElementById('q-counter').textContent='Step '+(idx+1)+' of '+Q_ORDER.length;
-}
+  document.getElementById('q-counter').textContent=A.occasion?A.occasion+' card':'';
 
 function qGo(n){qShowStep(n);}
 function qSkip(n){if(n===1){A.name='';qGo(2);}}

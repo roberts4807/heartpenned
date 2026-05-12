@@ -141,7 +141,7 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
 <div class="screen" id="screen-q">
   <div class="top-nav">
     <div class="nav-brand" onclick="showScreen('landing')">Heart<em>penned</em></div>
-    <div class="q-counter" id="q-counter">Step 1 of 13</div>
+    <div class="q-counter" id="q-counter"></div>
   </div>
   <div class="q-wrap">
     <div class="progress-bar"><div class="progress-fill" id="prog" style="width:7%"></div></div>
@@ -290,7 +290,7 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
       <div class="question">Should it rhyme?</div>
       <div class="subtext">Rhyme can feel magical or forced — you know which one this person would love.</div>
       <div class="chips" id="qc13">
-        <div class="chip" data-val="Yes — rhyme it">Yes, rhyme it</div><div class="chip" data-val="No — write it like a letter">No, write it like a letter</div><div class="chip" data-val="Surprise me">Surprise me</div>
+        <div class="chip" data-val="Yes — rhyme it">Yes, rhyme it</div><div class="chip" data-val="No — write it like a letter">No, don't rhyme</div><div class="chip" data-val="Surprise me">Surprise me</div>
       </div>
       <div class="qnav"><button class="btn-back" onclick="qGo(11)">← Back</button><button class="btn-next" id="qn13" disabled onclick="qGo(13)">Next →</button></div>
     </div>
@@ -376,7 +376,10 @@ function qShowStep(n){
   if(el){el.classList.add('active');el.style.display='block';}
   const idx=Q_ORDER.indexOf(typeof n==='string'?n:Number(n));
   document.getElementById('prog').style.width=Math.min(100,Math.round(((idx+1)/Q_ORDER.length)*100))+'%';
-  document.getElementById('q-counter').textContent='';
+  const occ=A.occasion||'';
+  const occLabel=occ?occ+' Card':'Writing Your Card';
+  document.getElementById('q-counter').textContent=occLabel;
+}
 function qGo(n){qShowStep(n);}
 function qSkip(n){if(n===1){A.name='';qGo(2);}}
 
@@ -391,6 +394,7 @@ function handleName(){
 function handleOtherOcc(){
   const v=document.getElementById('t5-other').value.trim();
   A.occasion=v;document.getElementById('qn5').disabled=v.length<2;
+  document.getElementById('q-counter').textContent=v?v+' Card':'Writing Your Card';
 }
 
 function handleToneOther(){
@@ -471,17 +475,20 @@ document.getElementById('qc5-main')?.querySelectorAll('.chip').forEach(chip=>chi
   chip.classList.add('selected');
   if(chip.dataset.val==='Other Holidays'){document.getElementById('qe-hols').classList.add('open');document.getElementById('qe-other-occ').classList.remove('open');A.occasion='';document.getElementById('qn5').disabled=true;}
   else if(chip.dataset.val==='Other'){document.getElementById('qe-other-occ').classList.add('open');document.getElementById('qe-hols').classList.remove('open');A.occasion='';document.getElementById('qn5').disabled=true;}
-  else{document.getElementById('qe-hols').classList.remove('open');document.getElementById('qe-other-occ').classList.remove('open');A.occasion=chip.dataset.val;document.getElementById('qn5').disabled=false;}
+  else{document.getElementById('qe-hols').classList.remove('open');document.getElementById('qe-other-occ').classList.remove('open');A.occasion=chip.dataset.val;document.getElementById('qn5').disabled=false;
+    document.getElementById('q-counter').textContent=A.occasion+' Card';}
 }));
 document.getElementById('qc5-hols')?.querySelectorAll('.chip').forEach(chip=>chip.addEventListener('click',()=>{
   document.getElementById('qc5-hols').querySelectorAll('.chip').forEach(c=>c.classList.remove('selected'));
   chip.classList.add('selected');A.occasion=chip.dataset.val;document.getElementById('qn5').disabled=false;
+  document.getElementById('q-counter').textContent=A.occasion+' Card';
 }));
 document.getElementById('qc5-hard')?.querySelectorAll('.chip').forEach(chip=>chip.addEventListener('click',()=>{
   document.getElementById('qc5-hard').querySelectorAll('.chip').forEach(c=>c.classList.remove('selected'));
   document.getElementById('qc5-main').querySelectorAll('.chip').forEach(c=>c.classList.remove('selected'));
   document.getElementById('qe-hols').classList.remove('open');document.getElementById('qe-other-occ').classList.remove('open');
   chip.classList.add('selected');A.occasion=chip.dataset.val;document.getElementById('qn5').disabled=false;
+  document.getElementById('q-counter').textContent=A.occasion+' Card';
 }));
 
 document.getElementById('qc6')?.querySelectorAll('.chip').forEach(chip=>chip.addEventListener('click',()=>{

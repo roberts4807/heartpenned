@@ -69,9 +69,15 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
 .dot:nth-child(2){animation-delay:0.2s;}.dot:nth-child(3){animation-delay:0.4s;}
 @keyframes pulse{0%,100%{opacity:0.3;transform:scale(0.8)}50%{opacity:1;transform:scale(1)}}
 .gen-label{font-size:15px;color:#3A4A5A;}
-.card-surface{background:#F4F8FF;border:0.5px solid #B8CDE8;border-radius:16px;padding:2rem 1.75rem;margin-bottom:1.25rem;position:relative;overflow:hidden;}
+.card-surface{background:#F4F8FF;border:0.5px solid #B8CDE8;border-radius:16px;padding:2rem 1.75rem;margin-bottom:1.25rem;position:relative;overflow:hidden;transition:background 0.4s ease;}
 .card-corner{position:absolute;opacity:0.15;}
 .card-text{font-family:'Playfair Display',serif;font-size:16px;line-height:1.95;color:#1A2A3A;white-space:pre-wrap;position:relative;z-index:1;}
+.swatch-row{display:flex;gap:8px;justify-content:center;margin-bottom:1.1rem;flex-wrap:wrap;}
+.swatch{width:28px;height:28px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all 0.15s;flex-shrink:0;}
+.swatch:hover{transform:scale(1.15);}
+.swatch.selected{border-color:#1A3A6A;transform:scale(1.15);}
+.swatch-label{font-size:11px;color:#888;text-align:center;margin-bottom:0.5rem;text-transform:uppercase;letter-spacing:0.06em;}
+
 .card-mark{position:absolute;bottom:12px;right:16px;font-size:11px;color:#7A9CC0;letter-spacing:0.06em;font-family:'Playfair Display',serif;font-style:italic;}
 .action-row{display:flex;gap:8px;margin-bottom:1.25rem;}
 .action-btn{flex:1;padding:11px 6px;border-radius:8px;font-size:12px;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.15s;text-align:center;border:0.5px solid #C0CCE0;background:white;color:#3A4A5A;line-height:1.5;}
@@ -88,7 +94,7 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
 .rev-btn:disabled{opacity:0.35;cursor:not-allowed;}
 .del-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1rem;}
 .d-btn{padding:16px 14px;border:0.5px solid #C0CCE0;border-radius:8px;background:white;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.15s;text-align:left;}
-.d-btn:hover{border-color:#2A4A80;background:#EEF2FA;}
+.d-btn:hover{border-color:#2A4A80;background:#EEF2FA;}.d-btn.active{border-color:#2A4A80;background:#EEF2FA;border-width:1.5px;}
 .d-btn-title{font-size:14px;font-weight:500;color:#0A1A2A;margin-bottom:3px;}
 .d-btn-sub{font-size:12px;color:#888;}
 .reminder-btn{width:100%;display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:#F4F6FA;border:0.5px solid #D0D8E8;border-radius:8px;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.15s;margin-bottom:8px;}
@@ -97,6 +103,75 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
 .reminder-sub{font-size:12px;color:#888;margin-top:2px;}
 .back-start{font-size:13px;color:#888;text-decoration:underline;cursor:pointer;text-underline-offset:2px;display:inline-block;margin-top:0.5rem;}
 .age-label{font-size:13px;font-weight:500;color:#0A1A2A;margin:1rem 0 0.5rem;}
+.email-delivery {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #E0E8F0;
+}
+.email-delivery-label {
+  font-size: 11px;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.75rem;
+}
+.email-name-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.email-field {
+  flex: 1;
+  padding: 10px 12px;
+  font-size: 14px;
+  border: 0.5px solid #C0CCE0 !important;
+  border-radius: 8px;
+  background: #FFFFFF !important;
+  color: #0A1A2A !important;
+  font-family: 'Inter', sans-serif;
+  outline: none;
+  transition: border-color 0.15s;
+  color-scheme: light;
+  min-width: 0;
+}
+.email-field:focus {
+  border-color: #2A4A80 !important;
+}
+.email-field::placeholder {
+  color: #AAB4C0;
+}
+.email-send-row {
+  display: flex;
+  gap: 8px;
+}
+.email-send-row .email-field {
+  flex: 1;
+}
+.btn-send-email {
+  padding: 10px 18px;
+  background: #1A3A6A !important;
+  color: #FFFFFF !important;
+  border: none !important;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  white-space: nowrap;
+  transition: opacity 0.15s;
+}
+.btn-send-email:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.email-status {
+  margin-top: 8px;
+  font-size: 13px;
+  min-height: 18px;
+  font-weight: 500;
+}
+.email-status.success { color: #2A7A4A; }
+.email-status.error   { color: #C0392B; }
 </style>
 </head>
 <body>
@@ -141,7 +216,7 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
 <div class="screen" id="screen-q">
   <div class="top-nav">
     <div class="nav-brand" onclick="showScreen('landing')">Heart<em>penned</em></div>
-    <div class="q-counter" id="q-counter">Step 1 of 13</div>
+    <div class="q-counter" id="q-counter"></div>
   </div>
   <div class="q-wrap">
     <div class="progress-bar"><div class="progress-fill" id="prog" style="width:7%"></div></div>
@@ -290,7 +365,7 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
       <div class="question">Should it rhyme?</div>
       <div class="subtext">Rhyme can feel magical or forced — you know which one this person would love.</div>
       <div class="chips" id="qc13">
-        <div class="chip" data-val="Yes — rhyme it">Yes, rhyme it</div><div class="chip" data-val="No — write it like a letter">No, write it like a letter</div><div class="chip" data-val="Surprise me">Surprise me</div>
+        <div class="chip" data-val="Yes — rhyme it">Yes, rhyme it</div><div class="chip" data-val="No — write it like a letter">No, don't rhyme</div><div class="chip" data-val="Surprise me">Surprise me</div>
       </div>
       <div class="qnav"><button class="btn-back" onclick="qGo(11)">← Back</button><button class="btn-next" id="qn13" disabled onclick="qGo(13)">Next →</button></div>
     </div>
@@ -321,6 +396,8 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
       <div class="card-text" id="card-text"></div>
       <div class="card-mark">Heartpenned</div>
     </div>
+    <div class="swatch-label">Card style</div>
+    <div class="swatch-row" id="swatch-row"></div>
     <div class="action-row">
       <button class="action-btn" onclick="toggleRev()">Something doesn't<br>feel right</button>
       <button class="action-btn" onclick="tryAnother()">Try a different<br>version</button>
@@ -347,10 +424,32 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
     </div>
     <div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:1rem;">How would you like to send it?</div>
     <div class="del-grid">
-      <div class="d-btn" onclick="handleDel('digital')"><div class="d-btn-title">Send digitally</div><div class="d-btn-sub">Share via text or email</div></div>
+      <div class="d-btn" id="dbtn-digital" onclick="handleDel('digital')"><div class="d-btn-title">Send digitally</div><div class="d-btn-sub">Copy &amp; paste to text or email</div></div>
       <div class="d-btn" onclick="handleDel('print')"><div class="d-btn-title">Print at home</div><div class="d-btn-sub">Download as PDF</div></div>
       <div class="d-btn" onclick="handleDel('mail')"><div class="d-btn-title">Mail it</div><div class="d-btn-sub">We print and send it</div></div>
       <div class="d-btn" onclick="handleDel('gift')"><div class="d-btn-title">Add a gift card</div><div class="d-btn-sub">Send something with it</div></div>
+    </div>
+
+    <!-- Digital delivery panel -->
+    <div id="digital-panel" style="display:none;margin-top:1.25rem;background:#F4F6FA;border:1px solid #D0D8E8;border-radius:12px;padding:1.25rem;">
+      <div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.75rem;">Your card is ready to send</div>
+      <textarea id="copy-box" readonly style="width:100%;box-sizing:border-box;font-family:'Georgia',serif;font-size:13px;line-height:1.7;color:#1A3A6A;background:white;border:1px solid #D0D8E8;border-radius:8px;padding:1rem;resize:none;min-height:140px;outline:none;"></textarea>
+      <button id="copy-btn" onclick="copyCard()" style="margin-top:0.85rem;width:100%;padding:0.85rem;background:#1A3A6A;color:white;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;letter-spacing:0.02em;">Copy to clipboard</button>
+      <div id="copy-confirm" style="display:none;text-align:center;margin-top:0.6rem;font-size:13px;color:#2A7A4A;font-weight:500;">&#10003; Copied! Paste it into a text or email.</div>
+
+      <!-- Email delivery -->
+      <div class="email-delivery">
+        <div class="email-delivery-label">✉ Or send it as a card email</div>
+        <div class="email-name-row">
+          <input type="text" class="email-field" id="email-recipient-name" placeholder="Recipient's name (optional)" />
+          <input type="text" class="email-field" id="email-sender-name" placeholder="Your name (optional)" />
+        </div>
+        <div class="email-send-row">
+          <input type="email" class="email-field" id="email-recipient-address" placeholder="Recipient's email address" />
+          <button class="btn-send-email" id="btn-send-email" onclick="sendCardEmail()">Send 💌</button>
+        </div>
+        <div class="email-status" id="email-status"></div>
+      </div>
     </div>
     <div class="reminder-btn" onclick="handleDel('reminder')">
       <div><div class="reminder-text">Save and get a reminder next year</div><div class="reminder-sub">We'll remind you when this occasion comes around again</div></div>
@@ -367,6 +466,71 @@ let kidCount=1,versionCount=1,currentCardText='';
 const PARTNER_VALS=['Husband','Wife','Partner'];
 const Q_ORDER=[1,2,'2b',3,4,'4b','4c',5,6,7,8,9,10,11,12,13];
 
+// ── Card background themes ──────────────────────────────────────────────
+const CARD_THEMES = [
+  {id:'classic',   label:'Classic',    bg:'#F4F8FF',          swatch:'#D8E6F5'},
+  {id:'warm',      label:'Warm',       bg:'linear-gradient(135deg,#FFF8F0 0%,#FDE8D0 100%)', swatch:'#F9C89A'},
+  {id:'blush',     label:'Blush',      bg:'linear-gradient(135deg,#FFF0F4 0%,#FAD7E0 100%)', swatch:'#F4A7B9'},
+  {id:'sage',      label:'Sage',       bg:'linear-gradient(135deg,#F2F8F2 0%,#D4EAD4 100%)', swatch:'#96C896'},
+  {id:'twilight',  label:'Twilight',   bg:'linear-gradient(135deg,#F0F2FF 0%,#D4D8F8 100%)', swatch:'#8890E0'},
+  {id:'gold',      label:'Gold',       bg:'linear-gradient(135deg,#FFFFF0 0%,#F5E8C0 100%)', swatch:'#D4AF37'},
+  {id:'slate',     label:'Slate',      bg:'linear-gradient(135deg,#F4F6F8 0%,#D8DFE8 100%)', swatch:'#8A9BB0'},
+  {id:'dusk',      label:'Dusk',       bg:'linear-gradient(135deg,#FDF4FF 0%,#EDD4F8 100%)', swatch:'#C084DC'},
+];
+
+const OCC_THEME_MAP = {
+  'Birthday':           'warm',
+  "Mother's Day":       'blush',
+  "Father's Day":       'slate',
+  'Wedding':            'gold',
+  'Anniversary':        'blush',
+  'Graduation':         'twilight',
+  'New Baby':           'sage',
+  'Thank You':          'warm',
+  'Sympathy':           'slate',
+  'Loss or grief':      'slate',
+  'Get Well':           'sage',
+  'Apology':            'classic',
+  'Encouragement':      'sage',
+  "Valentine's Day":    'blush',
+  "National Nurses Day":'sage',
+  'Christmas':          'gold',
+  "New Year's":         'twilight',
+  'Hanukkah':           'gold',
+};
+
+let activeTheme = 'classic';
+
+function getThemeForOccasion(occ) {
+  return OCC_THEME_MAP[occ] || 'classic';
+}
+
+function applyTheme(themeId, surfaces) {
+  const theme = CARD_THEMES.find(t => t.id === themeId) || CARD_THEMES[0];
+  const targets = surfaces || document.querySelectorAll('.card-surface');
+  targets.forEach(el => el.style.background = theme.bg);
+  // update swatches
+  document.querySelectorAll('.swatch').forEach(s => {
+    s.classList.toggle('selected', s.dataset.theme === themeId);
+  });
+  activeTheme = themeId;
+}
+
+function buildSwatches() {
+  const row = document.getElementById('swatch-row');
+  if (!row) return;
+  row.innerHTML = '';
+  CARD_THEMES.forEach(t => {
+    const s = document.createElement('div');
+    s.className = 'swatch' + (t.id === activeTheme ? ' selected' : '');
+    s.dataset.theme = t.id;
+    s.title = t.label;
+    s.style.background = t.swatch;
+    s.onclick = () => applyTheme(t.id);
+    row.appendChild(s);
+  });
+}
+
 function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById('screen-'+id).classList.add('active');}
 function startQ(){showScreen('q');qShowStep(1);}
 
@@ -376,7 +540,10 @@ function qShowStep(n){
   if(el){el.classList.add('active');el.style.display='block';}
   const idx=Q_ORDER.indexOf(typeof n==='string'?n:Number(n));
   document.getElementById('prog').style.width=Math.min(100,Math.round(((idx+1)/Q_ORDER.length)*100))+'%';
-  document.getElementById('q-counter').textContent='';
+  const occ=A.occasion||'';
+  const occLabel=occ?occ+' Card':'Writing Your Card';
+  document.getElementById('q-counter').textContent=occLabel;
+}
 function qGo(n){qShowStep(n);}
 function qSkip(n){if(n===1){A.name='';qGo(2);}}
 
@@ -391,6 +558,7 @@ function handleName(){
 function handleOtherOcc(){
   const v=document.getElementById('t5-other').value.trim();
   A.occasion=v;document.getElementById('qn5').disabled=v.length<2;
+  document.getElementById('q-counter').textContent=v?v+' Card':'Writing Your Card';
 }
 
 function handleToneOther(){
@@ -471,17 +639,20 @@ document.getElementById('qc5-main')?.querySelectorAll('.chip').forEach(chip=>chi
   chip.classList.add('selected');
   if(chip.dataset.val==='Other Holidays'){document.getElementById('qe-hols').classList.add('open');document.getElementById('qe-other-occ').classList.remove('open');A.occasion='';document.getElementById('qn5').disabled=true;}
   else if(chip.dataset.val==='Other'){document.getElementById('qe-other-occ').classList.add('open');document.getElementById('qe-hols').classList.remove('open');A.occasion='';document.getElementById('qn5').disabled=true;}
-  else{document.getElementById('qe-hols').classList.remove('open');document.getElementById('qe-other-occ').classList.remove('open');A.occasion=chip.dataset.val;document.getElementById('qn5').disabled=false;}
+  else{document.getElementById('qe-hols').classList.remove('open');document.getElementById('qe-other-occ').classList.remove('open');A.occasion=chip.dataset.val;document.getElementById('qn5').disabled=false;
+    document.getElementById('q-counter').textContent=A.occasion+' Card';}
 }));
 document.getElementById('qc5-hols')?.querySelectorAll('.chip').forEach(chip=>chip.addEventListener('click',()=>{
   document.getElementById('qc5-hols').querySelectorAll('.chip').forEach(c=>c.classList.remove('selected'));
   chip.classList.add('selected');A.occasion=chip.dataset.val;document.getElementById('qn5').disabled=false;
+  document.getElementById('q-counter').textContent=A.occasion+' Card';
 }));
 document.getElementById('qc5-hard')?.querySelectorAll('.chip').forEach(chip=>chip.addEventListener('click',()=>{
   document.getElementById('qc5-hard').querySelectorAll('.chip').forEach(c=>c.classList.remove('selected'));
   document.getElementById('qc5-main').querySelectorAll('.chip').forEach(c=>c.classList.remove('selected'));
   document.getElementById('qe-hols').classList.remove('open');document.getElementById('qe-other-occ').classList.remove('open');
   chip.classList.add('selected');A.occasion=chip.dataset.val;document.getElementById('qn5').disabled=false;
+  document.getElementById('q-counter').textContent=A.occasion+' Card';
 }));
 
 document.getElementById('qc6')?.querySelectorAll('.chip').forEach(chip=>chip.addEventListener('click',()=>{
@@ -584,7 +755,7 @@ async function submitCard(){
   versionCount=1;document.getElementById('card-version').textContent='Version 1';
   try{
     const text=await callAPI(buildPrompt(false));
-    currentCardText=text;document.getElementById('card-text').textContent=text;document.getElementById('del-card-text').textContent=text;showScreen('card');
+    currentCardText=text;document.getElementById('card-text').textContent=text;document.getElementById('del-card-text').textContent=text;activeTheme=getThemeForOccasion(A.occasion||'');applyTheme(activeTheme);buildSwatches();showScreen('card');
   }catch(e){alert('Something went wrong: '+e.message);showScreen('q');}
 }
 
@@ -599,7 +770,7 @@ async function submitRev(){
   versionCount++;document.getElementById('card-version').textContent='Version '+versionCount;
   try{
     const text=await callAPI(buildPrompt(true,note));
-    currentCardText=text;document.getElementById('card-text').textContent=text;document.getElementById('del-card-text').textContent=text;showScreen('card');
+    currentCardText=text;document.getElementById('card-text').textContent=text;document.getElementById('del-card-text').textContent=text;activeTheme=getThemeForOccasion(A.occasion||'');applyTheme(activeTheme);buildSwatches();showScreen('card');
   }catch(e){alert('Something went wrong: '+e.message);showScreen('card');}
 }
 
@@ -609,15 +780,51 @@ async function tryAnother(){
   versionCount++;document.getElementById('card-version').textContent='Version '+versionCount;
   try{
     const text=await callAPI(buildPrompt(false)+'\n\nIMPORTANT: Completely different opening, structure, and closing. Do not repeat or echo the previous version.');
-    currentCardText=text;document.getElementById('card-text').textContent=text;document.getElementById('del-card-text').textContent=text;showScreen('card');
+    currentCardText=text;document.getElementById('card-text').textContent=text;document.getElementById('del-card-text').textContent=text;activeTheme=getThemeForOccasion(A.occasion||'');applyTheme(activeTheme);buildSwatches();showScreen('card');
   }catch(e){alert('Something went wrong: '+e.message);showScreen('card');}
 }
 
-function showDelivery(){document.getElementById('del-card-text').textContent=currentCardText;showScreen('delivery');}
+function showDelivery(){document.getElementById('del-card-text').textContent=currentCardText;showScreen('delivery');applyTheme(activeTheme,[document.querySelector('#screen-delivery .card-surface')]);}
 
 function handleDel(type){
-  const msgs={digital:'Copy the card text above and paste it into a text or email.',print:'To print: press Ctrl+P or Cmd+P and select Save as PDF.',mail:'Mailing physical cards is coming soon to Heartpenned.',gift:'Gift card integration is coming soon to Heartpenned.',reminder:'Account creation and reminders are coming soon. Save this page to return later.'};
-  alert(msgs[type]);
+  // Reset all d-btn active states
+  document.querySelectorAll('.d-btn').forEach(b=>b.classList.remove('active'));
+
+  if(type==='digital'){
+    document.getElementById('dbtn-digital').classList.add('active');
+    const panel=document.getElementById('digital-panel');
+    panel.style.display='block';
+    document.getElementById('copy-box').value=currentCardText;
+    document.getElementById('copy-confirm').style.display='none';
+    document.getElementById('copy-btn').textContent='Copy to clipboard';
+  } else if(type==='print'){
+    document.getElementById('digital-panel').style.display='none';
+    alert('Print at home is coming soon to Heartpenned.');
+  } else if(type==='mail'){
+    document.getElementById('digital-panel').style.display='none';
+    alert('Mailing physical cards is coming soon to Heartpenned.');
+  } else if(type==='gift'){
+    document.getElementById('digital-panel').style.display='none';
+    alert('Gift card integration is coming soon to Heartpenned.');
+  } else if(type==='reminder'){
+    alert('Account creation and reminders are coming soon. Save this page to return later.');
+  }
+}
+
+function copyCard(){
+  const box=document.getElementById('copy-box');
+  box.select();
+  box.setSelectionRange(0,99999);
+  navigator.clipboard.writeText(box.value).then(()=>{
+    document.getElementById('copy-confirm').style.display='block';
+    const btn=document.getElementById('copy-btn');
+    btn.textContent='Copied ✓';
+    btn.style.background='#2A7A4A';
+    setTimeout(()=>{btn.textContent='Copy to clipboard';btn.style.background='#1A3A6A';},3000);
+  }).catch(()=>{
+    document.execCommand('copy');
+    document.getElementById('copy-confirm').style.display='block';
+  });
 }
 
 function startOver(){
@@ -635,6 +842,54 @@ function startOver(){
 }
 
 document.querySelectorAll('.qstep').forEach((s,i)=>{if(i>0)s.style.display='none';});
+
+async function sendCardEmail() {
+  const recipientEmail = document.getElementById('email-recipient-address').value.trim();
+  const recipientName  = document.getElementById('email-recipient-name').value.trim();
+  const senderName     = document.getElementById('email-sender-name').value.trim();
+  const statusEl       = document.getElementById('email-status');
+  const btn            = document.getElementById('btn-send-email');
+
+  if (!recipientEmail) {
+    statusEl.className = 'email-status error';
+    statusEl.textContent = 'Please enter a recipient email address.';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Sending…';
+  statusEl.className = 'email-status';
+  statusEl.textContent = '';
+
+  try {
+    const response = await fetch('/api/send', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        recipientEmail,
+        recipientName,
+        senderName,
+        cardText:  currentCardText,
+        occasion:  A.occasion || '',
+      }),
+    });
+
+    const data = await response.json();
+
+    if (response.ok && data.success) {
+      statusEl.className = 'email-status success';
+      statusEl.textContent = '✓ Card sent to ' + recipientEmail;
+      btn.textContent = 'Sent ✓';
+    } else {
+      throw new Error(data.error || 'Something went wrong.');
+    }
+  } catch (err) {
+    statusEl.className = 'email-status error';
+    statusEl.textContent = err.message || 'Failed to send. Please try again.';
+    btn.disabled = false;
+    btn.textContent = 'Send 💌';
+  }
+}
 </script>
 </body>
 </html>

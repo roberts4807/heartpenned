@@ -815,7 +815,7 @@ async function submitRev(){
   showScreen('gen');document.getElementById('gen-label').textContent='Revising your card...';
   try{
     const text=await callAPI(buildPrompt(true,note));
-    currentCardText=text;saveVersion(text,true);document.getElementById('card-text').textContent=text;document.getElementById('del-card-text').textContent=text;activeTheme=getThemeForOccasion(A.occasion||'');applyTheme(activeTheme);buildSwatches();resetEmailSection();showScreen('card');
+    currentCardText=text;saveVersion(text,false);document.getElementById('card-text').textContent=text;document.getElementById('del-card-text').textContent=text;activeTheme=getThemeForOccasion(A.occasion||'');applyTheme(activeTheme);buildSwatches();resetEmailSection();showScreen('card');
   }catch(e){alert('Something went wrong: '+e.message);showScreen('card');}
 }
 
@@ -890,11 +890,15 @@ document.querySelectorAll('.qstep').forEach((s,i)=>{if(i>0)s.style.display='none
 
 function saveVersion(text, isRevision){
   if(isRevision && savedVersions.length > 0){
-    // Replace current version in place
+    // Replace current version in place, preserve all others
     savedVersions[activeVersionIdx] = text;
   } else {
     // Add as new version
-    if(savedVersions.length >= 3) savedVersions.shift();
+    if(savedVersions.length >= 3){
+      // At max - replace oldest, keep others
+      savedVersions.shift();
+      if(activeVersionIdx > 0) activeVersionIdx--;
+    }
     savedVersions.push(text);
     activeVersionIdx = savedVersions.length - 1;
   }
@@ -904,7 +908,7 @@ function saveVersion(text, isRevision){
 function updateVersionTabs(){
   const container = document.getElementById('version-tabs');
   if(!container) return;
-  if(savedVersions.length < 2){ container.style.display='none'; return; }
+  if(savedVersions.length < 2 && versionCount < 2){ container.style.display='none'; return; }
   container.style.display='flex';
   container.innerHTML = '';
   savedVersions.forEach(function(txt, i){

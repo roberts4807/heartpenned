@@ -267,8 +267,9 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
       </div>
       <div class="cgl">Other</div>
       <div class="chips" id="qc3-other">
-        <div class="chip" data-val="Best friend">Best friend</div><div class="chip" data-val="Friend">Friend</div><div class="chip" data-val="Caregiver">Caregiver</div><div class="chip" data-val="Acquaintance">Acquaintance</div><div class="chip" data-val="Colleague">Colleague</div><div class="chip" data-val="Mentor">Mentor</div><div class="chip" data-val="Someone else">Someone else</div>
+        <div class="chip" data-val="Best friend">Best friend</div><div class="chip" data-val="Friend">Friend</div><div class="chip" data-val="Caregiver">Caregiver</div><div class="chip" data-val="Acquaintance">Acquaintance</div><div class="chip" data-val="Colleague">Colleague</div><div class="chip" data-val="Mentor">Mentor</div><div class="chip" data-val="Other">Other</div>
       </div>
+      <div class="exp" id="qe-other-rel"><input class="text-input" id="t3-other" type="text" placeholder="e.g. Uncle, Coach, Neighbor..." oninput="handleOtherRel()"></div>
       <div class="qnav"><button class="btn-back" onclick="qGo('2b')">← Back</button><button class="btn-next" id="qn3" disabled onclick="qGo(4)">Next →</button></div>
     </div>
 
@@ -547,6 +548,11 @@ function qShowStep(n){
 function qGo(n){qShowStep(n);}
 function qSkip(n){if(n===1){A.name='';qGo(2);}}
 
+function handleOtherRel(){
+  const v=document.getElementById('t3-other').value.trim();
+  A.relationship=v;document.getElementById('qn3').disabled=v.length<1;
+}
+
 function handleName(){
   const v=document.getElementById('t-name').value.trim();
   A.name=v;
@@ -629,7 +635,14 @@ document.getElementById('qc-rage')?.querySelectorAll('.chip').forEach(chip=>chip
 ['qc3-fam','qc3-partner','qc3-other'].forEach(gid=>{
   document.getElementById(gid)?.querySelectorAll('.chip').forEach(chip=>chip.addEventListener('click',()=>{
     ['qc3-fam','qc3-partner','qc3-other'].forEach(g=>document.getElementById(g)?.querySelectorAll('.chip').forEach(c=>c.classList.remove('selected')));
-    chip.classList.add('selected');A.relationship=chip.dataset.val;document.getElementById('qn3').disabled=false;
+    chip.classList.add('selected');
+    if(chip.dataset.val==='Other'){
+      document.getElementById('qe-other-rel').classList.add('open');
+      A.relationship='';document.getElementById('qn3').disabled=true;
+    } else {
+      document.getElementById('qe-other-rel').classList.remove('open');
+      A.relationship=chip.dataset.val;document.getElementById('qn3').disabled=false;
+    }
   }));
 });
 

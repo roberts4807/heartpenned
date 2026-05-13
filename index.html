@@ -172,6 +172,9 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
 }
 .email-status.success { color: #2A7A4A; }
 .email-status.error   { color: #C0392B; }
+
+.ver-tab{padding:5px 14px;border:0.5px solid #C0CCE0;border-radius:20px;font-size:12px;color:#3A4A5A;cursor:pointer;background:white;transition:all 0.15s;font-family:'Inter',sans-serif;}
+.ver-tab.active{background:#1A3A6A;border-color:#1A3A6A;color:white;font-weight:600;}
 </style>
 </head>
 <body>
@@ -389,7 +392,7 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
 </div>
 
 <div class="screen" id="screen-card">
-  <div class="top-nav"><div class="nav-brand" onclick="showScreen('landing')">Heart<em>penned</em></div><div class="q-counter" id="card-version">Version 1</div></div>
+  <div class="top-nav"><div class="nav-brand" onclick="showScreen('landing')">Heart<em>penned</em></div><div id="version-tabs" style="display:none;gap:6px;align-items:center;" class="q-counter"></div></div>
   <div style="max-width:560px;margin:0 auto;padding:1.5rem 2rem;">
     <div class="card-surface">
       <svg class="card-corner" style="top:10px;left:10px;width:28px;height:28px;" viewBox="0 0 32 32"><path d="M2 16 Q2 2 16 2" stroke="#2A4A80" stroke-width="1" fill="none"/><path d="M2 22 Q2 2 22 2" stroke="#2A4A80" stroke-width="0.6" fill="none"/><circle cx="2" cy="2" r="2" fill="#2A4A80"/></svg>
@@ -463,7 +466,7 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
 </div>
 <script>
 const A={kids:[],tones:[],feels:[]};
-let kidCount=1,versionCount=1,currentCardText='';
+let kidCount=1,versionCount=1,currentCardText='',savedVersions=[],activeVersionIdx=0;
 const PARTNER_VALS=['Husband','Wife','Partner'];
 const Q_ORDER=[1,2,'2b',3,4,'4b','4c',5,6,7,8,9,10,11,12,13];
 
@@ -551,6 +554,13 @@ function qSkip(n){if(n===1){A.name='';qGo(2);}}
 function handleOtherRel(){
   const v=document.getElementById('t3-other').value.trim();
   A.relationship=v;document.getElementById('qn3').disabled=v.length<1;
+}
+
+function resetEmailSection(){
+  const btn = document.getElementById('btn-send-email');
+  const status = document.getElementById('email-status');
+  if(btn){ btn.disabled=false; btn.textContent='Send 💌'; }
+  if(status){ status.className='email-status'; status.textContent=''; }
 }
 
 function handleName(){
@@ -695,7 +705,29 @@ function buildPrompt(isRev,note){
   const feelVal=A.feels.join(', ')||'loved';
   const spiritualRule=A.spirituality==='None'||!A.spirituality?'No spiritual language of any kind.':A.spirituality==='Gently spiritual'?'Use gently universal spiritual language — grace, light, presence, purpose — without naming any religion.':'Use warm faith-based language.'+(A.faithTradition?' Tradition: '+A.faithTradition+'.':' Universal faith language.');
   const occasionRules=isLoss?'Loss or grief. Gentleness and presence only. No silver linings. No fixing. Let them feel less alone.':isApology?'Apology. Sincere and direct. No deflecting. Own the moment.':isMD?'Mother\'s Day. Do not mention holiday by name. No clichés: no Happy Mother\'s Day, no unconditional love, no SuperMom. Honor the day through specificity.'+(kidsText?' Children: '+kidsText+'. Adult children reflect on what was already built. Young children tenderness about now.':''):isFD?'Father\'s Day. Do not mention holiday by name. No clichés.'+(kidsText?' Children: '+kidsText+'.':''):isNND?'National Nurses Day. Specific and respectful. No generic heroism.':isBirthday&&A.birthdayAge?'Birthday. Turning '+A.birthdayAge+'.'+(([30,40,50,60,70,80].includes(Number(A.birthdayAge)))?' Milestone.':''):'';
-  if(isRev)return'This is a targeted revision.\n\nCURRENT CARD:\n"'+currentCardText+'"\n\nWHAT TO FIX:\n"'+note+'"\n\nKeep everything working. Fix only what was flagged. Same tone, length, emotional target. Write ONLY the revised card message.';
+  if(isRev){
+    return `This is a targeted revision of a greeting card.
+
+CURRENT CARD:
+"${currentCardText}"
+
+WHAT TO FIX — FOLLOW THIS EXACTLY:
+"${note}"
+
+CRITICAL: The instruction above is a direct command. If it says to remove a word, remove it everywhere. If it says to add a specific phrase, include it verbatim. If it says to change the tone, change it. These are not suggestions — honor them precisely.
+
+CARRY OVER ALL ORIGINAL RULES:
+- TONE: ${toneVal}
+- LENGTH: ${A.length||'standard card length — 50 to 80 words'}
+- SPIRITUALITY: ${spiritualRule}
+- FORMAT: ${A.rhyme||'write it like a letter'}
+- NAME RULE: ${A.name?'Use "'+A.name+'" once only — never more than once.':'No name.'}
+- SIGN-OFF: ${A.signoff?'End with exactly: "'+A.signoff+'"':'No sign-off.'}
+${A.misc?'- INCLUDE IN CARD: "'+A.misc+'" — keep this in the card.':''}
+${A.memory?'- SHARED MEMORY: "'+A.memory+'" — keep this woven in.':''}
+
+Fix ONLY what was flagged. Keep everything else. Write ONLY the revised card message — no commentary, no explanation.\`;
+  }
   return`ROLE AND STANDARD:
 You are a senior greeting card writer with 20 years of experience. Your singular job is to write a card message that feels like it was written by someone who truly knows this recipient — not by a card company, not by AI. The gold standard: the recipient reads this and feels completely seen — not an idealized version of themselves, but exactly who they are in this relationship right now. You write for real relationships — complicated, evolving, quietly loving, deeply loving.
 
@@ -768,7 +800,7 @@ async function submitCard(){
   versionCount=1;document.getElementById('card-version').textContent='Version 1';
   try{
     const text=await callAPI(buildPrompt(false));
-    currentCardText=text;document.getElementById('card-text').textContent=text;document.getElementById('del-card-text').textContent=text;activeTheme=getThemeForOccasion(A.occasion||'');applyTheme(activeTheme);buildSwatches();showScreen('card');
+    currentCardText=text;saveVersion(text);document.getElementById('card-text').textContent=text;document.getElementById('del-card-text').textContent=text;activeTheme=getThemeForOccasion(A.occasion||'');applyTheme(activeTheme);buildSwatches();resetEmailSection();showScreen('card');
   }catch(e){alert('Something went wrong: '+e.message);showScreen('q');}
 }
 
@@ -780,10 +812,9 @@ async function submitRev(){
   const note=document.getElementById('rev-input').value.trim();
   document.getElementById('rev-box').classList.remove('open');
   showScreen('gen');document.getElementById('gen-label').textContent='Revising your card...';
-  versionCount++;document.getElementById('card-version').textContent='Version '+versionCount;
   try{
     const text=await callAPI(buildPrompt(true,note));
-    currentCardText=text;document.getElementById('card-text').textContent=text;document.getElementById('del-card-text').textContent=text;activeTheme=getThemeForOccasion(A.occasion||'');applyTheme(activeTheme);buildSwatches();showScreen('card');
+    currentCardText=text;saveVersion(text,true);document.getElementById('card-text').textContent=text;document.getElementById('del-card-text').textContent=text;activeTheme=getThemeForOccasion(A.occasion||'');applyTheme(activeTheme);buildSwatches();resetEmailSection();showScreen('card');
   }catch(e){alert('Something went wrong: '+e.message);showScreen('card');}
 }
 
@@ -793,7 +824,7 @@ async function tryAnother(){
   versionCount++;document.getElementById('card-version').textContent='Version '+versionCount;
   try{
     const text=await callAPI(buildPrompt(false)+'\n\nIMPORTANT: Completely different opening, structure, and closing. Do not repeat or echo the previous version.');
-    currentCardText=text;document.getElementById('card-text').textContent=text;document.getElementById('del-card-text').textContent=text;activeTheme=getThemeForOccasion(A.occasion||'');applyTheme(activeTheme);buildSwatches();showScreen('card');
+    currentCardText=text;saveVersion(text);document.getElementById('card-text').textContent=text;document.getElementById('del-card-text').textContent=text;activeTheme=getThemeForOccasion(A.occasion||'');applyTheme(activeTheme);buildSwatches();resetEmailSection();showScreen('card');
   }catch(e){alert('Something went wrong: '+e.message);showScreen('card');}
 }
 
@@ -842,7 +873,7 @@ function copyCard(){
 
 function startOver(){
   Object.keys(A).forEach(k=>{if(k==='kids')A.kids=[];else if(k==='tones')A.tones=[];else if(k==='feels')A.feels=[];else delete A[k];});
-  kidCount=1;versionCount=1;currentCardText='';
+  kidCount=1;versionCount=1;currentCardText='';savedVersions=[];activeVersionIdx=0;
   document.querySelectorAll('.chip').forEach(c=>c.classList.remove('selected'));
   document.querySelectorAll('textarea,input[type=text],input[type=number]').forEach(t=>t.value='');
   document.querySelectorAll('.btn-next').forEach(b=>b.disabled=true);
@@ -855,6 +886,43 @@ function startOver(){
 }
 
 document.querySelectorAll('.qstep').forEach((s,i)=>{if(i>0)s.style.display='none';});
+
+function saveVersion(text, isRevision){
+  if(isRevision && savedVersions.length > 0){
+    // Replace current version in place
+    savedVersions[activeVersionIdx] = text;
+  } else {
+    // Add as new version
+    if(savedVersions.length >= 3) savedVersions.shift();
+    savedVersions.push(text);
+    activeVersionIdx = savedVersions.length - 1;
+  }
+  updateVersionTabs();
+}
+
+function updateVersionTabs(){
+  const container = document.getElementById('version-tabs');
+  if(!container) return;
+  if(savedVersions.length < 2){ container.style.display='none'; return; }
+  container.style.display='flex';
+  container.innerHTML = '';
+  savedVersions.forEach(function(txt, i){
+    const tab = document.createElement('button');
+    tab.className = 'ver-tab' + (i === activeVersionIdx ? ' active' : '');
+    tab.textContent = 'Version ' + (i + 1);
+    tab.onclick = function(){ switchVersion(i); };
+    container.appendChild(tab);
+  });
+}
+
+function switchVersion(idx){
+  activeVersionIdx = idx;
+  currentCardText = savedVersions[idx];
+  document.getElementById('card-text').textContent = currentCardText;
+  document.getElementById('del-card-text').textContent = currentCardText;
+  resetEmailSection();
+  updateVersionTabs();
+}
 
 async function sendCardEmail() {
   const recipientEmail = document.getElementById('email-recipient-address').value.trim();

@@ -465,7 +465,7 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
         <div class="email-status" id="email-status"></div>
       </div>
     </div>
-    <div class="reminder-btn" onclick="handleDel('reminder')">
+    <div class="reminder-btn" id="reminder-btn-row" onclick="handleDel('reminder')">
       <div><div class="reminder-text">Save and get a reminder next year</div><div class="reminder-sub">We'll remind you when this occasion comes around again</div></div>
     <div id="reminder-form" style="display:none;margin-top:0.75rem;padding:1rem;background:#F4F6FA;border:1px solid #D0D8E8;border-radius:10px;">
       <div style="font-size:12px;color:#888;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.75rem;">Set your reminder</div>
@@ -1026,7 +1026,7 @@ async function setReminder(){
       statusEl.style.color='#2A7A4A';
       statusEl.textContent='✓ We\'ll remind you next year!';
       btn.textContent='Saved ✓';
-      document.getElementById('reminder-btn-row').style.display='none';
+      const rbrRow = document.getElementById('reminder-btn-row'); if(rbrRow) rbrRow.style.display='none';
     } else {
       throw new Error(data.error||'Something went wrong.');
     }

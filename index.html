@@ -885,14 +885,6 @@ function handleDel(type){
     alert('Gift card integration is coming soon to Heartpenned.');
   } else if(type==='reminder'){
     document.getElementById('reminder-form').style.display='block';
-    // Pre-fill date with today next year
-    const nextYear = new Date();
-    nextYear.setFullYear(nextYear.getFullYear() + 1);
-    const yyyy = nextYear.getFullYear();
-    const mm = String(nextYear.getMonth()+1).padStart(2,'0');
-    const dd = String(nextYear.getDate()).padStart(2,'0');
-    document.getElementById('occasion-date').value = yyyy+'-'+mm+'-'+dd;
-    document.getElementById('reminder-date').value = yyyy+'-'+mm+'-'+dd;
     document.getElementById('reminder-email').focus();
   }
 }

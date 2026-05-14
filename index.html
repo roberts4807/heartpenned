@@ -102,7 +102,7 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
 .reminder-text{font-size:13px;color:#0A1A2A;}
 .reminder-sub{font-size:12px;color:#888;margin-top:2px;}
 .back-start{font-size:13px;color:#888;text-decoration:underline;cursor:pointer;text-underline-offset:2px;display:inline-block;margin-top:0.5rem;}
-.age-label{font-size:13px;font-weight:500;color:#0A1A2A;margin:1rem 0 0.5rem;}
+.age-label{font-size:15px;font-weight:700;color:#0A1A2A;margin:1rem 0 0.5rem;}
 .email-delivery {
   margin-top: 1rem;
   padding-top: 1rem;
@@ -175,6 +175,13 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
 
 .ver-tab{padding:5px 14px;border:0.5px solid #C0CCE0;border-radius:20px;font-size:12px;color:#3A4A5A;cursor:pointer;background:white;transition:all 0.15s;font-family:'Inter',sans-serif;}
 .ver-tab.active{background:#1A3A6A;border-color:#1A3A6A;color:white;font-weight:600;}
+.edit-bar{margin-top:0.75rem;text-align:center;}
+.btn-edit-myself{background:none;border:none;color:#5A7A9A;font-size:13px;font-family:'Inter',sans-serif;cursor:pointer;text-decoration:underline;padding:4px 8px;}
+.btn-edit-myself:hover{color:#1A3A6A;}
+.card-text-edit{width:100%;box-sizing:border-box;font-family:'Georgia',serif;font-size:15px;line-height:1.8;color:#1A3A6A;border:1.5px solid #2A4A80;border-radius:8px;padding:1rem;resize:vertical;min-height:120px;outline:none;background:#FAFCFF;}
+.edit-done-row{display:flex;gap:8px;margin-top:0.5rem;justify-content:flex-end;}
+.btn-edit-done{padding:8px 18px;background:#1A3A6A;color:white;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;}
+.btn-edit-cancel{padding:8px 14px;background:none;border:1px solid #C0CCE0;border-radius:8px;font-size:13px;color:#5A7A9A;cursor:pointer;font-family:'Inter',sans-serif;}
 </style>
 </head>
 <body>
@@ -227,7 +234,11 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
     <div class="qstep active" id="q1">
       <div class="question">Who are you writing to?</div>
       <div class="subtext">Just their first name — this makes every question that follows feel personal.</div>
-      <input class="name-input" id="t-name" type="text" placeholder="Their name..." oninput="handleName()" autocomplete="off">
+      <input class="text-input" id="t-name" type="text" placeholder="Their name..." oninput="handleName()" autocomplete="off" style="width:100%;box-sizing:border-box;">
+      <div style="margin-top:1.75rem;">
+        <div class="question" style="margin-bottom:0.5rem;margin-top:0;">They are my... <span class="opt-tag">optional</span></div>
+        <input class="text-input" id="t-relationship-free" type="text" placeholder="e.g. Mom, best friend, college roommate..." oninput="A.relationship=this.value.trim()" autocomplete="off" style="width:100%;box-sizing:border-box;">
+      </div>
       <div class="qnav"><div></div><div style="display:flex;align-items:center;gap:16px;"><span class="skip-link" onclick="qSkip(1)">Skip</span><button class="btn-next" id="qn1" disabled onclick="qGo(2)">Next →</button></div></div>
     </div>
 
@@ -248,32 +259,13 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
       <div class="subtext">This helps us get the voice exactly right.</div>
       <div class="age-label">Age of sender</div>
       <div class="chips" id="qc2b">
-        <div class="chip" data-val="under 12">Under 12</div><div class="chip" data-val="a teenager">Teen</div><div class="chip" data-val="18 to 30">18–30</div><div class="chip" data-val="31 to 45">31–45</div><div class="chip" data-val="46 to 60">46–60</div><div class="chip" data-val="over 60">60+</div><div class="chip" data-val="varies — from family">From family</div>
+        <div class="chip" data-val="under 12">Under 12</div><div class="chip" data-val="a teenager">Teen</div><div class="chip" data-val="in their 20s or 30s">20s–30s</div><div class="chip" data-val="in their 40s or 50s">40s–50s</div><div class="chip" data-val="in their 60s or 70s">60s–70s</div><div class="chip" data-val="80 or older">80+</div><div class="chip" data-val="varies — from family">From family</div>
       </div>
       <div class="age-label">Age of recipient</div>
       <div class="chips" id="qc-rage">
-        <div class="chip" data-val="under 12">Under 12</div><div class="chip" data-val="a teenager">Teen</div><div class="chip" data-val="in their 20s or 30s">20s–30s</div><div class="chip" data-val="in their 40s or 50s">40s–50s</div><div class="chip" data-val="in their 60s or 70s">60s–70s</div><div class="chip" data-val="80 or older">80+</div>
+        <div class="chip" data-val="under 12">Under 12</div><div class="chip" data-val="a teenager">Teen</div><div class="chip" data-val="in their 20s or 30s">20s–30s</div><div class="chip" data-val="in their 40s or 50s">40s–50s</div><div class="chip" data-val="in their 60s or 70s">60s–70s</div><div class="chip" data-val="80 or older">80+</div><div class="chip" data-val="a mix of ages">To Family</div>
       </div>
-      <div class="qnav"><button class="btn-back" onclick="qGo(2)">← Back</button><div style="display:flex;align-items:center;gap:16px;"><span class="skip-link" onclick="qGo(3)">Skip</span><button class="btn-next" onclick="qGo(3)">Next →</button></div></div>
-    </div>
-
-    <div class="qstep" id="q3">
-      <div class="question" id="q3-text">I am their...</div>
-      <div class="subtext">Be specific — it shapes the voice of everything that follows.</div>
-      <div class="cgl">Family</div>
-      <div class="chips" id="qc3-fam">
-        <div class="chip" data-val="Mom">Mom</div><div class="chip" data-val="Dad">Dad</div><div class="chip" data-val="Grandmother">Grandmother</div><div class="chip" data-val="Grandfather">Grandfather</div><div class="chip" data-val="Son">Son</div><div class="chip" data-val="Daughter">Daughter</div><div class="chip" data-val="Brother">Brother</div><div class="chip" data-val="Sister">Sister</div>
-      </div>
-      <div class="cgl">Partner or spouse</div>
-      <div class="chips" id="qc3-partner">
-        <div class="chip" data-val="Husband">Husband</div><div class="chip" data-val="Wife">Wife</div><div class="chip" data-val="Partner">Partner</div>
-      </div>
-      <div class="cgl">Other</div>
-      <div class="chips" id="qc3-other">
-        <div class="chip" data-val="Best friend">Best friend</div><div class="chip" data-val="Friend">Friend</div><div class="chip" data-val="Caregiver">Caregiver</div><div class="chip" data-val="Acquaintance">Acquaintance</div><div class="chip" data-val="Colleague">Colleague</div><div class="chip" data-val="Mentor">Mentor</div><div class="chip" data-val="Other">Other</div>
-      </div>
-      <div class="exp" id="qe-other-rel"><input class="text-input" id="t3-other" type="text" placeholder="e.g. Uncle, Coach, Neighbor..." oninput="handleOtherRel()"></div>
-      <div class="qnav"><button class="btn-back" onclick="qGo('2b')">← Back</button><button class="btn-next" id="qn3" disabled onclick="qGo(4)">Next →</button></div>
+      <div class="qnav"><button class="btn-back" onclick="qGo(2)">← Back</button><div style="display:flex;align-items:center;gap:16px;"><span class="skip-link" onclick="qGo(4)">Skip</span><button class="btn-next" onclick="qGo(4)">Next →</button></div></div>
     </div>
 
     <div class="qstep" id="q4">
@@ -285,7 +277,7 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
       <div class="exp" id="qe-hols"><div class="cgl" style="margin-top:0;">Select the holiday</div><div class="chips" id="qc5-hols"><div class="chip" data-val="Thanksgiving">Thanksgiving</div><div class="chip" data-val="Easter">Easter</div><div class="chip" data-val="New Year">New Year</div><div class="chip" data-val="Halloween">Halloween</div><div class="chip" data-val="Diwali">Diwali</div><div class="chip" data-val="Eid">Eid</div><div class="chip" data-val="Passover">Passover</div></div></div>
       <div class="exp" id="qe-other-occ"><input class="text-input" id="t5-other" type="text" placeholder="e.g. Retirement, New baby, Promotion..." oninput="handleOtherOcc()"></div>
       <div class="harder"><div class="harder-label">For harder moments</div><div class="chips" id="qc5-hard"><div class="chip gentle" data-val="Loss or grief">Loss or grief</div><div class="chip gentle" data-val="Apology">Apology</div></div></div>
-      <div class="qnav"><button class="btn-back" onclick="qGo(3)">← Back</button><button class="btn-next" id="qn5" disabled onclick="routeAfterOcc()">Next →</button></div>
+      <div class="qnav"><button class="btn-back" onclick="qGo('2b')">← Back</button><button class="btn-next" id="qn5" disabled onclick="routeAfterOcc()">Next →</button></div>
     </div>
 
     <div class="qstep" id="q4b">
@@ -410,6 +402,16 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
     <div class="swatch-label">Card style</div>
     <div class="swatch-row" id="swatch-row"></div>
     <div id="version-tabs" style="display:none;justify-content:center;gap:6px;margin-bottom:0.75rem;flex-wrap:wrap;"></div>
+    <div class="edit-bar" id="edit-bar">
+      <button class="btn-edit-myself" onclick="startEditing()">✏ Edit myself</button>
+    </div>
+    <div id="edit-mode" style="display:none;margin-bottom:0.75rem;">
+      <textarea class="card-text-edit" id="card-text-edit"></textarea>
+      <div class="edit-done-row">
+        <button class="btn-edit-cancel" onclick="cancelEditing()">Cancel</button>
+        <button class="btn-edit-done" onclick="doneEditing()">Save as new version</button>
+      </div>
+    </div>
     <div class="action-row">
       <button class="action-btn" onclick="toggleRev()">Something doesn't<br>feel right</button>
       <button class="action-btn" onclick="tryAnother()">Try a different<br>version</button>
@@ -476,7 +478,7 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
 const A={kids:[],tones:[],feels:[]};
 let kidCount=1,versionCount=1,currentCardText='',savedVersions=[],activeVersionIdx=0;
 const PARTNER_VALS=['Husband','Wife','Partner'];
-const Q_ORDER=[1,2,'2b',3,4,'4b','4c',5,6,7,8,9,10,11,12,13,'13b'];
+const Q_ORDER=[1,2,'2b',4,'4b','4c',5,6,7,8,9,10,11,12,13,'13b'];
 
 // ── Card background themes ──────────────────────────────────────────────
 const CARD_THEMES = [
@@ -559,16 +561,15 @@ function qShowStep(n){
 function qGo(n){qShowStep(n);}
 function qSkip(n){if(n===1){A.name='';qGo(2);}}
 
-function handleOtherRel(){
-  const v=document.getElementById('t3-other').value.trim();
-  A.relationship=v;document.getElementById('qn3').disabled=v.length<1;
-}
-
 function resetEmailSection(){
   const btn = document.getElementById('btn-send-email');
   const status = document.getElementById('email-status');
   if(btn){ btn.disabled=false; btn.textContent='Send 💌'; }
   if(status){ status.className='email-status'; status.textContent=''; }
+  const editMode = document.getElementById('edit-mode');
+  const editBar = document.getElementById('edit-bar');
+  if(editMode) editMode.style.display='none';
+  if(editBar) editBar.style.display='block';
 }
 
 function handleName(){
@@ -656,10 +657,10 @@ document.getElementById('qc-rage')?.querySelectorAll('.chip').forEach(chip=>chip
     chip.classList.add('selected');
     if(chip.dataset.val==='Other'){
       document.getElementById('qe-other-rel').classList.add('open');
-      A.relationship='';document.getElementById('qn3').disabled=true;
+      A.relationship='';const _btn1=document.getElementById('qn1'); if(_btn1) _btn1.disabled=true;
     } else {
       document.getElementById('qe-other-rel').classList.remove('open');
-      A.relationship=chip.dataset.val;document.getElementById('qn3').disabled=false;
+      A.relationship=chip.dataset.val;const _btn1=document.getElementById('qn1'); if(_btn1) _btn1.disabled=false;
     }
   }));
 });
@@ -798,8 +799,15 @@ ABSOLUTE RULES:
 }
 
 async function callAPI(prompt){
-  const response=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt})});
-  const data=await response.json();
+  let response;
+  try{
+    response=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt})});
+  }catch(networkErr){
+    throw new Error('Network error — please check your connection and try again.');
+  }
+  let data;
+  try{ data=await response.json(); }
+  catch(e){ throw new Error('Unexpected server response. Please try again.'); }
   if(data.error)throw new Error(data.error);
   return data.text;
 }
@@ -901,12 +909,8 @@ function saveVersion(text, isRevision){
     // Replace current version in place, preserve all others
     savedVersions[activeVersionIdx] = text;
   } else {
-    // Add as new version
-    if(savedVersions.length >= 3){
-      // At max - replace oldest, keep others
-      savedVersions.shift();
-      if(activeVersionIdx > 0) activeVersionIdx--;
-    }
+    // Rolling window - oldest drops off, newest always lands in last slot
+    if(savedVersions.length >= 3) savedVersions.shift();
     savedVersions.push(text);
     activeVersionIdx = savedVersions.length - 1;
   }
@@ -922,7 +926,7 @@ function updateVersionTabs(){
   savedVersions.forEach(function(txt, i){
     const tab = document.createElement('button');
     tab.className = 'ver-tab' + (i === activeVersionIdx ? ' active' : '');
-    tab.textContent = 'Version ' + (i + 1);
+    tab.textContent = 'V' + (i + 1);
     tab.onclick = function(){ switchVersion(i); };
     container.appendChild(tab);
   });
@@ -935,6 +939,33 @@ function switchVersion(idx){
   document.getElementById('del-card-text').textContent = currentCardText;
   resetEmailSection();
   updateVersionTabs();
+}
+
+function startEditing(){
+  const editMode = document.getElementById('edit-mode');
+  const editBar = document.getElementById('edit-bar');
+  const editField = document.getElementById('card-text-edit');
+  editField.value = currentCardText;
+  editMode.style.display = 'block';
+  editBar.style.display = 'none';
+  editField.focus();
+}
+
+function cancelEditing(){
+  document.getElementById('edit-mode').style.display = 'none';
+  document.getElementById('edit-bar').style.display = 'block';
+}
+
+function doneEditing(){
+  const edited = document.getElementById('card-text-edit').value.trim();
+  if(!edited) return;
+  currentCardText = edited;
+  saveVersion(edited, false);
+  document.getElementById('card-text').textContent = edited;
+  document.getElementById('del-card-text').textContent = edited;
+  document.getElementById('edit-mode').style.display = 'none';
+  document.getElementById('edit-bar').style.display = 'block';
+  resetEmailSection();
 }
 
 async function sendCardEmail() {

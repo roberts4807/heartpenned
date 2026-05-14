@@ -7,7 +7,7 @@ module.exports = async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { email, occasion, recipientName, cardText } = req.body;
+  const { email, occasion, recipientName } = req.body;
 
   if (!email) {
     return res.status(400).json({ error: 'Email is required.' });
@@ -29,7 +29,8 @@ module.exports = async function handler(req, res) {
     : 'Special occasion';
 
   try {
-    // Get the first available audience ID dynamically
+    // Get or create audience
+    let audienceId;
     const audiencesRes = await fetch('https://api.resend.com/audiences', {
       headers: {
         'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
@@ -37,13 +38,28 @@ module.exports = async function handler(req, res) {
       }
     });
     const audiencesData = await audiencesRes.json();
-    const audienceId = audiencesData?.data?.[0]?.id;
-
-    if (!audienceId) {
-      throw new Error('No audience found');
+    
+    if (audiencesData?.data?.length > 0) {
+      audienceId = audiencesData.data[0].id;
+    } else {
+      // Create audience if none exists
+      const createRes = await fetch('https://api.resend.com/audiences', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ name: 'HeartPenned Reminders' })
+      });
+      const createData = await createRes.json();
+      audienceId = createData?.id;
     }
 
-    // Add contact to Resend Audience
+    if (!audienceId) {
+      throw new Error('Could not get or create audience');
+    }
+
+    // Add contact to audience
     await resend.contacts.create({
       email,
       firstName: recipientName || '',
@@ -56,36 +72,8 @@ module.exports = async function handler(req, res) {
     await resend.emails.send({
       from: 'HeartPenned <hello@heartpenned.com>',
       to: [email],
-      subject: `We'll remind you about ${recipientName ? recipientName + "'s " : 'your '}${occasionLabel} next year 💌`,
-      html: `
-<!DOCTYPE html>
-<html>
-<head><meta charset="UTF-8"></head>
-<body style="margin:0;padding:0;background:#f4f4f4;font-family:Georgia,serif;">
-  <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background:#f4f4f4;">
-    <tr><td style="padding:40px 20px;">
-      <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="max-width:520px;margin:0 auto;">
-        <tr>
-          <td style="background:linear-gradient(135deg,#667EEA 0%,#A78BFA 100%);border-radius:16px 16px 0 0;padding:32px 40px;text-align:center;">
-            <p style="margin:0 0 6px;font-size:12px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.8);">HeartPenned</p>
-            <h1 style="margin:0;font-size:24px;font-weight:normal;color:#fff;">Reminder saved ✓</h1>
-          </td>
-        </tr>
-        <tr>
-          <td style="background:#fff;padding:36px 40px;border-left:1px solid #e8e8e8;border-right:1px solid #e8e8e8;">
-            <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#2d2d2d;">We'll send you a reminder on <strong>${reminderDate}</strong> so you never miss ${recipientName ? recipientName + "'s " : 'this '}${occasionLabel}.</p>
-            <p style="margin:0;font-size:15px;line-height:1.7;color:#555;">Your card is saved and ready to inspire next year's message.</p>
-          </td>
-        </tr>
-        <tr><td style="background:linear-gradient(135deg,#667EEA 0%,#A78BFA 100%);height:5px;border-radius:0 0 16px 16px;"></td></tr>
-        <tr><td style="padding:20px 0;text-align:center;">
-          <p style="margin:0;font-size:12px;color:#999;">Sent with <a href="https://heartpenned.com" style="color:#667EEA;text-decoration:none;">HeartPenned</a></p>
-        </td></tr>
-      </table>
-    </td></tr>
-  </table>
-</body>
-</html>`.trim()
+      subject: `Reminder set for ${recipientName ? recipientName + "'s " : ''}${occasionLabel} next year 💌`,
+      html: `<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body style="margin:0;padding:0;background:#f4f4f4;font-family:Georgia,serif;"><table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background:#f4f4f4;"><tr><td style="padding:40px 20px;"><table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="max-width:520px;margin:0 auto;"><tr><td style="background:linear-gradient(135deg,#667EEA 0%,#A78BFA 100%);border-radius:16px 16px 0 0;padding:32px 40px;text-align:center;"><p style="margin:0 0 6px;font-size:12px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.8);">HeartPenned</p><h1 style="margin:0;font-size:24px;font-weight:normal;color:#fff;">Reminder saved ✓</h1></td></tr><tr><td style="background:#fff;padding:36px 40px;border-left:1px solid #e8e8e8;border-right:1px solid #e8e8e8;"><p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#2d2d2d;">We will send you a reminder on <strong>${reminderDate}</strong> so you never miss ${recipientName ? recipientName + "'s " : 'this '}${occasionLabel}.</p><p style="margin:0;font-size:15px;line-height:1.7;color:#555;">Your card is saved and ready to inspire next year.</p></td></tr><tr><td style="background:linear-gradient(135deg,#667EEA 0%,#A78BFA 100%);height:5px;border-radius:0 0 16px 16px;"></td></tr><tr><td style="padding:20px 0;text-align:center;"><p style="margin:0;font-size:12px;color:#999;">Sent with <a href="https://heartpenned.com" style="color:#667EEA;text-decoration:none;">HeartPenned</a></p></td></tr></table></td></tr></table></body></html>`
     });
 
     return res.status(200).json({ success: true });

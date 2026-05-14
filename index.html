@@ -868,7 +868,8 @@ function handleDel(type){
     document.getElementById('digital-panel').style.display='none';
     alert('Gift card integration is coming soon to Heartpenned.');
   } else if(type==='reminder'){
-    alert('Account creation and reminders are coming soon. Save this page to return later.');
+    document.getElementById('reminder-form').style.display='block';
+    document.getElementById('reminder-email').focus();
   }
 }
 
@@ -966,6 +967,49 @@ function doneEditing(){
   document.getElementById('edit-mode').style.display = 'none';
   document.getElementById('edit-bar').style.display = 'block';
   resetEmailSection();
+}
+
+async function setReminder(){
+  const email = document.getElementById('reminder-email').value.trim();
+  const statusEl = document.getElementById('reminder-status');
+  const btn = document.getElementById('btn-set-reminder');
+
+  if(!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+    statusEl.style.color='#C0392B';
+    statusEl.textContent='Please enter a valid email address.';
+    return;
+  }
+
+  btn.disabled=true;
+  btn.textContent='Saving...';
+  statusEl.textContent='';
+
+  try{
+    const response = await fetch('/api/remind', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        email,
+        occasion: A.occasion || 'Special occasion',
+        recipientName: A.name || '',
+        cardText: currentCardText,
+      })
+    });
+    const data = await response.json();
+    if(response.ok && data.success){
+      statusEl.style.color='#2A7A4A';
+      statusEl.textContent='✓ We\'ll remind you next year!';
+      btn.textContent='Saved ✓';
+      document.getElementById('reminder-btn-row').style.display='none';
+    } else {
+      throw new Error(data.error||'Something went wrong.');
+    }
+  } catch(err){
+    statusEl.style.color='#C0392B';
+    statusEl.textContent=err.message||'Failed to save. Please try again.';
+    btn.disabled=false;
+    btn.textContent='Remind me next year';
+  }
 }
 
 async function sendCardEmail() {

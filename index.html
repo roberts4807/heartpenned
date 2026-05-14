@@ -374,10 +374,17 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
       <div class="qnav"><button class="btn-back" onclick="qGo(11)">← Back</button><button class="btn-next" id="qn13" disabled onclick="qGo(13)">Next →</button></div>
     </div>
      <div class="qstep" id="q13">
+      <div class="question">How would you like to open the card? <span class="opt-tag">optional</span></div>
+      <div class="subtext">This goes at the very top of the card, exactly as you write it.</div>
+      <textarea class="text-input" id="t-opening" rows="2" placeholder="e.g. Dear Rachel," oninput="A.opening=this.value.trim()"></textarea>
+      <div class="qnav"><button class="btn-back" onclick="qGo(12)">← Back</button><button class="btn-next" onclick="qGo('13b')">Next →</button></div>
+    </div>
+
+    <div class="qstep" id="q13b">
       <div class="question">How would you like to sign it? <span class="opt-tag">optional</span></div>
       <div class="subtext">e.g. Love, Mom — or just your name.</div>
       <textarea class="text-input" id="t-signoff" rows="2" placeholder="e.g. Love, Mom" oninput="A.signoff=this.value.trim()"></textarea>
-      <div class="qnav"><button class="btn-back" onclick="qGo(12)">← Back</button><button class="btn-next" id="qn14" onclick="submitCard()">Generate my card →</button></div>
+      <div class="qnav"><button class="btn-back" onclick="qGo(13)">← Back</button><button class="btn-next" id="qn14" onclick="submitCard()">Generate my card →</button></div>
     </div>
 
   </div>
@@ -469,7 +476,7 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
 const A={kids:[],tones:[],feels:[]};
 let kidCount=1,versionCount=1,currentCardText='',savedVersions=[],activeVersionIdx=0;
 const PARTNER_VALS=['Husband','Wife','Partner'];
-const Q_ORDER=[1,2,'2b',3,4,'4b','4c',5,6,7,8,9,10,11,12,13];
+const Q_ORDER=[1,2,'2b',3,4,'4b','4c',5,6,7,8,9,10,11,12,13,'13b'];
 
 // ── Card background themes ──────────────────────────────────────────────
 const CARD_THEMES = [
@@ -775,6 +782,7 @@ Tender and gentle: Soft, careful, quietly loving.
 LENGTH: Short and sweet 25-40 words. Standard card length 50-80 words. Handwritten note 90-130 words.
 SPIRITUALITY: ${spiritualRule}
 OCCASION: ${occasionRules}
+OPENING: ${A.opening?'Open the card with exactly: "'+A.opening+'" on its own line.':'No opening greeting.'}
 NAME RULE: ${name?'Use "'+name+'" once only — opening or closing. Never mid-card. Never more than once.':'No name provided.'}
 SIGN-OFF: ${A.signoff?'After the occasion celbration, add a new line with exactly; "'+A.signoff+'"':'No sign-off provided - do not add one.'}
 ABSOLUTE RULES:
@@ -874,7 +882,7 @@ function copyCard(){
 
 function startOver(){
   Object.keys(A).forEach(k=>{if(k==='kids')A.kids=[];else if(k==='tones')A.tones=[];else if(k==='feels')A.feels=[];else delete A[k];});
-  kidCount=1;versionCount=1;currentCardText='';savedVersions=[];activeVersionIdx=0;
+  kidCount=1;versionCount=1;currentCardText='';savedVersions=[];activeVersionIdx=0;A.opening='';
   document.querySelectorAll('.chip').forEach(c=>c.classList.remove('selected'));
   document.querySelectorAll('textarea,input[type=text],input[type=number]').forEach(t=>t.value='');
   document.querySelectorAll('.btn-next').forEach(b=>b.disabled=true);

@@ -417,8 +417,8 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
       <div class="card-text" id="card-text"></div>
       <div class="card-mark">Heartpenned</div>
     </div>
-    <div class="swatch-label">Card style</div>
-    <div class="swatch-row" id="swatch-row"></div>
+    <div class="swatch-label" id="swatch-label" style="display:none;">Card style</div>
+    <div class="swatch-row" id="swatch-row" style="display:none;"></div>
     <div id="version-tabs" style="display:none;justify-content:center;gap:6px;margin-bottom:0.75rem;flex-wrap:wrap;"></div>
     <div id="edit-mode" style="display:none;margin-bottom:0.75rem;">
       <textarea class="card-text-edit" id="card-text-edit"></textarea>
@@ -621,7 +621,10 @@ function applyTheme(themeId, surfaces) {
 
 function buildSwatches() {
   const row = document.getElementById('swatch-row');
+  const label = document.getElementById('swatch-label');
   if (!row) return;
+  row.style.display = 'flex';
+  if (label) label.style.display = 'block';
   row.innerHTML = '';
   CARD_THEMES.forEach(t => {
     const s = document.createElement('div');
@@ -1005,6 +1008,10 @@ function startOver(){
   const kl=document.getElementById('kids-list');
   while(kl&&kl.children.length>1)kl.removeChild(kl.lastChild);
   document.getElementById('add-kid').style.display='inline-block';
+  const sr=document.getElementById('swatch-row');
+  const sl=document.getElementById('swatch-label');
+  if(sr) sr.style.display='none';
+  if(sl) sl.style.display='none';
   showScreen('landing');
 }
 
@@ -1366,7 +1373,6 @@ function renderPrintPreview() {
       <div style="text-align:right;padding:0.5rem 1.25rem 0.75rem;font-size:11px;color:#7A9CC0;font-style:italic;letter-spacing:0.06em;font-family:'Playfair Display',Georgia,serif;">Heartpenned</div>
     </div>`;
 }
-}
 
 function openPrintPanel() {
   activeHeaderCat = 'classic';
@@ -1470,7 +1476,6 @@ function renderDigitalCardPreview() {
       <div style="text-align:right;padding:0.25rem 1rem 0.6rem;font-size:11px;color:#7A9CC0;font-style:italic;background:${bg};font-family:'Playfair Display',Georgia,serif;">Heartpenned</div>
     </div>`;
 }
-}
 
 function getHeaderBodyBg(header) {
   if (!header) return '#FFF8F0';
@@ -1515,8 +1520,10 @@ async function sendCardEmail() {
         recipientEmail,
         recipientName,
         senderName,
-        cardText:  currentCardText,
-        occasion:  A.occasion || '',
+        cardText:    currentCardText,
+        occasion:    A.occasion || '',
+        headerStyle: activeDigitalHeaderCat || 'classic',
+        themeId:     activeDigitalHeaderCat === 'color' ? activeTheme : (CARD_HEADERS.find(h => h.id === activeDigitalHeaderId) || {}).theme || activeTheme,
       }),
     });
 

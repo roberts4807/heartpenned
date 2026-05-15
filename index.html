@@ -471,8 +471,10 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
       <div class="header-category-tabs">
         <div class="hcat-tab active" id="dhcat-classic" onclick="switchDigitalHeaderCat('classic')">Classic</div>
         <div class="hcat-tab" id="dhcat-fun" onclick="switchDigitalHeaderCat('fun')">Fun</div>
+        <div class="hcat-tab" id="dhcat-color" onclick="switchDigitalHeaderCat('color')">Color</div>
       </div>
       <div class="header-thumbs" id="digital-header-thumbs"></div>
+      <div id="digital-color-swatches" style="display:none;margin-bottom:0.75rem;"></div>
 
       <!-- Styled card preview -->
       <div class="print-panel-label" style="margin-top:0.5rem;">Your card</div>
@@ -504,8 +506,10 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
         <div class="header-category-tabs">
           <div class="hcat-tab active" id="hcat-classic" onclick="switchHeaderCat('classic')">Classic</div>
           <div class="hcat-tab" id="hcat-fun" onclick="switchHeaderCat('fun')">Fun</div>
+          <div class="hcat-tab" id="hcat-color" onclick="switchHeaderCat('color')">Color</div>
         </div>
         <div class="header-thumbs" id="header-thumbs"></div>
+        <div id="print-color-swatches" style="display:none;margin-bottom:0.75rem;"></div>
         <div class="print-panel-label" style="margin-top:0.25rem;">Preview</div>
         <div class="print-preview-wrap" id="print-preview"></div>
         <button class="btn-download-pdf" id="btn-download-pdf" onclick="downloadPDF()">Download PDF</button>
@@ -1279,9 +1283,38 @@ function getFallbackHeaders(cat) {
 
 function switchHeaderCat(cat) {
   activeHeaderCat = cat;
-  document.querySelectorAll('.hcat-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('#print-panel .hcat-tab').forEach(t => t.classList.remove('active'));
   document.getElementById('hcat-' + cat).classList.add('active');
-  buildHeaderThumbs();
+
+  const thumbs = document.getElementById('header-thumbs');
+  const colorSwatches = document.getElementById('print-color-swatches');
+
+  if (cat === 'color') {
+    thumbs.style.display = 'none';
+    colorSwatches.style.display = 'flex';
+    colorSwatches.style.flexWrap = 'wrap';
+    colorSwatches.style.gap = '8px';
+    colorSwatches.innerHTML = '';
+    CARD_THEMES.forEach(t => {
+      const s = document.createElement('div');
+      s.style.cssText = `width:36px;height:36px;border-radius:50%;background:${t.swatch};cursor:pointer;border:2px solid ${t.id===activeTheme?'#1A3A6A':'transparent'};box-shadow:0 1px 4px rgba(0,0,0,0.15);`;
+      s.title = t.label;
+      s.onclick = () => {
+        activeTheme = t.id;
+        activeHeaderId = null;
+        applyTheme(t.id);
+        renderPrintPreview();
+        colorSwatches.querySelectorAll('div').forEach(sw => sw.style.border = '2px solid transparent');
+        s.style.border = '2px solid #1A3A6A';
+      };
+      colorSwatches.appendChild(s);
+    });
+    renderPrintPreview();
+  } else {
+    thumbs.style.display = 'flex';
+    colorSwatches.style.display = 'none';
+    buildHeaderThumbs();
+  }
 }
 
 function buildHeaderThumbs() {
@@ -1322,35 +1355,17 @@ function renderPrintPreview() {
   const container = document.getElementById('print-preview');
   if (!container) return;
   const header = CARD_HEADERS.find(h => h.id === activeHeaderId);
-  const theme = CARD_THEMES.find(t => t.id === (header ? header.theme : activeTheme)) || CARD_THEMES[0];
-  const bg = typeof theme.bg === 'string' ? theme.bg : '#F4F8FF';
+  const theme = CARD_THEMES.find(t => t.id === activeTheme) || CARD_THEMES[0];
+  const bg = getHeaderBodyBg(header) || (typeof theme.bg === 'string' ? theme.bg : '#FFF8F0');
   const cardText = currentCardText || '';
+  const w = container.offsetWidth || 320;
   container.innerHTML = `
-    <div style="
-      background:${bg};
-      font-family:'Playfair Display',Georgia,serif;
-      padding:0;
-      border-radius:6px;
-      overflow:hidden;
-    ">
-      ${header ? header.render(container.offsetWidth || 320, 110) : ''}
-      <div style="
-        padding:1.5rem 1.75rem 1.25rem;
-        font-size:14px;
-        line-height:1.9;
-        color:#1A2A3A;
-        white-space:pre-wrap;
-      ">${cardText}</div>
-      <div style="
-        text-align:right;
-        padding:0.5rem 1.25rem 0.75rem;
-        font-size:11px;
-        color:#7A9CC0;
-        font-style:italic;
-        letter-spacing:0.06em;
-        font-family:'Playfair Display',Georgia,serif;
-      ">Heartpenned</div>
+    <div style="background:${bg};font-family:'Playfair Display',Georgia,serif;border-radius:6px;overflow:hidden;">
+      ${header ? header.render(w, 110) : ''}
+      <div style="padding:1.5rem 1.75rem 1.25rem;font-size:14px;line-height:1.9;color:#1A2A3A;white-space:pre-wrap;">${cardText}</div>
+      <div style="text-align:right;padding:0.5rem 1.25rem 0.75rem;font-size:11px;color:#7A9CC0;font-style:italic;letter-spacing:0.06em;font-family:'Playfair Display',Georgia,serif;">Heartpenned</div>
     </div>`;
+}
 }
 
 function openPrintPanel() {
@@ -1369,7 +1384,39 @@ function switchDigitalHeaderCat(cat) {
   activeDigitalHeaderCat = cat;
   document.querySelectorAll('#digital-panel .hcat-tab').forEach(t => t.classList.remove('active'));
   document.getElementById('dhcat-' + cat).classList.add('active');
-  buildDigitalHeaderThumbs();
+
+  const thumbs = document.getElementById('digital-header-thumbs');
+  const colorSwatches = document.getElementById('digital-color-swatches');
+
+  if (cat === 'color') {
+    thumbs.style.display = 'none';
+    colorSwatches.style.display = 'flex';
+    colorSwatches.style.flexWrap = 'wrap';
+    colorSwatches.style.gap = '8px';
+    // Build color swatches
+    colorSwatches.innerHTML = '';
+    CARD_THEMES.forEach(t => {
+      const s = document.createElement('div');
+      s.style.cssText = `width:36px;height:36px;border-radius:50%;background:${t.swatch};cursor:pointer;border:2px solid ${t.id===activeTheme?'#1A3A6A':'transparent'};box-shadow:0 1px 4px rgba(0,0,0,0.15);`;
+      s.title = t.label;
+      s.onclick = () => {
+        activeTheme = t.id;
+        activeDigitalHeaderId = null;
+        // Clear header zone on card surfaces
+        document.querySelectorAll('.card-header-zone').forEach(z => z.innerHTML = '');
+        applyTheme(t.id);
+        renderDigitalCardPreview();
+        // Update swatch borders
+        colorSwatches.querySelectorAll('div').forEach(sw => sw.style.border = '2px solid transparent');
+        s.style.border = '2px solid #1A3A6A';
+      };
+      colorSwatches.appendChild(s);
+    });
+  } else {
+    thumbs.style.display = 'flex';
+    colorSwatches.style.display = 'none';
+    buildDigitalHeaderThumbs();
+  }
 }
 
 function buildDigitalHeaderThumbs() {
@@ -1412,29 +1459,17 @@ function renderDigitalCardPreview() {
   const container = document.getElementById('digital-card-preview');
   if (!container) return;
   const header = CARD_HEADERS.find(h => h.id === activeDigitalHeaderId);
+  const theme = CARD_THEMES.find(t => t.id === activeTheme) || CARD_THEMES[0];
+  const bg = header ? getHeaderBodyBg(header) : (typeof theme.bg === 'string' ? theme.bg : '#FFF8F0');
   const cardText = currentCardText || '';
   const w = container.offsetWidth || 320;
   container.innerHTML = `
     <div style="font-family:'Playfair Display',Georgia,serif;border-radius:6px;overflow:hidden;">
       ${header ? header.render(w, 110) : ''}
-      <div style="
-        padding:1.25rem 1.5rem 1rem;
-        font-size:14px;
-        line-height:1.85;
-        color:#1A2A3A;
-        white-space:pre-wrap;
-        background:${getHeaderBodyBg(header)};
-      ">${cardText}</div>
-      <div style="
-        text-align:right;
-        padding:0.25rem 1rem 0.6rem;
-        font-size:11px;
-        color:#7A9CC0;
-        font-style:italic;
-        background:${getHeaderBodyBg(header)};
-        font-family:'Playfair Display',Georgia,serif;
-      ">Heartpenned</div>
+      <div style="padding:1.25rem 1.5rem 1rem;font-size:14px;line-height:1.85;color:#1A2A3A;white-space:pre-wrap;background:${bg};">${cardText}</div>
+      <div style="text-align:right;padding:0.25rem 1rem 0.6rem;font-size:11px;color:#7A9CC0;font-style:italic;background:${bg};font-family:'Playfair Display',Georgia,serif;">Heartpenned</div>
     </div>`;
+}
 }
 
 function getHeaderBodyBg(header) {

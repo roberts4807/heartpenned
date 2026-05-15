@@ -2339,6 +2339,377 @@ const CARD_HEADERS = [
     }
   },
 
+  // ── DIWALI ────────────────────────────────────────────────────────────────
+  {
+    id: 'diwali-classic-1',
+    label: 'Festival of Lights',
+    occasions: ['Diwali'],
+    category: 'classic',
+    theme: 'gold',
+    render(w, h) {
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
+        <defs>
+          <linearGradient id="bgdwc1" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#1A0A00"/>
+            <stop offset="100%" stop-color="#2A1500"/>
+          </linearGradient>
+        </defs>
+        <rect width="${w}" height="${h}" fill="url(#bgdwc1)"/>
+        <!-- Diya lamps -->
+        <g transform="translate(${w*0.5},${h*0.55})">
+          <!-- Center diya -->
+          <ellipse cx="0" cy="0" rx="${w*0.08}" ry="${h*0.06}" fill="#C84A00" opacity="0.9"/>
+          <ellipse cx="0" cy="${-h*0.02}" rx="${w*0.05}" ry="${h*0.04}" fill="#E86A00" opacity="0.8"/>
+          <!-- Flame -->
+          <ellipse cx="0" cy="${-h*0.1}" rx="${w*0.018}" ry="${h*0.06}" fill="#F5C030" opacity="0.95"/>
+          <ellipse cx="0" cy="${-h*0.12}" rx="${w*0.01}" ry="${h*0.04}" fill="#FFF0A0" opacity="0.9"/>
+          <!-- Side diyas -->
+          ${[[-0.22,0.08],[ 0.22,0.08]].map(([dx,dy])=>`
+            <ellipse cx="${w*dx}" cy="${h*dy}" rx="${w*0.055}" ry="${h*0.04}" fill="#C84A00" opacity="0.8"/>
+            <ellipse cx="${w*dx}" cy="${h*(dy-0.06)}" rx="${w*0.013}" ry="${h*0.045}" fill="#F5C030" opacity="0.85"/>
+          `).join('')}
+        </g>
+        <!-- Rangoli dots -->
+        ${[[0.1,0.2,'#E8A020'],[0.9,0.2,'#E8A020'],[0.15,0.5,'#C84A00'],[0.85,0.5,'#C84A00'],[0.1,0.75,'#D4AF37'],[0.9,0.75,'#D4AF37']].map(([cx,cy,c])=>`<circle cx="${w*cx}" cy="${h*cy}" r="${w*0.014}" fill="${c}" opacity="0.7"/>`).join('')}
+        <!-- Gold divider -->
+        <line x1="${w*0.18}" y1="${h*0.82}" x2="${w*0.82}" y2="${h*0.82}" stroke="#D4AF37" stroke-width="0.8" opacity="0.7"/>
+        <text x="${w*0.5}" y="${h*0.92}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.078}" font-style="italic" fill="#D4AF37" letter-spacing="1">Happy Diwali</text>
+      </svg>`;
+    }
+  },
+
+  {
+    id: 'diwali-fun-1',
+    label: 'Rangoli',
+    occasions: ['Diwali'],
+    category: 'fun',
+    theme: 'gold',
+    render(w, h) {
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
+        <defs>
+          <linearGradient id="bgdwf1" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#1A0800"/>
+            <stop offset="100%" stop-color="#2A1000"/>
+          </linearGradient>
+        </defs>
+        <rect width="${w}" height="${h}" fill="url(#bgdwf1)"/>
+        <!-- Rangoli pattern — colorful dots in mandala-like arrangement -->
+        ${[0,45,90,135,180,225,270,315].map((a,i)=>{
+          const rad = a*Math.PI/180;
+          const colors = ['#E8A020','#C84A00','#D4AF37','#E86A20','#F5C030','#C84A00','#E8A020','#D4AF37'];
+          return `<circle cx="${w*0.5+Math.cos(rad)*w*0.22}" cy="${h*0.42+Math.sin(rad)*h*0.22}" r="${w*0.018}" fill="${colors[i]}" opacity="0.85"/>`;
+        }).join('')}
+        ${[0,60,120,180,240,300].map((a,i)=>{
+          const rad = a*Math.PI/180;
+          const colors = ['#F5C030','#E8A020','#D4AF37','#F5C030','#E8A020','#D4AF37'];
+          return `<circle cx="${w*0.5+Math.cos(rad)*w*0.12}" cy="${h*0.42+Math.sin(rad)*h*0.12}" r="${w*0.014}" fill="${colors[i]}" opacity="0.8"/>`;
+        }).join('')}
+        <circle cx="${w*0.5}" cy="${h*0.42}" r="${w*0.03}" fill="#F5C030" opacity="0.9"/>
+        <!-- Sparkles corners -->
+        ${[[0.1,0.15],[0.9,0.15],[0.1,0.7],[0.9,0.7]].map(([cx,cy])=>`<text x="${w*cx}" y="${h*cy}" text-anchor="middle" font-size="${w*0.04}" fill="#D4AF37" opacity="0.7">✦</text>`).join('')}
+        <line x1="${w*0.18}" y1="${h*0.8}" x2="${w*0.82}" y2="${h*0.8}" stroke="#D4AF37" stroke-width="0.8" opacity="0.6"/>
+        <text x="${w*0.5}" y="${h*0.92}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.085}" font-weight="700" fill="#F5C030" letter-spacing="0.5">Happy Diwali!</text>
+      </svg>`;
+    }
+  },
+
+  // ── EID ───────────────────────────────────────────────────────────────────
+  {
+    id: 'eid-classic-1',
+    label: 'Crescent & Star',
+    occasions: ['Eid'],
+    category: 'classic',
+    theme: 'twilight',
+    render(w, h) {
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
+        <defs>
+          <linearGradient id="bgeidc1" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#0A1428"/>
+            <stop offset="100%" stop-color="#142040"/>
+          </linearGradient>
+        </defs>
+        <rect width="${w}" height="${h}" fill="url(#bgeidc1)"/>
+        <!-- Crescent moon -->
+        <circle cx="${w*0.5}" cy="${h*0.32}" r="${w*0.12}" fill="#D4AF37" opacity="0.9"/>
+        <circle cx="${w*0.56}" cy="${h*0.28}" r="${w*0.1}" fill="#0A1428"/>
+        <!-- Star -->
+        <text x="${w*0.66}" y="${h*0.28}" text-anchor="middle" font-size="${w*0.06}" fill="#D4AF37" opacity="0.9">★</text>
+        <!-- Decorative dots -->
+        ${[[0.1,0.15,'#D4AF37'],[0.2,0.35,'#8890E0'],[0.12,0.6,'#D4AF37'],[0.88,0.15,'#D4AF37'],[0.8,0.35,'#8890E0'],[0.88,0.6,'#D4AF37'],[0.5,0.12,'#8890E0']].map(([cx,cy,c])=>`<circle cx="${w*cx}" cy="${h*cy}" r="${w*0.01}" fill="${c}" opacity="0.6"/>`).join('')}
+        <!-- Ornate divider -->
+        <line x1="${w*0.18}" y1="${h*0.8}" x2="${w*0.82}" y2="${h*0.8}" stroke="#D4AF37" stroke-width="0.8" opacity="0.6"/>
+        <text x="${w*0.5}" y="${h*0.92}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.082}" font-style="italic" fill="#D4AF37" letter-spacing="1">Eid Mubarak</text>
+      </svg>`;
+    }
+  },
+
+  {
+    id: 'eid-fun-1',
+    label: 'Celebration',
+    occasions: ['Eid'],
+    category: 'fun',
+    theme: 'twilight',
+    render(w, h) {
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
+        <defs>
+          <linearGradient id="bgeidf1" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#0A1428"/>
+            <stop offset="100%" stop-color="#1A2A50"/>
+          </linearGradient>
+        </defs>
+        <rect width="${w}" height="${h}" fill="url(#bgeidf1)"/>
+        <!-- Large crescent -->
+        <circle cx="${w*0.5}" cy="${h*0.35}" r="${w*0.15}" fill="#D4AF37" opacity="0.85"/>
+        <circle cx="${w*0.57}" cy="${h*0.3}" r="${w*0.13}" fill="#0A1428"/>
+        <!-- Stars scattered -->
+        ${[[0.15,0.18,'#D4AF37'],[0.28,0.5,'#8890E0'],[0.72,0.5,'#D4AF37'],[0.85,0.18,'#8890E0'],[0.5,0.1,'#D4AF37'],[0.2,0.7,'#D4AF37'],[0.8,0.7,'#8890E0']].map(([cx,cy,c])=>`<text x="${w*cx}" y="${h*cy}" text-anchor="middle" font-size="${w*0.04}" fill="${c}" opacity="0.75">★</text>`).join('')}
+        <!-- Festive dots -->
+        ${[[0.1,0.4,'#D4AF37'],[0.9,0.4,'#D4AF37'],[0.3,0.15,'#8890E0'],[0.7,0.15,'#8890E0']].map(([cx,cy,c])=>`<circle cx="${w*cx}" cy="${h*cy}" r="${w*0.012}" fill="${c}" opacity="0.65"/>`).join('')}
+        <line x1="${w*0.18}" y1="${h*0.8}" x2="${w*0.82}" y2="${h*0.8}" stroke="#D4AF37" stroke-width="0.8" opacity="0.6"/>
+        <text x="${w*0.5}" y="${h*0.92}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.085}" font-weight="700" fill="#D4AF37" letter-spacing="0.5">Eid Mubarak!</text>
+      </svg>`;
+    }
+  },
+
+  // ── PASSOVER ──────────────────────────────────────────────────────────────
+  {
+    id: 'passover-classic-1',
+    label: 'Spring & Gold',
+    occasions: ['Passover'],
+    category: 'classic',
+    theme: 'gold',
+    render(w, h) {
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
+        <defs>
+          <linearGradient id="bgpvc1" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#FFFFF5"/>
+            <stop offset="100%" stop-color="#F5EED8"/>
+          </linearGradient>
+        </defs>
+        <rect width="${w}" height="${h}" fill="url(#bgpvc1)"/>
+        <!-- Wheat stalks left -->
+        <g opacity="0.5" transform="translate(${w*0.1},${h*0.7})">
+          <line x1="0" y1="0" x2="${w*0.02}" y2="${-h*0.55}" stroke="#C8A030" stroke-width="${w*0.003}"/>
+          ${[[-0.12,0.35,-20],[-0.08,0.55,-15],[-0.04,0.7,-10]].map(([lx,ly,rot])=>
+            `<ellipse cx="${w*lx}" cy="${-h*ly}" rx="${w*0.025}" ry="${h*0.06}" fill="#D4AF37" transform="rotate(${rot},${w*lx},${-h*ly})" opacity="0.8"/>`
+          ).join('')}
+        </g>
+        <!-- Wheat stalks right -->
+        <g opacity="0.5" transform="translate(${w*0.9},${h*0.7}) scale(-1,1)">
+          <line x1="0" y1="0" x2="${w*0.02}" y2="${-h*0.55}" stroke="#C8A030" stroke-width="${w*0.003}"/>
+          ${[[-0.12,0.35,-20],[-0.08,0.55,-15],[-0.04,0.7,-10]].map(([lx,ly,rot])=>
+            `<ellipse cx="${w*lx}" cy="${-h*ly}" rx="${w*0.025}" ry="${h*0.06}" fill="#D4AF37" transform="rotate(${rot},${w*lx},${-h*ly})" opacity="0.8"/>`
+          ).join('')}
+        </g>
+        <!-- Star of David subtle center -->
+        <text x="${w*0.5}" y="${h*0.3}" text-anchor="middle" font-size="${w*0.06}" fill="#C8A030" opacity="0.25">✡</text>
+        <line x1="${w*0.2}" y1="${h*0.8}" x2="${w*0.8}" y2="${h*0.8}" stroke="#C8A030" stroke-width="0.7" opacity="0.5"/>
+        <text x="${w*0.5}" y="${h*0.6}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.082}" font-style="italic" fill="#7A5010" letter-spacing="1">Happy Passover</text>
+      </svg>`;
+    }
+  },
+
+  {
+    id: 'passover-fun-1',
+    label: 'Chag Sameach',
+    occasions: ['Passover'],
+    category: 'fun',
+    theme: 'gold',
+    render(w, h) {
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
+        <defs>
+          <linearGradient id="bgpvf1" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#FFFFF0"/>
+            <stop offset="100%" stop-color="#FFF5C8"/>
+          </linearGradient>
+        </defs>
+        <rect width="${w}" height="${h}" fill="url(#bgpvf1)"/>
+        <!-- Gold and blue dots — Passover colors -->
+        ${[[0.1,0.2,'#D4AF37'],[0.2,0.62,'#4A6AC0'],[0.35,0.15,'#D4AF37'],[0.5,0.65,'#4A6AC0'],[0.65,0.18,'#D4AF37'],[0.8,0.6,'#4A6AC0'],[0.9,0.25,'#D4AF37'],[0.42,0.42,'#4A6AC0'],[0.62,0.45,'#D4AF37']].map(([cx,cy,c])=>`<circle cx="${w*cx}" cy="${h*cy}" r="${w*0.016}" fill="${c}" opacity="0.65"/>`).join('')}
+        <!-- Sparkles -->
+        ${[[0.15,0.1],[0.85,0.12],[0.5,0.08]].map(([cx,cy])=>`<text x="${w*cx}" y="${h*cy}" text-anchor="middle" font-size="${w*0.04}" fill="#D4AF37" opacity="0.7">✦</text>`).join('')}
+        <line x1="${w*0.18}" y1="${h*0.8}" x2="${w*0.82}" y2="${h*0.8}" stroke="#C8A030" stroke-width="0.8" opacity="0.5"/>
+        <text x="${w*0.5}" y="${h*0.62}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.082}" font-weight="700" fill="#8A6010" letter-spacing="0.5">Chag Sameach!</text>
+      </svg>`;
+    }
+  },
+
+  // ── NEW MILESTONE ─────────────────────────────────────────────────────────
+  {
+    id: 'milestone-classic-1',
+    label: 'Milestone',
+    occasions: ['New milestone'],
+    category: 'classic',
+    theme: 'gold',
+    render(w, h) {
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
+        <defs>
+          <linearGradient id="bgmlc1" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#FFFFF0"/>
+            <stop offset="100%" stop-color="#F8F0D0"/>
+          </linearGradient>
+        </defs>
+        <rect width="${w}" height="${h}" fill="url(#bgmlc1)"/>
+        <!-- Milestone marker — simple elegant path with star -->
+        <line x1="${w*0.15}" y1="${h*0.55}" x2="${w*0.85}" y2="${h*0.55}" stroke="#D4AF37" stroke-width="${w*0.004}" opacity="0.4"/>
+        <!-- Dots along path -->
+        ${[0.15,0.35,0.65,0.85].map(x=>`<circle cx="${w*x}" cy="${h*0.55}" r="${w*0.012}" fill="#C8A030" opacity="0.5"/>`).join('')}
+        <!-- Star at end -->
+        <circle cx="${w*0.5}" cy="${h*0.55}" r="${w*0.05}" fill="#D4AF37" opacity="0.15"/>
+        <text x="${w*0.5}" y="${h*0.585}" text-anchor="middle" font-size="${w*0.06}" fill="#D4AF37" opacity="0.85">✦</text>
+        <!-- Corner flourishes -->
+        <circle cx="${w*0.08}" cy="${h*0.1}" r="${w*0.012}" fill="#D4AF37" opacity="0.35"/>
+        <circle cx="${w*0.92}" cy="${h*0.1}" r="${w*0.012}" fill="#D4AF37" opacity="0.35"/>
+        <line x1="${w*0.2}" y1="${h*0.8}" x2="${w*0.8}" y2="${h*0.8}" stroke="#D4AF37" stroke-width="0.7" opacity="0.5"/>
+        <text x="${w*0.5}" y="${h*0.4}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.082}" font-style="italic" fill="#7A6010" letter-spacing="1">A New Milestone</text>
+      </svg>`;
+    }
+  },
+
+  {
+    id: 'milestone-fun-1',
+    label: 'Next Chapter',
+    occasions: ['New milestone'],
+    category: 'fun',
+    theme: 'twilight',
+    render(w, h) {
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
+        <defs>
+          <linearGradient id="bgmlf1" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#EEF0FF"/>
+            <stop offset="100%" stop-color="#D8DCFF"/>
+          </linearGradient>
+        </defs>
+        <rect width="${w}" height="${h}" fill="url(#bgmlf1)"/>
+        <!-- Rising arrow/path -->
+        <path d="M${w*0.1} ${h*0.7} Q${w*0.3} ${h*0.5} ${w*0.5} ${h*0.35} Q${w*0.7} ${h*0.2} ${w*0.88} ${h*0.15}" stroke="#8890E0" stroke-width="${w*0.004}" fill="none" opacity="0.5"/>
+        <!-- Stars along path -->
+        ${[[0.1,0.7,'#D4AF37'],[0.3,0.5,'#8890E0'],[0.5,0.35,'#D4AF37'],[0.7,0.2,'#8890E0'],[0.88,0.15,'#D4AF37']].map(([cx,cy,c])=>`<circle cx="${w*cx}" cy="${h*cy}" r="${w*0.016}" fill="${c}" opacity="0.8"/>`).join('')}
+        <!-- Confetti burst at top -->
+        ${[[0.75,0.1,'#F4A7B9'],[0.82,0.08,'#D4AF37'],[0.9,0.12,'#96C896'],[0.78,0.18,'#8890E0']].map(([cx,cy,c])=>`<rect x="${w*cx-4}" y="${h*cy-4}" width="8" height="8" fill="${c}" opacity="0.7" transform="rotate(45,${w*cx},${h*cy})"/>`).join('')}
+        <line x1="${w*0.15}" y1="${h*0.82}" x2="${w*0.85}" y2="${h*0.82}" stroke="#8890E0" stroke-width="0.8" opacity="0.5"/>
+        <text x="${w*0.5}" y="${h*0.65}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.085}" font-weight="700" fill="#3A4ACC" letter-spacing="0.5">What a Milestone!</text>
+      </svg>`;
+    }
+  },
+
+  // ── NATIONAL NURSES DAY ───────────────────────────────────────────────────
+  {
+    id: 'nursesday-classic-1',
+    label: 'With Gratitude',
+    occasions: ['National Nurses Day'],
+    category: 'classic',
+    theme: 'blush',
+    render(w, h) {
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
+        <defs>
+          <linearGradient id="bgndc1" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#FFF5F8"/>
+            <stop offset="100%" stop-color="#F8E0E8"/>
+          </linearGradient>
+        </defs>
+        <rect width="${w}" height="${h}" fill="url(#bgndc1)"/>
+        <!-- Cross symbol — simple, clean, not clinical -->
+        <rect x="${w*0.47}" y="${h*0.18}" width="${w*0.06}" height="${h*0.22}" rx="3" fill="#E87090" opacity="0.35"/>
+        <rect x="${w*0.4}" y="${h*0.25}" width="${w*0.2}" height="${h*0.08}" rx="3" fill="#E87090" opacity="0.35"/>
+        <!-- Small heart at center of cross -->
+        <text x="${w*0.5}" y="${h*0.32}" text-anchor="middle" font-size="${w*0.04}" fill="#C05070" opacity="0.6">♥</text>
+        <!-- Soft floral corners -->
+        <circle cx="${w*0.1}" cy="${h*0.15}" r="${w*0.03}" fill="#F4A0B8" opacity="0.4"/>
+        <circle cx="${w*0.9}" cy="${h*0.15}" r="${w*0.03}" fill="#F4A0B8" opacity="0.4"/>
+        <circle cx="${w*0.1}" cy="${h*0.75}" r="${w*0.025}" fill="#F4A0B8" opacity="0.3"/>
+        <circle cx="${w*0.9}" cy="${h*0.75}" r="${w*0.025}" fill="#F4A0B8" opacity="0.3"/>
+        <line x1="${w*0.2}" y1="${h*0.8}" x2="${w*0.8}" y2="${h*0.8}" stroke="#E87090" stroke-width="0.6" opacity="0.45"/>
+        <text x="${w*0.5}" y="${h*0.64}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.075}" font-style="italic" fill="#8A3050" letter-spacing="1">Thank You, Nurse</text>
+      </svg>`;
+    }
+  },
+
+  {
+    id: 'nursesday-fun-1',
+    label: 'Hero',
+    occasions: ['National Nurses Day'],
+    category: 'fun',
+    theme: 'blush',
+    render(w, h) {
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
+        <defs>
+          <linearGradient id="bgndf1" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#FFF0F5"/>
+            <stop offset="100%" stop-color="#FFD8E8"/>
+          </linearGradient>
+        </defs>
+        <rect width="${w}" height="${h}" fill="url(#bgndf1)"/>
+        <!-- Hearts scattered — warmth and care -->
+        ${[[0.1,0.25,'#F472A0'],[0.22,0.6,'#E8A0C0'],[0.38,0.15,'#F472A0'],[0.5,0.55,'#E060A0'],[0.65,0.18,'#F472A0'],[0.78,0.62,'#E8A0C0'],[0.9,0.28,'#F472A0'],[0.3,0.45,'#E8A0C0'],[0.7,0.48,'#E060A0']].map(([cx,cy,c])=>`<text x="${w*cx}" y="${h*cy}" text-anchor="middle" font-size="${w*0.04}" fill="${c}" opacity="0.65">♥</text>`).join('')}
+        <!-- Large center heart -->
+        <text x="${w*0.5}" y="${h*0.38}" text-anchor="middle" font-size="${w*0.1}" fill="#E060A0" opacity="0.7">♥</text>
+        <line x1="${w*0.15}" y1="${h*0.8}" x2="${w*0.85}" y2="${h*0.8}" stroke="#F472A0" stroke-width="0.8" opacity="0.5"/>
+        <text x="${w*0.5}" y="${h*0.64}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.075}" font-weight="700" fill="#C03060" letter-spacing="0.5">Heroes Wear Scrubs!</text>
+      </svg>`;
+    }
+  },
+
+  // ── OTHER ─────────────────────────────────────────────────────────────────
+  {
+    id: 'other-classic-1',
+    label: 'Timeless',
+    occasions: ['Other'],
+    category: 'classic',
+    theme: 'warm',
+    render(w, h) {
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
+        <defs>
+          <linearGradient id="bgotc1" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#FFF8F0"/>
+            <stop offset="100%" stop-color="#F5EAD8"/>
+          </linearGradient>
+        </defs>
+        <rect width="${w}" height="${h}" fill="url(#bgotc1)"/>
+        <!-- Elegant minimal frame -->
+        <rect x="${w*0.05}" y="${h*0.05}" width="${w*0.9}" height="${h*0.9}" rx="6" fill="none" stroke="#C8A070" stroke-width="0.8" opacity="0.3"/>
+        <!-- Corner ornaments -->
+        ${[[0.05,0.05],[0.95,0.05],[0.05,0.95],[0.95,0.95]].map(([cx,cy])=>`<circle cx="${w*cx}" cy="${h*cy}" r="${w*0.014}" fill="#D4A070" opacity="0.4"/>`).join('')}
+        <!-- Simple centered botanical -->
+        <g opacity="0.35" transform="translate(${w*0.5},${h*0.38})">
+          <line x1="0" y1="${h*0.18}" x2="0" y2="${-h*0.18}" stroke="#A07840" stroke-width="${w*0.003}"/>
+          <ellipse cx="${-w*0.07}" cy="${-h*0.05}" rx="${w*0.06}" ry="${h*0.1}" fill="#B89060" transform="rotate(-30,${-w*0.07},${-h*0.05})"/>
+          <ellipse cx="${w*0.07}" cy="${-h*0.08}" rx="${w*0.055}" ry="${h*0.09}" fill="#C8A070" transform="rotate(25,${w*0.07},${-h*0.08})"/>
+          <ellipse cx="0" cy="${-h*0.16}" rx="${w*0.04}" ry="${h*0.07}" fill="#B89060"/>
+        </g>
+        <line x1="${w*0.25}" y1="${h*0.8}" x2="${w*0.75}" y2="${h*0.8}" stroke="#C8A070" stroke-width="0.6" opacity="0.45"/>
+        <text x="${w*0.5}" y="${h*0.65}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.085}" font-style="italic" fill="#8A5020" letter-spacing="1">With Warm Wishes</text>
+      </svg>`;
+    }
+  },
+
+  {
+    id: 'other-fun-1',
+    label: 'Colorful',
+    occasions: ['Other'],
+    category: 'fun',
+    theme: 'blush',
+    render(w, h) {
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
+        <defs>
+          <linearGradient id="bgotf1" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#FFF0F8"/>
+            <stop offset="100%" stop-color="#FFD8EC"/>
+          </linearGradient>
+        </defs>
+        <rect width="${w}" height="${h}" fill="url(#bgotf1)"/>
+        <!-- Cheerful mixed shapes -->
+        ${[[0.1,0.2,'#F4A7B9','c'],[0.2,0.62,'#D4AF37','r'],[0.32,0.15,'#96C896','c'],[0.5,0.68,'#8890E0','r'],[0.65,0.18,'#F4A7B9','c'],[0.8,0.6,'#D4AF37','r'],[0.9,0.25,'#96C896','c'],[0.42,0.42,'#8890E0','c'],[0.62,0.45,'#F4A7B9','r']].map(([cx,cy,c,s])=>
+          s==='c'
+            ? `<circle cx="${w*cx}" cy="${h*cy}" r="${w*0.018}" fill="${c}" opacity="0.7"/>`
+            : `<rect x="${w*cx-6}" y="${h*cy-6}" width="12" height="12" fill="${c}" opacity="0.65" transform="rotate(45,${w*cx},${h*cy})"/>`
+        ).join('')}
+        <path d="M${w*0.1} ${h*0.8} Q${w*0.3} ${h*0.75} ${w*0.5} ${h*0.8} Q${w*0.7} ${h*0.85} ${w*0.9} ${h*0.8}" stroke="#F4A7B9" stroke-width="1.5" fill="none" opacity="0.55"/>
+        <text x="${w*0.5}" y="${h*0.6}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.09}" font-weight="700" fill="#C0447A" letter-spacing="0.5">Thinking of You!</text>
+      </svg>`;
+    }
+  },
+
 ];
 
 // ── Header system state ────────────────────────────────────────────────────
@@ -3504,6 +3875,284 @@ const PDF_HEADER_RENDERERS = {
     doc.setFontSize(24);
     doc.setTextColor(58, 74, 90);
     doc.text("I'm Truly Sorry", pw/2, H-20, { align: 'center' });
+    return H + 36;
+  },
+
+  'diwali-classic-1': function(doc, pw, ph, margin) {
+    const H = 190;
+    doc.setFillColor(26, 10, 0);
+    doc.rect(0, 0, pw, H, 'F');
+    doc.setFillColor(200, 74, 0);
+    doc.setGState(new doc.GState({opacity: 0.9}));
+    doc.ellipse(pw/2, H*0.62, pw*0.08, H*0.06, 'F');
+    doc.setFillColor(232, 106, 0);
+    doc.ellipse(pw/2, H*0.58, pw*0.05, H*0.04, 'F');
+    doc.setFillColor(245, 192, 48);
+    doc.ellipse(pw/2, H*0.48, pw*0.018, H*0.06, 'F');
+    doc.ellipse(pw/2, H*0.44, pw*0.01, H*0.04, 'F');
+    [[pw*0.28,H*0.65],[pw*0.72,H*0.65]].forEach(([cx,cy]) => {
+      doc.setFillColor(200, 74, 0);
+      doc.ellipse(cx, cy, pw*0.055, H*0.04, 'F');
+      doc.setFillColor(245, 192, 48);
+      doc.ellipse(cx, cy-H*0.06, pw*0.013, H*0.045, 'F');
+    });
+    doc.setFillColor(212, 175, 55);
+    doc.setGState(new doc.GState({opacity: 0.6}));
+    [[0.1,0.2],[0.9,0.2],[0.15,0.5],[0.85,0.5]].forEach(([rx,ry]) => doc.circle(pw*rx, H*ry, 4, 'F'));
+    doc.setGState(new doc.GState({opacity: 1}));
+    doc.setDrawColor(212, 175, 55);
+    doc.setLineWidth(0.7);
+    doc.line(pw*0.18, H-14, pw*0.82, H-14);
+    doc.setFont('times', 'italic');
+    doc.setFontSize(24);
+    doc.setTextColor(212, 175, 55);
+    doc.text('Happy Diwali', pw/2, H-20, { align: 'center' });
+    return H + 36;
+  },
+
+  'diwali-fun-1': function(doc, pw, ph, margin) {
+    const H = 190;
+    doc.setFillColor(26, 8, 0);
+    doc.rect(0, 0, pw, H, 'F');
+    const colors = [[212,175,55],[200,74,0],[212,175,55],[232,106,0],[245,192,48],[200,74,0],[212,175,55],[232,106,0]];
+    for (let i = 0; i < 8; i++) {
+      const a = i * Math.PI / 4;
+      const c = colors[i];
+      doc.setFillColor(c[0],c[1],c[2]);
+      doc.setGState(new doc.GState({opacity: 0.85}));
+      doc.circle(pw/2 + Math.cos(a)*pw*0.22, H*0.42 + Math.sin(a)*H*0.22, 5, 'F');
+    }
+    for (let i = 0; i < 6; i++) {
+      const a = i * Math.PI / 3;
+      doc.setFillColor(212,175,55);
+      doc.setGState(new doc.GState({opacity: 0.8}));
+      doc.circle(pw/2 + Math.cos(a)*pw*0.12, H*0.42 + Math.sin(a)*H*0.12, 4, 'F');
+    }
+    doc.setFillColor(245,192,48);
+    doc.setGState(new doc.GState({opacity: 0.9}));
+    doc.circle(pw/2, H*0.42, 8, 'F');
+    doc.setGState(new doc.GState({opacity: 1}));
+    doc.setFont('times', 'bold');
+    doc.setFontSize(26);
+    doc.setTextColor(245, 192, 48);
+    doc.text('Happy Diwali!', pw/2, H*0.82, { align: 'center' });
+    return H + 36;
+  },
+
+  'eid-classic-1': function(doc, pw, ph, margin) {
+    const H = 190;
+    doc.setFillColor(10, 20, 40);
+    doc.rect(0, 0, pw, H, 'F');
+    doc.setFillColor(212, 175, 55);
+    doc.setGState(new doc.GState({opacity: 0.9}));
+    doc.circle(pw*0.5, H*0.32, pw*0.12, 'F');
+    doc.setFillColor(10, 20, 40);
+    doc.circle(pw*0.56, H*0.28, pw*0.1, 'F');
+    doc.setFillColor(212, 175, 55);
+    doc.setGState(new doc.GState({opacity: 0.6}));
+    [[0.1,0.15],[0.2,0.35],[0.12,0.6],[0.88,0.15],[0.8,0.35],[0.88,0.6],[0.5,0.12]].forEach(([rx,ry]) => doc.circle(pw*rx, H*ry, 2, 'F'));
+    doc.setGState(new doc.GState({opacity: 1}));
+    doc.setDrawColor(212, 175, 55);
+    doc.setLineWidth(0.7);
+    doc.line(pw*0.18, H-14, pw*0.82, H-14);
+    doc.setFont('times', 'italic');
+    doc.setFontSize(26);
+    doc.setTextColor(212, 175, 55);
+    doc.text('Eid Mubarak', pw/2, H-20, { align: 'center' });
+    return H + 36;
+  },
+
+  'eid-fun-1': function(doc, pw, ph, margin) {
+    const H = 190;
+    doc.setFillColor(10, 20, 40);
+    doc.rect(0, 0, pw, H, 'F');
+    doc.setFillColor(212, 175, 55);
+    doc.setGState(new doc.GState({opacity: 0.85}));
+    doc.circle(pw*0.5, H*0.35, pw*0.15, 'F');
+    doc.setFillColor(10, 20, 40);
+    doc.circle(pw*0.57, H*0.3, pw*0.13, 'F');
+    doc.setFillColor(212, 175, 55);
+    doc.setGState(new doc.GState({opacity: 0.65}));
+    [[0.15,0.18],[0.5,0.1],[0.85,0.18],[0.2,0.7],[0.8,0.7]].forEach(([rx,ry]) => doc.circle(pw*rx, H*ry, 3, 'F'));
+    doc.setGState(new doc.GState({opacity: 1}));
+    doc.setFont('times', 'bold');
+    doc.setFontSize(26);
+    doc.setTextColor(212, 175, 55);
+    doc.text('Eid Mubarak!', pw/2, H*0.82, { align: 'center' });
+    return H + 36;
+  },
+
+  'passover-classic-1': function(doc, pw, ph, margin) {
+    const H = 190;
+    doc.setFillColor(255, 255, 245);
+    doc.rect(0, 0, pw, H, 'F');
+    doc.setGState(new doc.GState({opacity: 0.5}));
+    doc.setFillColor(212, 175, 55);
+    [[margin+5,H*0.3,pw*0.025,H*0.06],[margin+15,H*0.45,pw*0.02,H*0.05],[margin+8,H*0.58,pw*0.02,H*0.05],[pw-margin-5,H*0.3,pw*0.025,H*0.06],[pw-margin-15,H*0.45,pw*0.02,H*0.05],[pw-margin-8,H*0.58,pw*0.02,H*0.05]].forEach(([cx,cy,rx,ry]) => doc.ellipse(cx, cy, rx, ry, 'F'));
+    doc.setGState(new doc.GState({opacity: 1}));
+    doc.setDrawColor(200, 160, 48);
+    doc.setLineWidth(0.6);
+    doc.line(pw*0.2, H-14, pw*0.8, H-14);
+    doc.setFont('times', 'italic');
+    doc.setFontSize(26);
+    doc.setTextColor(122, 80, 16);
+    doc.text('Happy Passover', pw/2, 128, { align: 'center' });
+    return H + 36;
+  },
+
+  'passover-fun-1': function(doc, pw, ph, margin) {
+    const H = 190;
+    doc.setFillColor(255, 255, 240);
+    doc.rect(0, 0, pw, H, 'F');
+    [[0.1,0.2,[212,175,55]],[0.2,0.62,[74,106,192]],[0.35,0.15,[212,175,55]],[0.5,0.65,[74,106,192]],[0.65,0.18,[212,175,55]],[0.8,0.6,[74,106,192]],[0.9,0.25,[212,175,55]]].forEach(([rx,ry,c]) => {
+      doc.setFillColor(c[0],c[1],c[2]);
+      doc.setGState(new doc.GState({opacity: 0.65}));
+      doc.circle(pw*rx, H*ry, 5, 'F');
+    });
+    doc.setGState(new doc.GState({opacity: 1}));
+    doc.setFont('times', 'bold');
+    doc.setFontSize(26);
+    doc.setTextColor(138, 96, 16);
+    doc.text('Chag Sameach!', pw/2, 148, { align: 'center' });
+    return H + 36;
+  },
+
+  'milestone-classic-1': function(doc, pw, ph, margin) {
+    const H = 190;
+    doc.setFillColor(255, 255, 240);
+    doc.rect(0, 0, pw, H, 'F');
+    doc.setDrawColor(212, 175, 55);
+    doc.setLineWidth(pw*0.004);
+    doc.setGState(new doc.GState({opacity: 0.4}));
+    doc.line(pw*0.15, H*0.55, pw*0.85, H*0.55);
+    [0.15,0.35,0.65,0.85].forEach(x => {
+      doc.setFillColor(200, 160, 48);
+      doc.circle(pw*x, H*0.55, 4, 'F');
+    });
+    doc.setFillColor(212, 175, 55);
+    doc.setGState(new doc.GState({opacity: 0.2}));
+    doc.circle(pw/2, H*0.55, pw*0.05, 'F');
+    doc.setGState(new doc.GState({opacity: 0.4}));
+    [[pw*0.08,H*0.1],[pw*0.92,H*0.1]].forEach(([x,y]) => doc.circle(x, y, 4, 'F'));
+    doc.setGState(new doc.GState({opacity: 1}));
+    doc.setDrawColor(212, 175, 55);
+    doc.setLineWidth(0.6);
+    doc.line(pw*0.2, H-14, pw*0.8, H-14);
+    doc.setFont('times', 'italic');
+    doc.setFontSize(24);
+    doc.setTextColor(122, 96, 16);
+    doc.text('A New Milestone', pw/2, 118, { align: 'center' });
+    return H + 36;
+  },
+
+  'milestone-fun-1': function(doc, pw, ph, margin) {
+    const H = 190;
+    doc.setFillColor(238, 240, 255);
+    doc.rect(0, 0, pw, H, 'F');
+    doc.setDrawColor(136, 144, 224);
+    doc.setLineWidth(pw*0.004);
+    doc.setGState(new doc.GState({opacity: 0.5}));
+    doc.line(pw*0.1, H*0.7, pw*0.5, H*0.35);
+    doc.line(pw*0.5, H*0.35, pw*0.88, H*0.15);
+    [[0.1,0.7,[212,175,55]],[0.3,0.5,[136,144,224]],[0.5,0.35,[212,175,55]],[0.7,0.2,[136,144,224]],[0.88,0.15,[212,175,55]]].forEach(([rx,ry,c]) => {
+      doc.setFillColor(c[0],c[1],c[2]);
+      doc.setGState(new doc.GState({opacity: 0.8}));
+      doc.circle(pw*rx, H*ry, 5, 'F');
+    });
+    doc.setGState(new doc.GState({opacity: 1}));
+    doc.setFont('times', 'bold');
+    doc.setFontSize(24);
+    doc.setTextColor(58, 74, 204);
+    doc.text('What a Milestone!', pw/2, H*0.85, { align: 'center' });
+    return H + 36;
+  },
+
+  'nursesday-classic-1': function(doc, pw, ph, margin) {
+    const H = 190;
+    doc.setFillColor(255, 245, 248);
+    doc.rect(0, 0, pw, H, 'F');
+    doc.setFillColor(232, 112, 144);
+    doc.setGState(new doc.GState({opacity: 0.35}));
+    doc.rect(pw/2 - pw*0.03, H*0.18, pw*0.06, H*0.22, 'F');
+    doc.rect(pw/2 - pw*0.1, H*0.25, pw*0.2, H*0.08, 'F');
+    doc.setFillColor(244, 160, 184);
+    doc.setGState(new doc.GState({opacity: 0.4}));
+    [[margin+10,H*0.15,10],[pw-margin-10,H*0.15,10],[margin+8,H*0.75,8],[pw-margin-8,H*0.75,8]].forEach(([x,y,r]) => doc.circle(x, y, r, 'F'));
+    doc.setGState(new doc.GState({opacity: 1}));
+    doc.setDrawColor(232, 112, 144);
+    doc.setLineWidth(0.5);
+    doc.line(pw*0.2, H-14, pw*0.8, H-14);
+    doc.setFont('times', 'italic');
+    doc.setFontSize(22);
+    doc.setTextColor(138, 48, 80);
+    doc.text('Thank You, Nurse', pw/2, H-20, { align: 'center' });
+    return H + 36;
+  },
+
+  'nursesday-fun-1': function(doc, pw, ph, margin) {
+    const H = 190;
+    doc.setFillColor(255, 240, 245);
+    doc.rect(0, 0, pw, H, 'F');
+    [[0.1,0.25],[0.22,0.6],[0.38,0.15],[0.5,0.55],[0.65,0.18],[0.78,0.62],[0.9,0.28],[0.3,0.45],[0.7,0.48]].forEach(([rx,ry]) => {
+      doc.setFillColor(244, 114, 160);
+      doc.setGState(new doc.GState({opacity: 0.6}));
+      doc.setFontSize(12);
+      doc.setTextColor(244, 114, 160);
+      doc.text('\u2665', pw*rx, H*ry, { align: 'center' });
+    });
+    doc.setFontSize(28);
+    doc.setTextColor(224, 96, 160);
+    doc.setGState(new doc.GState({opacity: 0.7}));
+    doc.text('\u2665', pw/2, H*0.38, { align: 'center' });
+    doc.setGState(new doc.GState({opacity: 1}));
+    doc.setFont('times', 'bold');
+    doc.setFontSize(22);
+    doc.setTextColor(192, 48, 96);
+    doc.text('Heroes Wear Scrubs!', pw/2, H*0.72, { align: 'center' });
+    return H + 36;
+  },
+
+  'other-classic-1': function(doc, pw, ph, margin) {
+    const H = 190;
+    doc.setFillColor(255, 248, 240);
+    doc.rect(0, 0, pw, H, 'F');
+    doc.setDrawColor(200, 160, 112);
+    doc.setLineWidth(0.8);
+    doc.setGState(new doc.GState({opacity: 0.3}));
+    doc.rect(margin*0.6, H*0.05, pw-margin*1.2, H*0.9, 'F');
+    doc.setFillColor(212, 160, 96);
+    doc.setGState(new doc.GState({opacity: 0.4}));
+    [[margin*0.6,H*0.05],[pw-margin*0.6,H*0.05],[margin*0.6,H*0.95],[pw-margin*0.6,H*0.95]].forEach(([x,y]) => doc.circle(x, y, 4, 'F'));
+    doc.setGState(new doc.GState({opacity: 0.35}));
+    doc.setFillColor(184, 144, 96);
+    doc.ellipse(pw/2-pw*0.06, H*0.38, pw*0.055, H*0.09, 'F');
+    doc.ellipse(pw/2+pw*0.06, H*0.32, pw*0.05, H*0.08, 'F');
+    doc.ellipse(pw/2, H*0.28, pw*0.04, H*0.07, 'F');
+    doc.setGState(new doc.GState({opacity: 1}));
+    doc.setDrawColor(200, 160, 112);
+    doc.setLineWidth(0.6);
+    doc.line(pw*0.25, H-14, pw*0.75, H-14);
+    doc.setFont('times', 'italic');
+    doc.setFontSize(24);
+    doc.setTextColor(138, 80, 32);
+    doc.text('With Warm Wishes', pw/2, 148, { align: 'center' });
+    return H + 36;
+  },
+
+  'other-fun-1': function(doc, pw, ph, margin) {
+    const H = 190;
+    doc.setFillColor(255, 240, 248);
+    doc.rect(0, 0, pw, H, 'F');
+    [[0.1,0.2,[244,167,185]],[0.2,0.62,[212,175,55]],[0.32,0.15,[150,200,150]],[0.5,0.68,[136,144,224]],[0.65,0.18,[244,167,185]],[0.8,0.6,[212,175,55]],[0.9,0.25,[150,200,150]]].forEach(([rx,ry,c]) => {
+      doc.setFillColor(c[0],c[1],c[2]);
+      doc.setGState(new doc.GState({opacity: 0.7}));
+      doc.circle(pw*rx, H*ry, 5, 'F');
+    });
+    doc.setGState(new doc.GState({opacity: 1}));
+    doc.setFont('times', 'bold');
+    doc.setFontSize(24);
+    doc.setTextColor(192, 68, 122);
+    doc.text('Thinking of You!', pw/2, 148, { align: 'center' });
     return H + 36;
   }
 

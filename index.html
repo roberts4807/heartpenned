@@ -462,10 +462,23 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
 
     <!-- Digital delivery panel -->
     <div id="digital-panel" style="display:none;margin-top:1.25rem;background:#F4F6FA;border:1px solid #D0D8E8;border-radius:12px;padding:1.25rem;">
-      <div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.75rem;">Your card is ready to send</div>
-      <textarea id="copy-box" readonly style="width:100%;box-sizing:border-box;font-family:'Georgia',serif;font-size:13px;line-height:1.7;color:#1A3A6A;background:white;border:1px solid #D0D8E8;border-radius:8px;padding:1rem;resize:none;min-height:140px;outline:none;"></textarea>
-      <button id="copy-btn" onclick="copyCard()" style="margin-top:0.85rem;width:100%;padding:0.85rem;background:#1A3A6A;color:white;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;letter-spacing:0.02em;">Copy to clipboard</button>
+
+      <!-- Header style picker (shared with print panel) -->
+      <div class="print-panel-label">Choose a style</div>
+      <div class="header-category-tabs">
+        <div class="hcat-tab active" id="dhcat-classic" onclick="switchDigitalHeaderCat('classic')">Classic</div>
+        <div class="hcat-tab" id="dhcat-fun" onclick="switchDigitalHeaderCat('fun')">Fun</div>
+      </div>
+      <div class="header-thumbs" id="digital-header-thumbs"></div>
+
+      <!-- Styled card preview -->
+      <div class="print-panel-label" style="margin-top:0.5rem;">Your card</div>
+      <div class="print-preview-wrap" id="digital-card-preview" style="margin-bottom:0.85rem;"></div>
+
+      <!-- Copy section -->
+      <button id="copy-btn" onclick="copyCard()" style="width:100%;padding:0.85rem;background:#1A3A6A;color:white;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;letter-spacing:0.02em;font-family:'Inter',sans-serif;">Copy text to clipboard</button>
       <div id="copy-confirm" style="display:none;text-align:center;margin-top:0.6rem;font-size:13px;color:#2A7A4A;font-weight:500;">&#10003; Copied! Paste it into a text or email.</div>
+      <textarea id="copy-box" readonly style="position:absolute;left:-9999px;top:0;"></textarea>
 
       <!-- Email delivery -->
       <div class="email-delivery">
@@ -905,7 +918,8 @@ function handleDel(type){
     panel.style.display='block';
     document.getElementById('copy-box').value=currentCardText;
     document.getElementById('copy-confirm').style.display='none';
-    document.getElementById('copy-btn').textContent='Copy to clipboard';
+    document.getElementById('copy-btn').textContent='Copy text to clipboard';
+    openDigitalPanel();
   } else if(type==='print'){
     document.getElementById('digital-panel').style.display='none';
     const pp = document.getElementById('print-panel');
@@ -926,16 +940,17 @@ function handleDel(type){
 }
 
 function copyCard(){
-  const box=document.getElementById('copy-box');
-  box.select();
-  box.setSelectionRange(0,99999);
-  navigator.clipboard.writeText(box.value).then(()=>{
+  const text = currentCardText || '';
+  navigator.clipboard.writeText(text).then(()=>{
     document.getElementById('copy-confirm').style.display='block';
     const btn=document.getElementById('copy-btn');
     btn.textContent='Copied ✓';
     btn.style.background='#2A7A4A';
-    setTimeout(()=>{btn.textContent='Copy to clipboard';btn.style.background='#1A3A6A';},3000);
+    setTimeout(()=>{btn.textContent='Copy text to clipboard';btn.style.background='#1A3A6A';},3000);
   }).catch(()=>{
+    const box=document.getElementById('copy-box');
+    box.value=text;
+    box.select();
     document.execCommand('copy');
     document.getElementById('copy-confirm').style.display='block';
   });
@@ -1312,89 +1327,97 @@ function openPrintPanel() {
   buildHeaderThumbs();
 }
 
-async function downloadPDF() {
-  const header = CARD_HEADERS.find(h => h.id === activeHeaderId);
-  const theme = CARD_THEMES.find(t => t.id === (header ? header.theme : activeTheme)) || CARD_THEMES[0];
-  const bg = typeof theme.bg === 'string' ? theme.bg : '#FFF8F0';
+// ── Digital panel header state ─────────────────────────────────────────────
+let activeDigitalHeaderId = null;
+let activeDigitalHeaderCat = 'classic';
+
+function switchDigitalHeaderCat(cat) {
+  activeDigitalHeaderCat = cat;
+  document.querySelectorAll('#digital-panel .hcat-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('dhcat-' + cat).classList.add('active');
+  buildDigitalHeaderThumbs();
+}
+
+function buildDigitalHeaderThumbs() {
+  const container = document.getElementById('digital-header-thumbs');
+  if (!container) return;
+  let headers = getHeadersForOccasion(A.occasion, activeDigitalHeaderCat);
+  if (!headers.length) headers = getFallbackHeaders(activeDigitalHeaderCat);
+  container.innerHTML = '';
+  if (!headers.length) {
+    container.innerHTML = '<div style="font-size:13px;color:#888;">More styles coming soon.</div>';
+    return;
+  }
+  headers.forEach(h => {
+    const wrap = document.createElement('div');
+    wrap.className = 'header-thumb' + (h.id === activeDigitalHeaderId ? ' selected' : '');
+    wrap.innerHTML = h.render(120, 60) + `<div class="header-thumb-label">${h.label}</div>`;
+    wrap.onclick = () => selectDigitalHeader(h.id);
+    container.appendChild(wrap);
+  });
+  if (!activeDigitalHeaderId || !headers.find(h => h.id === activeDigitalHeaderId)) {
+    selectDigitalHeader(headers[0].id);
+  }
+}
+
+function selectDigitalHeader(id) {
+  activeDigitalHeaderId = id;
+  document.querySelectorAll('#digital-header-thumbs .header-thumb').forEach(t => t.classList.remove('selected'));
+  const headers = (() => {
+    const h = getHeadersForOccasion(A.occasion, activeDigitalHeaderCat);
+    return h.length ? h : getFallbackHeaders(activeDigitalHeaderCat);
+  })();
+  headers.forEach((h, i) => {
+    const thumbs = document.querySelectorAll('#digital-header-thumbs .header-thumb');
+    if (h.id === id && thumbs[i]) thumbs[i].classList.add('selected');
+  });
+  renderDigitalCardPreview();
+}
+
+function renderDigitalCardPreview() {
+  const container = document.getElementById('digital-card-preview');
+  if (!container) return;
+  const header = CARD_HEADERS.find(h => h.id === activeDigitalHeaderId);
   const cardText = currentCardText || '';
-  const occasion = A.occasion || '';
+  const w = container.offsetWidth || 320;
+  container.innerHTML = `
+    <div style="font-family:'Playfair Display',Georgia,serif;border-radius:6px;overflow:hidden;">
+      ${header ? header.render(w, 110) : ''}
+      <div style="
+        padding:1.25rem 1.5rem 1rem;
+        font-size:14px;
+        line-height:1.85;
+        color:#1A2A3A;
+        white-space:pre-wrap;
+        background:${getHeaderBodyBg(header)};
+      ">${cardText}</div>
+      <div style="
+        text-align:right;
+        padding:0.25rem 1rem 0.6rem;
+        font-size:11px;
+        color:#7A9CC0;
+        font-style:italic;
+        background:${getHeaderBodyBg(header)};
+        font-family:'Playfair Display',Georgia,serif;
+      ">Heartpenned</div>
+    </div>`;
+}
 
-  const btn = document.getElementById('btn-download-pdf');
-  btn.disabled = true;
-  btn.textContent = 'Generating…';
+function getHeaderBodyBg(header) {
+  if (!header) return '#FFF8F0';
+  const bgMap = {
+    warm: '#FFF8F0', blush: '#FFF0F4', sage: '#F2F8F2',
+    twilight: '#F0F2FF', gold: '#FFFFF0', slate: '#F4F6F8', dusk: '#FDF4FF'
+  };
+  return bgMap[header.theme] || '#FFF8F0';
+}
 
-  // Wrapper keeps el visible but off-viewport (fixes html2canvas blank bug)
-  const wrapper = document.createElement('div');
-  wrapper.style.cssText = 'position:fixed;top:0;left:0;width:0;height:0;overflow:hidden;z-index:-1;';
-
-  const el = document.createElement('div');
-  el.style.cssText = `
-    width:680px;
-    min-height:960px;
-    background:${bg};
-    font-family:Georgia,serif;
-    position:relative;
-    padding:0;
-    box-sizing:border-box;
-  `;
-
-  // Convert SVG string to an img via data URI so html2canvas renders it
-  let headerHTML = '';
-  if (header) {
-    const svgStr = header.render(680, 200);
-    const encoded = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgStr);
-    headerHTML = `<img src="${encoded}" width="680" height="200" style="display:block;width:680px;height:200px;" />`;
-  }
-
-  el.innerHTML = `
-    ${headerHTML}
-    <div style="
-      padding:48px 64px 32px;
-      font-size:17px;
-      line-height:2;
-      color:#1A2A3A;
-      white-space:pre-wrap;
-      font-family:Georgia,serif;
-    ">${cardText}</div>
-    <div style="
-      text-align:right;
-      padding:16px 48px 40px;
-      font-size:12px;
-      color:#7A9CC0;
-      font-style:italic;
-      letter-spacing:0.08em;
-      font-family:Georgia,serif;
-    ">Heartpenned</div>
-  `;
-
-  wrapper.appendChild(el);
-  document.body.appendChild(wrapper);
-
-  const filename = occasion ? `heartpenned-${occasion.toLowerCase().replace(/\s+/g,'-')}.pdf` : 'heartpenned-card.pdf';
-
-  try {
-    await html2pdf().set({
-      margin: 0,
-      filename,
-      image: { type: 'jpeg', quality: 0.95 },
-      html2canvas: {
-        scale: 2,
-        useCORS: true,
-        backgroundColor: bg,
-        logging: false,
-        width: 680,
-        windowWidth: 680
-      },
-      jsPDF: { unit: 'pt', format: 'letter', orientation: 'portrait' }
-    }).from(el).save();
-  } catch(e) {
-    alert('PDF generation failed. Please try again.');
-    console.error(e);
-  } finally {
-    document.body.removeChild(wrapper);
-    btn.disabled = false;
-    btn.textContent = 'Download PDF';
-  }
+function openDigitalPanel() {
+  activeDigitalHeaderCat = 'classic';
+  document.querySelectorAll('#digital-panel .hcat-tab').forEach(t => t.classList.remove('active'));
+  const tab = document.getElementById('dhcat-classic');
+  if (tab) tab.classList.add('active');
+  buildDigitalHeaderThumbs();
 }
 
 async function sendCardEmail() {
@@ -1445,6 +1468,208 @@ async function sendCardEmail() {
   }
 }
 </script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+// ── PDF generation using jsPDF directly (no html2canvas) ──────────────────
+
+// Each renderer receives (doc, pw, ph, margin) and draws ONLY the header band.
+// downloadPDF draws the full-page body background before calling the renderer.
+// Renderers return the y position where body content should start.
+
+const PDF_HEADER_RENDERERS = {
+
+  'bday-classic-1': function(doc, pw, ph, margin) {
+    const H = 190; // header band height
+    // Header band background
+    doc.setFillColor(255, 248, 240);
+    doc.rect(0, 0, pw, H, 'F');
+
+    // Botanical corners (left)
+    doc.setGState(new doc.GState({opacity: 0.5}));
+    doc.setFillColor(200, 169, 122);
+    doc.ellipse(margin - 8, 55, 10, 28, 'F');
+    doc.ellipse(margin + 10, 28, 8, 18, 'F');
+    doc.setFillColor(184, 148, 90);
+    doc.ellipse(margin - 16, 88, 8, 20, 'F');
+    // Botanical corners (right)
+    doc.setFillColor(200, 169, 122);
+    doc.ellipse(pw - margin + 8, 55, 10, 28, 'F');
+    doc.ellipse(pw - margin - 10, 28, 8, 18, 'F');
+    doc.setFillColor(184, 148, 90);
+    doc.ellipse(pw - margin + 16, 88, 8, 20, 'F');
+    doc.setGState(new doc.GState({opacity: 1}));
+
+    // Divider line at bottom of header
+    doc.setDrawColor(200, 169, 122);
+    doc.setLineWidth(0.5);
+    doc.line(margin + 20, H - 12, pw - margin - 20, H - 12);
+    // Diamond ornament
+    doc.setFillColor(212, 175, 55);
+    doc.setGState(new doc.GState({opacity: 0.8}));
+    const cx = pw/2, cy = H - 12;
+    doc.lines([[5,5],[-5,5],[-5,-5],[5,-5]], cx-5, cy-5, [1,1], 'F');
+    doc.setGState(new doc.GState({opacity: 1}));
+
+    // Occasion text
+    doc.setFont('times', 'italic');
+    doc.setFontSize(32);
+    doc.setTextColor(122, 80, 32);
+    doc.text('Happy Birthday', pw/2, 118, { align: 'center' });
+
+    return H + 36;
+  },
+
+  'bday-fun-1': function(doc, pw, ph, margin) {
+    const H = 190;
+    doc.setFillColor(255, 240, 244);
+    doc.rect(0, 0, pw, H, 'F');
+
+    const dots = [[0.1,0.2,[244,167,185]],[0.22,0.38,[212,175,55]],[0.35,0.12,[150,200,150]],[0.55,0.28,[136,144,224]],[0.7,0.42,[244,167,185]],[0.82,0.15,[212,175,55]],[0.9,0.5,[249,200,154]],[0.15,0.62,[150,200,150]],[0.78,0.68,[136,144,224]]];
+    dots.forEach(([rx,ry,c]) => {
+      doc.setFillColor(c[0],c[1],c[2]);
+      doc.setGState(new doc.GState({opacity: 0.7}));
+      doc.circle(pw*rx, H*ry, 5, 'F');
+    });
+    doc.setGState(new doc.GState({opacity: 1}));
+
+    doc.setDrawColor(244, 167, 185);
+    doc.setLineWidth(1.2);
+    doc.line(margin, H - 10, pw - margin, H - 10);
+
+    doc.setFont('times', 'normal');
+    doc.setFontSize(34);
+    doc.setTextColor(192, 68, 106);
+    doc.text('Happy Birthday!', pw/2, 118, { align: 'center' });
+
+    return H + 36;
+  },
+
+  'wedding-classic-1': function(doc, pw, ph, margin) {
+    const H = 190;
+    doc.setFillColor(255, 255, 240);
+    doc.rect(0, 0, pw, H, 'F');
+
+    doc.setDrawColor(184, 134, 11);
+    doc.setLineWidth(0.8);
+    doc.setGState(new doc.GState({opacity: 0.5}));
+    // Arch stems from bottom corners
+    doc.line(margin + 10, H, margin + 30, H - 80);
+    doc.line(pw - margin - 10, H, pw - margin - 30, H - 80);
+    doc.setFillColor(212, 175, 55);
+    doc.ellipse(margin + 22, 130, 14, 8, 'F');
+    doc.ellipse(margin + 34, 100, 10, 6, 'F');
+    doc.ellipse(pw - margin - 22, 130, 14, 8, 'F');
+    doc.ellipse(pw - margin - 34, 100, 10, 6, 'F');
+    doc.setGState(new doc.GState({opacity: 1}));
+
+    doc.setDrawColor(212, 175, 55);
+    doc.setLineWidth(0.6);
+    doc.line(margin + 30, H - 12, pw - margin - 30, H - 12);
+    doc.setFillColor(212, 175, 55);
+    doc.circle(pw/2, H - 12, 4, 'F');
+
+    doc.setFont('times', 'italic');
+    doc.setFontSize(30);
+    doc.setTextColor(122, 96, 16);
+    doc.text('With Love', pw/2, 118, { align: 'center' });
+
+    return H + 36;
+  },
+
+  'sympathy-classic-1': function(doc, pw, ph, margin) {
+    const H = 210;
+    doc.setFillColor(244, 246, 248);
+    doc.rect(0, 0, pw, H, 'F');
+
+    doc.setDrawColor(106, 128, 152);
+    doc.setLineWidth(0.8);
+    doc.setGState(new doc.GState({opacity: 0.45}));
+    doc.line(pw/2, 20, pw/2, H - 40);
+    doc.setFillColor(138, 155, 176);
+    doc.ellipse(pw/2 - 22, 65, 18, 10, 'F');
+    doc.ellipse(pw/2 + 22, 95, 18, 10, 'F');
+    doc.ellipse(pw/2 - 18, 125, 15, 9, 'F');
+    doc.ellipse(pw/2 + 18, 150, 15, 9, 'F');
+    doc.setGState(new doc.GState({opacity: 1}));
+
+    doc.setDrawColor(138, 155, 176);
+    doc.setLineWidth(0.5);
+    doc.line(pw*0.25, H - 15, pw*0.75, H - 15);
+
+    doc.setFont('times', 'italic');
+    doc.setFontSize(20);
+    doc.setTextColor(74, 96, 112);
+    doc.text('Thinking of You', pw/2, H - 22, { align: 'center' });
+
+    return H + 36;
+  }
+};
+
+async function downloadPDF() {
+  const { jsPDF } = window.jspdf;
+  const header = CARD_HEADERS.find(h => h.id === activeHeaderId);
+  const theme = CARD_THEMES.find(t => t.id === (header ? header.theme : activeTheme)) || CARD_THEMES[0];
+  const cardText = currentCardText || '';
+  const occasion = A.occasion || '';
+
+  const btn = document.getElementById('btn-download-pdf');
+  btn.disabled = true;
+  btn.textContent = 'Generating…';
+
+  // Per-theme solid body background colors (no gradients for jsPDF)
+  const bodyBgMap = {
+    warm:     [255, 248, 240],
+    blush:    [255, 240, 244],
+    sage:     [242, 248, 242],
+    twilight: [240, 242, 255],
+    gold:     [255, 255, 240],
+    slate:    [244, 246, 248],
+    dusk:     [253, 244, 255],
+  };
+  const bodyBg = bodyBgMap[theme ? theme.id : 'warm'] || [255, 248, 240];
+
+  try {
+    const doc = new jsPDF({ unit: 'pt', format: 'letter', orientation: 'portrait' });
+    const pw = doc.internal.pageSize.getWidth();
+    const ph = doc.internal.pageSize.getHeight();
+    const margin = 56;
+
+    // Full page body background (warm tone matching theme)
+    doc.setFillColor(bodyBg[0], bodyBg[1], bodyBg[2]);
+    doc.rect(0, 0, pw, ph, 'F');
+
+    // Draw header band on top
+    let contentTop = 60;
+    if (header && PDF_HEADER_RENDERERS[header.id]) {
+      contentTop = PDF_HEADER_RENDERERS[header.id](doc, pw, ph, margin);
+    }
+
+    // Card text
+    doc.setFont('times', 'normal');
+    doc.setFontSize(14);
+    doc.setTextColor(26, 42, 58);
+    const lines = doc.splitTextToSize(cardText, pw - margin * 2);
+    doc.text(lines, margin, contentTop, { lineHeightFactor: 1.9 });
+
+    // Watermark
+    doc.setFont('times', 'italic');
+    doc.setFontSize(10);
+    doc.setTextColor(122, 156, 192);
+    doc.text('Heartpenned', pw - margin, ph - 30, { align: 'right' });
+
+    const filename = occasion
+      ? `heartpenned-${occasion.toLowerCase().replace(/\s+/g,'-')}.pdf`
+      : 'heartpenned-card.pdf';
+
+    doc.save(filename);
+  } catch(e) {
+    alert('PDF generation failed: ' + e.message);
+    console.error(e);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Download PDF';
+  }
+}
+</script>
 </body>
 </html>

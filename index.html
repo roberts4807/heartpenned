@@ -70,6 +70,7 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
 @keyframes pulse{0%,100%{opacity:0.3;transform:scale(0.8)}50%{opacity:1;transform:scale(1)}}
 .gen-label{font-size:15px;color:#3A4A5A;}
 .card-surface{background:#F4F8FF;border:0.5px solid #B8CDE8;border-radius:16px;padding:2rem 1.75rem;margin-bottom:1.25rem;position:relative;overflow:hidden;transition:background 0.4s ease;}
+.card-header-zone{margin:-2rem -1.75rem 1.25rem;overflow:hidden;border-radius:14px 14px 0 0;}
 .card-corner{position:absolute;opacity:0.15;}
 .card-text{font-family:'Playfair Display',serif;font-size:16px;line-height:1.95;color:#1A2A3A;white-space:pre-wrap;position:relative;z-index:1;}
 .swatch-row{display:flex;gap:8px;justify-content:center;margin-bottom:1.1rem;flex-wrap:wrap;}
@@ -410,6 +411,7 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
   <div class="top-nav"><div class="nav-brand" onclick="showScreen('landing')">Heart<em>penned</em></div></div>
   <div style="max-width:560px;margin:0 auto;padding:1.5rem 2rem;">
     <div class="card-surface">
+      <div class="card-header-zone" id="card-header-zone"></div>
       <svg class="card-corner" style="top:10px;left:10px;width:28px;height:28px;" viewBox="0 0 32 32"><path d="M2 16 Q2 2 16 2" stroke="#2A4A80" stroke-width="1" fill="none"/><path d="M2 22 Q2 2 22 2" stroke="#2A4A80" stroke-width="0.6" fill="none"/><circle cx="2" cy="2" r="2" fill="#2A4A80"/></svg>
       <svg class="card-corner" style="bottom:10px;right:10px;width:28px;height:28px;" viewBox="0 0 32 32"><path d="M30 16 Q30 30 16 30" stroke="#2A4A80" stroke-width="1" fill="none"/><path d="M30 10 Q30 30 10 30" stroke="#2A4A80" stroke-width="0.6" fill="none"/><circle cx="30" cy="30" r="2" fill="#2A4A80"/></svg>
       <div class="card-text" id="card-text"></div>
@@ -447,6 +449,7 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
   <div class="top-nav"><div class="nav-brand" onclick="showScreen('landing')">Heart<em>penned</em></div></div>
   <div style="max-width:560px;margin:0 auto;padding:1.5rem 2rem;">
     <div class="card-surface" style="margin-bottom:1.25rem;">
+      <div class="card-header-zone" id="del-card-header-zone"></div>
       <svg class="card-corner" style="top:10px;left:10px;width:28px;height:28px;" viewBox="0 0 32 32"><path d="M2 16 Q2 2 16 2" stroke="#2A4A80" stroke-width="1" fill="none"/><circle cx="2" cy="2" r="2" fill="#2A4A80"/></svg>
       <svg class="card-corner" style="bottom:10px;right:10px;width:28px;height:28px;" viewBox="0 0 32 32"><path d="M30 16 Q30 30 16 30" stroke="#2A4A80" stroke-width="1" fill="none"/><circle cx="30" cy="30" r="2" fill="#2A4A80"/></svg>
       <div class="card-text" id="del-card-text" style="font-size:14px;"></div>
@@ -579,11 +582,33 @@ function getThemeForOccasion(occ) {
   return OCC_THEME_MAP[occ] || 'classic';
 }
 
+function applyDefaultHeader(occ) {
+  // Pick the first classic header matching this occasion
+  let header = CARD_HEADERS.find(h => h.category === 'classic' && h.occasions.some(o => o.toLowerCase() === (occ||'').toLowerCase()));
+  if (!header) header = CARD_HEADERS[0]; // fallback to first header
+
+  // Store as the active header for both delivery panels
+  activeHeaderId = header.id;
+  activeDigitalHeaderId = header.id;
+
+  // Render into card screen
+  const zone = document.getElementById('card-header-zone');
+  if (zone) zone.innerHTML = header.render(zone.offsetWidth || 320, 100);
+
+  // Render into delivery screen
+  const delZone = document.getElementById('del-card-header-zone');
+  if (delZone) delZone.innerHTML = header.render(delZone.offsetWidth || 320, 100);
+
+  // Set card-surface background to match header body color
+  const bodyBg = getHeaderBodyBg(header);
+  document.querySelectorAll('.card-surface').forEach(el => el.style.background = bodyBg);
+  activeTheme = header.theme;
+}
+
 function applyTheme(themeId, surfaces) {
   const theme = CARD_THEMES.find(t => t.id === themeId) || CARD_THEMES[0];
   const targets = surfaces || document.querySelectorAll('.card-surface');
   targets.forEach(el => el.style.background = theme.bg);
-  // update swatches
   document.querySelectorAll('.swatch').forEach(s => {
     s.classList.toggle('selected', s.dataset.theme === themeId);
   });
@@ -877,7 +902,7 @@ async function submitCard(){
   versionCount=1;savedVersions=[];activeVersionIdx=0;updateVersionTabs();
   try{
     const text=await callAPI(buildPrompt(false));
-    currentCardText=text;saveVersion(text);document.getElementById('card-text').textContent=text;document.getElementById('del-card-text').textContent=text;activeTheme=getThemeForOccasion(A.occasion||'');applyTheme(activeTheme);buildSwatches();resetEmailSection();showScreen('card');
+    currentCardText=text;saveVersion(text);document.getElementById('card-text').textContent=text;document.getElementById('del-card-text').textContent=text;buildSwatches();resetEmailSection();showScreen('card');setTimeout(()=>applyDefaultHeader(A.occasion||''),50);
   }catch(e){alert('Something went wrong: '+e.message);showScreen('q');}
 }
 
@@ -891,7 +916,7 @@ async function submitRev(){
   showScreen('gen');document.getElementById('gen-label').textContent='Revising your card...';
   try{
     const text=await callAPI(buildPrompt(true,note));
-    currentCardText=text;saveVersion(text,false);document.getElementById('card-text').textContent=text;document.getElementById('del-card-text').textContent=text;activeTheme=getThemeForOccasion(A.occasion||'');applyTheme(activeTheme);buildSwatches();resetEmailSection();showScreen('card');
+    currentCardText=text;saveVersion(text,false);document.getElementById('card-text').textContent=text;document.getElementById('del-card-text').textContent=text;buildSwatches();resetEmailSection();showScreen('card');setTimeout(()=>applyDefaultHeader(A.occasion||''),50);
   }catch(e){alert('Something went wrong: '+e.message);showScreen('card');}
 }
 
@@ -901,11 +926,20 @@ async function tryAnother(){
   versionCount++;
   try{
     const text=await callAPI(buildPrompt(false)+'\n\nIMPORTANT: Completely different opening, structure, and closing. Do not repeat or echo the previous version.');
-    currentCardText=text;saveVersion(text);document.getElementById('card-text').textContent=text;document.getElementById('del-card-text').textContent=text;activeTheme=getThemeForOccasion(A.occasion||'');applyTheme(activeTheme);buildSwatches();resetEmailSection();showScreen('card');
+    currentCardText=text;saveVersion(text);document.getElementById('card-text').textContent=text;document.getElementById('del-card-text').textContent=text;buildSwatches();resetEmailSection();showScreen('card');setTimeout(()=>applyDefaultHeader(A.occasion||''),50);
   }catch(e){alert('Something went wrong: '+e.message);showScreen('card');}
 }
 
-function showDelivery(){document.getElementById('del-card-text').textContent=currentCardText;showScreen('delivery');applyTheme(activeTheme,[document.querySelector('#screen-delivery .card-surface')]);}
+function showDelivery(){
+  document.getElementById('del-card-text').textContent=currentCardText;
+  showScreen('delivery');
+  applyTheme(activeTheme,[document.querySelector('#screen-delivery .card-surface')]);
+  setTimeout(()=>{
+    const delZone = document.getElementById('del-card-header-zone');
+    const header = CARD_HEADERS.find(h=>h.id===activeHeaderId);
+    if(delZone && header) delZone.innerHTML = header.render(delZone.offsetWidth||320, 100);
+  },50);
+}
 
 function handleDel(type){
   // Reset all d-btn active states

@@ -1251,11 +1251,11 @@ const CARD_HEADERS = [
     }
   },
 
-  // ── WEDDING / ANNIVERSARY ─────────────────────────────────────────────────
+  // ── WEDDING ───────────────────────────────────────────────────────────────
   {
     id: 'wedding-classic-1',
     label: 'Floral Arch',
-    occasions: ['Wedding', 'Anniversary'],
+    occasions: ['Wedding'],
     category: 'classic',
     theme: 'gold',
     render(w, h) {
@@ -1267,25 +1267,56 @@ const CARD_HEADERS = [
           </linearGradient>
         </defs>
         <rect width="${w}" height="${h}" fill="url(#bg3)"/>
-        <!-- Arch left -->
         <g opacity="0.5" transform="translate(${w*0.05},${h*0.85})">
           <path d="M0,0 Q${-w*0.02},${-h*0.5} ${w*0.12},${-h*0.7}" stroke="#B8860B" stroke-width="${w*0.003}" fill="none"/>
           <ellipse cx="${w*0.04}" cy="${-h*0.35}" rx="${w*0.055}" ry="${h*0.14}" fill="#D4AF37" transform="rotate(-40,${w*0.04},${-h*0.35})" opacity="0.7"/>
           <ellipse cx="${w*0.09}" cy="${-h*0.55}" rx="${w*0.04}" ry="${h*0.1}" fill="#C8A97A" transform="rotate(-20,${w*0.09},${-h*0.55})" opacity="0.7"/>
           <circle cx="${w*0.13}" cy="${-h*0.68}" r="${w*0.025}" fill="#F5E8C0" stroke="#B8860B" stroke-width="${w*0.003}" opacity="0.9"/>
         </g>
-        <!-- Arch right -->
         <g opacity="0.5" transform="translate(${w*0.95},${h*0.85}) scale(-1,1)">
           <path d="M0,0 Q${-w*0.02},${-h*0.5} ${w*0.12},${-h*0.7}" stroke="#B8860B" stroke-width="${w*0.003}" fill="none"/>
           <ellipse cx="${w*0.04}" cy="${-h*0.35}" rx="${w*0.055}" ry="${h*0.14}" fill="#D4AF37" transform="rotate(-40,${w*0.04},${-h*0.35})" opacity="0.7"/>
           <ellipse cx="${w*0.09}" cy="${-h*0.55}" rx="${w*0.04}" ry="${h*0.1}" fill="#C8A97A" transform="rotate(-20,${w*0.09},${-h*0.55})" opacity="0.7"/>
           <circle cx="${w*0.13}" cy="${-h*0.68}" r="${w*0.025}" fill="#F5E8C0" stroke="#B8860B" stroke-width="${w*0.003}" opacity="0.9"/>
         </g>
-        <!-- Gold divider -->
         <line x1="${w*0.15}" y1="${h*0.82}" x2="${w*0.85}" y2="${h*0.82}" stroke="#D4AF37" stroke-width="0.8" opacity="0.8"/>
         <circle cx="${w*0.5}" cy="${h*0.82}" r="4" fill="#D4AF37" opacity="0.8"/>
-        <!-- Occasion text -->
-        <text x="${w*0.5}" y="${h*0.5}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.1}" font-style="italic" fill="#7A6010" letter-spacing="1">With Love</text>
+        <text x="${w*0.5}" y="${h*0.5}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.085}" font-style="italic" fill="#7A6010" letter-spacing="1">On Your Wedding Day</text>
+      </svg>`;
+    }
+  },
+
+  // ── ANNIVERSARY ───────────────────────────────────────────────────────────
+  {
+    id: 'anniversary-classic-1',
+    label: 'Floral Arch',
+    occasions: ['Anniversary'],
+    category: 'classic',
+    theme: 'gold',
+    render(w, h) {
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
+        <defs>
+          <linearGradient id="bg3a" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#FFFFF0"/>
+            <stop offset="100%" stop-color="#F5E8C0"/>
+          </linearGradient>
+        </defs>
+        <rect width="${w}" height="${h}" fill="url(#bg3a)"/>
+        <g opacity="0.5" transform="translate(${w*0.05},${h*0.85})">
+          <path d="M0,0 Q${-w*0.02},${-h*0.5} ${w*0.12},${-h*0.7}" stroke="#B8860B" stroke-width="${w*0.003}" fill="none"/>
+          <ellipse cx="${w*0.04}" cy="${-h*0.35}" rx="${w*0.055}" ry="${h*0.14}" fill="#D4AF37" transform="rotate(-40,${w*0.04},${-h*0.35})" opacity="0.7"/>
+          <ellipse cx="${w*0.09}" cy="${-h*0.55}" rx="${w*0.04}" ry="${h*0.1}" fill="#C8A97A" transform="rotate(-20,${w*0.09},${-h*0.55})" opacity="0.7"/>
+          <circle cx="${w*0.13}" cy="${-h*0.68}" r="${w*0.025}" fill="#F5E8C0" stroke="#B8860B" stroke-width="${w*0.003}" opacity="0.9"/>
+        </g>
+        <g opacity="0.5" transform="translate(${w*0.95},${h*0.85}) scale(-1,1)">
+          <path d="M0,0 Q${-w*0.02},${-h*0.5} ${w*0.12},${-h*0.7}" stroke="#B8860B" stroke-width="${w*0.003}" fill="none"/>
+          <ellipse cx="${w*0.04}" cy="${-h*0.35}" rx="${w*0.055}" ry="${h*0.14}" fill="#D4AF37" transform="rotate(-40,${w*0.04},${-h*0.35})" opacity="0.7"/>
+          <ellipse cx="${w*0.09}" cy="${-h*0.55}" rx="${w*0.04}" ry="${h*0.1}" fill="#C8A97A" transform="rotate(-20,${w*0.09},${-h*0.55})" opacity="0.7"/>
+          <circle cx="${w*0.13}" cy="${-h*0.68}" r="${w*0.025}" fill="#F5E8C0" stroke="#B8860B" stroke-width="${w*0.003}" opacity="0.9"/>
+        </g>
+        <line x1="${w*0.15}" y1="${h*0.82}" x2="${w*0.85}" y2="${h*0.82}" stroke="#D4AF37" stroke-width="0.8" opacity="0.8"/>
+        <circle cx="${w*0.5}" cy="${h*0.82}" r="4" fill="#D4AF37" opacity="0.8"/>
+        <text x="${w*0.5}" y="${h*0.5}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.09}" font-style="italic" fill="#7A6010" letter-spacing="1">Happy Anniversary</text>
       </svg>`;
     }
   },
@@ -1499,7 +1530,7 @@ const CARD_HEADERS = [
   {
     id: 'wedding-fun-1',
     label: 'Champagne',
-    occasions: ['Wedding', 'Anniversary'],
+    occasions: ['Wedding'],
     category: 'fun',
     theme: 'gold',
     render(w, h) {
@@ -1511,14 +1542,33 @@ const CARD_HEADERS = [
           </linearGradient>
         </defs>
         <rect width="${w}" height="${h}" fill="url(#bgwf1)"/>
-        <!-- Champagne bubbles -->
         ${[[0.1,0.7,'#D4AF37'],[0.15,0.45,'#E8C84A'],[0.08,0.25,'#D4AF37'],[0.22,0.6,'#C8A020'],[0.18,0.3,'#E8C84A'],[0.82,0.65,'#D4AF37'],[0.88,0.4,'#E8C84A'],[0.92,0.22,'#D4AF37'],[0.78,0.55,'#C8A020'],[0.85,0.28,'#E8C84A'],[0.5,0.15,'#D4AF37'],[0.45,0.6,'#E8C84A'],[0.55,0.65,'#C8A020']].map(([cx,cy,c])=>`<circle cx="${w*cx}" cy="${h*cy}" r="${w*0.018}" fill="${c}" opacity="0.6"/>`).join('')}
-        <!-- Stars/sparkles -->
         ${[[0.12,0.15],[0.88,0.18],[0.5,0.08]].map(([cx,cy])=>`<text x="${w*cx}" y="${h*cy}" text-anchor="middle" font-size="${w*0.05}" fill="#D4AF37" opacity="0.8">✦</text>`).join('')}
-        <!-- Divider -->
         <line x1="${w*0.15}" y1="${h*0.82}" x2="${w*0.85}" y2="${h*0.82}" stroke="#D4AF37" stroke-width="1" opacity="0.6"/>
-        <!-- Text -->
         <text x="${w*0.5}" y="${h*0.6}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.1}" fill="#8A6A10" letter-spacing="0.5">Cheers to You!</text>
+      </svg>`;
+    }
+  },
+
+  {
+    id: 'anniversary-fun-1',
+    label: 'Champagne',
+    occasions: ['Anniversary'],
+    category: 'fun',
+    theme: 'gold',
+    render(w, h) {
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
+        <defs>
+          <linearGradient id="bgaf1" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#FFFBEA"/>
+            <stop offset="100%" stop-color="#FFF0B0"/>
+          </linearGradient>
+        </defs>
+        <rect width="${w}" height="${h}" fill="url(#bgaf1)"/>
+        ${[[0.1,0.7,'#D4AF37'],[0.15,0.45,'#E8C84A'],[0.08,0.25,'#D4AF37'],[0.22,0.6,'#C8A020'],[0.18,0.3,'#E8C84A'],[0.82,0.65,'#D4AF37'],[0.88,0.4,'#E8C84A'],[0.92,0.22,'#D4AF37'],[0.78,0.55,'#C8A020'],[0.85,0.28,'#E8C84A'],[0.5,0.15,'#D4AF37'],[0.45,0.6,'#E8C84A'],[0.55,0.65,'#C8A020']].map(([cx,cy,c])=>`<circle cx="${w*cx}" cy="${h*cy}" r="${w*0.018}" fill="${c}" opacity="0.6"/>`).join('')}
+        ${[[0.12,0.15],[0.88,0.18],[0.5,0.08]].map(([cx,cy])=>`<text x="${w*cx}" y="${h*cy}" text-anchor="middle" font-size="${w*0.05}" fill="#D4AF37" opacity="0.8">✦</text>`).join('')}
+        <line x1="${w*0.15}" y1="${h*0.82}" x2="${w*0.85}" y2="${h*0.82}" stroke="#D4AF37" stroke-width="1" opacity="0.6"/>
+        <text x="${w*0.5}" y="${h*0.6}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.1}" fill="#8A6A10" letter-spacing="0.5">Happy Anniversary!</text>
       </svg>`;
     }
   },
@@ -1583,6 +1633,319 @@ const CARD_HEADERS = [
         <line x1="${w*0.18}" y1="${h*0.82}" x2="${w*0.82}" y2="${h*0.82}" stroke="#E8A020" stroke-width="0.8" opacity="0.5"/>
         <!-- Text -->
         <text x="${w*0.5}" y="${h*0.62}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.1}" font-weight="700" fill="#B87010" letter-spacing="0.5">Thank You!</text>
+      </svg>`;
+    }
+  },
+
+  // ── CHRISTMAS ─────────────────────────────────────────────────────────────
+  {
+    id: 'christmas-classic-1',
+    label: 'Holly & Pine',
+    occasions: ['Christmas'],
+    category: 'classic',
+    theme: 'sage',
+    render(w, h) {
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
+        <defs>
+          <linearGradient id="bgcc1" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#F0F8F0"/>
+            <stop offset="100%" stop-color="#D0E8D0"/>
+          </linearGradient>
+        </defs>
+        <rect width="${w}" height="${h}" fill="url(#bgcc1)"/>
+        <!-- Pine branches left -->
+        <g opacity="0.55" transform="translate(${w*0.08},${h*0.5})">
+          <line x1="0" y1="${-h*0.4}" x2="0" y2="${h*0.4}" stroke="#2D5A2D" stroke-width="${w*0.003}"/>
+          ${[[-0.3,-0.08,-25],[-0.28,0.08,20],[-0.25,-0.22,-30],[-0.22,0.22,25],[-0.18,-0.35,-20],[-0.15,0.35,18]].map(([lx,ly,rot])=>`<ellipse cx="${w*lx}" cy="${h*ly}" rx="${w*0.065}" ry="${h*0.075}" fill="#3A7A3A" transform="rotate(${rot},${w*lx},${h*ly})" opacity="0.8"/>`).join('')}
+        </g>
+        <!-- Pine branches right -->
+        <g opacity="0.55" transform="translate(${w*0.92},${h*0.5}) scale(-1,1)">
+          <line x1="0" y1="${-h*0.4}" x2="0" y2="${h*0.4}" stroke="#2D5A2D" stroke-width="${w*0.003}"/>
+          ${[[-0.3,-0.08,-25],[-0.28,0.08,20],[-0.25,-0.22,-30],[-0.22,0.22,25],[-0.18,-0.35,-20],[-0.15,0.35,18]].map(([lx,ly,rot])=>`<ellipse cx="${w*lx}" cy="${h*ly}" rx="${w*0.065}" ry="${h*0.075}" fill="#3A7A3A" transform="rotate(${rot},${w*lx},${h*ly})" opacity="0.8"/>`).join('')}
+        </g>
+        <!-- Holly berries -->
+        ${[[0.08,0.12,'#CC2222'],[0.12,0.08,'#CC2222'],[0.92,0.12,'#CC2222'],[0.88,0.08,'#CC2222']].map(([cx,cy,c])=>`<circle cx="${w*cx}" cy="${h*cy}" r="${w*0.022}" fill="${c}" opacity="0.8"/>`).join('')}
+        <!-- Divider -->
+        <line x1="${w*0.18}" y1="${h*0.82}" x2="${w*0.82}" y2="${h*0.82}" stroke="#2D5A2D" stroke-width="0.6" opacity="0.5"/>
+        <!-- Text -->
+        <text x="${w*0.5}" y="${h*0.56}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.085}" font-style="italic" fill="#1A3A1A" letter-spacing="1">Merry Christmas</text>
+      </svg>`;
+    }
+  },
+
+  {
+    id: 'christmas-fun-1',
+    label: 'Festive',
+    occasions: ['Christmas'],
+    category: 'fun',
+    theme: 'sage',
+    render(w, h) {
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
+        <defs>
+          <linearGradient id="bgcf1x" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#F0FBF0"/>
+            <stop offset="100%" stop-color="#D8F0D8"/>
+          </linearGradient>
+        </defs>
+        <rect width="${w}" height="${h}" fill="url(#bgcf1x)"/>
+        <!-- Ornament balls -->
+        ${[[0.1,0.25,'#CC2222'],[0.2,0.6,'#D4AF37'],[0.32,0.18,'#2D5A2D'],[0.5,0.7,'#CC2222'],[0.68,0.2,'#D4AF37'],[0.8,0.62,'#2D5A2D'],[0.9,0.28,'#CC2222'],[0.42,0.45,'#D4AF37'],[0.62,0.5,'#CC2222']].map(([cx,cy,c])=>`<circle cx="${w*cx}" cy="${h*cy}" r="${w*0.022}" fill="${c}" opacity="0.75"/>`).join('')}
+        <!-- Stars -->
+        ${[[0.15,0.12],[0.85,0.15],[0.5,0.08]].map(([cx,cy])=>`<text x="${w*cx}" y="${h*cy}" text-anchor="middle" font-size="${w*0.055}" fill="#D4AF37" opacity="0.85">★</text>`).join('')}
+        <!-- Divider -->
+        <line x1="${w*0.15}" y1="${h*0.82}" x2="${w*0.85}" y2="${h*0.82}" stroke="#2D5A2D" stroke-width="0.8" opacity="0.5"/>
+        <!-- Text -->
+        <text x="${w*0.5}" y="${h*0.62}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.095}" font-weight="700" fill="#CC2222" letter-spacing="0.5">Merry Christmas!</text>
+      </svg>`;
+    }
+  },
+
+  // ── MOTHER'S DAY ──────────────────────────────────────────────────────────
+  {
+    id: 'mothersday-classic-1',
+    label: 'Garden Bloom',
+    occasions: ["Mother's Day"],
+    category: 'classic',
+    theme: 'blush',
+    render(w, h) {
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
+        <defs>
+          <linearGradient id="bgmd1" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#FFF5F8"/>
+            <stop offset="100%" stop-color="#F8DCE4"/>
+          </linearGradient>
+        </defs>
+        <rect width="${w}" height="${h}" fill="url(#bgmd1)"/>
+        <!-- Floral spray left -->
+        <g opacity="0.6" transform="translate(${w*0.1},${h*0.55})">
+          <line x1="0" y1="0" x2="${-w*0.04}" y2="${h*0.35}" stroke="#8B5A6A" stroke-width="${w*0.002}"/>
+          <line x1="0" y1="0" x2="${w*0.04}" y2="${h*0.3}" stroke="#8B5A6A" stroke-width="${w*0.002}"/>
+          <line x1="0" y1="0" x2="0" y2="${-h*0.4}" stroke="#8B5A6A" stroke-width="${w*0.002}"/>
+          <circle cx="0" cy="${-h*0.4}" r="${w*0.04}" fill="#E8A0B8" opacity="0.9"/>
+          <circle cx="${-w*0.04}" cy="${-h*0.15}" r="${w*0.035}" fill="#D4809A" opacity="0.8"/>
+          <circle cx="${w*0.045}" cy="${-h*0.2}" r="${w*0.03}" fill="#E8A0B8" opacity="0.8"/>
+          <ellipse cx="${-w*0.03}" cy="${h*0.1}" rx="${w*0.045}" ry="${h*0.08}" fill="#6AAA6A" transform="rotate(-25,${-w*0.03},${h*0.1})" opacity="0.7"/>
+        </g>
+        <!-- Floral spray right -->
+        <g opacity="0.6" transform="translate(${w*0.9},${h*0.55}) scale(-1,1)">
+          <line x1="0" y1="0" x2="${-w*0.04}" y2="${h*0.35}" stroke="#8B5A6A" stroke-width="${w*0.002}"/>
+          <line x1="0" y1="0" x2="${w*0.04}" y2="${h*0.3}" stroke="#8B5A6A" stroke-width="${w*0.002}"/>
+          <line x1="0" y1="0" x2="0" y2="${-h*0.4}" stroke="#8B5A6A" stroke-width="${w*0.002}"/>
+          <circle cx="0" cy="${-h*0.4}" r="${w*0.04}" fill="#E8A0B8" opacity="0.9"/>
+          <circle cx="${-w*0.04}" cy="${-h*0.15}" r="${w*0.035}" fill="#D4809A" opacity="0.8"/>
+          <circle cx="${w*0.045}" cy="${-h*0.2}" r="${w*0.03}" fill="#E8A0B8" opacity="0.8"/>
+          <ellipse cx="${-w*0.03}" cy="${h*0.1}" rx="${w*0.045}" ry="${h*0.08}" fill="#6AAA6A" transform="rotate(-25,${-w*0.03},${h*0.1})" opacity="0.7"/>
+        </g>
+        <line x1="${w*0.2}" y1="${h*0.8}" x2="${w*0.8}" y2="${h*0.8}" stroke="#C07090" stroke-width="0.6" opacity="0.5"/>
+        <text x="${w*0.5}" y="${h*0.55}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.085}" font-style="italic" fill="#8A3050" letter-spacing="1">Happy Mother's Day</text>
+      </svg>`;
+    }
+  },
+
+  {
+    id: 'mothersday-fun-1',
+    label: 'Bloom Burst',
+    occasions: ["Mother's Day"],
+    category: 'fun',
+    theme: 'blush',
+    render(w, h) {
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
+        <defs>
+          <linearGradient id="bgmf1" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#FFF0F5"/>
+            <stop offset="100%" stop-color="#FFD8E8"/>
+          </linearGradient>
+        </defs>
+        <rect width="${w}" height="${h}" fill="url(#bgmf1)"/>
+        <!-- Flower heads scattered -->
+        ${[[0.1,0.3,'#F472A0'],[0.22,0.65,'#E8A0C0'],[0.38,0.15,'#F472A0'],[0.5,0.6,'#E060A0'],[0.65,0.18,'#F472A0'],[0.78,0.62,'#E8A0C0'],[0.9,0.3,'#F472A0'],[0.3,0.5,'#E8A0C0'],[0.7,0.48,'#E060A0']].map(([cx,cy,c])=>`<circle cx="${w*cx}" cy="${h*cy}" r="${w*0.025}" fill="${c}" opacity="0.7"/>`).join('')}
+        <!-- Leaf accents -->
+        ${[[0.12,0.5,'#6AAA6A'],[0.88,0.5,'#6AAA6A'],[0.5,0.12,'#6AAA6A']].map(([cx,cy,c])=>`<ellipse cx="${w*cx}" cy="${h*cy}" rx="${w*0.03}" ry="${h*0.06}" fill="${c}" opacity="0.5"/>`).join('')}
+        <line x1="${w*0.15}" y1="${h*0.82}" x2="${w*0.85}" y2="${h*0.82}" stroke="#F472A0" stroke-width="0.8" opacity="0.5"/>
+        <text x="${w*0.5}" y="${h*0.62}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.09}" font-weight="700" fill="#C0306A" letter-spacing="0.5">Happy Mother's Day!</text>
+      </svg>`;
+    }
+  },
+
+  // ── FATHER'S DAY ──────────────────────────────────────────────────────────
+  {
+    id: 'fathersday-classic-1',
+    label: 'Classic Navy',
+    occasions: ["Father's Day"],
+    category: 'classic',
+    theme: 'twilight',
+    render(w, h) {
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
+        <defs>
+          <linearGradient id="bgfd1" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#F0F2F8"/>
+            <stop offset="100%" stop-color="#D8DCF0"/>
+          </linearGradient>
+        </defs>
+        <rect width="${w}" height="${h}" fill="url(#bgfd1)"/>
+        <!-- Strong geometric border lines -->
+        <line x1="${w*0.06}" y1="${h*0.08}" x2="${w*0.06}" y2="${h*0.92}" stroke="#2A3A6A" stroke-width="${w*0.006}" opacity="0.4"/>
+        <line x1="${w*0.94}" y1="${h*0.08}" x2="${w*0.94}" y2="${h*0.92}" stroke="#2A3A6A" stroke-width="${w*0.006}" opacity="0.4"/>
+        <line x1="${w*0.06}" y1="${h*0.08}" x2="${w*0.94}" y2="${h*0.08}" stroke="#2A3A6A" stroke-width="${w*0.004}" opacity="0.3"/>
+        <!-- Corner dots -->
+        ${[[0.06,0.08],[0.94,0.08],[0.06,0.92],[0.94,0.92]].map(([cx,cy])=>`<circle cx="${w*cx}" cy="${h*cy}" r="${w*0.015}" fill="#2A3A6A" opacity="0.5"/>`).join('')}
+        <!-- Subtle oak leaf motif -->
+        <g opacity="0.2" transform="translate(${w*0.5},${h*0.35})">
+          <ellipse cx="0" cy="${-h*0.15}" rx="${w*0.07}" ry="${h*0.12}" fill="#2A3A6A"/>
+          <ellipse cx="${-w*0.07}" cy="0" rx="${w*0.065}" ry="${h*0.11}" fill="#2A3A6A" transform="rotate(-40,${-w*0.07},0)"/>
+          <ellipse cx="${w*0.07}" cy="0" rx="${w*0.065}" ry="${h*0.11}" fill="#2A3A6A" transform="rotate(40,${w*0.07},0)"/>
+        </g>
+        <!-- Divider -->
+        <line x1="${w*0.2}" y1="${h*0.78}" x2="${w*0.8}" y2="${h*0.78}" stroke="#2A3A6A" stroke-width="0.8" opacity="0.4"/>
+        <text x="${w*0.5}" y="${h*0.56}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.085}" font-style="italic" fill="#1A2A5A" letter-spacing="1">Happy Father's Day</text>
+      </svg>`;
+    }
+  },
+
+  {
+    id: 'fathersday-fun-1',
+    label: 'Bold & Bright',
+    occasions: ["Father's Day"],
+    category: 'fun',
+    theme: 'twilight',
+    render(w, h) {
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
+        <defs>
+          <linearGradient id="bgff1" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#EEF0FF"/>
+            <stop offset="100%" stop-color="#D8DCFF"/>
+          </linearGradient>
+        </defs>
+        <rect width="${w}" height="${h}" fill="url(#bgff1)"/>
+        <!-- Bold stripes top -->
+        <rect x="0" y="0" width="${w}" height="${h*0.12}" fill="#2A3A6A" opacity="0.15"/>
+        <!-- Stars scattered -->
+        ${[[0.1,0.3,'#D4AF37'],[0.25,0.65,'#2A3A6A'],[0.5,0.18,'#D4AF37'],[0.75,0.62,'#2A3A6A'],[0.9,0.28,'#D4AF37'],[0.38,0.45,'#2A3A6A'],[0.65,0.4,'#D4AF37']].map(([cx,cy,c])=>`<text x="${w*cx}" y="${h*cy}" text-anchor="middle" font-size="${w*0.045}" fill="${c}" opacity="0.6">★</text>`).join('')}
+        <line x1="${w*0.12}" y1="${h*0.82}" x2="${w*0.88}" y2="${h*0.82}" stroke="#2A3A6A" stroke-width="1.5" opacity="0.4"/>
+        <text x="${w*0.5}" y="${h*0.62}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.09}" font-weight="700" fill="#1A2A5A" letter-spacing="0.5">Happy Father's Day!</text>
+      </svg>`;
+    }
+  },
+
+  // ── GET WELL ──────────────────────────────────────────────────────────────
+  {
+    id: 'getwell-classic-1',
+    label: 'Warm Wishes',
+    occasions: ['Get well'],
+    category: 'classic',
+    theme: 'warm',
+    render(w, h) {
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
+        <defs>
+          <linearGradient id="bggw1" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#FFF8F0"/>
+            <stop offset="100%" stop-color="#FDE8D0"/>
+          </linearGradient>
+        </defs>
+        <rect width="${w}" height="${h}" fill="url(#bggw1)"/>
+        <!-- Gentle sun top center -->
+        <circle cx="${w*0.5}" cy="${h*0.25}" r="${w*0.08}" fill="#F5C060" opacity="0.35"/>
+        <!-- Sun rays -->
+        <g opacity="0.18" transform="translate(${w*0.5},${h*0.25})">
+          ${[0,45,90,135,180,225,270,315].map(a=>`<line x1="0" y1="0" x2="${Math.cos(a*Math.PI/180)*w*0.18}" y2="${Math.sin(a*Math.PI/180)*h*0.22}" stroke="#E8A020" stroke-width="${w*0.004}"/>`).join('')}
+        </g>
+        <!-- Small flowers bottom corners -->
+        <circle cx="${w*0.12}" cy="${h*0.72}" r="${w*0.035}" fill="#F4A0B0" opacity="0.6"/>
+        <circle cx="${w*0.88}" cy="${h*0.72}" r="${w*0.035}" fill="#F4A0B0" opacity="0.6"/>
+        <circle cx="${w*0.08}" cy="${h*0.62}" r="${w*0.025}" fill="#F4B8C0" opacity="0.5"/>
+        <circle cx="${w*0.92}" cy="${h*0.62}" r="${w*0.025}" fill="#F4B8C0" opacity="0.5"/>
+        <line x1="${w*0.2}" y1="${h*0.82}" x2="${w*0.8}" y2="${h*0.82}" stroke="#E8A060" stroke-width="0.6" opacity="0.5"/>
+        <text x="${w*0.5}" y="${h*0.58}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.085}" font-style="italic" fill="#8A4A20" letter-spacing="1">Get Well Soon</text>
+      </svg>`;
+    }
+  },
+
+  {
+    id: 'getwell-fun-1',
+    label: 'Sunshine',
+    occasions: ['Get well'],
+    category: 'fun',
+    theme: 'warm',
+    render(w, h) {
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
+        <defs>
+          <linearGradient id="bggf1" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#FFF8E8"/>
+            <stop offset="100%" stop-color="#FFE8C0"/>
+          </linearGradient>
+        </defs>
+        <rect width="${w}" height="${h}" fill="url(#bggf1)"/>
+        <!-- Big cheerful sun -->
+        <g opacity="0.3" transform="translate(${w*0.5},${h*0.35})">
+          ${[0,30,60,90,120,150,180,210,240,270,300,330].map(a=>`<line x1="0" y1="0" x2="${Math.cos(a*Math.PI/180)*w*0.42}" y2="${Math.sin(a*Math.PI/180)*h*0.38}" stroke="#F5A020" stroke-width="${w*0.005}"/>`).join('')}
+        </g>
+        <circle cx="${w*0.5}" cy="${h*0.35}" r="${w*0.12}" fill="#F5C030" opacity="0.5"/>
+        <!-- Colorful dots -->
+        ${[[0.1,0.2,'#F472A0'],[0.15,0.7,'#6AAA6A'],[0.85,0.22,'#F472A0'],[0.9,0.68,'#6AAA6A'],[0.3,0.12,'#8890E0'],[0.7,0.15,'#8890E0']].map(([cx,cy,c])=>`<circle cx="${w*cx}" cy="${h*cy}" r="${w*0.018}" fill="${c}" opacity="0.65"/>`).join('')}
+        <line x1="${w*0.15}" y1="${h*0.82}" x2="${w*0.85}" y2="${h*0.82}" stroke="#F5A020" stroke-width="0.8" opacity="0.5"/>
+        <text x="${w*0.5}" y="${h*0.7}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.09}" font-weight="700" fill="#B86010" letter-spacing="0.5">Feel Better Soon!</text>
+      </svg>`;
+    }
+  },
+
+  // ── NEW YEAR ──────────────────────────────────────────────────────────────
+  {
+    id: 'newyear-classic-1',
+    label: 'Midnight Gold',
+    occasions: ['New Year'],
+    category: 'classic',
+    theme: 'gold',
+    render(w, h) {
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
+        <defs>
+          <linearGradient id="bgny1" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#1A1A2E"/>
+            <stop offset="100%" stop-color="#2A2A4A"/>
+          </linearGradient>
+        </defs>
+        <rect width="${w}" height="${h}" fill="url(#bgny1)"/>
+        <!-- Stars -->
+        ${[[0.1,0.15],[0.2,0.4],[0.15,0.65],[0.3,0.2],[0.45,0.55],[0.55,0.15],[0.7,0.45],[0.8,0.2],[0.85,0.6],[0.9,0.35],[0.5,0.35]].map(([cx,cy])=>`<circle cx="${w*cx}" cy="${h*cy}" r="${w*0.008}" fill="#D4AF37" opacity="${0.4+Math.random()*0.5}"/>`).join('')}
+        <!-- Large star -->
+        <text x="${w*0.5}" y="${h*0.3}" text-anchor="middle" font-size="${w*0.08}" fill="#D4AF37" opacity="0.8">✦</text>
+        <!-- Firework bursts -->
+        <g opacity="0.4" transform="translate(${w*0.2},${h*0.3})">
+          ${[0,60,120,180,240,300].map(a=>`<line x1="0" y1="0" x2="${Math.cos(a*Math.PI/180)*w*0.06}" y2="${Math.sin(a*Math.PI/180)*h*0.08}" stroke="#D4AF37" stroke-width="${w*0.003}"/>`).join('')}
+        </g>
+        <g opacity="0.4" transform="translate(${w*0.8},${h*0.28})">
+          ${[0,60,120,180,240,300].map(a=>`<line x1="0" y1="0" x2="${Math.cos(a*Math.PI/180)*w*0.06}" y2="${Math.sin(a*Math.PI/180)*h*0.08}" stroke="#D4AF37" stroke-width="${w*0.003}"/>`).join('')}
+        </g>
+        <!-- Divider -->
+        <line x1="${w*0.2}" y1="${h*0.8}" x2="${w*0.8}" y2="${h*0.8}" stroke="#D4AF37" stroke-width="0.6" opacity="0.6"/>
+        <text x="${w*0.5}" y="${h*0.62}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.085}" font-style="italic" fill="#D4AF37" letter-spacing="1">Happy New Year</text>
+      </svg>`;
+    }
+  },
+
+  {
+    id: 'newyear-fun-1',
+    label: 'Countdown',
+    occasions: ['New Year'],
+    category: 'fun',
+    theme: 'gold',
+    render(w, h) {
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
+        <defs>
+          <linearGradient id="bgnf1" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#1A1A3A"/>
+            <stop offset="100%" stop-color="#2A2060"/>
+          </linearGradient>
+        </defs>
+        <rect width="${w}" height="${h}" fill="url(#bgnf1)"/>
+        <!-- Fireworks -->
+        ${[[0.2,0.3,'#D4AF37'],[0.5,0.2,'#F472A0'],[0.8,0.32,'#8890E0']].map(([cx,cy,c])=>
+          [0,45,90,135,180,225,270,315].map(a=>`<line x1="${w*cx}" y1="${h*cy}" x2="${w*cx+Math.cos(a*Math.PI/180)*w*0.07}" y2="${h*cy+Math.sin(a*Math.PI/180)*h*0.09}" stroke="${c}" stroke-width="${w*0.003}" opacity="0.7"/>`).join('')
+        ).join('')}
+        <!-- Burst centers -->
+        ${[[0.2,0.3,'#D4AF37'],[0.5,0.2,'#F472A0'],[0.8,0.32,'#8890E0']].map(([cx,cy,c])=>`<circle cx="${w*cx}" cy="${h*cy}" r="${w*0.02}" fill="${c}" opacity="0.9"/>`).join('')}
+        <!-- Confetti -->
+        ${[[0.1,0.6,'#D4AF37'],[0.3,0.7,'#F472A0'],[0.7,0.65,'#8890E0'],[0.9,0.58,'#D4AF37'],[0.5,0.72,'#F472A0']].map(([cx,cy,c])=>`<rect x="${w*cx-4}" y="${h*cy-4}" width="8" height="8" fill="${c}" opacity="0.7" transform="rotate(45,${w*cx},${h*cy})"/>`).join('')}
+        <text x="${w*0.5}" y="${h*0.7}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.09}" font-weight="700" fill="#D4AF37" letter-spacing="0.5">Happy New Year!</text>
       </svg>`;
     }
   },
@@ -1962,10 +2325,57 @@ const PDF_HEADER_RENDERERS = {
     doc.circle(pw/2, H - 12, 4, 'F');
 
     doc.setFont('times', 'italic');
-    doc.setFontSize(30);
+    doc.setFontSize(26);
     doc.setTextColor(122, 96, 16);
-    doc.text('With Love', pw/2, 118, { align: 'center' });
+    doc.text('On Your Wedding Day', pw/2, 118, { align: 'center' });
 
+    return H + 36;
+  },
+
+  'anniversary-classic-1': function(doc, pw, ph, margin) {
+    const H = 190;
+    doc.setFillColor(255, 255, 240);
+    doc.rect(0, 0, pw, H, 'F');
+    doc.setGState(new doc.GState({opacity: 0.5}));
+    doc.setDrawColor(184, 134, 11);
+    doc.setLineWidth(0.8);
+    doc.line(margin + 10, H, margin + 30, H - 80);
+    doc.line(pw - margin - 10, H, pw - margin - 30, H - 80);
+    doc.setFillColor(212, 175, 55);
+    doc.ellipse(margin + 22, 130, 14, 8, 'F');
+    doc.ellipse(margin + 34, 100, 10, 6, 'F');
+    doc.ellipse(pw - margin - 22, 130, 14, 8, 'F');
+    doc.ellipse(pw - margin - 34, 100, 10, 6, 'F');
+    doc.setGState(new doc.GState({opacity: 1}));
+    doc.setDrawColor(212, 175, 55);
+    doc.setLineWidth(0.6);
+    doc.line(margin + 30, H - 12, pw - margin - 30, H - 12);
+    doc.setFillColor(212, 175, 55);
+    doc.circle(pw/2, H - 12, 4, 'F');
+    doc.setFont('times', 'italic');
+    doc.setFontSize(28);
+    doc.setTextColor(122, 96, 16);
+    doc.text('Happy Anniversary', pw/2, 118, { align: 'center' });
+    return H + 36;
+  },
+
+  'anniversary-fun-1': function(doc, pw, ph, margin) {
+    const H = 190;
+    doc.setFillColor(255, 251, 234);
+    doc.rect(0, 0, pw, H, 'F');
+    [[0.1,0.7],[0.15,0.45],[0.08,0.25],[0.22,0.6],[0.18,0.3],[0.82,0.65],[0.88,0.4],[0.92,0.22],[0.78,0.55],[0.85,0.28],[0.5,0.15]].forEach(([rx,ry]) => {
+      doc.setFillColor(212, 175, 55);
+      doc.setGState(new doc.GState({opacity: 0.55}));
+      doc.circle(pw*rx, H*ry, 5, 'F');
+    });
+    doc.setGState(new doc.GState({opacity: 1}));
+    doc.setDrawColor(212, 175, 55);
+    doc.setLineWidth(0.8);
+    doc.line(pw*0.15, H - 14, pw*0.85, H - 14);
+    doc.setFont('times', 'normal');
+    doc.setFontSize(26);
+    doc.setTextColor(138, 106, 16);
+    doc.text('Happy Anniversary!', pw/2, 118, { align: 'center' });
     return H + 36;
   },
 
@@ -2193,6 +2603,239 @@ const PDF_HEADER_RENDERERS = {
     doc.setFontSize(28);
     doc.setTextColor(184, 112, 16);
     doc.text('Thank You!', pw/2, 128, { align: 'center' });
+    return H + 36;
+  },
+
+  'christmas-classic-1': function(doc, pw, ph, margin) {
+    const H = 190;
+    doc.setFillColor(240, 248, 240);
+    doc.rect(0, 0, pw, H, 'F');
+    doc.setGState(new doc.GState({opacity: 0.55}));
+    doc.setFillColor(58, 122, 58);
+    [[-5,70,14,8],[ 8,50,12,7],[-2,95,12,7],[14,115,11,6],[5,32,10,6]].forEach(([ox,oy,rx,ry]) => {
+      doc.ellipse(margin+ox, oy, rx, ry, 'F');
+      doc.ellipse(pw-margin-ox, oy, rx, ry, 'F');
+    });
+    doc.setFillColor(204, 34, 34);
+    [[margin+8,28],[margin+18,22],[pw-margin-8,28],[pw-margin-18,22]].forEach(([x,y]) => doc.circle(x,y,6,'F'));
+    doc.setGState(new doc.GState({opacity: 1}));
+    doc.setDrawColor(45, 90, 45);
+    doc.setLineWidth(0.6);
+    doc.line(margin+20, H-12, pw-margin-20, H-12);
+    doc.setFont('times', 'italic');
+    doc.setFontSize(28);
+    doc.setTextColor(26, 58, 26);
+    doc.text('Merry Christmas', pw/2, 128, { align: 'center' });
+    return H + 36;
+  },
+
+  'christmas-fun-1': function(doc, pw, ph, margin) {
+    const H = 190;
+    doc.setFillColor(240, 251, 240);
+    doc.rect(0, 0, pw, H, 'F');
+    [[0.1,0.25,[204,34,34]],[0.2,0.6,[212,175,55]],[0.32,0.18,[45,90,45]],[0.5,0.7,[204,34,34]],[0.68,0.2,[212,175,55]],[0.8,0.62,[45,90,45]],[0.9,0.28,[204,34,34]]].forEach(([rx,ry,c]) => {
+      doc.setFillColor(c[0],c[1],c[2]);
+      doc.setGState(new doc.GState({opacity: 0.75}));
+      doc.circle(pw*rx, H*ry, 7, 'F');
+    });
+    doc.setGState(new doc.GState({opacity: 1}));
+    doc.setFont('times', 'bold');
+    doc.setFontSize(28);
+    doc.setTextColor(204, 34, 34);
+    doc.text('Merry Christmas!', pw/2, 128, { align: 'center' });
+    return H + 36;
+  },
+
+  'mothersday-classic-1': function(doc, pw, ph, margin) {
+    const H = 190;
+    doc.setFillColor(255, 245, 248);
+    doc.rect(0, 0, pw, H, 'F');
+    doc.setGState(new doc.GState({opacity: 0.6}));
+    doc.setFillColor(232, 160, 184);
+    doc.circle(margin+8, 100, 16, 'F');
+    doc.setFillColor(212, 128, 154);
+    doc.circle(margin+20, 84, 14, 'F');
+    doc.setFillColor(232, 160, 184);
+    doc.circle(margin+4, 80, 11, 'F');
+    doc.setFillColor(106, 170, 106);
+    doc.ellipse(margin-6, 130, 12, 7, 'F');
+    doc.circle(margin+8, 100, 16, 'F');
+    doc.setFillColor(232, 160, 184);
+    doc.circle(pw-margin-8, 100, 16, 'F');
+    doc.setFillColor(212, 128, 154);
+    doc.circle(pw-margin-20, 84, 14, 'F');
+    doc.setFillColor(232, 160, 184);
+    doc.circle(pw-margin-4, 80, 11, 'F');
+    doc.setFillColor(106, 170, 106);
+    doc.ellipse(pw-margin+6, 130, 12, 7, 'F');
+    doc.setGState(new doc.GState({opacity: 1}));
+    doc.setDrawColor(192, 112, 144);
+    doc.setLineWidth(0.5);
+    doc.line(pw*0.22, H-14, pw*0.78, H-14);
+    doc.setFont('times', 'italic');
+    doc.setFontSize(24);
+    doc.setTextColor(138, 48, 80);
+    doc.text("Happy Mother's Day", pw/2, 128, { align: 'center' });
+    return H + 36;
+  },
+
+  'mothersday-fun-1': function(doc, pw, ph, margin) {
+    const H = 190;
+    doc.setFillColor(255, 240, 245);
+    doc.rect(0, 0, pw, H, 'F');
+    [[0.1,0.3,[244,114,160]],[0.22,0.65,[232,160,192]],[0.38,0.15,[244,114,160]],[0.5,0.6,[224,96,160]],[0.65,0.18,[244,114,160]],[0.78,0.62,[232,160,192]],[0.9,0.3,[244,114,160]]].forEach(([rx,ry,c]) => {
+      doc.setFillColor(c[0],c[1],c[2]);
+      doc.setGState(new doc.GState({opacity: 0.7}));
+      doc.circle(pw*rx, H*ry, 8, 'F');
+    });
+    doc.setGState(new doc.GState({opacity: 1}));
+    doc.setFont('times', 'bold');
+    doc.setFontSize(24);
+    doc.setTextColor(192, 48, 106);
+    doc.text("Happy Mother's Day!", pw/2, 148, { align: 'center' });
+    return H + 36;
+  },
+
+  'fathersday-classic-1': function(doc, pw, ph, margin) {
+    const H = 190;
+    doc.setFillColor(240, 242, 248);
+    doc.rect(0, 0, pw, H, 'F');
+    doc.setDrawColor(42, 58, 106);
+    doc.setLineWidth(pw*0.006);
+    doc.setGState(new doc.GState({opacity: 0.4}));
+    doc.line(margin*0.6, H*0.08, margin*0.6, H*0.92);
+    doc.line(pw-margin*0.6, H*0.08, pw-margin*0.6, H*0.92);
+    doc.line(margin*0.6, H*0.08, pw-margin*0.6, H*0.08);
+    doc.setGState(new doc.GState({opacity: 1}));
+    doc.setDrawColor(42, 58, 106);
+    doc.setLineWidth(0.8);
+    doc.line(pw*0.2, H-12, pw*0.8, H-12);
+    doc.setFont('times', 'italic');
+    doc.setFontSize(26);
+    doc.setTextColor(26, 42, 90);
+    doc.text("Happy Father's Day", pw/2, 118, { align: 'center' });
+    return H + 36;
+  },
+
+  'fathersday-fun-1': function(doc, pw, ph, margin) {
+    const H = 190;
+    doc.setFillColor(238, 240, 255);
+    doc.rect(0, 0, pw, H, 'F');
+    doc.setFillColor(42, 58, 106);
+    doc.setGState(new doc.GState({opacity: 0.15}));
+    doc.rect(0, 0, pw, H*0.12, 'F');
+    doc.setGState(new doc.GState({opacity: 1}));
+    [[0.1,0.3,[212,175,55]],[0.25,0.65,[42,58,106]],[0.5,0.18,[212,175,55]],[0.75,0.62,[42,58,106]],[0.9,0.28,[212,175,55]]].forEach(([rx,ry,c]) => {
+      doc.setFontSize(14);
+      doc.setTextColor(c[0],c[1],c[2]);
+      doc.setGState(new doc.GState({opacity: 0.6}));
+      doc.text('★', pw*rx, H*ry, { align: 'center' });
+    });
+    doc.setGState(new doc.GState({opacity: 1}));
+    doc.setFont('times', 'bold');
+    doc.setFontSize(26);
+    doc.setTextColor(26, 42, 90);
+    doc.text("Happy Father's Day!", pw/2, 128, { align: 'center' });
+    return H + 36;
+  },
+
+  'getwell-classic-1': function(doc, pw, ph, margin) {
+    const H = 190;
+    doc.setFillColor(255, 248, 240);
+    doc.rect(0, 0, pw, H, 'F');
+    doc.setGState(new doc.GState({opacity: 0.3}));
+    for (let a = 0; a < 360; a += 45) {
+      const rad = a * Math.PI / 180;
+      doc.setDrawColor(232, 160, 32);
+      doc.setLineWidth(0.8);
+      doc.line(pw/2, H*0.32, pw/2 + Math.cos(rad)*pw*0.16, H*0.32 + Math.sin(rad)*H*0.18);
+    }
+    doc.setFillColor(245, 192, 96);
+    doc.setGState(new doc.GState({opacity: 0.35}));
+    doc.circle(pw/2, H*0.32, pw*0.08, 'F');
+    doc.setGState(new doc.GState({opacity: 0.6}));
+    doc.setFillColor(244, 160, 176);
+    doc.circle(margin+12, H*0.7, 10, 'F');
+    doc.circle(pw-margin-12, H*0.7, 10, 'F');
+    doc.setGState(new doc.GState({opacity: 1}));
+    doc.setDrawColor(232, 160, 96);
+    doc.setLineWidth(0.6);
+    doc.line(pw*0.2, H-14, pw*0.8, H-14);
+    doc.setFont('times', 'italic');
+    doc.setFontSize(26);
+    doc.setTextColor(138, 74, 32);
+    doc.text('Get Well Soon', pw/2, 148, { align: 'center' });
+    return H + 36;
+  },
+
+  'getwell-fun-1': function(doc, pw, ph, margin) {
+    const H = 190;
+    doc.setFillColor(255, 248, 232);
+    doc.rect(0, 0, pw, H, 'F');
+    doc.setGState(new doc.GState({opacity: 0.25}));
+    for (let a = 0; a < 360; a += 30) {
+      const rad = a * Math.PI / 180;
+      doc.setDrawColor(245, 160, 32);
+      doc.setLineWidth(0.8);
+      doc.line(pw/2, H*0.38, pw/2 + Math.cos(rad)*pw*0.4, H*0.38 + Math.sin(rad)*H*0.38);
+    }
+    doc.setFillColor(245, 192, 48);
+    doc.setGState(new doc.GState({opacity: 0.5}));
+    doc.circle(pw/2, H*0.38, pw*0.12, 'F');
+    doc.setGState(new doc.GState({opacity: 1}));
+    doc.setFont('times', 'bold');
+    doc.setFontSize(26);
+    doc.setTextColor(184, 96, 16);
+    doc.text('Feel Better Soon!', pw/2, H*0.78, { align: 'center' });
+    return H + 36;
+  },
+
+  'newyear-classic-1': function(doc, pw, ph, margin) {
+    const H = 190;
+    doc.setFillColor(26, 26, 46);
+    doc.rect(0, 0, pw, H, 'F');
+    doc.setFillColor(212, 175, 55);
+    doc.setGState(new doc.GState({opacity: 0.6}));
+    [[0.1,0.15],[0.2,0.4],[0.15,0.65],[0.3,0.2],[0.45,0.55],[0.55,0.15],[0.7,0.45],[0.8,0.2],[0.85,0.6],[0.9,0.35],[0.5,0.35]].forEach(([rx,ry]) => {
+      doc.circle(pw*rx, H*ry, 2, 'F');
+    });
+    [0,60,120,180,240,300].forEach(a => {
+      const rad = a * Math.PI / 180;
+      doc.line(pw*0.2, H*0.3, pw*0.2 + Math.cos(rad)*pw*0.06, H*0.3 + Math.sin(rad)*H*0.08);
+      doc.line(pw*0.8, H*0.28, pw*0.8 + Math.cos(rad)*pw*0.06, H*0.28 + Math.sin(rad)*H*0.08);
+    });
+    doc.setGState(new doc.GState({opacity: 1}));
+    doc.setDrawColor(212, 175, 55);
+    doc.setLineWidth(0.6);
+    doc.line(pw*0.2, H-14, pw*0.8, H-14);
+    doc.setFont('times', 'italic');
+    doc.setFontSize(26);
+    doc.setTextColor(212, 175, 55);
+    doc.text('Happy New Year', pw/2, 128, { align: 'center' });
+    return H + 36;
+  },
+
+  'newyear-fun-1': function(doc, pw, ph, margin) {
+    const H = 190;
+    doc.setFillColor(26, 26, 58);
+    doc.rect(0, 0, pw, H, 'F');
+    [[0.2,0.3,[212,175,55]],[0.5,0.2,[244,114,160]],[0.8,0.32,[136,144,224]]].forEach(([rx,ry,c]) => {
+      doc.setGState(new doc.GState({opacity: 0.7}));
+      [0,45,90,135,180,225,270,315].forEach(a => {
+        const rad = a * Math.PI / 180;
+        doc.setDrawColor(c[0],c[1],c[2]);
+        doc.setLineWidth(0.8);
+        doc.line(pw*rx, H*ry, pw*rx + Math.cos(rad)*pw*0.07, H*ry + Math.sin(rad)*H*0.09);
+      });
+      doc.setFillColor(c[0],c[1],c[2]);
+      doc.setGState(new doc.GState({opacity: 0.9}));
+      doc.circle(pw*rx, H*ry, 5, 'F');
+    });
+    doc.setGState(new doc.GState({opacity: 1}));
+    doc.setFont('times', 'bold');
+    doc.setFontSize(26);
+    doc.setTextColor(212, 175, 55);
+    doc.text('Happy New Year!', pw/2, H*0.82, { align: 'center' });
     return H + 36;
   }
 

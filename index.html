@@ -411,7 +411,6 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
   <div class="top-nav"><div class="nav-brand" onclick="showScreen('landing')">Heart<em>penned</em></div></div>
   <div style="max-width:560px;margin:0 auto;padding:1.5rem 2rem;">
     <div class="card-surface">
-      <div class="card-header-zone" id="card-header-zone"></div>
       <svg class="card-corner" style="top:10px;left:10px;width:28px;height:28px;" viewBox="0 0 32 32"><path d="M2 16 Q2 2 16 2" stroke="#2A4A80" stroke-width="1" fill="none"/><path d="M2 22 Q2 2 22 2" stroke="#2A4A80" stroke-width="0.6" fill="none"/><circle cx="2" cy="2" r="2" fill="#2A4A80"/></svg>
       <svg class="card-corner" style="bottom:10px;right:10px;width:28px;height:28px;" viewBox="0 0 32 32"><path d="M30 16 Q30 30 16 30" stroke="#2A4A80" stroke-width="1" fill="none"/><path d="M30 10 Q30 30 10 30" stroke="#2A4A80" stroke-width="0.6" fill="none"/><circle cx="30" cy="30" r="2" fill="#2A4A80"/></svg>
       <div class="card-text" id="card-text"></div>
@@ -453,6 +452,19 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
       <div class="card-text" id="del-card-text" style="font-size:14px;"></div>
       <div class="card-mark">Heartpenned</div>
     </div>
+
+    <!-- Delivery screen style picker -->
+    <div style="margin-bottom:1rem;">
+      <div class="print-panel-label">Card style</div>
+      <div class="header-category-tabs">
+        <div class="hcat-tab active" id="delcat-classic" onclick="switchDeliveryStyle('classic')">Classic</div>
+        <div class="hcat-tab" id="delcat-fun" onclick="switchDeliveryStyle('fun')">Fun</div>
+        <div class="hcat-tab" id="delcat-color" onclick="switchDeliveryStyle('color')">Color</div>
+      </div>
+      <div class="header-thumbs" id="delivery-header-thumbs"></div>
+      <div id="delivery-color-swatches" style="display:none;flex-wrap:wrap;gap:8px;margin-bottom:0.5rem;"></div>
+    </div>
+
     <div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:1rem;">How would you like to send it?</div>
     <div class="del-grid">
       <div class="d-btn" id="dbtn-digital" onclick="handleDel('digital')"><div class="d-btn-title">Send digitally</div><div class="d-btn-sub">Copy &amp; paste to text or email</div></div>
@@ -585,25 +597,20 @@ function getThemeForOccasion(occ) {
 }
 
 function applyDefaultHeader(occ) {
-  // Pick the first classic header matching this occasion
   let header = CARD_HEADERS.find(h => h.category === 'classic' && h.occasions.some(o => o.toLowerCase() === (occ||'').toLowerCase()));
-  if (!header) header = CARD_HEADERS[0]; // fallback to first header
+  if (!header) header = CARD_HEADERS[0];
 
-  // Store as the active header for both delivery panels
   activeHeaderId = header.id;
   activeDigitalHeaderId = header.id;
 
-  // Render into card screen
-  const zone = document.getElementById('card-header-zone');
-  if (zone) zone.innerHTML = header.render(zone.offsetWidth || 320, 100);
-
-  // Render into delivery screen
+  // Render into delivery screen only
   const delZone = document.getElementById('del-card-header-zone');
   if (delZone) delZone.innerHTML = header.render(delZone.offsetWidth || 320, 100);
 
-  // Set card-surface background to match header body color
+  // Set delivery card-surface background
   const bodyBg = getHeaderBodyBg(header);
-  document.querySelectorAll('.card-surface').forEach(el => el.style.background = bodyBg);
+  const delSurface = document.querySelector('#screen-delivery .card-surface');
+  if (delSurface) delSurface.style.background = bodyBg;
   activeTheme = header.theme;
 }
 
@@ -935,15 +942,74 @@ async function tryAnother(){
   }catch(e){alert('Something went wrong: '+e.message);showScreen('card');}
 }
 
+function switchDeliveryStyle(cat) {
+  document.querySelectorAll('#screen-delivery .hcat-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('delcat-' + cat).classList.add('active');
+
+  const thumbs = document.getElementById('delivery-header-thumbs');
+  const colorSwatches = document.getElementById('delivery-color-swatches');
+
+  if (cat === 'color') {
+    thumbs.style.display = 'none';
+    colorSwatches.style.display = 'flex';
+    colorSwatches.innerHTML = '';
+    CARD_THEMES.forEach(t => {
+      const s = document.createElement('div');
+      s.style.cssText = `width:36px;height:36px;border-radius:50%;background:${t.swatch};cursor:pointer;border:2px solid ${t.id===activeTheme?'#1A3A6A':'transparent'};box-shadow:0 1px 4px rgba(0,0,0,0.15);`;
+      s.title = t.label;
+      s.onclick = () => {
+        activeTheme = t.id;
+        activeHeaderId = null;
+        activeDigitalHeaderId = null;
+        applyTheme(t.id, [document.querySelector('#screen-delivery .card-surface')]);
+        // Clear header zone
+        const dz = document.getElementById('del-card-header-zone');
+        if (dz) dz.innerHTML = '';
+        colorSwatches.querySelectorAll('div').forEach(sw => sw.style.border = '2px solid transparent');
+        s.style.border = '2px solid #1A3A6A';
+      };
+      colorSwatches.appendChild(s);
+    });
+  } else {
+    thumbs.style.display = 'flex';
+    colorSwatches.style.display = 'none';
+    // Build header thumbs for delivery screen
+    let headers = getHeadersForOccasion(A.occasion, cat);
+    if (!headers.length) headers = getFallbackHeaders(cat);
+    thumbs.innerHTML = '';
+    headers.forEach(h => {
+      const wrap = document.createElement('div');
+      wrap.className = 'header-thumb' + (h.id === activeHeaderId ? ' selected' : '');
+      wrap.innerHTML = h.render(120, 60) + `<div class="header-thumb-label">${h.label}</div>`;
+      wrap.onclick = () => {
+        activeHeaderId = h.id;
+        activeDigitalHeaderId = h.id;
+        thumbs.querySelectorAll('.header-thumb').forEach(t => t.classList.remove('selected'));
+        wrap.classList.add('selected');
+        // Re-render delivery card header
+        const delZone = document.getElementById('del-card-header-zone');
+        const bodyBg = getHeaderBodyBg(h);
+        if (delZone) delZone.innerHTML = h.render(delZone.offsetWidth || 320, 100);
+        applyTheme(h.theme, [document.querySelector('#screen-delivery .card-surface')]);
+        document.querySelector('#screen-delivery .card-surface').style.background = bodyBg;
+      };
+      thumbs.appendChild(wrap);
+    });
+    // Auto-select first if needed
+    if (headers.length && !activeHeaderId) {
+      headers[0] && thumbs.firstChild && thumbs.firstChild.click();
+    }
+  }
+}
+
 function showDelivery(){
-  document.getElementById('del-card-text').textContent=currentCardText;
+  document.getElementById('del-card-text').textContent = currentCardText;
   showScreen('delivery');
-  applyTheme(activeTheme,[document.querySelector('#screen-delivery .card-surface')]);
-  setTimeout(()=>{
-    const delZone = document.getElementById('del-card-header-zone');
-    const header = CARD_HEADERS.find(h=>h.id===activeHeaderId);
-    if(delZone && header) delZone.innerHTML = header.render(delZone.offsetWidth||320, 100);
-  },50);
+  // Initialize with default header
+  setTimeout(() => {
+    applyDefaultHeader(A.occasion || '');
+    switchDeliveryStyle('classic');
+  }, 50);
 }
 
 function handleDel(type){

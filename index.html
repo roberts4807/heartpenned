@@ -1495,6 +1495,98 @@ const CARD_HEADERS = [
     }
   },
 
+  // ── WEDDING / ANNIVERSARY FUN ─────────────────────────────────────────────
+  {
+    id: 'wedding-fun-1',
+    label: 'Champagne',
+    occasions: ['Wedding', 'Anniversary'],
+    category: 'fun',
+    theme: 'gold',
+    render(w, h) {
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
+        <defs>
+          <linearGradient id="bgwf1" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#FFFBEA"/>
+            <stop offset="100%" stop-color="#FFF0B0"/>
+          </linearGradient>
+        </defs>
+        <rect width="${w}" height="${h}" fill="url(#bgwf1)"/>
+        <!-- Champagne bubbles -->
+        ${[[0.1,0.7,'#D4AF37'],[0.15,0.45,'#E8C84A'],[0.08,0.25,'#D4AF37'],[0.22,0.6,'#C8A020'],[0.18,0.3,'#E8C84A'],[0.82,0.65,'#D4AF37'],[0.88,0.4,'#E8C84A'],[0.92,0.22,'#D4AF37'],[0.78,0.55,'#C8A020'],[0.85,0.28,'#E8C84A'],[0.5,0.15,'#D4AF37'],[0.45,0.6,'#E8C84A'],[0.55,0.65,'#C8A020']].map(([cx,cy,c])=>`<circle cx="${w*cx}" cy="${h*cy}" r="${w*0.018}" fill="${c}" opacity="0.6"/>`).join('')}
+        <!-- Stars/sparkles -->
+        ${[[0.12,0.15],[0.88,0.18],[0.5,0.08]].map(([cx,cy])=>`<text x="${w*cx}" y="${h*cy}" text-anchor="middle" font-size="${w*0.05}" fill="#D4AF37" opacity="0.8">✦</text>`).join('')}
+        <!-- Divider -->
+        <line x1="${w*0.15}" y1="${h*0.82}" x2="${w*0.85}" y2="${h*0.82}" stroke="#D4AF37" stroke-width="1" opacity="0.6"/>
+        <!-- Text -->
+        <text x="${w*0.5}" y="${h*0.6}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.1}" fill="#8A6A10" letter-spacing="0.5">Cheers to You!</text>
+      </svg>`;
+    }
+  },
+
+  // ── SYMPATHY GENTLE ───────────────────────────────────────────────────────
+  {
+    id: 'sympathy-gentle-1',
+    label: 'Soft Light',
+    occasions: ['Sympathy', 'Loss or grief'],
+    category: 'fun',
+    theme: 'slate',
+    render(w, h) {
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
+        <defs>
+          <linearGradient id="bgsg1" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#F0F4F8"/>
+            <stop offset="100%" stop-color="#E0E8F0"/>
+          </linearGradient>
+        </defs>
+        <rect width="${w}" height="${h}" fill="url(#bgsg1)"/>
+        <!-- Soft scattered dots — gentle, not sad -->
+        ${[[0.1,0.2,'#A0B8C8'],[0.2,0.65,'#B8CCD8'],[0.35,0.15,'#90A8B8'],[0.65,0.18,'#A0B8C8'],[0.8,0.62,'#B8CCD8'],[0.9,0.22,'#90A8B8'],[0.5,0.08,'#A0B8C8'],[0.42,0.72,'#B8CCD8'],[0.58,0.68,'#90A8B8']].map(([cx,cy,c])=>`<circle cx="${w*cx}" cy="${h*cy}" r="${w*0.014}" fill="${c}" opacity="0.5"/>`).join('')}
+        <!-- Gentle leaf cluster center -->
+        <g transform="translate(${w*0.5},${h*0.38})" opacity="0.4">
+          <ellipse cx="${-w*0.07}" cy="0" rx="${w*0.055}" ry="${h*0.1}" fill="#8AA0B0" transform="rotate(-20,${-w*0.07},0)"/>
+          <ellipse cx="${w*0.07}" cy="0" rx="${w*0.055}" ry="${h*0.1}" fill="#8AA0B0" transform="rotate(20,${w*0.07},0)"/>
+          <ellipse cx="0" cy="${-h*0.08}" rx="${w*0.04}" ry="${h*0.09}" fill="#7A90A0"/>
+        </g>
+        <!-- Thin divider -->
+        <line x1="${w*0.3}" y1="${h*0.8}" x2="${w*0.7}" y2="${h*0.8}" stroke="#8AA0B0" stroke-width="0.5" opacity="0.5"/>
+        <!-- Text -->
+        <text x="${w*0.5}" y="${h*0.93}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.075}" font-style="italic" fill="#4A6070" letter-spacing="1">You Are Not Alone</text>
+      </svg>`;
+    }
+  },
+
+  // ── THANK YOU FUN ─────────────────────────────────────────────────────────
+  {
+    id: 'thankyou-fun-1',
+    label: 'Sunny Thanks',
+    occasions: ['Thank you', 'Thank You'],
+    category: 'fun',
+    theme: 'warm',
+    render(w, h) {
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
+        <defs>
+          <linearGradient id="bgtf1" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#FFF8EC"/>
+            <stop offset="100%" stop-color="#FFE8C0"/>
+          </linearGradient>
+        </defs>
+        <rect width="${w}" height="${h}" fill="url(#bgtf1)"/>
+        <!-- Sunburst rays -->
+        <g transform="translate(${w*0.5},${h*0.4})" opacity="0.25">
+          ${[0,30,60,90,120,150,180,210,240,270,300,330].map(a=>`<line x1="0" y1="0" x2="${Math.cos(a*Math.PI/180)*w*0.45}" y2="${Math.sin(a*Math.PI/180)*h*0.45}" stroke="#E8A020" stroke-width="${w*0.004}"/>`).join('')}
+        </g>
+        <!-- Sun circle -->
+        <circle cx="${w*0.5}" cy="${h*0.38}" r="${w*0.1}" fill="#F5C030" opacity="0.35"/>
+        <!-- Warm dots -->
+        ${[[0.08,0.25,'#F4A040'],[0.15,0.65,'#E8C030'],[0.85,0.28,'#F4A040'],[0.92,0.62,'#E8C030'],[0.3,0.12,'#F4A040'],[0.7,0.15,'#E8C030']].map(([cx,cy,c])=>`<circle cx="${w*cx}" cy="${h*cy}" r="${w*0.016}" fill="${c}" opacity="0.6"/>`).join('')}
+        <!-- Divider -->
+        <line x1="${w*0.18}" y1="${h*0.82}" x2="${w*0.82}" y2="${h*0.82}" stroke="#E8A020" stroke-width="0.8" opacity="0.5"/>
+        <!-- Text -->
+        <text x="${w*0.5}" y="${h*0.62}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.1}" font-weight="700" fill="#B87010" letter-spacing="0.5">Thank You!</text>
+      </svg>`;
+    }
+  },
+
 ];
 
 // ── Header system state ────────────────────────────────────────────────────
@@ -1509,8 +1601,8 @@ function getHeadersForOccasion(occ, cat) {
 }
 
 function getFallbackHeaders(cat) {
-  // Return all headers in category if no occasion match
-  return CARD_HEADERS.filter(h => h.category === cat);
+  // Return empty — no cross-occasion bleed
+  return [];
 }
 
 function switchHeaderCat(cat) {
@@ -2032,6 +2124,75 @@ const PDF_HEADER_RENDERERS = {
     doc.setFontSize(24);
     doc.setTextColor(204, 34, 68);
     doc.text("Happy Valentine's!", pw/2, 148, { align: 'center' });
+    return H + 36;
+  },
+
+  'wedding-fun-1': function(doc, pw, ph, margin) {
+    const H = 190;
+    doc.setFillColor(255, 251, 234);
+    doc.rect(0, 0, pw, H, 'F');
+    [[0.1,0.7],[0.15,0.45],[0.08,0.25],[0.22,0.6],[0.18,0.3],[0.82,0.65],[0.88,0.4],[0.92,0.22],[0.78,0.55],[0.85,0.28],[0.5,0.15]].forEach(([rx,ry]) => {
+      doc.setFillColor(212, 175, 55);
+      doc.setGState(new doc.GState({opacity: 0.55}));
+      doc.circle(pw*rx, H*ry, 5, 'F');
+    });
+    doc.setGState(new doc.GState({opacity: 1}));
+    doc.setDrawColor(212, 175, 55);
+    doc.setLineWidth(0.8);
+    doc.line(pw*0.15, H - 14, pw*0.85, H - 14);
+    doc.setFont('times', 'normal');
+    doc.setFontSize(28);
+    doc.setTextColor(138, 106, 16);
+    doc.text('Cheers to You!', pw/2, 118, { align: 'center' });
+    return H + 36;
+  },
+
+  'sympathy-gentle-1': function(doc, pw, ph, margin) {
+    const H = 190;
+    doc.setFillColor(240, 244, 248);
+    doc.rect(0, 0, pw, H, 'F');
+    doc.setGState(new doc.GState({opacity: 0.45}));
+    doc.setFillColor(138, 160, 176);
+    doc.ellipse(pw/2 - 22, 80, 18, 28, 'F');
+    doc.ellipse(pw/2 + 22, 80, 18, 28, 'F');
+    doc.ellipse(pw/2, 60, 14, 24, 'F');
+    [[0.1,0.2],[0.2,0.65],[0.8,0.62],[0.9,0.22],[0.5,0.08]].forEach(([rx,ry]) => {
+      doc.setFillColor(160, 184, 200);
+      doc.circle(pw*rx, H*ry, 4, 'F');
+    });
+    doc.setGState(new doc.GState({opacity: 1}));
+    doc.setDrawColor(138, 160, 176);
+    doc.setLineWidth(0.5);
+    doc.line(pw*0.3, H - 14, pw*0.7, H - 14);
+    doc.setFont('times', 'italic');
+    doc.setFontSize(20);
+    doc.setTextColor(74, 96, 112);
+    doc.text('You Are Not Alone', pw/2, H - 20, { align: 'center' });
+    return H + 36;
+  },
+
+  'thankyou-fun-1': function(doc, pw, ph, margin) {
+    const H = 190;
+    doc.setFillColor(255, 248, 236);
+    doc.rect(0, 0, pw, H, 'F');
+    doc.setDrawColor(232, 160, 32);
+    doc.setLineWidth(0.8);
+    doc.setGState(new doc.GState({opacity: 0.2}));
+    for (let a = 0; a < 360; a += 30) {
+      const rad = a * Math.PI / 180;
+      doc.line(pw/2, H*0.4, pw/2 + Math.cos(rad)*pw*0.42, H*0.4 + Math.sin(rad)*H*0.42);
+    }
+    doc.setGState(new doc.GState({opacity: 0.3}));
+    doc.setFillColor(245, 192, 48);
+    doc.circle(pw/2, H*0.4, pw*0.09, 'F');
+    doc.setGState(new doc.GState({opacity: 1}));
+    doc.setDrawColor(232, 160, 32);
+    doc.setLineWidth(0.6);
+    doc.line(pw*0.18, H - 14, pw*0.82, H - 14);
+    doc.setFont('times', 'bold');
+    doc.setFontSize(28);
+    doc.setTextColor(184, 112, 16);
+    doc.text('Thank You!', pw/2, 128, { align: 'center' });
     return H + 36;
   }
 

@@ -182,6 +182,22 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
 .edit-done-row{display:flex;gap:8px;margin-top:0.5rem;justify-content:flex-end;}
 .btn-edit-done{padding:8px 18px;background:#1A3A6A;color:white;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;}
 .btn-edit-cancel{padding:8px 14px;background:none;border:1px solid #C0CCE0;border-radius:8px;font-size:13px;color:#5A7A9A;cursor:pointer;font-family:'Inter',sans-serif;}
+
+/* ── Print panel ─────────────────────────────────────── */
+.print-panel{margin-top:1.25rem;background:#F4F6FA;border:1px solid #D0D8E8;border-radius:12px;padding:1.25rem;}
+.print-panel-label{font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.85rem;}
+.header-category-tabs{display:flex;gap:6px;margin-bottom:0.85rem;}
+.hcat-tab{padding:5px 16px;border:0.5px solid #C0CCE0;border-radius:20px;font-size:12px;color:#3A4A5A;cursor:pointer;background:white;transition:all 0.15s;font-family:'Inter',sans-serif;}
+.hcat-tab.active{background:#1A3A6A;border-color:#1A3A6A;color:white;font-weight:600;}
+.header-thumbs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:1rem;}
+.header-thumb{width:120px;cursor:pointer;border:2px solid transparent;border-radius:8px;overflow:hidden;transition:all 0.15s;flex-shrink:0;}
+.header-thumb:hover{border-color:#2A4A80;}
+.header-thumb.selected{border-color:#1A3A6A;box-shadow:0 0 0 2px #1A3A6A;}
+.header-thumb svg,.header-thumb canvas{width:100%;display:block;}
+.header-thumb-label{font-size:11px;color:#888;text-align:center;padding:4px 0 5px;background:white;}
+.print-preview-wrap{background:white;border:1px solid #D0D8E8;border-radius:8px;overflow:hidden;margin-bottom:1rem;}
+.btn-download-pdf{width:100%;padding:0.85rem;background:#1A3A6A;color:white;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;letter-spacing:0.02em;}
+.btn-download-pdf:disabled{opacity:0.4;cursor:not-allowed;}
 </style>
 </head>
 <body>
@@ -465,6 +481,21 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
         <div class="email-status" id="email-status"></div>
       </div>
     </div>
+    <!-- Print at Home panel -->
+    <div id="print-panel" style="display:none;">
+      <div class="print-panel">
+        <div class="print-panel-label">Choose a header style</div>
+        <div class="header-category-tabs">
+          <div class="hcat-tab active" id="hcat-classic" onclick="switchHeaderCat('classic')">Classic</div>
+          <div class="hcat-tab" id="hcat-fun" onclick="switchHeaderCat('fun')">Fun</div>
+        </div>
+        <div class="header-thumbs" id="header-thumbs"></div>
+        <div class="print-panel-label" style="margin-top:0.25rem;">Preview</div>
+        <div class="print-preview-wrap" id="print-preview"></div>
+        <button class="btn-download-pdf" id="btn-download-pdf" onclick="downloadPDF()">Download PDF</button>
+      </div>
+    </div>
+
     <div class="reminder-btn" id="reminder-btn-row" onclick="handleDel('reminder')">
       <div><div class="reminder-text">Save and get a reminder next year</div><div class="reminder-sub">We'll remind you when this occasion comes around again</div></div>
     <div id="reminder-form" style="display:none;margin-top:0.75rem;padding:1rem;background:#F4F6FA;border:1px solid #D0D8E8;border-radius:10px;">
@@ -869,6 +900,7 @@ function handleDel(type){
 
   if(type==='digital'){
     document.getElementById('dbtn-digital').classList.add('active');
+    document.getElementById('print-panel').style.display='none';
     const panel=document.getElementById('digital-panel');
     panel.style.display='block';
     document.getElementById('copy-box').value=currentCardText;
@@ -876,12 +908,16 @@ function handleDel(type){
     document.getElementById('copy-btn').textContent='Copy to clipboard';
   } else if(type==='print'){
     document.getElementById('digital-panel').style.display='none';
-    alert('Print at home is coming soon to Heartpenned.');
+    const pp = document.getElementById('print-panel');
+    pp.style.display = pp.style.display === 'none' ? 'block' : 'none';
+    if (pp.style.display === 'block') openPrintPanel();
   } else if(type==='mail'){
     document.getElementById('digital-panel').style.display='none';
+    document.getElementById('print-panel').style.display='none';
     alert('Mailing physical cards is coming soon to Heartpenned.');
   } else if(type==='gift'){
     document.getElementById('digital-panel').style.display='none';
+    document.getElementById('print-panel').style.display='none';
     alert('Gift card integration is coming soon to Heartpenned.');
   } else if(type==='reminder'){
     document.getElementById('reminder-form').style.display='block';
@@ -1030,6 +1066,313 @@ async function setReminder(){
   }
 }
 
+// ── Card Header Library ────────────────────────────────────────────────────
+
+const CARD_HEADERS = [
+
+  // ── BIRTHDAY ──────────────────────────────────────────────────────────────
+  {
+    id: 'bday-classic-1',
+    label: 'Garden Classic',
+    occasions: ['Birthday'],
+    category: 'classic',
+    theme: 'warm',
+    render(w, h) {
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
+        <defs>
+          <linearGradient id="bg1" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#FFF8F0"/>
+            <stop offset="100%" stop-color="#FDE8D0"/>
+          </linearGradient>
+        </defs>
+        <rect width="${w}" height="${h}" fill="url(#bg1)"/>
+        <!-- Corner botanical left -->
+        <g opacity="0.55" transform="translate(${w*0.04},${h*0.08})">
+          <ellipse cx="0" cy="0" rx="${w*0.06}" ry="${h*0.18}" fill="#C8A97A" transform="rotate(-30)"/>
+          <ellipse cx="${w*0.05}" cy="${-h*0.05}" rx="${w*0.04}" ry="${h*0.12}" fill="#B8945A" transform="rotate(10)"/>
+          <line x1="0" y1="0" x2="${-w*0.04}" y2="${h*0.22}" stroke="#A07840" stroke-width="${w*0.004}" opacity="0.6"/>
+          <ellipse cx="${-w*0.035}" cy="${h*0.22}" rx="${w*0.035}" ry="${h*0.1}" fill="#C8A97A" transform="rotate(20)"/>
+        </g>
+        <!-- Corner botanical right -->
+        <g opacity="0.55" transform="translate(${w*0.96},${h*0.08}) scale(-1,1)">
+          <ellipse cx="0" cy="0" rx="${w*0.06}" ry="${h*0.18}" fill="#C8A97A" transform="rotate(-30)"/>
+          <ellipse cx="${w*0.05}" cy="${-h*0.05}" rx="${w*0.04}" ry="${h*0.12}" fill="#B8945A" transform="rotate(10)"/>
+          <line x1="0" y1="0" x2="${-w*0.04}" y2="${h*0.22}" stroke="#A07840" stroke-width="${w*0.004}" opacity="0.6"/>
+          <ellipse cx="${-w*0.035}" cy="${h*0.22}" rx="${w*0.035}" ry="${h*0.1}" fill="#C8A97A" transform="rotate(20)"/>
+        </g>
+        <!-- Divider line -->
+        <line x1="${w*0.12}" y1="${h*0.78}" x2="${w*0.88}" y2="${h*0.78}" stroke="#C8A97A" stroke-width="0.8" opacity="0.6"/>
+        <!-- Small diamond ornament -->
+        <rect x="${w*0.5-6}" y="${h*0.78-6}" width="12" height="12" fill="#D4AF37" transform="rotate(45,${w*0.5},${h*0.78})" opacity="0.7"/>
+        <!-- Occasion text -->
+        <text x="${w*0.5}" y="${h*0.52}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.11}" font-style="italic" fill="#7A5020" letter-spacing="1">Happy Birthday</text>
+      </svg>`;
+    }
+  },
+
+  {
+    id: 'bday-fun-1',
+    label: 'Celebration',
+    occasions: ['Birthday'],
+    category: 'fun',
+    theme: 'blush',
+    render(w, h) {
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
+        <defs>
+          <linearGradient id="bg2" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#FFF0F4"/>
+            <stop offset="100%" stop-color="#FAD7E0"/>
+          </linearGradient>
+        </defs>
+        <rect width="${w}" height="${h}" fill="url(#bg2)"/>
+        <!-- Confetti dots -->
+        ${[[0.1,0.15,'#F4A7B9'],[0.22,0.25,'#D4AF37'],[0.35,0.1,'#96C896'],[0.55,0.18,'#8890E0'],[0.7,0.28,'#F4A7B9'],[0.82,0.12,'#D4AF37'],[0.9,0.3,'#F9C89A'],[0.15,0.55,'#96C896'],[0.78,0.55,'#8890E0'],[0.45,0.35,'#F4A7B9']].map(([cx,cy,c])=>`<circle cx="${w*cx}" cy="${h*cy}" r="${w*0.018}" fill="${c}" opacity="0.7"/>`).join('')}
+        <!-- Stars -->
+        ${[[0.08,0.4,'#D4AF37'],[0.92,0.4,'#D4AF37'],[0.5,0.12,'#F4A7B9']].map(([cx,cy,c])=>`<text x="${w*cx}" y="${h*cy}" text-anchor="middle" font-size="${w*0.05}" fill="${c}" opacity="0.8">✦</text>`).join('')}
+        <!-- Divider wavy line approximation -->
+        <path d="M${w*0.08} ${h*0.8} Q${w*0.25} ${h*0.75} ${w*0.42} ${h*0.8} Q${w*0.58} ${h*0.85} ${w*0.75} ${h*0.8} Q${w*0.88} ${h*0.76} ${w*0.92} ${h*0.8}" stroke="#F4A7B9" stroke-width="1.5" fill="none" opacity="0.7"/>
+        <!-- Text -->
+        <text x="${w*0.5}" y="${h*0.53}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.12}" font-weight="400" fill="#C0446A" letter-spacing="0.5">Happy Birthday!</text>
+      </svg>`;
+    }
+  },
+
+  // ── WEDDING / ANNIVERSARY ─────────────────────────────────────────────────
+  {
+    id: 'wedding-classic-1',
+    label: 'Floral Arch',
+    occasions: ['Wedding', 'Anniversary'],
+    category: 'classic',
+    theme: 'gold',
+    render(w, h) {
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
+        <defs>
+          <linearGradient id="bg3" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#FFFFF0"/>
+            <stop offset="100%" stop-color="#F5E8C0"/>
+          </linearGradient>
+        </defs>
+        <rect width="${w}" height="${h}" fill="url(#bg3)"/>
+        <!-- Arch left -->
+        <g opacity="0.5" transform="translate(${w*0.05},${h*0.85})">
+          <path d="M0,0 Q${-w*0.02},${-h*0.5} ${w*0.12},${-h*0.7}" stroke="#B8860B" stroke-width="${w*0.003}" fill="none"/>
+          <ellipse cx="${w*0.04}" cy="${-h*0.35}" rx="${w*0.055}" ry="${h*0.14}" fill="#D4AF37" transform="rotate(-40,${w*0.04},${-h*0.35})" opacity="0.7"/>
+          <ellipse cx="${w*0.09}" cy="${-h*0.55}" rx="${w*0.04}" ry="${h*0.1}" fill="#C8A97A" transform="rotate(-20,${w*0.09},${-h*0.55})" opacity="0.7"/>
+          <circle cx="${w*0.13}" cy="${-h*0.68}" r="${w*0.025}" fill="#F5E8C0" stroke="#B8860B" stroke-width="${w*0.003}" opacity="0.9"/>
+        </g>
+        <!-- Arch right -->
+        <g opacity="0.5" transform="translate(${w*0.95},${h*0.85}) scale(-1,1)">
+          <path d="M0,0 Q${-w*0.02},${-h*0.5} ${w*0.12},${-h*0.7}" stroke="#B8860B" stroke-width="${w*0.003}" fill="none"/>
+          <ellipse cx="${w*0.04}" cy="${-h*0.35}" rx="${w*0.055}" ry="${h*0.14}" fill="#D4AF37" transform="rotate(-40,${w*0.04},${-h*0.35})" opacity="0.7"/>
+          <ellipse cx="${w*0.09}" cy="${-h*0.55}" rx="${w*0.04}" ry="${h*0.1}" fill="#C8A97A" transform="rotate(-20,${w*0.09},${-h*0.55})" opacity="0.7"/>
+          <circle cx="${w*0.13}" cy="${-h*0.68}" r="${w*0.025}" fill="#F5E8C0" stroke="#B8860B" stroke-width="${w*0.003}" opacity="0.9"/>
+        </g>
+        <!-- Gold divider -->
+        <line x1="${w*0.15}" y1="${h*0.82}" x2="${w*0.85}" y2="${h*0.82}" stroke="#D4AF37" stroke-width="0.8" opacity="0.8"/>
+        <circle cx="${w*0.5}" cy="${h*0.82}" r="4" fill="#D4AF37" opacity="0.8"/>
+        <!-- Occasion text -->
+        <text x="${w*0.5}" y="${h*0.5}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.1}" font-style="italic" fill="#7A6010" letter-spacing="1">With Love</text>
+      </svg>`;
+    }
+  },
+
+  // ── SYMPATHY ──────────────────────────────────────────────────────────────
+  {
+    id: 'sympathy-classic-1',
+    label: 'Quiet Garden',
+    occasions: ['Sympathy', 'Loss or grief'],
+    category: 'classic',
+    theme: 'slate',
+    render(w, h) {
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
+        <defs>
+          <linearGradient id="bg4" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#F4F6F8"/>
+            <stop offset="100%" stop-color="#D8DFE8"/>
+          </linearGradient>
+        </defs>
+        <rect width="${w}" height="${h}" fill="url(#bg4)"/>
+        <!-- Simple botanical sprig centered -->
+        <g transform="translate(${w*0.5},${h*0.18})" opacity="0.45">
+          <!-- stem -->
+          <line x1="0" y1="0" x2="0" y2="${h*0.5}" stroke="#6A8098" stroke-width="${w*0.003}"/>
+          <!-- leaves -->
+          <ellipse cx="${-w*0.06}" cy="${h*0.1}" rx="${w*0.06}" ry="${h*0.08}" fill="#8A9BB0" transform="rotate(-30,${-w*0.06},${h*0.1})"/>
+          <ellipse cx="${w*0.06}" cy="${h*0.2}" rx="${w*0.06}" ry="${h*0.08}" fill="#8A9BB0" transform="rotate(30,${w*0.06},${h*0.2})"/>
+          <ellipse cx="${-w*0.055}" cy="${h*0.32}" rx="${w*0.055}" ry="${h*0.07}" fill="#7A8EA0" transform="rotate(-25,${-w*0.055},${h*0.32})"/>
+          <ellipse cx="${w*0.055}" cy="${h*0.4}" rx="${w*0.055}" ry="${h*0.07}" fill="#7A8EA0" transform="rotate(25,${w*0.055},${h*0.4})"/>
+        </g>
+        <!-- Thin divider -->
+        <line x1="${w*0.25}" y1="${h*0.8}" x2="${w*0.75}" y2="${h*0.8}" stroke="#8A9BB0" stroke-width="0.6" opacity="0.5"/>
+        <!-- Text -->
+        <text x="${w*0.5}" y="${h*0.92}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.075}" font-style="italic" fill="#4A6070" letter-spacing="1.5">Thinking of You</text>
+      </svg>`;
+    }
+  },
+
+];
+
+// ── Header system state ────────────────────────────────────────────────────
+let activeHeaderId = null;
+let activeHeaderCat = 'classic';
+
+function getHeadersForOccasion(occ, cat) {
+  return CARD_HEADERS.filter(h => {
+    const occMatch = !occ || h.occasions.some(o => o.toLowerCase() === (occ||'').toLowerCase());
+    return occMatch && h.category === cat;
+  });
+}
+
+function getFallbackHeaders(cat) {
+  // Return all headers in category if no occasion match
+  return CARD_HEADERS.filter(h => h.category === cat);
+}
+
+function switchHeaderCat(cat) {
+  activeHeaderCat = cat;
+  document.querySelectorAll('.hcat-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('hcat-' + cat).classList.add('active');
+  buildHeaderThumbs();
+}
+
+function buildHeaderThumbs() {
+  const container = document.getElementById('header-thumbs');
+  if (!container) return;
+  let headers = getHeadersForOccasion(A.occasion, activeHeaderCat);
+  if (!headers.length) headers = getFallbackHeaders(activeHeaderCat);
+  container.innerHTML = '';
+  if (!headers.length) {
+    container.innerHTML = '<div style="font-size:13px;color:#888;">No designs yet for this occasion — more coming soon.</div>';
+    return;
+  }
+  headers.forEach(h => {
+    const wrap = document.createElement('div');
+    wrap.className = 'header-thumb' + (h.id === activeHeaderId ? ' selected' : '');
+    wrap.innerHTML = h.render(120, 60) + `<div class="header-thumb-label">${h.label}</div>`;
+    wrap.onclick = () => selectHeader(h.id);
+    container.appendChild(wrap);
+  });
+  // Auto-select first if nothing selected or current not in list
+  if (!activeHeaderId || !headers.find(h => h.id === activeHeaderId)) {
+    selectHeader(headers[0].id);
+  }
+}
+
+function selectHeader(id) {
+  activeHeaderId = id;
+  document.querySelectorAll('.header-thumb').forEach(t => t.classList.remove('selected'));
+  const thumbs = document.querySelectorAll('.header-thumb');
+  const headers = getHeadersForOccasion(A.occasion, activeHeaderCat);
+  const fallback = getFallbackHeaders(activeHeaderCat);
+  const list = headers.length ? headers : fallback;
+  list.forEach((h, i) => { if (h.id === id && thumbs[i]) thumbs[i].classList.add('selected'); });
+  renderPrintPreview();
+}
+
+function renderPrintPreview() {
+  const container = document.getElementById('print-preview');
+  if (!container) return;
+  const header = CARD_HEADERS.find(h => h.id === activeHeaderId);
+  const theme = CARD_THEMES.find(t => t.id === (header ? header.theme : activeTheme)) || CARD_THEMES[0];
+  const bg = typeof theme.bg === 'string' ? theme.bg : '#F4F8FF';
+  const cardText = currentCardText || '';
+  container.innerHTML = `
+    <div style="
+      background:${bg};
+      font-family:'Playfair Display',Georgia,serif;
+      padding:0;
+      border-radius:6px;
+      overflow:hidden;
+    ">
+      ${header ? header.render(container.offsetWidth || 320, 110) : ''}
+      <div style="
+        padding:1.5rem 1.75rem 1.25rem;
+        font-size:14px;
+        line-height:1.9;
+        color:#1A2A3A;
+        white-space:pre-wrap;
+      ">${cardText}</div>
+      <div style="
+        text-align:right;
+        padding:0.5rem 1.25rem 0.75rem;
+        font-size:11px;
+        color:#7A9CC0;
+        font-style:italic;
+        letter-spacing:0.06em;
+        font-family:'Playfair Display',Georgia,serif;
+      ">Heartpenned</div>
+    </div>`;
+}
+
+function openPrintPanel() {
+  activeHeaderCat = 'classic';
+  document.querySelectorAll('.hcat-tab').forEach(t => t.classList.remove('active'));
+  const classicTab = document.getElementById('hcat-classic');
+  if (classicTab) classicTab.classList.add('active');
+  buildHeaderThumbs();
+}
+
+async function downloadPDF() {
+  const header = CARD_HEADERS.find(h => h.id === activeHeaderId);
+  const theme = CARD_THEMES.find(t => t.id === (header ? header.theme : activeTheme)) || CARD_THEMES[0];
+  const bg = typeof theme.bg === 'string' ? theme.bg : '#F4F8FF';
+  const cardText = currentCardText || '';
+  const occasion = A.occasion || '';
+
+  // Build full-page render element (hidden)
+  const el = document.createElement('div');
+  el.style.cssText = `
+    width:680px;
+    background:${bg};
+    font-family:'Playfair Display',Georgia,serif;
+    position:absolute;
+    left:-9999px;
+    top:0;
+    padding:0;
+  `;
+  el.innerHTML = `
+    ${header ? header.render(680, 200) : ''}
+    <div style="
+      padding:3rem 4rem 2rem;
+      font-size:17px;
+      line-height:2;
+      color:#1A2A3A;
+      white-space:pre-wrap;
+      font-family:'Playfair Display',Georgia,serif;
+    ">${cardText}</div>
+    <div style="
+      text-align:right;
+      padding:1rem 3rem 2.5rem;
+      font-size:12px;
+      color:#7A9CC0;
+      font-style:italic;
+      letter-spacing:0.08em;
+      font-family:'Playfair Display',Georgia,serif;
+    ">Heartpenned</div>
+  `;
+  document.body.appendChild(el);
+
+  const btn = document.getElementById('btn-download-pdf');
+  btn.disabled = true;
+  btn.textContent = 'Generating…';
+
+  const filename = occasion ? `heartpenned-${occasion.toLowerCase().replace(/\s+/g,'-')}.pdf` : 'heartpenned-card.pdf';
+
+  try {
+    await html2pdf().set({
+      margin: 0,
+      filename,
+      image: { type: 'jpeg', quality: 0.97 },
+      html2canvas: { scale: 2, useCORS: true, backgroundColor: null },
+      jsPDF: { unit: 'px', format: [680, 960], orientation: 'portrait' }
+    }).from(el).save();
+  } finally {
+    document.body.removeChild(el);
+    btn.disabled = false;
+    btn.textContent = 'Download PDF';
+  }
+}
+
 async function sendCardEmail() {
   const recipientEmail = document.getElementById('email-recipient-address').value.trim();
   const recipientName  = document.getElementById('email-recipient-name').value.trim();
@@ -1078,5 +1421,6 @@ async function sendCardEmail() {
   }
 }
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </body>
 </html>

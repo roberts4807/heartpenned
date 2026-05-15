@@ -1324,6 +1324,177 @@ const CARD_HEADERS = [
     }
   },
 
+  // ── CONGRATULATIONS ───────────────────────────────────────────────────────
+  {
+    id: 'congrats-classic-1',
+    label: 'Golden Laurel',
+    occasions: ['Congratulations', 'Graduation'],
+    category: 'classic',
+    theme: 'gold',
+    render(w, h) {
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
+        <defs>
+          <linearGradient id="bgcg1" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#FFFFF0"/>
+            <stop offset="100%" stop-color="#FBF0C0"/>
+          </linearGradient>
+        </defs>
+        <rect width="${w}" height="${h}" fill="url(#bgcg1)"/>
+        <!-- Laurel left -->
+        <g opacity="0.6" transform="translate(${w*0.08},${h*0.5})">
+          <ellipse cx="0" cy="${-h*0.2}" rx="${w*0.055}" ry="${h*0.13}" fill="#B8A020" transform="rotate(-50,0,${-h*0.2})"/>
+          <ellipse cx="${w*0.03}" cy="${-h*0.1}" rx="${w*0.05}" ry="${h*0.11}" fill="#C8B030" transform="rotate(-30,${w*0.03},${-h*0.1})"/>
+          <ellipse cx="${w*0.04}" cy="${h*0.05}" rx="${w*0.05}" ry="${h*0.11}" fill="#B8A020" transform="rotate(-10,${w*0.04},${h*0.05})"/>
+          <ellipse cx="${w*0.02}" cy="${h*0.2}" rx="${w*0.045}" ry="${h*0.1}" fill="#C8B030" transform="rotate(15,${w*0.02},${h*0.2})"/>
+        </g>
+        <!-- Laurel right -->
+        <g opacity="0.6" transform="translate(${w*0.92},${h*0.5}) scale(-1,1)">
+          <ellipse cx="0" cy="${-h*0.2}" rx="${w*0.055}" ry="${h*0.13}" fill="#B8A020" transform="rotate(-50,0,${-h*0.2})"/>
+          <ellipse cx="${w*0.03}" cy="${-h*0.1}" rx="${w*0.05}" ry="${h*0.11}" fill="#C8B030" transform="rotate(-30,${w*0.03},${-h*0.1})"/>
+          <ellipse cx="${w*0.04}" cy="${h*0.05}" rx="${w*0.05}" ry="${h*0.11}" fill="#B8A020" transform="rotate(-10,${w*0.04},${h*0.05})"/>
+          <ellipse cx="${w*0.02}" cy="${h*0.2}" rx="${w*0.045}" ry="${h*0.1}" fill="#C8B030" transform="rotate(15,${w*0.02},${h*0.2})"/>
+        </g>
+        <!-- Star ornament -->
+        <text x="${w*0.5}" y="${h*0.28}" text-anchor="middle" font-size="${w*0.06}" fill="#D4AF37" opacity="0.8">✦</text>
+        <!-- Divider -->
+        <line x1="${w*0.18}" y1="${h*0.82}" x2="${w*0.82}" y2="${h*0.82}" stroke="#D4AF37" stroke-width="0.8" opacity="0.7"/>
+        <!-- Text -->
+        <text x="${w*0.5}" y="${h*0.6}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.1}" font-style="italic" fill="#7A6010" letter-spacing="1">Congratulations</text>
+      </svg>`;
+    }
+  },
+
+  {
+    id: 'congrats-fun-1',
+    label: 'Confetti Pop',
+    occasions: ['Congratulations', 'Graduation'],
+    category: 'fun',
+    theme: 'twilight',
+    render(w, h) {
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
+        <defs>
+          <linearGradient id="bgcf1" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#EEF0FF"/>
+            <stop offset="100%" stop-color="#D8DCFF"/>
+          </linearGradient>
+        </defs>
+        <rect width="${w}" height="${h}" fill="url(#bgcf1)"/>
+        <!-- Confetti bursts -->
+        ${[[0.08,0.2,'#F4A7B9'],[0.18,0.6,'#D4AF37'],[0.28,0.15,'#96C896'],[0.42,0.7,'#8890E0'],[0.58,0.2,'#F4A7B9'],[0.72,0.65,'#D4AF37'],[0.85,0.18,'#96C896'],[0.92,0.55,'#F9C89A'],[0.5,0.1,'#8890E0'],[0.35,0.5,'#F4A7B9']].map(([cx,cy,c])=>`<rect x="${w*cx-3}" y="${h*cy-3}" width="6" height="6" fill="${c}" opacity="0.8" transform="rotate(45,${w*cx},${h*cy})"/>`).join('')}
+        ${[[0.12,0.4,'#8890E0'],[0.65,0.4,'#F4A7B9'],[0.5,0.55,'#D4AF37']].map(([cx,cy,c])=>`<circle cx="${w*cx}" cy="${h*cy}" r="${w*0.015}" fill="${c}" opacity="0.7"/>`).join('')}
+        <!-- Streamers -->
+        <path d="M${w*0.05} ${h*0.1} Q${w*0.1} ${h*0.4} ${w*0.08} ${h*0.7}" stroke="#8890E0" stroke-width="1.5" fill="none" opacity="0.4"/>
+        <path d="M${w*0.95} ${h*0.1} Q${w*0.9} ${h*0.4} ${w*0.92} ${h*0.7}" stroke="#F4A7B9" stroke-width="1.5" fill="none" opacity="0.4"/>
+        <!-- Text -->
+        <text x="${w*0.5}" y="${h*0.62}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.1}" font-weight="700" fill="#3A4ACC" letter-spacing="0.5">Congratulations!</text>
+      </svg>`;
+    }
+  },
+
+  // ── THANK YOU ─────────────────────────────────────────────────────────────
+  {
+    id: 'thankyou-classic-1',
+    label: 'Sage Sprig',
+    occasions: ['Thank you', 'Thank You'],
+    category: 'classic',
+    theme: 'sage',
+    render(w, h) {
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
+        <defs>
+          <linearGradient id="bgty1" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#F2F9F2"/>
+            <stop offset="100%" stop-color="#D8EDD8"/>
+          </linearGradient>
+        </defs>
+        <rect width="${w}" height="${h}" fill="url(#bgty1)"/>
+        <!-- Horizontal botanical branch -->
+        <g opacity="0.5" transform="translate(${w*0.5},${h*0.38})">
+          <line x1="${-w*0.38}" y1="0" x2="${w*0.38}" y2="0" stroke="#5A8A5A" stroke-width="${w*0.003}"/>
+          <!-- Leaves along branch -->
+          ${[[-0.32,-0.18,-30],[-0.22,0.15,25],[-0.1,-0.2,-35],[0.1,0.18,30],[0.22,-0.16,-25],[0.32,0.14,20]].map(([lx,ly,rot])=>`
+          <ellipse cx="${w*lx}" cy="${h*ly}" rx="${w*0.055}" ry="${h*0.09}" fill="#6AAA6A" transform="rotate(${rot},${w*lx},${h*ly})" opacity="0.8"/>
+          `).join('')}
+          <!-- Small flower -->
+          <circle cx="0" cy="0" r="${w*0.022}" fill="#A8D8A8" stroke="#5A8A5A" stroke-width="${w*0.002}"/>
+          <circle cx="0" cy="0" r="${w*0.01}" fill="#4A7A4A"/>
+        </g>
+        <!-- Divider -->
+        <line x1="${w*0.2}" y1="${h*0.78}" x2="${w*0.8}" y2="${h*0.78}" stroke="#6AAA6A" stroke-width="0.6" opacity="0.5"/>
+        <!-- Text -->
+        <text x="${w*0.5}" y="${h*0.92}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.09}" font-style="italic" fill="#3A6A3A" letter-spacing="1.5">Thank You</text>
+      </svg>`;
+    }
+  },
+
+  // ── VALENTINE'S DAY ───────────────────────────────────────────────────────
+  {
+    id: 'valentine-classic-1',
+    label: 'Romantic Rose',
+    occasions: ["Valentine's Day", 'Valentines Day', 'Valentine'],
+    category: 'classic',
+    theme: 'blush',
+    render(w, h) {
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
+        <defs>
+          <linearGradient id="bgvl1" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#FFF0F4"/>
+            <stop offset="100%" stop-color="#F8D0DA"/>
+          </linearGradient>
+        </defs>
+        <rect width="${w}" height="${h}" fill="url(#bgvl1)"/>
+        <!-- Rose left -->
+        <g opacity="0.55" transform="translate(${w*0.1},${h*0.55})">
+          <circle cx="0" cy="0" r="${w*0.06}" fill="#C0446A" opacity="0.7"/>
+          <circle cx="${w*0.025}" cy="${-h*0.06}" r="${w*0.05}" fill="#D0506A" opacity="0.8"/>
+          <circle cx="${-w*0.025}" cy="${-h*0.06}" r="${w*0.045}" fill="#B83A60" opacity="0.7"/>
+          <circle cx="0" cy="${-h*0.12}" r="${w*0.04}" fill="#C84060" opacity="0.9"/>
+          <line x1="0" y1="${h*0.06}" x2="${-w*0.02}" y2="${h*0.25}" stroke="#5A8A5A" stroke-width="${w*0.003}"/>
+          <ellipse cx="${-w*0.04}" cy="${h*0.18}" rx="${w*0.04}" ry="${h*0.07}" fill="#6AAA6A" transform="rotate(-30,${-w*0.04},${h*0.18})" opacity="0.7"/>
+        </g>
+        <!-- Rose right -->
+        <g opacity="0.55" transform="translate(${w*0.9},${h*0.55}) scale(-1,1)">
+          <circle cx="0" cy="0" r="${w*0.06}" fill="#C0446A" opacity="0.7"/>
+          <circle cx="${w*0.025}" cy="${-h*0.06}" r="${w*0.05}" fill="#D0506A" opacity="0.8"/>
+          <circle cx="${-w*0.025}" cy="${-h*0.06}" r="${w*0.045}" fill="#B83A60" opacity="0.7"/>
+          <circle cx="0" cy="${-h*0.12}" r="${w*0.04}" fill="#C84060" opacity="0.9"/>
+          <line x1="0" y1="${h*0.06}" x2="${-w*0.02}" y2="${h*0.25}" stroke="#5A8A5A" stroke-width="${w*0.003}"/>
+          <ellipse cx="${-w*0.04}" cy="${h*0.18}" rx="${w*0.04}" ry="${h*0.07}" fill="#6AAA6A" transform="rotate(-30,${-w*0.04},${h*0.18})" opacity="0.7"/>
+        </g>
+        <!-- Small heart center -->
+        <text x="${w*0.5}" y="${h*0.3}" text-anchor="middle" font-size="${w*0.07}" fill="#C0446A" opacity="0.6">♥</text>
+        <!-- Divider -->
+        <line x1="${w*0.2}" y1="${h*0.78}" x2="${w*0.8}" y2="${h*0.78}" stroke="#C0446A" stroke-width="0.6" opacity="0.5"/>
+        <!-- Text -->
+        <text x="${w*0.5}" y="${h*0.56}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.09}" font-style="italic" fill="#8A2040" letter-spacing="1">With All My Love</text>
+      </svg>`;
+    }
+  },
+
+  {
+    id: 'valentine-fun-1',
+    label: 'Bold Hearts',
+    occasions: ["Valentine's Day", 'Valentines Day', 'Valentine'],
+    category: 'fun',
+    theme: 'blush',
+    render(w, h) {
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
+        <defs>
+          <linearGradient id="bgvf1" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#FFE0E8"/>
+            <stop offset="100%" stop-color="#FFB8C8"/>
+          </linearGradient>
+        </defs>
+        <rect width="${w}" height="${h}" fill="url(#bgvf1)"/>
+        <!-- Scattered hearts -->
+        ${[[0.08,0.25,'#FF6688','0.7'],[0.18,0.65,'#FF4466','0.5'],[0.28,0.2,'#FF88AA','0.6'],[0.72,0.22,'#FF88AA','0.6'],[0.82,0.65,'#FF4466','0.5'],[0.92,0.28,'#FF6688','0.7'],[0.5,0.12,'#FF4466','0.5'],[0.38,0.7,'#FF88AA','0.4'],[0.62,0.72,'#FF88AA','0.4']].map(([cx,cy,c,op])=>`<text x="${w*cx}" y="${h*cy}" text-anchor="middle" font-size="${w*0.06}" fill="${c}" opacity="${op}">♥</text>`).join('')}
+        <!-- Large center heart -->
+        <text x="${w*0.5}" y="${h*0.42}" text-anchor="middle" font-size="${w*0.14}" fill="#CC2244" opacity="0.85">♥</text>
+        <!-- Text -->
+        <text x="${w*0.5}" y="${h*0.75}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.1}" font-weight="700" fill="#CC2244" letter-spacing="0.5">Happy Valentine's!</text>
+      </svg>`;
+    }
+  },
+
 ];
 
 // ── Header system state ────────────────────────────────────────────────────
@@ -1732,7 +1903,138 @@ const PDF_HEADER_RENDERERS = {
     doc.text('Thinking of You', pw/2, H - 22, { align: 'center' });
 
     return H + 36;
+  },
+
+  'congrats-classic-1': function(doc, pw, ph, margin) {
+    const H = 190;
+    doc.setFillColor(255, 255, 240);
+    doc.rect(0, 0, pw, H, 'F');
+    doc.setGState(new doc.GState({opacity: 0.6}));
+    doc.setFillColor(184, 160, 32);
+    doc.ellipse(margin - 5, 70, 14, 8, 'F');
+    doc.ellipse(margin + 8, 50, 12, 7, 'F');
+    doc.ellipse(margin - 2, 95, 12, 7, 'F');
+    doc.ellipse(margin + 14, 115, 11, 6, 'F');
+    doc.ellipse(margin + 5, 32, 10, 6, 'F');
+    doc.ellipse(pw - margin + 5, 70, 14, 8, 'F');
+    doc.ellipse(pw - margin - 8, 50, 12, 7, 'F');
+    doc.ellipse(pw - margin + 2, 95, 12, 7, 'F');
+    doc.ellipse(pw - margin - 14, 115, 11, 6, 'F');
+    doc.ellipse(pw - margin - 5, 32, 10, 6, 'F');
+    doc.setGState(new doc.GState({opacity: 1}));
+    doc.setDrawColor(212, 175, 55);
+    doc.setLineWidth(0.6);
+    doc.line(margin + 20, H - 12, pw - margin - 20, H - 12);
+    doc.setFont('times', 'italic');
+    doc.setFontSize(28);
+    doc.setTextColor(122, 96, 16);
+    doc.text('Congratulations', pw/2, 128, { align: 'center' });
+    return H + 36;
+  },
+
+  'congrats-fun-1': function(doc, pw, ph, margin) {
+    const H = 190;
+    doc.setFillColor(238, 240, 255);
+    doc.rect(0, 0, pw, H, 'F');
+    const pieces = [[0.08,0.2,[244,167,185]],[0.18,0.6,[212,175,55]],[0.28,0.15,[150,200,150]],[0.42,0.7,[136,144,224]],[0.58,0.2,[244,167,185]],[0.72,0.65,[212,175,55]],[0.85,0.18,[150,200,150]],[0.92,0.55,[249,200,154]]];
+    pieces.forEach(([rx,ry,c]) => {
+      doc.setFillColor(c[0],c[1],c[2]);
+      doc.setGState(new doc.GState({opacity: 0.8}));
+      doc.rect(pw*rx - 4, H*ry - 4, 8, 8, 'F');
+    });
+    doc.setGState(new doc.GState({opacity: 1}));
+    doc.setFont('times', 'bold');
+    doc.setFontSize(30);
+    doc.setTextColor(58, 74, 204);
+    doc.text('Congratulations!', pw/2, 118, { align: 'center' });
+    return H + 36;
+  },
+
+  'thankyou-classic-1': function(doc, pw, ph, margin) {
+    const H = 190;
+    doc.setFillColor(242, 249, 242);
+    doc.rect(0, 0, pw, H, 'F');
+    doc.setDrawColor(90, 138, 90);
+    doc.setLineWidth(0.8);
+    doc.setGState(new doc.GState({opacity: 0.5}));
+    doc.line(margin + 10, H/2, pw - margin - 10, H/2);
+    doc.setFillColor(106, 170, 106);
+    [0.2, 0.35, 0.65, 0.8].forEach(rx => {
+      doc.ellipse(pw*rx, H/2 - 14, 16, 9, 'F');
+      doc.ellipse(pw*rx + 8, H/2 + 12, 14, 8, 'F');
+    });
+    doc.setFillColor(168, 216, 168);
+    doc.circle(pw/2, H/2, 8, 'F');
+    doc.setFillColor(74, 122, 74);
+    doc.circle(pw/2, H/2, 4, 'F');
+    doc.setGState(new doc.GState({opacity: 1}));
+    doc.setDrawColor(106, 170, 106);
+    doc.setLineWidth(0.5);
+    doc.line(pw*0.25, H - 14, pw*0.75, H - 14);
+    doc.setFont('times', 'italic');
+    doc.setFontSize(26);
+    doc.setTextColor(58, 106, 58);
+    doc.text('Thank You', pw/2, H - 20, { align: 'center' });
+    return H + 36;
+  },
+
+  'valentine-classic-1': function(doc, pw, ph, margin) {
+    const H = 190;
+    doc.setFillColor(255, 240, 244);
+    doc.rect(0, 0, pw, H, 'F');
+    doc.setGState(new doc.GState({opacity: 0.6}));
+    doc.setFillColor(192, 68, 106);
+    doc.circle(margin + 8, 110, 16, 'F');
+    doc.setFillColor(208, 80, 106);
+    doc.circle(margin + 20, 94, 14, 'F');
+    doc.setFillColor(184, 58, 96);
+    doc.circle(margin + 4, 90, 12, 'F');
+    doc.setFillColor(200, 64, 96);
+    doc.circle(margin + 14, 78, 11, 'F');
+    doc.setFillColor(192, 68, 106);
+    doc.circle(pw - margin - 8, 110, 16, 'F');
+    doc.setFillColor(208, 80, 106);
+    doc.circle(pw - margin - 20, 94, 14, 'F');
+    doc.setFillColor(184, 58, 96);
+    doc.circle(pw - margin - 4, 90, 12, 'F');
+    doc.setFillColor(200, 64, 96);
+    doc.circle(pw - margin - 14, 78, 11, 'F');
+    doc.setGState(new doc.GState({opacity: 1}));
+    doc.setFontSize(20);
+    doc.setTextColor(192, 68, 106);
+    doc.text('\u2665', pw/2, 52, { align: 'center' });
+    doc.setDrawColor(192, 68, 106);
+    doc.setLineWidth(0.5);
+    doc.line(pw*0.22, H - 14, pw*0.78, H - 14);
+    doc.setFont('times', 'italic');
+    doc.setFontSize(24);
+    doc.setTextColor(138, 32, 64);
+    doc.text('With All My Love', pw/2, 130, { align: 'center' });
+    return H + 36;
+  },
+
+  'valentine-fun-1': function(doc, pw, ph, margin) {
+    const H = 190;
+    doc.setFillColor(255, 224, 232);
+    doc.rect(0, 0, pw, H, 'F');
+    [[0.08,0.25,18],[0.18,0.65,14],[0.28,0.2,16],[0.72,0.22,16],[0.82,0.65,14],[0.92,0.28,18]].forEach(([rx,ry,sz]) => {
+      doc.setFontSize(sz);
+      doc.setGState(new doc.GState({opacity: 0.6}));
+      doc.setTextColor(255, 68, 102);
+      doc.text('\u2665', pw*rx, H*ry, { align: 'center' });
+    });
+    doc.setGState(new doc.GState({opacity: 0.85}));
+    doc.setFontSize(36);
+    doc.setTextColor(204, 34, 68);
+    doc.text('\u2665', pw/2, 88, { align: 'center' });
+    doc.setGState(new doc.GState({opacity: 1}));
+    doc.setFont('times', 'bold');
+    doc.setFontSize(24);
+    doc.setTextColor(204, 34, 68);
+    doc.text("Happy Valentine's!", pw/2, 148, { align: 'center' });
+    return H + 36;
   }
+
 };
 
 async function downloadPDF() {

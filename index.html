@@ -1950,6 +1950,395 @@ const CARD_HEADERS = [
     }
   },
 
+  // ── HANUKKAH ──────────────────────────────────────────────────────────────
+  {
+    id: 'hanukkah-classic-1',
+    label: 'Silver & Blue',
+    occasions: ['Hanukkah'],
+    category: 'classic',
+    theme: 'twilight',
+    render(w, h) {
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
+        <defs>
+          <linearGradient id="bghc1" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#F0F4FF"/>
+            <stop offset="100%" stop-color="#D0D8F8"/>
+          </linearGradient>
+        </defs>
+        <rect width="${w}" height="${h}" fill="url(#bghc1)"/>
+        <!-- Menorah simplified -->
+        <g transform="translate(${w*0.5},${h*0.65})" opacity="0.7">
+          <!-- Base -->
+          <rect x="${-w*0.18}" y="0" width="${w*0.36}" height="${h*0.06}" rx="3" fill="#4A6AC0"/>
+          <!-- Center stem -->
+          <rect x="${-w*0.012}" y="${-h*0.38}" width="${w*0.024}" height="${h*0.38}" fill="#4A6AC0"/>
+          <!-- Arms -->
+          ${[-0.15,-0.1,-0.05,0.05,0.1,0.15,0,0,0].slice(0,8).map((x,i)=>{
+            const arms = [-0.15,-0.1,-0.05,0.05,0.1,0.15,-0.18,0.18];
+            const heights = [0.22,0.28,0.32,0.32,0.28,0.22,0.18,0.18];
+            return `<rect x="${w*arms[i]-w*0.01}" y="${-h*heights[i]}" width="${w*0.02}" height="${h*heights[i]}" fill="#4A6AC0"/>`;
+          }).join('')}
+          <!-- Candle flames -->
+          ${[-0.18,-0.15,-0.1,-0.05,0,0.05,0.1,0.15,0.18].map((x,i)=>
+            `<ellipse cx="${w*x}" cy="${-h*(i===4?0.38:[0.18,0.22,0.28,0.32,0,0.32,0.28,0.22,0.18][i])- h*0.06}" rx="${w*0.012}" ry="${h*0.05}" fill="#D4AF37" opacity="0.85"/>`
+          ).join('')}
+        </g>
+        <!-- Star of David subtle -->
+        <text x="${w*0.5}" y="${h*0.22}" text-anchor="middle" font-size="${w*0.06}" fill="#3A5AB0" opacity="0.3">✡</text>
+        <line x1="${w*0.2}" y1="${h*0.82}" x2="${w*0.8}" y2="${h*0.82}" stroke="#4A6AC0" stroke-width="0.6" opacity="0.5"/>
+        <text x="${w*0.5}" y="${h*0.92}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.075}" font-style="italic" fill="#2A3A8A" letter-spacing="1">Happy Hanukkah</text>
+      </svg>`;
+    }
+  },
+
+  {
+    id: 'hanukkah-fun-1',
+    label: 'Festival of Lights',
+    occasions: ['Hanukkah'],
+    category: 'fun',
+    theme: 'twilight',
+    render(w, h) {
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
+        <defs>
+          <linearGradient id="bghf1" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#E8ECFF"/>
+            <stop offset="100%" stop-color="#C8D0F8"/>
+          </linearGradient>
+        </defs>
+        <rect width="${w}" height="${h}" fill="url(#bghf1)"/>
+        <!-- Light rays from center -->
+        <g opacity="0.2" transform="translate(${w*0.5},${h*0.4})">
+          ${[0,30,60,90,120,150,180,210,240,270,300,330].map(a=>`<line x1="0" y1="0" x2="${Math.cos(a*Math.PI/180)*w*0.45}" y2="${Math.sin(a*Math.PI/180)*h*0.42}" stroke="#D4AF37" stroke-width="${w*0.004}"/>`).join('')}
+        </g>
+        <!-- Blue and silver dots -->
+        ${[[0.1,0.2,'#4A6AC0'],[0.2,0.65,'#C0C8E8'],[0.35,0.15,'#D4AF37'],[0.65,0.18,'#4A6AC0'],[0.8,0.62,'#C0C8E8'],[0.9,0.22,'#D4AF37'],[0.5,0.1,'#4A6AC0'],[0.42,0.7,'#D4AF37'],[0.58,0.68,'#4A6AC0']].map(([cx,cy,c])=>`<circle cx="${w*cx}" cy="${h*cy}" r="${w*0.016}" fill="${c}" opacity="0.7"/>`).join('')}
+        <text x="${w*0.5}" y="${h*0.35}" text-anchor="middle" font-size="${w*0.07}" fill="#D4AF37" opacity="0.8">✡</text>
+        <line x1="${w*0.15}" y1="${h*0.8}" x2="${w*0.85}" y2="${h*0.8}" stroke="#4A6AC0" stroke-width="0.8" opacity="0.5"/>
+        <text x="${w*0.5}" y="${h*0.65}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.085}" font-weight="700" fill="#2A3A8A" letter-spacing="0.5">Happy Hanukkah!</text>
+      </svg>`;
+    }
+  },
+
+  // ── THANKSGIVING ──────────────────────────────────────────────────────────
+  {
+    id: 'thanksgiving-classic-1',
+    label: 'Harvest',
+    occasions: ['Thanksgiving'],
+    category: 'classic',
+    theme: 'warm',
+    render(w, h) {
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
+        <defs>
+          <linearGradient id="bgtg1" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#FFF5E8"/>
+            <stop offset="100%" stop-color="#F8DDB8"/>
+          </linearGradient>
+        </defs>
+        <rect width="${w}" height="${h}" fill="url(#bgtg1)"/>
+        <!-- Autumn leaves left -->
+        <g opacity="0.6">
+          <ellipse cx="${w*0.08}" cy="${h*0.3}" rx="${w*0.07}" ry="${h*0.1}" fill="#C84820" transform="rotate(-30,${w*0.08},${h*0.3})"/>
+          <ellipse cx="${w*0.12}" cy="${h*0.5}" rx="${w*0.065}" ry="${h*0.09}" fill="#E87020" transform="rotate(20,${w*0.12},${h*0.5})"/>
+          <ellipse cx="${w*0.06}" cy="${h*0.65}" rx="${w*0.06}" ry="${h*0.085}" fill="#D4A020" transform="rotate(-15,${w*0.06},${h*0.65})"/>
+          <!-- Right -->
+          <ellipse cx="${w*0.92}" cy="${h*0.3}" rx="${w*0.07}" ry="${h*0.1}" fill="#C84820" transform="rotate(30,${w*0.92},${h*0.3})"/>
+          <ellipse cx="${w*0.88}" cy="${h*0.5}" rx="${w*0.065}" ry="${h*0.09}" fill="#E87020" transform="rotate(-20,${w*0.88},${h*0.5})"/>
+          <ellipse cx="${w*0.94}" cy="${h*0.65}" rx="${w*0.06}" ry="${h*0.085}" fill="#D4A020" transform="rotate(15,${w*0.94},${h*0.65})"/>
+        </g>
+        <!-- Acorn dots -->
+        <circle cx="${w*0.16}" cy="${h*0.18}" r="${w*0.018}" fill="#8B5A20" opacity="0.5"/>
+        <circle cx="${w*0.84}" cy="${h*0.18}" r="${w*0.018}" fill="#8B5A20" opacity="0.5"/>
+        <line x1="${w*0.2}" y1="${h*0.82}" x2="${w*0.8}" y2="${h*0.82}" stroke="#C84820" stroke-width="0.6" opacity="0.5"/>
+        <text x="${w*0.5}" y="${h*0.56}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.085}" font-style="italic" fill="#6A2A08" letter-spacing="1">Happy Thanksgiving</text>
+      </svg>`;
+    }
+  },
+
+  {
+    id: 'thanksgiving-fun-1',
+    label: 'Autumn Fest',
+    occasions: ['Thanksgiving'],
+    category: 'fun',
+    theme: 'warm',
+    render(w, h) {
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
+        <defs>
+          <linearGradient id="bgtf2" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#FFF0DC"/>
+            <stop offset="100%" stop-color="#FFD89A"/>
+          </linearGradient>
+        </defs>
+        <rect width="${w}" height="${h}" fill="url(#bgtf2)"/>
+        <!-- Colorful leaf burst -->
+        ${[[0.1,0.25,'#C84820'],[0.2,0.62,'#E87020'],[0.32,0.15,'#D4A020'],[0.5,0.68,'#C84820'],[0.68,0.18,'#E87020'],[0.8,0.60,'#D4A020'],[0.9,0.28,'#C84820'],[0.42,0.42,'#E87020'],[0.62,0.45,'#D4A020']].map(([cx,cy,c])=>`<ellipse cx="${w*cx}" cy="${h*cy}" rx="${w*0.04}" ry="${h*0.065}" fill="${c}" opacity="0.7" transform="rotate(${Math.random()*60-30},${w*cx},${h*cy})"/>`).join('')}
+        <line x1="${w*0.15}" y1="${h*0.82}" x2="${w*0.85}" y2="${h*0.82}" stroke="#C84820" stroke-width="0.8" opacity="0.5"/>
+        <text x="${w*0.5}" y="${h*0.62}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.082}" font-weight="700" fill="#8B2A08" letter-spacing="0.5">Happy Thanksgiving!</text>
+      </svg>`;
+    }
+  },
+
+  // ── EASTER ────────────────────────────────────────────────────────────────
+  {
+    id: 'easter-classic-1',
+    label: 'Spring Garden',
+    occasions: ['Easter'],
+    category: 'classic',
+    theme: 'sage',
+    render(w, h) {
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
+        <defs>
+          <linearGradient id="bgec1" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#F5FFF5"/>
+            <stop offset="100%" stop-color="#DCF0DC"/>
+          </linearGradient>
+        </defs>
+        <rect width="${w}" height="${h}" fill="url(#bgec1)"/>
+        <!-- Spring flowers left -->
+        <g opacity="0.65" transform="translate(${w*0.1},${h*0.5})">
+          <line x1="0" y1="${h*0.3}" x2="0" y2="${-h*0.35}" stroke="#5A8A5A" stroke-width="${w*0.003}"/>
+          <circle cx="0" cy="${-h*0.35}" r="${w*0.04}" fill="#F4D0E8" stroke="#E8A0C8" stroke-width="${w*0.002}"/>
+          <circle cx="0" cy="${-h*0.35}" r="${w*0.018}" fill="#F5C030"/>
+          <line x1="0" y1="${h*0.05}" x2="${-w*0.05}" y2="${-h*0.05}" stroke="#5A8A5A" stroke-width="${w*0.002}"/>
+          <ellipse cx="${-w*0.07}" cy="${-h*0.1}" rx="${w*0.045}" ry="${h*0.07}" fill="#7AAA7A" transform="rotate(-20,${-w*0.07},${-h*0.1})" opacity="0.8"/>
+          <circle cx="${-w*0.12}" cy="${-h*0.2}" r="${w*0.03}" fill="#C8E8A0" stroke="#88B868" stroke-width="${w*0.002}"/>
+        </g>
+        <!-- Spring flowers right -->
+        <g opacity="0.65" transform="translate(${w*0.9},${h*0.5}) scale(-1,1)">
+          <line x1="0" y1="${h*0.3}" x2="0" y2="${-h*0.35}" stroke="#5A8A5A" stroke-width="${w*0.003}"/>
+          <circle cx="0" cy="${-h*0.35}" r="${w*0.04}" fill="#F4D0E8" stroke="#E8A0C8" stroke-width="${w*0.002}"/>
+          <circle cx="0" cy="${-h*0.35}" r="${w*0.018}" fill="#F5C030"/>
+          <line x1="0" y1="${h*0.05}" x2="${-w*0.05}" y2="${-h*0.05}" stroke="#5A8A5A" stroke-width="${w*0.002}"/>
+          <ellipse cx="${-w*0.07}" cy="${-h*0.1}" rx="${w*0.045}" ry="${h*0.07}" fill="#7AAA7A" transform="rotate(-20,${-w*0.07},${-h*0.1})" opacity="0.8"/>
+          <circle cx="${-w*0.12}" cy="${-h*0.2}" r="${w*0.03}" fill="#C8E8A0" stroke="#88B868" stroke-width="${w*0.002}"/>
+        </g>
+        <!-- Easter egg center -->
+        <ellipse cx="${w*0.5}" cy="${h*0.32}" rx="${w*0.06}" ry="${h*0.1}" fill="#F4D0E8" stroke="#E8A0C8" stroke-width="${w*0.002}" opacity="0.7"/>
+        <line x1="${w*0.2}" y1="${h*0.8}" x2="${w*0.8}" y2="${h*0.8}" stroke="#5A8A5A" stroke-width="0.6" opacity="0.5"/>
+        <text x="${w*0.5}" y="${h*0.62}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.085}" font-style="italic" fill="#2A5A2A" letter-spacing="1">Happy Easter</text>
+      </svg>`;
+    }
+  },
+
+  {
+    id: 'easter-fun-1',
+    label: 'Egg Hunt',
+    occasions: ['Easter'],
+    category: 'fun',
+    theme: 'sage',
+    render(w, h) {
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
+        <defs>
+          <linearGradient id="bgef1" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#F0FFF0"/>
+            <stop offset="100%" stop-color="#D8F8D8"/>
+          </linearGradient>
+        </defs>
+        <rect width="${w}" height="${h}" fill="url(#bgef1)"/>
+        <!-- Colorful Easter eggs -->
+        ${[[0.12,0.3,'#F4A0C0'],[0.25,0.62,'#A0C8F4'],[0.4,0.2,'#C8F4A0'],[0.55,0.65,'#F4D0A0'],[0.68,0.22,'#D0A0F4'],[0.8,0.58,'#F4A0C0'],[0.9,0.3,'#A0C8F4'],[0.5,0.42,'#F4D0A0']].map(([cx,cy,c])=>`<ellipse cx="${w*cx}" cy="${h*cy}" rx="${w*0.035}" ry="${h*0.058}" fill="${c}" opacity="0.8"/>`).join('')}
+        <!-- Small flowers -->
+        ${[[0.15,0.72,'#F4C0D8'],[0.85,0.7,'#C8F0A0']].map(([cx,cy,c])=>`<circle cx="${w*cx}" cy="${h*cy}" r="${w*0.022}" fill="${c}" opacity="0.7"/>`).join('')}
+        <line x1="${w*0.15}" y1="${h*0.82}" x2="${w*0.85}" y2="${h*0.82}" stroke="#5A8A5A" stroke-width="0.8" opacity="0.5"/>
+        <text x="${w*0.5}" y="${h*0.62}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.09}" font-weight="700" fill="#2A6A2A" letter-spacing="0.5">Happy Easter!</text>
+      </svg>`;
+    }
+  },
+
+  // ── HALLOWEEN ─────────────────────────────────────────────────────────────
+  {
+    id: 'halloween-classic-1',
+    label: 'Moonlit',
+    occasions: ['Halloween'],
+    category: 'classic',
+    theme: 'dusk',
+    render(w, h) {
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
+        <defs>
+          <linearGradient id="bghw1" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#1A0A2E"/>
+            <stop offset="100%" stop-color="#2A1050"/>
+          </linearGradient>
+        </defs>
+        <rect width="${w}" height="${h}" fill="url(#bghw1)"/>
+        <!-- Moon -->
+        <circle cx="${w*0.75}" cy="${h*0.22}" r="${w*0.1}" fill="#F5E090" opacity="0.8"/>
+        <circle cx="${w*0.8}" cy="${h*0.18}" r="${w*0.09}" fill="#1A0A2E"/>
+        <!-- Stars -->
+        ${[[0.1,0.15],[0.2,0.3],[0.35,0.1],[0.15,0.45],[0.5,0.2],[0.6,0.08],[0.3,0.5]].map(([cx,cy])=>`<circle cx="${w*cx}" cy="${h*cy}" r="${w*0.007}" fill="#F5E090" opacity="0.6"/>`).join('')}
+        <!-- Bare tree silhouette -->
+        <g opacity="0.5" fill="#0A0020">
+          <rect x="${w*0.08}" y="${h*0.4}" width="${w*0.018}" height="${h*0.55}"/>
+          <rect x="${w*0.06}" y="${h*0.42}" width="${w*0.06}" height="${h*0.012}" transform="rotate(-20,${w*0.06},${h*0.42})"/>
+          <rect x="${w*0.08}" y="${h*0.5}" width="${w*0.055}" height="${h*0.01}" transform="rotate(15,${w*0.08},${h*0.5})"/>
+          <rect x="${w*0.07}" y="${h*0.6}" width="${w*0.05}" height="${h*0.01}" transform="rotate(-10,${w*0.07},${h*0.6})"/>
+        </g>
+        <line x1="${w*0.2}" y1="${h*0.8}" x2="${w*0.8}" y2="${h*0.8}" stroke="#C890E8" stroke-width="0.6" opacity="0.5"/>
+        <text x="${w*0.5}" y="${h*0.62}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.085}" font-style="italic" fill="#C890E8" letter-spacing="1">Happy Halloween</text>
+      </svg>`;
+    }
+  },
+
+  {
+    id: 'halloween-fun-1',
+    label: 'Spooky & Fun',
+    occasions: ['Halloween'],
+    category: 'fun',
+    theme: 'dusk',
+    render(w, h) {
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
+        <defs>
+          <linearGradient id="bghwf1" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#1A0830"/>
+            <stop offset="100%" stop-color="#300850"/>
+          </linearGradient>
+        </defs>
+        <rect width="${w}" height="${h}" fill="url(#bghwf1)"/>
+        <!-- Pumpkins -->
+        <g opacity="0.8" transform="translate(${w*0.15},${h*0.5})">
+          <ellipse cx="0" cy="0" rx="${w*0.07}" ry="${h*0.12}" fill="#E87020"/>
+          <ellipse cx="${-w*0.04}" cy="0" rx="${w*0.04}" ry="${h*0.11}" fill="#D06010" opacity="0.7"/>
+          <ellipse cx="${w*0.04}" cy="0" rx="${w*0.04}" ry="${h*0.11}" fill="#D06010" opacity="0.7"/>
+          <rect x="${-w*0.008}" y="${-h*0.14}" width="${w*0.016}" height="${h*0.04}" fill="#3A6A20"/>
+          <!-- Face -->
+          <polygon points="${-w*0.03},${-h*0.04} ${-w*0.01},${-h*0.02} ${-w*0.05},${-h*0.02}" fill="#1A0830"/>
+          <polygon points="${w*0.03},${-h*0.04} ${w*0.01},${-h*0.02} ${w*0.05},${-h*0.02}" fill="#1A0830"/>
+          <path d="M${-w*0.04} ${h*0.03} Q0 ${h*0.07} ${w*0.04} ${h*0.03}" stroke="#1A0830" stroke-width="${w*0.008}" fill="none"/>
+        </g>
+        <!-- Small pumpkin right -->
+        <g opacity="0.7" transform="translate(${w*0.85},${h*0.55})">
+          <ellipse cx="0" cy="0" rx="${w*0.055}" ry="${h*0.095}" fill="#E87020"/>
+          <rect x="${-w*0.006}" y="${-h*0.11}" width="${w*0.012}" height="${h*0.03}" fill="#3A6A20"/>
+        </g>
+        <!-- Ghost -->
+        <g opacity="0.5" transform="translate(${w*0.5},${h*0.3})">
+          <ellipse cx="0" cy="0" rx="${w*0.06}" ry="${h*0.1}" fill="white"/>
+          <rect x="${-w*0.06}" y="0" width="${w*0.12}" height="${h*0.1}" fill="white"/>
+          <circle cx="${-w*0.02}" cy="${-h*0.02}" r="${w*0.012}" fill="#1A0830"/>
+          <circle cx="${w*0.02}" cy="${-h*0.02}" r="${w*0.012}" fill="#1A0830"/>
+        </g>
+        <!-- Stars -->
+        ${[[0.3,0.12,'#F5E090'],[0.7,0.1,'#F5E090'],[0.85,0.25,'#F5E090']].map(([cx,cy,c])=>`<circle cx="${w*cx}" cy="${h*cy}" r="${w*0.008}" fill="${c}" opacity="0.7"/>`).join('')}
+        <text x="${w*0.5}" y="${h*0.82}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.09}" font-weight="700" fill="#F5A020" letter-spacing="0.5">Happy Halloween!</text>
+      </svg>`;
+    }
+  },
+
+  // ── JUST BECAUSE ──────────────────────────────────────────────────────────
+  {
+    id: 'justbecause-classic-1',
+    label: 'Simply Warm',
+    occasions: ['Just because'],
+    category: 'classic',
+    theme: 'warm',
+    render(w, h) {
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
+        <defs>
+          <linearGradient id="bgjc1" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#FFF8F0"/>
+            <stop offset="100%" stop-color="#FDECD8"/>
+          </linearGradient>
+        </defs>
+        <rect width="${w}" height="${h}" fill="url(#bgjc1)"/>
+        <!-- Simple elegant border -->
+        <rect x="${w*0.05}" y="${h*0.06}" width="${w*0.9}" height="${h*0.88}" rx="4" fill="none" stroke="#D4A070" stroke-width="0.8" opacity="0.35"/>
+        <!-- Small botanical center -->
+        <g opacity="0.4" transform="translate(${w*0.5},${h*0.35})">
+          <line x1="0" y1="${h*0.25}" x2="0" y2="${-h*0.2}" stroke="#A07840" stroke-width="${w*0.003}"/>
+          <ellipse cx="${-w*0.06}" cy="${-h*0.05}" rx="${w*0.055}" ry="${h*0.09}" fill="#B89060" transform="rotate(-30,${-w*0.06},${-h*0.05})"/>
+          <ellipse cx="${w*0.06}" cy="${-h*0.1}" rx="${w*0.05}" ry="${h*0.08}" fill="#C8A070" transform="rotate(25,${w*0.06},${-h*0.1})"/>
+          <ellipse cx="0" cy="${-h*0.18}" rx="${w*0.04}" ry="${h*0.07}" fill="#B89060"/>
+        </g>
+        <!-- Corner ornaments -->
+        <circle cx="${w*0.08}" cy="${h*0.1}" r="${w*0.012}" fill="#D4A070" opacity="0.4"/>
+        <circle cx="${w*0.92}" cy="${h*0.1}" r="${w*0.012}" fill="#D4A070" opacity="0.4"/>
+        <line x1="${w*0.22}" y1="${h*0.8}" x2="${w*0.78}" y2="${h*0.8}" stroke="#D4A070" stroke-width="0.6" opacity="0.45"/>
+        <text x="${w*0.5}" y="${h*0.62}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.085}" font-style="italic" fill="#8A5020" letter-spacing="1">Just Because</text>
+      </svg>`;
+    }
+  },
+
+  {
+    id: 'justbecause-fun-1',
+    label: 'Spontaneous',
+    occasions: ['Just because'],
+    category: 'fun',
+    theme: 'blush',
+    render(w, h) {
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
+        <defs>
+          <linearGradient id="bgjf1" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#FFF0F8"/>
+            <stop offset="100%" stop-color="#FFD8EC"/>
+          </linearGradient>
+        </defs>
+        <rect width="${w}" height="${h}" fill="url(#bgjf1)"/>
+        <!-- Playful mixed shapes -->
+        ${[[0.1,0.25,'#F4A7B9','circle'],[0.22,0.6,'#D4AF37','rect'],[0.35,0.15,'#96C896','circle'],[0.5,0.68,'#8890E0','rect'],[0.65,0.2,'#F4A7B9','circle'],[0.78,0.62,'#D4AF37','rect'],[0.9,0.3,'#96C896','circle'],[0.42,0.45,'#8890E0','circle'],[0.62,0.5,'#F4A7B9','rect']].map(([cx,cy,c,shape])=>
+          shape==='circle'
+            ? `<circle cx="${w*cx}" cy="${h*cy}" r="${w*0.018}" fill="${c}" opacity="0.7"/>`
+            : `<rect x="${w*cx-6}" y="${h*cy-6}" width="12" height="12" fill="${c}" opacity="0.7" transform="rotate(45,${w*cx},${h*cy})"/>`
+        ).join('')}
+        <!-- Squiggle line -->
+        <path d="M${w*0.1} ${h*0.82} Q${w*0.25} ${h*0.77} ${w*0.4} ${h*0.82} Q${w*0.55} ${h*0.87} ${w*0.7} ${h*0.82} Q${w*0.82} ${h*0.78} ${w*0.9} ${h*0.82}" stroke="#F4A7B9" stroke-width="1.5" fill="none" opacity="0.6"/>
+        <text x="${w*0.5}" y="${h*0.62}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.095}" font-weight="700" fill="#C0447A" letter-spacing="0.5">Just Because ♥</text>
+      </svg>`;
+    }
+  },
+
+  // ── APOLOGY ───────────────────────────────────────────────────────────────
+  {
+    id: 'apology-classic-1',
+    label: 'Sincere',
+    occasions: ['Apology'],
+    category: 'classic',
+    theme: 'slate',
+    render(w, h) {
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
+        <defs>
+          <linearGradient id="bgac1" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#F5F7FA"/>
+            <stop offset="100%" stop-color="#E0E6F0"/>
+          </linearGradient>
+        </defs>
+        <rect width="${w}" height="${h}" fill="url(#bgac1)"/>
+        <!-- Single olive branch — universal peace symbol, understated -->
+        <g opacity="0.4" transform="translate(${w*0.5},${h*0.4})">
+          <path d="M${-w*0.3} ${h*0.2} Q0 ${-h*0.1} ${w*0.3} ${h*0.2}" stroke="#7A9070" stroke-width="${w*0.003}" fill="none"/>
+          ${[[-0.22,0.05,-25],[-0.12,-0.05,20],[0,0.08,-15],[0.12,-0.03,25],[0.22,0.06,-20]].map(([lx,ly,rot])=>`<ellipse cx="${w*lx}" cy="${h*ly}" rx="${w*0.045}" ry="${h*0.07}" fill="#8AAA80" transform="rotate(${rot},${w*lx},${h*ly})"/>`).join('')}
+        </g>
+        <!-- Very soft single line border -->
+        <rect x="${w*0.06}" y="${h*0.06}" width="${w*0.88}" height="${h*0.88}" rx="6" fill="none" stroke="#8A9AB0" stroke-width="0.5" opacity="0.25"/>
+        <line x1="${w*0.25}" y1="${h*0.8}" x2="${w*0.75}" y2="${h*0.8}" stroke="#8A9AB0" stroke-width="0.5" opacity="0.4"/>
+        <text x="${w*0.5}" y="${h*0.65}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.082}" font-style="italic" fill="#3A4A5A" letter-spacing="1">I'm Sorry</text>
+      </svg>`;
+    }
+  },
+
+  {
+    id: 'apology-fun-1',
+    label: 'Gentle',
+    occasions: ['Apology'],
+    category: 'fun',
+    theme: 'slate',
+    render(w, h) {
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
+        <defs>
+          <linearGradient id="bgaf2" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#F0F4F8"/>
+            <stop offset="100%" stop-color="#D8E4F0"/>
+          </linearGradient>
+        </defs>
+        <rect width="${w}" height="${h}" fill="url(#bgaf2)"/>
+        <!-- Soft floating dots — gentle energy, not festive -->
+        ${[[0.1,0.2,'#A0B8D0'],[0.2,0.6,'#B8CCD8'],[0.35,0.15,'#90A8C0'],[0.5,0.65,'#A0B8D0'],[0.65,0.18,'#B8CCD8'],[0.8,0.6,'#90A8C0'],[0.9,0.25,'#A0B8D0'],[0.42,0.45,'#B8CCD8'],[0.62,0.42,'#90A8C0']].map(([cx,cy,c])=>`<circle cx="${w*cx}" cy="${h*cy}" r="${w*0.015}" fill="${c}" opacity="0.55"/>`).join('')}
+        <!-- Small heart — warmth without being cutesy -->
+        <text x="${w*0.5}" y="${h*0.35}" text-anchor="middle" font-size="${w*0.07}" fill="#8090A8" opacity="0.5">♥</text>
+        <line x1="${w*0.28}" y1="${h*0.8}" x2="${w*0.72}" y2="${h*0.8}" stroke="#8A9AB0" stroke-width="0.5" opacity="0.4"/>
+        <text x="${w*0.5}" y="${h*0.65}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.082}" font-style="italic" fill="#3A4A5A" letter-spacing="0.5">I'm Truly Sorry</text>
+      </svg>`;
+    }
+  },
+
 ];
 
 // ── Header system state ────────────────────────────────────────────────────
@@ -2836,6 +3225,285 @@ const PDF_HEADER_RENDERERS = {
     doc.setFontSize(26);
     doc.setTextColor(212, 175, 55);
     doc.text('Happy New Year!', pw/2, H*0.82, { align: 'center' });
+    return H + 36;
+  },
+
+  'hanukkah-classic-1': function(doc, pw, ph, margin) {
+    const H = 190;
+    doc.setFillColor(240, 244, 255);
+    doc.rect(0, 0, pw, H, 'F');
+    // Menorah base
+    doc.setFillColor(74, 106, 192);
+    doc.setGState(new doc.GState({opacity: 0.7}));
+    doc.rect(pw/2 - pw*0.18, H*0.72, pw*0.36, H*0.06, 'F');
+    doc.rect(pw/2 - pw*0.012, H*0.34, pw*0.024, H*0.38, 'F');
+    // Arms
+    const arms = [-0.15,-0.10,-0.05,0.05,0.10,0.15,-0.18,0.18];
+    const heights = [0.22,0.28,0.32,0.32,0.28,0.22,0.18,0.18];
+    arms.forEach((x,i) => {
+      doc.rect(pw/2 + pw*x - pw*0.01, H*(1-heights[i])-H*0.38, pw*0.02, H*heights[i], 'F');
+    });
+    // Flames
+    doc.setFillColor(212, 175, 55);
+    [-0.18,-0.15,-0.10,-0.05,0,0.05,0.10,0.15,0.18].forEach((x,i) => {
+      const ht = i===4?0.38:heights[i<4?i:i-1]||0.22;
+      doc.ellipse(pw/2+pw*x, H*(1-ht)-H*0.42, pw*0.012, H*0.04, 'F');
+    });
+    doc.setGState(new doc.GState({opacity: 1}));
+    doc.setDrawColor(74, 106, 192);
+    doc.setLineWidth(0.5);
+    doc.line(pw*0.2, H-14, pw*0.8, H-14);
+    doc.setFont('times', 'italic');
+    doc.setFontSize(22);
+    doc.setTextColor(42, 58, 138);
+    doc.text('Happy Hanukkah', pw/2, H-20, { align: 'center' });
+    return H + 36;
+  },
+
+  'hanukkah-fun-1': function(doc, pw, ph, margin) {
+    const H = 190;
+    doc.setFillColor(232, 236, 255);
+    doc.rect(0, 0, pw, H, 'F');
+    [[0.1,0.2,[74,106,192]],[0.2,0.65,[192,192,224]],[0.35,0.15,[212,175,55]],[0.65,0.18,[74,106,192]],[0.8,0.62,[192,192,224]],[0.9,0.22,[212,175,55]],[0.5,0.1,[74,106,192]]].forEach(([rx,ry,c]) => {
+      doc.setFillColor(c[0],c[1],c[2]);
+      doc.setGState(new doc.GState({opacity: 0.7}));
+      doc.circle(pw*rx, H*ry, 5, 'F');
+    });
+    doc.setGState(new doc.GState({opacity: 1}));
+    doc.setFont('times', 'bold');
+    doc.setFontSize(26);
+    doc.setTextColor(42, 58, 138);
+    doc.text('Happy Hanukkah!', pw/2, 128, { align: 'center' });
+    return H + 36;
+  },
+
+  'thanksgiving-classic-1': function(doc, pw, ph, margin) {
+    const H = 190;
+    doc.setFillColor(255, 245, 232);
+    doc.rect(0, 0, pw, H, 'F');
+    doc.setGState(new doc.GState({opacity: 0.6}));
+    [[margin-5,60,18,26,'#C84820',-30],[margin+8,40,15,22,'#E87020',20],[margin-2,85,14,20,'#D4A020',-15],[pw-margin+5,60,18,26,'#C84820',30],[pw-margin-8,40,15,22,'#E87020',-20],[pw-margin+2,85,14,20,'#D4A020',15]].forEach(([cx,cy,rx,ry,c,rot]) => {
+      doc.setFillColor(...c.match(/\d+/g).map(Number));
+      doc.ellipse(cx, cy, rx, ry, 'F');
+    });
+    doc.setGState(new doc.GState({opacity: 1}));
+    doc.setDrawColor(200, 72, 32);
+    doc.setLineWidth(0.6);
+    doc.line(pw*0.2, H-14, pw*0.8, H-14);
+    doc.setFont('times', 'italic');
+    doc.setFontSize(24);
+    doc.setTextColor(106, 42, 8);
+    doc.text('Happy Thanksgiving', pw/2, 128, { align: 'center' });
+    return H + 36;
+  },
+
+  'thanksgiving-fun-1': function(doc, pw, ph, margin) {
+    const H = 190;
+    doc.setFillColor(255, 240, 220);
+    doc.rect(0, 0, pw, H, 'F');
+    [[0.1,0.25,[200,72,32]],[0.2,0.62,[232,112,32]],[0.32,0.15,[212,160,32]],[0.5,0.68,[200,72,32]],[0.68,0.18,[232,112,32]],[0.8,0.60,[212,160,32]],[0.9,0.28,[200,72,32]]].forEach(([rx,ry,c]) => {
+      doc.setFillColor(c[0],c[1],c[2]);
+      doc.setGState(new doc.GState({opacity: 0.7}));
+      doc.ellipse(pw*rx, H*ry, 12, 18, 'F');
+    });
+    doc.setGState(new doc.GState({opacity: 1}));
+    doc.setFont('times', 'bold');
+    doc.setFontSize(24);
+    doc.setTextColor(106, 42, 8);
+    doc.text('Happy Thanksgiving!', pw/2, 148, { align: 'center' });
+    return H + 36;
+  },
+
+  'easter-classic-1': function(doc, pw, ph, margin) {
+    const H = 190;
+    doc.setFillColor(245, 255, 245);
+    doc.rect(0, 0, pw, H, 'F');
+    doc.setGState(new doc.GState({opacity: 0.65}));
+    doc.setFillColor(244, 208, 232);
+    doc.circle(margin+8, 90, 14, 'F');
+    doc.setFillColor(196, 232, 160);
+    doc.circle(margin+20, 72, 11, 'F');
+    doc.setFillColor(245, 192, 48);
+    doc.circle(margin+4, 72, 9, 'F');
+    doc.setFillColor(244, 208, 232);
+    doc.circle(pw-margin-8, 90, 14, 'F');
+    doc.setFillColor(196, 232, 160);
+    doc.circle(pw-margin-20, 72, 11, 'F');
+    doc.setFillColor(245, 192, 48);
+    doc.circle(pw-margin-4, 72, 9, 'F');
+    // Easter egg center
+    doc.setFillColor(244, 208, 232);
+    doc.ellipse(pw/2, H*0.38, pw*0.06, H*0.1, 'F');
+    doc.setGState(new doc.GState({opacity: 1}));
+    doc.setDrawColor(90, 138, 90);
+    doc.setLineWidth(0.5);
+    doc.line(pw*0.2, H-14, pw*0.8, H-14);
+    doc.setFont('times', 'italic');
+    doc.setFontSize(26);
+    doc.setTextColor(42, 90, 42);
+    doc.text('Happy Easter', pw/2, 148, { align: 'center' });
+    return H + 36;
+  },
+
+  'easter-fun-1': function(doc, pw, ph, margin) {
+    const H = 190;
+    doc.setFillColor(240, 255, 240);
+    doc.rect(0, 0, pw, H, 'F');
+    [[0.12,0.3,[244,160,192]],[0.25,0.62,[160,200,244]],[0.4,0.2,[200,244,160]],[0.55,0.65,[244,208,160]],[0.68,0.22,[208,160,244]],[0.8,0.58,[244,160,192]],[0.9,0.3,[160,200,244]]].forEach(([rx,ry,c]) => {
+      doc.setFillColor(c[0],c[1],c[2]);
+      doc.setGState(new doc.GState({opacity: 0.8}));
+      doc.ellipse(pw*rx, H*ry, 10, 17, 'F');
+    });
+    doc.setGState(new doc.GState({opacity: 1}));
+    doc.setFont('times', 'bold');
+    doc.setFontSize(26);
+    doc.setTextColor(42, 106, 42);
+    doc.text('Happy Easter!', pw/2, 148, { align: 'center' });
+    return H + 36;
+  },
+
+  'halloween-classic-1': function(doc, pw, ph, margin) {
+    const H = 190;
+    doc.setFillColor(26, 10, 46);
+    doc.rect(0, 0, pw, H, 'F');
+    // Moon
+    doc.setFillColor(245, 224, 144);
+    doc.setGState(new doc.GState({opacity: 0.8}));
+    doc.circle(pw*0.75, H*0.22, pw*0.1, 'F');
+    doc.setFillColor(26, 10, 46);
+    doc.circle(pw*0.8, H*0.18, pw*0.09, 'F');
+    // Stars
+    doc.setFillColor(245, 224, 144);
+    doc.setGState(new doc.GState({opacity: 0.6}));
+    [[0.1,0.15],[0.2,0.3],[0.35,0.1],[0.15,0.45],[0.5,0.2],[0.3,0.5]].forEach(([rx,ry]) => doc.circle(pw*rx, H*ry, 2, 'F'));
+    doc.setGState(new doc.GState({opacity: 1}));
+    doc.setDrawColor(200, 144, 232);
+    doc.setLineWidth(0.6);
+    doc.line(pw*0.2, H-14, pw*0.8, H-14);
+    doc.setFont('times', 'italic');
+    doc.setFontSize(24);
+    doc.setTextColor(200, 144, 232);
+    doc.text('Happy Halloween', pw/2, H-20, { align: 'center' });
+    return H + 36;
+  },
+
+  'halloween-fun-1': function(doc, pw, ph, margin) {
+    const H = 190;
+    doc.setFillColor(26, 8, 48);
+    doc.rect(0, 0, pw, H, 'F');
+    // Pumpkins
+    doc.setFillColor(232, 112, 32);
+    doc.setGState(new doc.GState({opacity: 0.8}));
+    doc.ellipse(pw*0.15, H*0.5, pw*0.07, H*0.12, 'F');
+    doc.ellipse(pw*0.85, H*0.55, pw*0.055, H*0.095, 'F');
+    // Stems
+    doc.setFillColor(58, 106, 32);
+    doc.rect(pw*0.148, H*0.36, pw*0.016, H*0.04, 'F');
+    doc.rect(pw*0.848, H*0.44, pw*0.012, H*0.03, 'F');
+    doc.setGState(new doc.GState({opacity: 1}));
+    // Stars
+    doc.setFillColor(245, 224, 144);
+    doc.setGState(new doc.GState({opacity: 0.6}));
+    [[0.3,0.12],[0.7,0.1],[0.85,0.25],[0.5,0.08]].forEach(([rx,ry]) => doc.circle(pw*rx, H*ry, 2, 'F'));
+    doc.setGState(new doc.GState({opacity: 1}));
+    doc.setFont('times', 'bold');
+    doc.setFontSize(26);
+    doc.setTextColor(245, 160, 32);
+    doc.text('Happy Halloween!', pw/2, H*0.82, { align: 'center' });
+    return H + 36;
+  },
+
+  'justbecause-classic-1': function(doc, pw, ph, margin) {
+    const H = 190;
+    doc.setFillColor(255, 248, 240);
+    doc.rect(0, 0, pw, H, 'F');
+    doc.setDrawColor(212, 160, 112);
+    doc.setLineWidth(0.8);
+    doc.setGState(new doc.GState({opacity: 0.35}));
+    doc.rect(margin*0.6, H*0.06, pw-margin*1.2, H*0.88, 'F');
+    doc.setGState(new doc.GState({opacity: 0.4}));
+    doc.setFillColor(184, 144, 96);
+    doc.ellipse(pw/2-pw*0.06, H*0.38, pw*0.055, H*0.09, 'F');
+    doc.ellipse(pw/2+pw*0.06, H*0.32, pw*0.05, H*0.08, 'F');
+    doc.ellipse(pw/2, H*0.28, pw*0.04, H*0.07, 'F');
+    doc.setGState(new doc.GState({opacity: 1}));
+    doc.setDrawColor(212, 160, 112);
+    doc.setLineWidth(0.6);
+    doc.line(pw*0.22, H-14, pw*0.78, H-14);
+    doc.setFont('times', 'italic');
+    doc.setFontSize(26);
+    doc.setTextColor(138, 80, 32);
+    doc.text('Just Because', pw/2, 148, { align: 'center' });
+    return H + 36;
+  },
+
+  'justbecause-fun-1': function(doc, pw, ph, margin) {
+    const H = 190;
+    doc.setFillColor(255, 240, 248);
+    doc.rect(0, 0, pw, H, 'F');
+    [[0.1,0.25,[244,167,185]],[0.22,0.6,[212,175,55]],[0.35,0.15,[150,200,150]],[0.5,0.68,[136,144,224]],[0.65,0.2,[244,167,185]],[0.78,0.62,[212,175,55]],[0.9,0.3,[150,200,150]]].forEach(([rx,ry,c]) => {
+      doc.setFillColor(c[0],c[1],c[2]);
+      doc.setGState(new doc.GState({opacity: 0.7}));
+      doc.circle(pw*rx, H*ry, 5, 'F');
+    });
+    doc.setGState(new doc.GState({opacity: 1}));
+    doc.setFont('times', 'bold');
+    doc.setFontSize(26);
+    doc.setTextColor(192, 68, 122);
+    doc.text('Just Because', pw/2, 148, { align: 'center' });
+    return H + 36;
+  },
+
+  'apology-classic-1': function(doc, pw, ph, margin) {
+    const H = 190;
+    doc.setFillColor(245, 247, 250);
+    doc.rect(0, 0, pw, H, 'F');
+    doc.setDrawColor(138, 154, 176);
+    doc.setLineWidth(0.5);
+    doc.setGState(new doc.GState({opacity: 0.25}));
+    doc.rect(margin*0.6, H*0.06, pw-margin*1.2, H*0.88, 'F');
+    doc.setGState(new doc.GState({opacity: 0.4}));
+    // Olive branch
+    doc.setDrawColor(122, 144, 112);
+    doc.setLineWidth(0.8);
+    doc.line(pw*0.2, H*0.6, pw*0.5, H*0.3);
+    doc.line(pw*0.5, H*0.3, pw*0.8, H*0.6);
+    doc.setFillColor(138, 170, 128);
+    [[-0.22,0.05],[-0.12,-0.05],[0,0.08],[0.12,-0.03],[0.22,0.06]].forEach(([lx,ly]) => {
+      doc.ellipse(pw/2+pw*lx, H*0.4+H*ly, pw*0.04, H*0.065, 'F');
+    });
+    doc.setGState(new doc.GState({opacity: 1}));
+    doc.setDrawColor(138, 154, 176);
+    doc.setLineWidth(0.5);
+    doc.line(pw*0.25, H-14, pw*0.75, H-14);
+    doc.setFont('times', 'italic');
+    doc.setFontSize(26);
+    doc.setTextColor(58, 74, 90);
+    doc.text("I'm Sorry", pw/2, H-20, { align: 'center' });
+    return H + 36;
+  },
+
+  'apology-fun-1': function(doc, pw, ph, margin) {
+    const H = 190;
+    doc.setFillColor(240, 244, 248);
+    doc.rect(0, 0, pw, H, 'F');
+    [[0.1,0.2],[0.2,0.6],[0.35,0.15],[0.5,0.65],[0.65,0.18],[0.8,0.6],[0.9,0.25]].forEach(([rx,ry]) => {
+      doc.setFillColor(160, 184, 208);
+      doc.setGState(new doc.GState({opacity: 0.5}));
+      doc.circle(pw*rx, H*ry, 4, 'F');
+    });
+    doc.setFontSize(18);
+    doc.setTextColor(128, 144, 168);
+    doc.setGState(new doc.GState({opacity: 0.5}));
+    doc.text('\u2665', pw/2, H*0.38, { align: 'center' });
+    doc.setGState(new doc.GState({opacity: 1}));
+    doc.setDrawColor(138, 154, 176);
+    doc.setLineWidth(0.5);
+    doc.line(pw*0.28, H-14, pw*0.72, H-14);
+    doc.setFont('times', 'italic');
+    doc.setFontSize(24);
+    doc.setTextColor(58, 74, 90);
+    doc.text("I'm Truly Sorry", pw/2, H-20, { align: 'center' });
     return H + 36;
   }
 

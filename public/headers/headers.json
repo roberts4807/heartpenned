@@ -1,0 +1,66 @@
+[
+  {
+    "id": "bday-img-floral",
+    "label": "Floral",
+    "occasions": ["Birthday"],
+    "category": "classic",
+    "theme": "blush",
+    "image": "birthday-floral.png"
+  },
+  {
+    "id": "bday-img-balloons",
+    "label": "Balloons",
+    "occasions": ["Birthday"],
+    "category": "fun",
+    "theme": "blush",
+    "image": "birthday-balloons.png"
+  },
+  {
+    "id": "bday-img-confetti",
+    "label": "Gold Confetti",
+    "occasions": ["Birthday"],
+    "category": "classic",
+    "theme": "gold",
+    "image": "birthday-confetti.png"
+  },
+  {
+    "id": "fday-img-journal",
+    "label": "Journal",
+    "occasions": ["Father's Day"],
+    "category": "classic",
+    "theme": "slate",
+    "image": "fathersday-journal.png"
+  },
+  {
+    "id": "fday-img-music",
+    "label": "Music",
+    "occasions": ["Father's Day"],
+    "category": "classic",
+    "theme": "slate",
+    "image": "fathersday-music.png"
+  },
+  {
+    "id": "fday-img-music2",
+    "label": "Music 2",
+    "occasions": ["Father's Day"],
+    "category": "classic",
+    "theme": "slate",
+    "image": "fathersday-music2.png"
+  },
+  {
+    "id": "fday-img-tools",
+    "label": "Tools",
+    "occasions": ["Father's Day"],
+    "category": "fun",
+    "theme": "slate",
+    "image": "fathersday-tools.png"
+  },
+  {
+    "id": "fday-img-sports",
+    "label": "Sports",
+    "occasions": ["Father's Day"],
+    "category": "fun",
+    "theme": "slate",
+    "image": "fathersday-sports.png"
+  }
+]

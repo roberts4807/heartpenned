@@ -70,7 +70,7 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
 @keyframes pulse{0%,100%{opacity:0.3;transform:scale(0.8)}50%{opacity:1;transform:scale(1)}}
 .gen-label{font-size:15px;color:#3A4A5A;}
 .card-surface{background:#F4F8FF;border:0.5px solid #B8CDE8;border-radius:16px;padding:2rem 1.75rem;margin-bottom:1.25rem;position:relative;overflow:hidden;transition:background 0.4s ease;}
-.card-header-zone{margin:-2rem -1.75rem 1.25rem;overflow:hidden;border-radius:14px 14px 0 0;}
+.card-header-zone{margin:-2rem -1.75rem 1.25rem;overflow:hidden;border-radius:14px 14px 0 0;height:140px;}
 .card-corner{position:absolute;opacity:0.15;}
 .card-text{font-family:'Playfair Display',serif;font-size:16px;line-height:1.95;color:#1A2A3A;white-space:pre-wrap;position:relative;z-index:1;}
 .swatch-row{display:flex;gap:8px;justify-content:center;margin-bottom:1.1rem;flex-wrap:wrap;}
@@ -194,7 +194,7 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
 .header-thumb{width:120px;cursor:pointer;border:2px solid transparent;border-radius:8px;overflow:hidden;transition:all 0.15s;flex-shrink:0;}
 .header-thumb:hover{border-color:#2A4A80;}
 .header-thumb.selected{border-color:#1A3A6A;box-shadow:0 0 0 2px #1A3A6A;}
-.header-thumb svg,.header-thumb canvas{width:100%;display:block;}
+.header-thumb svg,.header-thumb canvas,.header-thumb div,.header-thumb img{width:100%;display:block;}
 .header-thumb-label{font-size:11px;color:#888;text-align:center;padding:4px 0 5px;background:white;}
 .print-preview-wrap{background:white;border:1px solid #D0D8E8;border-radius:8px;overflow:hidden;margin-bottom:1rem;}
 .btn-download-pdf{width:100%;padding:0.85rem;background:#1A3A6A;color:white;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;letter-spacing:0.02em;}
@@ -502,15 +502,7 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
     <!-- Print at Home panel -->
     <div id="print-panel" style="display:none;">
       <div class="print-panel">
-        <div class="print-panel-label">Choose a header style</div>
-        <div class="header-category-tabs">
-          <div class="hcat-tab active" id="hcat-classic" onclick="switchHeaderCat('classic')">Classic</div>
-          <div class="hcat-tab" id="hcat-fun" onclick="switchHeaderCat('fun')">Fun</div>
-          <div class="hcat-tab" id="hcat-color" onclick="switchHeaderCat('color')">Color</div>
-        </div>
-        <div class="header-thumbs" id="header-thumbs"></div>
-        <div id="print-color-swatches" style="display:none;margin-bottom:0.75rem;"></div>
-        <div class="print-panel-label" style="margin-top:0.25rem;">Preview</div>
+        <div class="print-panel-label">Preview</div>
         <div class="print-preview-wrap" id="print-preview"></div>
         <button class="btn-download-pdf" id="btn-download-pdf" onclick="downloadPDF()">Download PDF</button>
       </div>
@@ -595,7 +587,7 @@ function applyDefaultHeader(occ) {
 
   // Render into delivery screen only
   const delZone = document.getElementById('del-card-header-zone');
-  if (delZone) delZone.innerHTML = header.render(delZone.offsetWidth || 320, 100);
+  if (delZone) delZone.innerHTML = header.render(delZone.offsetWidth || 320, 140);
 
   // Set delivery card-surface background
   const bodyBg = getHeaderBodyBg(header);
@@ -979,7 +971,7 @@ function switchDeliveryStyle(cat) {
         // Re-render delivery card header
         const delZone = document.getElementById('del-card-header-zone');
         const bodyBg = getHeaderBodyBg(h);
-        if (delZone) delZone.innerHTML = h.render(delZone.offsetWidth || 320, 100);
+        if (delZone) delZone.innerHTML = h.render(delZone.offsetWidth || 320, 140);
         applyTheme(h.theme, [document.querySelector('#screen-delivery .card-surface')]);
         document.querySelector('#screen-delivery .card-surface').style.background = bodyBg;
       };
@@ -1248,6 +1240,40 @@ const CARD_HEADERS = [
         <!-- Text -->
         <text x="${w*0.5}" y="${h*0.53}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.12}" font-weight="400" fill="#C0446A" letter-spacing="0.5">Happy Birthday!</text>
       </svg>`;
+    }
+  },
+
+  // ── BIRTHDAY IMAGE HEADERS ────────────────────────────────────────────────
+  {
+    id: 'bday-img-floral',
+    label: 'Floral',
+    occasions: ['Birthday'],
+    category: 'classic',
+    theme: 'blush',
+    render(w, h) {
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/headers/birthday-floral.png" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;" alt="Birthday floral header"/></div>`;
+    }
+  },
+
+  {
+    id: 'bday-img-balloons',
+    label: 'Balloons',
+    occasions: ['Birthday'],
+    category: 'fun',
+    theme: 'blush',
+    render(w, h) {
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/headers/birthday-balloons.png" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;" alt="Birthday balloons header"/></div>`;
+    }
+  },
+
+  {
+    id: 'bday-img-confetti',
+    label: 'Gold Confetti',
+    occasions: ['Birthday'],
+    category: 'classic',
+    theme: 'gold',
+    render(w, h) {
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/headers/birthday-confetti.png" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block;" alt="Birthday confetti header"/></div>`;
     }
   },
 
@@ -2815,11 +2841,7 @@ function renderPrintPreview() {
 }
 
 function openPrintPanel() {
-  activeHeaderCat = 'classic';
-  document.querySelectorAll('.hcat-tab').forEach(t => t.classList.remove('active'));
-  const classicTab = document.getElementById('hcat-classic');
-  if (classicTab) classicTab.classList.add('active');
-  buildHeaderThumbs();
+  renderPrintPreview();
 }
 
 // ── Digital panel header state ─────────────────────────────────────────────

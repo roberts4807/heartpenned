@@ -579,21 +579,23 @@ function getThemeForOccasion(occ) {
 }
 
 function applyDefaultHeader(occ) {
-  let header = CARD_HEADERS.find(h => h.category === 'classic' && h.occasions.some(o => o.toLowerCase() === (occ||'').toLowerCase()));
-  if (!header) header = CARD_HEADERS[0];
+  headersReady.then(() => {
+    let header = CARD_HEADERS.find(h => h.category === 'classic' && h.occasions.some(o => o.toLowerCase() === (occ||'').toLowerCase()));
+    if (!header) header = CARD_HEADERS[0];
 
-  activeHeaderId = header.id;
-  activeDigitalHeaderId = header.id;
+    activeHeaderId = header.id;
+    activeDigitalHeaderId = header.id;
 
-  // Render into delivery screen only
-  const delZone = document.getElementById('del-card-header-zone');
-  if (delZone) delZone.innerHTML = header.render(delZone.offsetWidth || 320, 140);
+    // Render into delivery screen only
+    const delZone = document.getElementById('del-card-header-zone');
+    if (delZone) delZone.innerHTML = header.render(delZone.offsetWidth || 320, 140);
 
-  // Set delivery card-surface background
-  const bodyBg = getHeaderBodyBg(header);
-  const delSurface = document.querySelector('#screen-delivery .card-surface');
-  if (delSurface) delSurface.style.background = bodyBg;
-  activeTheme = header.theme;
+    // Set delivery card-surface background
+    const bodyBg = getHeaderBodyBg(header);
+    const delSurface = document.querySelector('#screen-delivery .card-surface');
+    if (delSurface) delSurface.style.background = bodyBg;
+    activeTheme = header.theme;
+  });
 }
 
 function applyTheme(themeId, surfaces) {
@@ -987,11 +989,10 @@ function switchDeliveryStyle(cat) {
 function showDelivery(){
   document.getElementById('del-card-text').textContent = currentCardText;
   showScreen('delivery');
-  // Initialize with default header
-  setTimeout(() => {
+  headersReady.then(() => {
     applyDefaultHeader(A.occasion || '');
     switchDeliveryStyle('classic');
-  }, 50);
+  });
 }
 
 function handleDel(type){
@@ -1240,40 +1241,6 @@ const CARD_HEADERS = [
         <!-- Text -->
         <text x="${w*0.5}" y="${h*0.53}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.12}" font-weight="400" fill="#C0446A" letter-spacing="0.5">Happy Birthday!</text>
       </svg>`;
-    }
-  },
-
-  // ── BIRTHDAY IMAGE HEADERS ────────────────────────────────────────────────
-  {
-    id: 'bday-img-floral',
-    label: 'Floral',
-    occasions: ['Birthday'],
-    category: 'classic',
-    theme: 'blush',
-    render(w, h) {
-      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/birthday-floral.png" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;" alt="Birthday floral header"/></div>`;
-    }
-  },
-
-  {
-    id: 'bday-img-balloons',
-    label: 'Balloons',
-    occasions: ['Birthday'],
-    category: 'fun',
-    theme: 'blush',
-    render(w, h) {
-      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/birthday-balloons.png" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;" alt="Birthday balloons header"/></div>`;
-    }
-  },
-
-  {
-    id: 'bday-img-confetti',
-    label: 'Gold Confetti',
-    occasions: ['Birthday'],
-    category: 'classic',
-    theme: 'gold',
-    render(w, h) {
-      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/birthday-confetti.png" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block;" alt="Birthday confetti header"/></div>`;
     }
   },
 
@@ -1599,6 +1566,51 @@ const CARD_HEADERS = [
     }
   },
 
+  // ── ANNIVERSARY IMAGE HEADERS ─────────────────────────────────────────────
+  {
+    id: 'anniversary-img-sunset',
+    label: 'Sunset',
+    occasions: ['Anniversary'],
+    category: 'classic',
+    theme: 'warm',
+    render(w, h) {
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/anniversary-sunset.png" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;" alt="Anniversary sunset header"/></div>`;
+    }
+  },
+
+  {
+    id: 'anniversary-img-candles',
+    label: 'Candles',
+    occasions: ['Anniversary'],
+    category: 'classic',
+    theme: 'warm',
+    render(w, h) {
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/anniversary-candles.png" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;" alt="Anniversary candles header"/></div>`;
+    }
+  },
+
+  {
+    id: 'anniversary-img-letter',
+    label: 'Love Letter',
+    occasions: ['Anniversary'],
+    category: 'classic',
+    theme: 'gold',
+    render(w, h) {
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/anniversary-letter.png" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;" alt="Anniversary letter header"/></div>`;
+    }
+  },
+
+  {
+    id: 'anniversary-img-hearts',
+    label: 'Hearts',
+    occasions: ['Anniversary'],
+    category: 'fun',
+    theme: 'blush',
+    render(w, h) {
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/anniversary-hearts.png" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;" alt="Anniversary hearts header"/></div>`;
+    }
+  },
+
   // ── SYMPATHY GENTLE ───────────────────────────────────────────────────────
   {
     id: 'sympathy-gentle-1',
@@ -1850,62 +1862,6 @@ const CARD_HEADERS = [
         <line x1="${w*0.12}" y1="${h*0.82}" x2="${w*0.88}" y2="${h*0.82}" stroke="#2A3A6A" stroke-width="1.5" opacity="0.4"/>
         <text x="${w*0.5}" y="${h*0.62}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.09}" font-weight="700" fill="#1A2A5A" letter-spacing="0.5">Happy Father's Day!</text>
       </svg>`;
-    }
-  },
-
-  // ── FATHER'S DAY IMAGE HEADERS ────────────────────────────────────────────
-  {
-    id: 'fday-img-journal',
-    label: 'Journal',
-    occasions: ["Father's Day"],
-    category: 'classic',
-    theme: 'slate',
-    render(w, h) {
-      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/fathersday-journal.png" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;" alt="Father's Day journal header"/></div>`;
-    }
-  },
-
-  {
-    id: 'fday-img-music',
-    label: 'Music',
-    occasions: ["Father's Day"],
-    category: 'classic',
-    theme: 'slate',
-    render(w, h) {
-      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/fathersday-music.png" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;" alt="Father's Day music header"/></div>`;
-    }
-  },
-
-  {
-    id: 'fday-img-tools',
-    label: 'Tools',
-    occasions: ["Father's Day"],
-    category: 'fun',
-    theme: 'slate',
-    render(w, h) {
-      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/fathersday-tools.png" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;" alt="Father's Day tools header"/></div>`;
-    }
-  },
-
-  {
-    id: 'fday-img-music2',
-    label: 'Music 2',
-    occasions: ["Father's Day"],
-    category: 'classic',
-    theme: 'slate',
-    render(w, h) {
-      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/fathersday-music2.png" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;" alt="Father's Day music 2 header"/></div>`;
-    }
-  },
-
-  {
-    id: 'fday-img-sports',
-    label: 'Sports',
-    occasions: ["Father's Day"],
-    category: 'fun',
-    theme: 'slate',
-    render(w, h) {
-      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/fathersday-sports.png" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;" alt="Father's Day sports header"/></div>`;
     }
   },
 
@@ -2793,6 +2749,28 @@ const CARD_HEADERS = [
   },
 
 ];
+
+// ── Dynamic image headers from headers.json ────────────────────────────────
+function buildImageHeader(h) {
+  return {
+    id: h.id,
+    label: h.label,
+    occasions: h.occasions,
+    category: h.category,
+    theme: h.theme,
+    image: h.image,
+    render(w, ht) {
+      return `<div style="width:${w}px;height:${ht}px;overflow:hidden;"><img src="/public/headers/${h.image}" style="width:100%;height:100%;object-fit:cover;object-position:${h.position||'center'};display:block;" alt="${h.label} header"/></div>`;
+    }
+  };
+}
+
+const headersReady = fetch('/headers.json')
+  .then(r => r.json())
+  .then(data => {
+    data.forEach(h => CARD_HEADERS.push(buildImageHeader(h)));
+  })
+  .catch(e => console.warn('Could not load headers.json', e));
 
 // ── Header system state ────────────────────────────────────────────────────
 let activeHeaderId = null;
@@ -4271,7 +4249,24 @@ async function downloadPDF() {
 
     // Draw header band on top
     let contentTop = 60;
-    if (header && PDF_HEADER_RENDERERS[header.id]) {
+    if (header && header.image) {
+      // Image-based header — fetch and draw
+      try {
+        const imgUrl = `/public/headers/${header.image}`;
+        const imgData = await fetch(imgUrl).then(r => r.blob()).then(blob => new Promise((res, rej) => {
+          const reader = new FileReader();
+          reader.onload = () => res(reader.result);
+          reader.onerror = rej;
+          reader.readAsDataURL(blob);
+        }));
+        const headerH = 140 * (pw / 612);
+        doc.addImage(imgData, 'PNG', 0, 0, pw, headerH);
+        contentTop = headerH + 24;
+      } catch(imgErr) {
+        console.warn('Could not load header image for PDF', imgErr);
+        contentTop = 60;
+      }
+    } else if (header && PDF_HEADER_RENDERERS[header.id]) {
       contentTop = PDF_HEADER_RENDERERS[header.id](doc, pw, ph, margin);
     }
 

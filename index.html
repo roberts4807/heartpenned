@@ -1974,6 +1974,105 @@ const CARD_HEADERS = [
     }
   },
 
+  // ── GRADUATION IMAGE HEADERS ─────────────────────────────────────────────
+  {
+    id: 'grad-img-classic',
+    label: 'Diploma',
+    occasions: ['Graduation'],
+    category: 'classic',
+    theme: 'gold',
+    image: 'graduation-classic.png',
+    render(w, h) {
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/graduation-classic.png" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;" alt="Graduation classic header"/></div>`;
+    }
+  },
+
+  {
+    id: 'grad-img-fun',
+    label: 'Garden Stars',
+    occasions: ['Graduation'],
+    category: 'fun',
+    theme: 'sage',
+    image: 'graduation-fun.png',
+    render(w, h) {
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/graduation-fun.png" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block;" alt="Graduation celebration header"/></div>`;
+    }
+  },
+
+  {
+    id: 'grad-img-fun2',
+    label: 'Confetti',
+    occasions: ['Graduation'],
+    category: 'fun',
+    theme: 'twilight',
+    image: 'graduation-fun2.png',
+    render(w, h) {
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/graduation-fun2.png" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block;" alt="Graduation confetti header"/></div>`;
+    }
+  },
+
+  // ── THINKING OF YOU IMAGE HEADERS ────────────────────────────────────────
+  {
+    id: 'toy-img-classic',
+    label: 'Wildflowers',
+    occasions: ['Just because', 'Just Because', 'Thinking of You'],
+    category: 'classic',
+    theme: 'sage',
+    image: 'thinkingofyou-classic.png',
+    render(w, h) {
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/thinkingofyou-classic.png" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;" alt="Thinking of you wildflowers header"/></div>`;
+    }
+  },
+
+  {
+    id: 'toy-img-minimal',
+    label: 'Envelope',
+    occasions: ['Just because', 'Just Because', 'Thinking of You'],
+    category: 'classic',
+    theme: 'warm',
+    image: 'thinkingofyou-minimal.png',
+    render(w, h) {
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/thinkingofyou-minimal.png" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;" alt="Thinking of you envelope header"/></div>`;
+    }
+  },
+
+  // ── SYMPATHY IMAGE HEADERS ────────────────────────────────────────────────
+  {
+    id: 'sympathy-img-classic',
+    label: 'White Roses',
+    occasions: ['Sympathy', 'Loss or grief'],
+    category: 'classic',
+    theme: 'slate',
+    image: 'sympathy-classic.png',
+    render(w, h) {
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/sympathy-classic.png" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block;" alt="Sympathy white roses header"/></div>`;
+    }
+  },
+
+  {
+    id: 'sympathy-img-classic2',
+    label: 'Soft Botanicals',
+    occasions: ['Sympathy', 'Loss or grief'],
+    category: 'classic',
+    theme: 'slate',
+    image: 'sympathy-classic2.png',
+    render(w, h) {
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/sympathy-classic2.png" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block;" alt="Sympathy botanicals header"/></div>`;
+    }
+  },
+
+  {
+    id: 'valentine-img-classic',
+    label: 'Romantic',
+    occasions: ["Valentine's Day", 'Valentines Day', 'Valentine'],
+    category: 'classic',
+    theme: 'blush',
+    image: 'valentinesday-classic.png',
+    render(w, h) {
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/valentinesday-classic.png" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;" alt="Valentine's Day header"/></div>`;
+    }
+  },
+
   // ── GET WELL ──────────────────────────────────────────────────────────────
   {
     id: 'getwell-classic-1',

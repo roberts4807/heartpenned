@@ -70,7 +70,7 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
 @keyframes pulse{0%,100%{opacity:0.3;transform:scale(0.8)}50%{opacity:1;transform:scale(1)}}
 .gen-label{font-size:15px;color:#3A4A5A;}
 .card-surface{background:#F4F8FF;border:0.5px solid #B8CDE8;border-radius:16px;padding:2rem 1.75rem;margin-bottom:1.25rem;position:relative;overflow:hidden;transition:background 0.4s ease;}
-.card-header-zone{margin:-2rem -1.75rem 1.25rem;overflow:hidden;border-radius:14px 14px 0 0;height:140px;}
+.card-header-zone{margin:-2rem -1.75rem 1.5rem;overflow:hidden;border-radius:14px 14px 0 0;height:140px;}
 .card-corner{position:absolute;opacity:0.15;}
 .card-text{font-family:'Playfair Display',serif;font-size:16px;line-height:1.95;color:#1A2A3A;white-space:pre-wrap;position:relative;z-index:1;}
 .swatch-row{display:flex;gap:8px;justify-content:center;margin-bottom:1.1rem;flex-wrap:wrap;}
@@ -879,6 +879,10 @@ ABSOLUTE RULES:
 - End the card with a celebration of the occasion as the final line (e.g. "Happy Birthday," "Happy Mother's Day," "Happy Graduation")`;
 }
 
+function cleanText(text) {
+  return text.replace(/\*([^*]+)\*/g, '$1').replace(/\*\*([^*]+)\*\*/g, '$1');
+}
+
 async function callAPI(prompt){
   let response;
   try{
@@ -898,7 +902,8 @@ async function submitCard(){
   versionCount=1;savedVersions=[];activeVersionIdx=0;updateVersionTabs();
   try{
     const text=await callAPI(buildPrompt(false));
-    currentCardText=text;saveVersion(text);document.getElementById('card-text').textContent=text;document.getElementById('del-card-text').textContent=text;buildSwatches();resetEmailSection();showScreen('card');setTimeout(()=>applyDefaultHeader(A.occasion||''),50);
+    const cleaned=cleanText(text);
+    currentCardText=cleaned;saveVersion(cleaned);document.getElementById('card-text').textContent=cleaned;document.getElementById('del-card-text').textContent=cleaned;buildSwatches();resetEmailSection();showScreen('card');setTimeout(()=>applyDefaultHeader(A.occasion||''),50);
   }catch(e){alert('Something went wrong: '+e.message);showScreen('q');}
 }
 
@@ -912,7 +917,8 @@ async function submitRev(){
   showScreen('gen');document.getElementById('gen-label').textContent='Revising your card...';
   try{
     const text=await callAPI(buildPrompt(true,note));
-    currentCardText=text;saveVersion(text,false);document.getElementById('card-text').textContent=text;document.getElementById('del-card-text').textContent=text;buildSwatches();resetEmailSection();showScreen('card');setTimeout(()=>applyDefaultHeader(A.occasion||''),50);
+    const cleaned=cleanText(text);
+    currentCardText=cleaned;saveVersion(cleaned,false);document.getElementById('card-text').textContent=cleaned;document.getElementById('del-card-text').textContent=cleaned;buildSwatches();resetEmailSection();showScreen('card');setTimeout(()=>applyDefaultHeader(A.occasion||''),50);
   }catch(e){alert('Something went wrong: '+e.message);showScreen('card');}
 }
 
@@ -922,7 +928,8 @@ async function tryAnother(){
   versionCount++;
   try{
     const text=await callAPI(buildPrompt(false)+'\n\nIMPORTANT: Completely different opening, structure, and closing. Do not repeat or echo the previous version.');
-    currentCardText=text;saveVersion(text);document.getElementById('card-text').textContent=text;document.getElementById('del-card-text').textContent=text;buildSwatches();resetEmailSection();showScreen('card');setTimeout(()=>applyDefaultHeader(A.occasion||''),50);
+    const cleaned=cleanText(text);
+    currentCardText=cleaned;saveVersion(cleaned);document.getElementById('card-text').textContent=cleaned;document.getElementById('del-card-text').textContent=cleaned;buildSwatches();resetEmailSection();showScreen('card');setTimeout(()=>applyDefaultHeader(A.occasion||''),50);
   }catch(e){alert('Something went wrong: '+e.message);showScreen('card');}
 }
 

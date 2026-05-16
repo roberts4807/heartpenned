@@ -502,15 +502,7 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
     <!-- Print at Home panel -->
     <div id="print-panel" style="display:none;">
       <div class="print-panel">
-        <div class="print-panel-label">Choose a header style</div>
-        <div class="header-category-tabs">
-          <div class="hcat-tab active" id="hcat-classic" onclick="switchHeaderCat('classic')">Classic</div>
-          <div class="hcat-tab" id="hcat-fun" onclick="switchHeaderCat('fun')">Fun</div>
-          <div class="hcat-tab" id="hcat-color" onclick="switchHeaderCat('color')">Color</div>
-        </div>
-        <div class="header-thumbs" id="header-thumbs"></div>
-        <div id="print-color-swatches" style="display:none;margin-bottom:0.75rem;"></div>
-        <div class="print-panel-label" style="margin-top:0.25rem;">Preview</div>
+        <div class="print-panel-label">Preview</div>
         <div class="print-preview-wrap" id="print-preview"></div>
         <button class="btn-download-pdf" id="btn-download-pdf" onclick="downloadPDF()">Download PDF</button>
       </div>
@@ -2815,11 +2807,7 @@ function renderPrintPreview() {
 }
 
 function openPrintPanel() {
-  activeHeaderCat = 'classic';
-  document.querySelectorAll('.hcat-tab').forEach(t => t.classList.remove('active'));
-  const classicTab = document.getElementById('hcat-classic');
-  if (classicTab) classicTab.classList.add('active');
-  buildHeaderThumbs();
+  renderPrintPreview();
 }
 
 // ── Digital panel header state ─────────────────────────────────────────────

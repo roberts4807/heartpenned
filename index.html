@@ -1244,6 +1244,43 @@ const CARD_HEADERS = [
     }
   },
 
+  // ── BIRTHDAY IMAGE HEADERS ────────────────────────────────────────────────
+  {
+    id: 'bday-img-floral',
+    label: 'Floral',
+    occasions: ['Birthday'],
+    category: 'classic',
+    theme: 'blush',
+    image: 'birthday-floral.png',
+    render(w, h) {
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/birthday-floral.png" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;" alt="Birthday floral header"/></div>`;
+    }
+  },
+
+  {
+    id: 'bday-img-balloons',
+    label: 'Balloons',
+    occasions: ['Birthday'],
+    category: 'fun',
+    theme: 'blush',
+    image: 'birthday-balloons.png',
+    render(w, h) {
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/birthday-balloons.png" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;" alt="Birthday balloons header"/></div>`;
+    }
+  },
+
+  {
+    id: 'bday-img-confetti',
+    label: 'Gold Confetti',
+    occasions: ['Birthday'],
+    category: 'classic',
+    theme: 'gold',
+    image: 'birthday-confetti.png',
+    render(w, h) {
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/birthday-confetti.png" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block;" alt="Birthday confetti header"/></div>`;
+    }
+  },
+
   // ── WEDDING ───────────────────────────────────────────────────────────────
   {
     id: 'wedding-classic-1',
@@ -1573,6 +1610,7 @@ const CARD_HEADERS = [
     occasions: ['Anniversary'],
     category: 'classic',
     theme: 'warm',
+    image: 'anniversary-sunset.png',
     render(w, h) {
       return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/anniversary-sunset.png" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;" alt="Anniversary sunset header"/></div>`;
     }
@@ -1584,6 +1622,7 @@ const CARD_HEADERS = [
     occasions: ['Anniversary'],
     category: 'classic',
     theme: 'warm',
+    image: 'anniversary-candles.png',
     render(w, h) {
       return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/anniversary-candles.png" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;" alt="Anniversary candles header"/></div>`;
     }
@@ -1595,6 +1634,7 @@ const CARD_HEADERS = [
     occasions: ['Anniversary'],
     category: 'classic',
     theme: 'gold',
+    image: 'anniversary-letter.png',
     render(w, h) {
       return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/anniversary-letter.png" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;" alt="Anniversary letter header"/></div>`;
     }
@@ -1606,6 +1646,7 @@ const CARD_HEADERS = [
     occasions: ['Anniversary'],
     category: 'fun',
     theme: 'blush',
+    image: 'anniversary-hearts.png',
     render(w, h) {
       return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/anniversary-hearts.png" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;" alt="Anniversary hearts header"/></div>`;
     }
@@ -1862,6 +1903,67 @@ const CARD_HEADERS = [
         <line x1="${w*0.12}" y1="${h*0.82}" x2="${w*0.88}" y2="${h*0.82}" stroke="#2A3A6A" stroke-width="1.5" opacity="0.4"/>
         <text x="${w*0.5}" y="${h*0.62}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.09}" font-weight="700" fill="#1A2A5A" letter-spacing="0.5">Happy Father's Day!</text>
       </svg>`;
+    }
+  },
+
+  // ── FATHER'S DAY IMAGE HEADERS ────────────────────────────────────────────
+  {
+    id: 'fday-img-journal',
+    label: 'Journal',
+    occasions: ["Father's Day"],
+    category: 'classic',
+    theme: 'slate',
+    image: 'fathersday-journal.png',
+    render(w, h) {
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/fathersday-journal.png" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;" alt="Father's Day journal header"/></div>`;
+    }
+  },
+
+  {
+    id: 'fday-img-music',
+    label: 'Music',
+    occasions: ["Father's Day"],
+    category: 'classic',
+    theme: 'slate',
+    image: 'fathersday-music.png',
+    render(w, h) {
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/fathersday-music.png" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;" alt="Father's Day music header"/></div>`;
+    }
+  },
+
+  {
+    id: 'fday-img-music2',
+    label: 'Music 2',
+    occasions: ["Father's Day"],
+    category: 'classic',
+    theme: 'slate',
+    image: 'fathersday-music2.png',
+    render(w, h) {
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/fathersday-music2.png" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;" alt="Father's Day music 2 header"/></div>`;
+    }
+  },
+
+  {
+    id: 'fday-img-tools',
+    label: 'Tools',
+    occasions: ["Father's Day"],
+    category: 'fun',
+    theme: 'slate',
+    image: 'fathersday-tools.png',
+    render(w, h) {
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/fathersday-tools.png" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;" alt="Father's Day tools header"/></div>`;
+    }
+  },
+
+  {
+    id: 'fday-img-sports',
+    label: 'Sports',
+    occasions: ["Father's Day"],
+    category: 'fun',
+    theme: 'slate',
+    image: 'fathersday-sports.png',
+    render(w, h) {
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/fathersday-sports.png" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;" alt="Father's Day sports header"/></div>`;
     }
   },
 

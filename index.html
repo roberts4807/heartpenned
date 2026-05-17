@@ -293,7 +293,7 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
       </div>
       <div class="exp" id="qe-hols"><div class="cgl" style="margin-top:0;">Select the holiday</div><div class="chips" id="qc5-hols"><div class="chip" data-val="Thanksgiving">Thanksgiving</div><div class="chip" data-val="Easter">Easter</div><div class="chip" data-val="New Year">New Year</div><div class="chip" data-val="Halloween">Halloween</div><div class="chip" data-val="Diwali">Diwali</div><div class="chip" data-val="Eid">Eid</div><div class="chip" data-val="Passover">Passover</div></div></div>
       <div class="exp" id="qe-other-occ"><input class="text-input" id="t5-other" type="text" placeholder="e.g. Retirement, New baby, Promotion..." oninput="handleOtherOcc()"></div>
-      <div class="harder"><div class="harder-label">For harder moments</div><div class="chips" id="qc5-hard"><div class="chip gentle" data-val="Loss or grief">Loss or grief</div><div class="chip gentle" data-val="Apology">Apology</div></div></div>
+      <div class="harder"><div class="harder-label">For harder moments</div><div class="chips" id="qc5-hard"><div class="chip gentle" data-val="Sympathy">Sympathy</div><div class="chip gentle" data-val="Apology">Apology</div></div></div>
       <div class="qnav"><button class="btn-back" onclick="qGo('2b')">← Back</button><button class="btn-next" id="qn5" disabled onclick="routeAfterOcc()">Next →</button></div>
     </div>
 
@@ -561,7 +561,7 @@ const OCC_THEME_MAP = {
   'New Baby':           'sage',
   'Thank You':          'warm',
   'Sympathy':           'slate',
-  'Loss or grief':      'slate',
+  'Sympathy':      'slate',
   'Get Well':           'sage',
   'Apology':            'classic',
   'Encouragement':      'sage',
@@ -789,12 +789,12 @@ document.getElementById('qc7')?.querySelectorAll('.chip').forEach(chip=>chip.add
 
 function buildPrompt(isRev,note){
   const name=A.name||'';
-  const isMD=A.occasion==="Mother's Day",isFD=A.occasion==="Father's Day",isNND=A.occasion==="National Nurses Day",isLoss=A.occasion==="Loss or grief",isApology=A.occasion==="Apology",isBirthday=A.occasion==="Birthday";
+  const isMD=A.occasion==="Mother's Day",isFD=A.occasion==="Father's Day",isNND=A.occasion==="National Nurses Day",isLoss=A.occasion==="Sympathy",isApology=A.occasion==="Apology",isBirthday=A.occasion==="Birthday";
   const kidsText=A.kids.filter(k=>k&&(k.age||k.sex)).map(k=>{const p=[];if(k.sex)p.push(k.sex);if(k.age)p.push('age '+k.age);if(k.name)p.push('('+k.name+')');return p.join(' ');}).join(' | ');
   const toneVal=[...A.tones,...(A.toneOther?[A.toneOther]:[])].join(' + ')||'Warm and heartfelt';
   const feelVal=A.feels.join(', ')||'loved';
   const spiritualRule=A.spirituality==='None'||!A.spirituality?'No spiritual language of any kind.':A.spirituality==='Gently spiritual'?'Use gently universal spiritual language — grace, light, presence, purpose — without naming any religion.':'Use warm faith-based language.'+(A.faithTradition?' Tradition: '+A.faithTradition+'.':' Universal faith language.');
-  const occasionRules=isLoss?'Loss or grief. Gentleness and presence only. No silver linings. No fixing. Let them feel less alone.':isApology?'Apology. Sincere and direct. No deflecting. Own the moment.':isMD?'Mother\'s Day. Do not mention holiday by name. No clichés: no Happy Mother\'s Day, no unconditional love, no SuperMom. Honor the day through specificity.'+(kidsText?' Children: '+kidsText+'. Adult children reflect on what was already built. Young children tenderness about now.':''):isFD?'Father\'s Day. Do not mention holiday by name. No clichés.'+(kidsText?' Children: '+kidsText+'.':''):isNND?'National Nurses Day. Specific and respectful. No generic heroism.':isBirthday&&A.birthdayAge?'Birthday. Turning '+A.birthdayAge+'.'+(([30,40,50,60,70,80].includes(Number(A.birthdayAge)))?' Milestone.':''):'';
+  const occasionRules=isLoss?'Sympathy. Gentleness and presence only. No silver linings. No fixing. Let them feel less alone.':isApology?'Apology. Sincere and direct. No deflecting. Own the moment.':isMD?'Mother\'s Day. Do not mention holiday by name. No clichés: no Happy Mother\'s Day, no unconditional love, no SuperMom. Honor the day through specificity.'+(kidsText?' Children: '+kidsText+'. Adult children reflect on what was already built. Young children tenderness about now.':''):isFD?'Father\'s Day. Do not mention holiday by name. No clichés.'+(kidsText?' Children: '+kidsText+'.':''):isNND?'National Nurses Day. Specific and respectful. No generic heroism.':isBirthday&&A.birthdayAge?'Birthday. Turning '+A.birthdayAge+'.'+(([30,40,50,60,70,80].includes(Number(A.birthdayAge)))?' Milestone.':''):'';
   if(isRev){
     return `This is a targeted revision of a greeting card.
 
@@ -1362,7 +1362,7 @@ const CARD_HEADERS = [
   {
     id: 'sympathy-classic-1',
     label: 'Quiet Garden',
-    occasions: ['Sympathy', 'Loss or grief'],
+    occasions: ['Sympathy'],
     category: 'classic',
     theme: 'slate',
     render(w, h) {
@@ -1663,7 +1663,7 @@ const CARD_HEADERS = [
   {
     id: 'sympathy-gentle-1',
     label: 'Soft Light',
-    occasions: ['Sympathy', 'Loss or grief'],
+    occasions: ['Sympathy'],
     category: 'fun',
     theme: 'slate',
     render(w, h) {
@@ -1783,6 +1783,55 @@ const CARD_HEADERS = [
         <!-- Text -->
         <text x="${w*0.5}" y="${h*0.62}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.095}" font-weight="700" fill="#CC2222" letter-spacing="0.5">Merry Christmas!</text>
       </svg>`;
+    }
+  },
+
+  // ── CHRISTMAS IMAGE HEADERS ───────────────────────────────────────────────
+  {
+    id: 'christmas-img-gifts',
+    label: 'Gifts & Sweets',
+    occasions: ['Christmas'],
+    category: 'fun',
+    theme: 'sage',
+    image: 'christmas-gifts.png',
+    render(w, h) {
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/christmas-gifts.png" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block;" alt="Christmas header"/></div>`;
+    }
+  },
+
+  {
+    id: 'christmas-img-snowman',
+    label: 'Snowy Snowman',
+    occasions: ['Christmas'],
+    category: 'fun',
+    theme: 'slate',
+    image: 'christmas-snowman.png',
+    render(w, h) {
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/christmas-snowman.png" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;" alt="Christmas header"/></div>`;
+    }
+  },
+
+  {
+    id: 'christmas-img-ornament',
+    label: 'Silver Boughs',
+    occasions: ['Christmas'],
+    category: 'classic',
+    theme: 'slate',
+    image: 'christmas-ornament.png',
+    render(w, h) {
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/christmas-ornament.png" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block;" alt="Christmas header"/></div>`;
+    }
+  },
+
+  {
+    id: 'christmas-img-garland',
+    label: 'Holly Garland',
+    occasions: ['Christmas'],
+    category: 'classic',
+    theme: 'sage',
+    image: 'christmas-garland.png',
+    render(w, h) {
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/christmas-garland.png" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;" alt="Christmas header"/></div>`;
     }
   },
 
@@ -2040,7 +2089,7 @@ const CARD_HEADERS = [
   {
     id: 'sympathy-img-classic',
     label: 'White Roses',
-    occasions: ['Sympathy', 'Loss or grief'],
+    occasions: ['Sympathy'],
     category: 'classic',
     theme: 'slate',
     image: 'sympathy-classic.png',
@@ -2052,7 +2101,7 @@ const CARD_HEADERS = [
   {
     id: 'sympathy-img-classic2',
     label: 'Soft Botanicals',
-    occasions: ['Sympathy', 'Loss or grief'],
+    occasions: ['Sympathy'],
     category: 'classic',
     theme: 'slate',
     image: 'sympathy-classic2.png',

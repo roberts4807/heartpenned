@@ -2171,6 +2171,67 @@ const CARD_HEADERS = [
     }
   },
 
+  // ── VALENTINE'S DAY IMAGE HEADERS ─────────────────────────────────────────
+  {
+    id: 'valentines-img-roses',
+    label: 'Crimson Roses',
+    occasions: ["Valentine's Day", 'Valentines Day', 'Valentine'],
+    category: 'classic',
+    theme: 'blush',
+    image: 'valentines-roses.png',
+    render(w, h) {
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/valentines-roses.png" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block;" alt="Valentine's Day header"/></div>`;
+    }
+  },
+
+  {
+    id: 'valentines-img-hearts',
+    label: 'Gold Hearts',
+    occasions: ["Valentine's Day", 'Valentines Day', 'Valentine'],
+    category: 'classic',
+    theme: 'blush',
+    image: 'valentines-hearts.png',
+    render(w, h) {
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/valentines-hearts.png" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block;" alt="Valentine's Day header"/></div>`;
+    }
+  },
+
+  {
+    id: 'valentines-img-gift',
+    label: 'Gift & Hearts',
+    occasions: ["Valentine's Day", 'Valentines Day', 'Valentine'],
+    category: 'fun',
+    theme: 'blush',
+    image: 'valentines-gift.png',
+    render(w, h) {
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/valentines-gift.png" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block;" alt="Valentine's Day header"/></div>`;
+    }
+  },
+
+  {
+    id: 'valentines-img-confetti',
+    label: 'Heart Confetti',
+    occasions: ["Valentine's Day", 'Valentines Day', 'Valentine'],
+    category: 'fun',
+    theme: 'blush',
+    image: 'valentines-confetti.png',
+    render(w, h) {
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/valentines-confetti.png" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block;" alt="Valentine's Day header"/></div>`;
+    }
+  },
+
+  {
+    id: 'valentines-img-candy',
+    label: 'Sweet Candies',
+    occasions: ["Valentine's Day", 'Valentines Day', 'Valentine'],
+    category: 'fun',
+    theme: 'blush',
+    image: 'valentines-candy.png',
+    render(w, h) {
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/valentines-candy.png" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block;" alt="Valentine's Day header"/></div>`;
+    }
+  },
+
   // ── GET WELL ──────────────────────────────────────────────────────────────
   {
     id: 'getwell-classic-1',

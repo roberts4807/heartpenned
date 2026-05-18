@@ -2714,6 +2714,55 @@ const CARD_HEADERS = [
     }
   },
 
+  // ── HALLOWEEN IMAGE HEADERS ───────────────────────────────────────────────
+  {
+    id: 'halloween-img-classic',
+    label: 'Pumpkins & Candles',
+    occasions: ['Halloween'],
+    category: 'classic',
+    theme: 'warm',
+    image: 'halloween-classic.png',
+    render(w, h) {
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/halloween-classic.png" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block;" alt="Halloween header"/></div>`;
+    }
+  },
+
+  {
+    id: 'halloween-img-pumpkins',
+    label: 'Pumpkins & Webs',
+    occasions: ['Halloween'],
+    category: 'classic',
+    theme: 'warm',
+    image: 'halloween-pumpkins.png',
+    render(w, h) {
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/halloween-pumpkins.png" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block;" alt="Halloween header"/></div>`;
+    }
+  },
+
+  {
+    id: 'halloween-img-ghosts',
+    label: 'Friendly Ghosts',
+    occasions: ['Halloween'],
+    category: 'fun',
+    theme: 'purple',
+    image: 'halloween-ghosts.png',
+    render(w, h) {
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/halloween-ghosts.png" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block;" alt="Halloween header"/></div>`;
+    }
+  },
+
+  {
+    id: 'halloween-img-night',
+    label: 'Haunted Night',
+    occasions: ['Halloween'],
+    category: 'classic',
+    theme: 'purple',
+    image: 'halloween-night.png',
+    render(w, h) {
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/halloween-night.png" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;" alt="Halloween header"/></div>`;
+    }
+  },
+
   // ── JUST BECAUSE ──────────────────────────────────────────────────────────
   {
     id: 'justbecause-classic-1',

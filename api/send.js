@@ -35,7 +35,7 @@ function getColors(occasion, themeId) {
   return occasionColors.default;
 }
 
-function buildCardEmail({ recipientName, senderName, cardText, occasion, themeId, headerImageUrl }) {
+function buildCardEmail({ recipientName, senderName, cardText, occasion, themeId, headerImageUrl, isSenderCopy }) {
   const colors = getColors(occasion, themeId);
   const occasionLabel = occasion
     ? occasion.charAt(0).toUpperCase() + occasion.slice(1)
@@ -61,6 +61,19 @@ function buildCardEmail({ recipientName, senderName, cardText, occasion, themeId
         </td>
       </tr>`;
 
+  // Confirmation banner shown only to sender
+  const recipientDisplay = recipientName || 'your recipient';
+  const confirmationBanner = isSenderCopy
+    ? `<tr>
+        <td style="background-color:#F0F4FF;border:1px solid #D0D8F0;border-radius:10px;padding:16px 24px;margin-bottom:24px;">
+          <p style="margin:0;font-family:Arial,sans-serif;font-size:13px;color:#3A4A7A;line-height:1.6;">
+            <strong>Your card was sent.</strong> Below is exactly what <strong>${recipientDisplay}</strong> received.
+          </p>
+        </td>
+      </tr>
+      <tr><td style="height:24px;"></td></tr>`
+    : '';
+
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -72,6 +85,7 @@ function buildCardEmail({ recipientName, senderName, cardText, occasion, themeId
   <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color:#f4f4f4;">
     <tr><td style="padding:40px 20px;">
       <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="max-width:560px;margin:0 auto;">
+        ${confirmationBanner}
         ${headerHtml}
         <tr>
           <td style="background-color:#ffffff;padding:48px 48px 40px;border-left:1px solid #e8e8e8;border-right:1px solid #e8e8e8;">
@@ -126,7 +140,7 @@ module.exports = async function handler(req, res) {
       from: 'HeartPenned <hello@heartpenned.com>',
       to: [recipientEmail],
       subject,
-      html: buildCardEmail({ recipientName, senderName, cardText, occasion, themeId, headerImageUrl }),
+      html: buildCardEmail({ recipientName, senderName, cardText, occasion, themeId, headerImageUrl, isSenderCopy }),
     });
 
     return res.status(200).json({ success: true, id: data.id });

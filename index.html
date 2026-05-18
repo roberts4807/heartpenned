@@ -289,7 +289,7 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
       <div class="question">What's the occasion?</div>
       <div class="subtext">This sets the emotional gravity of the message.</div>
       <div class="chips" id="qc5-main">
-        <div class="chip" data-val="Birthday">Birthday</div><div class="chip" data-val="Anniversary">Anniversary</div><div class="chip" data-val="Valentine's Day">Valentine's Day</div><div class="chip" data-val="Christmas">Christmas</div><div class="chip" data-val="Hanukkah">Hanukkah</div><div class="chip" data-val="Thank you">Thank you</div><div class="chip" data-val="Get well">Get well</div><div class="chip" data-val="Just because">Just because</div><div class="chip" data-val="Father's Day">Father's Day</div><div class="chip" data-val="Mother's Day">Mother's Day</div><div class="chip" data-val="Graduation">Graduation</div><div class="chip" data-val="New milestone">New milestone</div><div class="chip" data-val="National Nurses Day">National Nurses Day</div><div class="chip" data-val="Other Holidays">Other Holidays</div><div class="chip" data-val="Other">Other</div>
+        <div class="chip" data-val="Birthday">Birthday</div><div class="chip" data-val="Anniversary">Anniversary</div><div class="chip" data-val="Valentine's Day">Valentine's Day</div><div class="chip" data-val="Christmas">Christmas</div><div class="chip" data-val="Hanukkah">Hanukkah</div><div class="chip" data-val="Thank you">Thank you</div><div class="chip" data-val="Get well">Get well</div><div class="chip" data-val="Thinking of you">Thinking of you</div><div class="chip" data-val="Father's Day">Father's Day</div><div class="chip" data-val="Mother's Day">Mother's Day</div><div class="chip" data-val="Graduation">Graduation</div><div class="chip" data-val="New milestone">New milestone</div><div class="chip" data-val="National Nurses Day">National Nurses Day</div><div class="chip" data-val="Other Holidays">Other Holidays</div><div class="chip" data-val="Other">Other</div>
       </div>
       <div class="exp" id="qe-hols"><div class="cgl" style="margin-top:0;">Select the holiday</div><div class="chips" id="qc5-hols"><div class="chip" data-val="Thanksgiving">Thanksgiving</div><div class="chip" data-val="Easter">Easter</div><div class="chip" data-val="New Year">New Year</div><div class="chip" data-val="Halloween">Halloween</div><div class="chip" data-val="4th of July">4th of July</div><div class="chip" data-val="Diwali">Diwali</div><div class="chip" data-val="Eid">Eid</div><div class="chip" data-val="Passover">Passover</div></div></div>
       <div class="exp" id="qe-other-occ"><input class="text-input" id="t5-other" type="text" placeholder="e.g. Retirement, New baby, Promotion..." oninput="handleOtherOcc()"></div>
@@ -2113,7 +2113,7 @@ const CARD_HEADERS = [
   {
     id: 'toy-img-classic',
     label: 'Wildflowers',
-    occasions: ['Just because', 'Just Because', 'Thinking of You'],
+    occasions: ['Thinking of you'],
     category: 'classic',
     theme: 'sage',
     image: 'thinkingofyou-classic.png',
@@ -2125,7 +2125,7 @@ const CARD_HEADERS = [
   {
     id: 'toy-img-minimal',
     label: 'Envelope',
-    occasions: ['Just because', 'Just Because', 'Thinking of You'],
+    occasions: ['Thinking of you'],
     category: 'classic',
     theme: 'warm',
     image: 'thinkingofyou-minimal.png',
@@ -2828,7 +2828,7 @@ const CARD_HEADERS = [
   {
     id: 'justbecause-classic-1',
     label: 'Simply Warm',
-    occasions: ['Just because'],
+    occasions: ['Thinking of you'],
     category: 'classic',
     theme: 'warm',
     render(w, h) {
@@ -2853,7 +2853,7 @@ const CARD_HEADERS = [
         <circle cx="${w*0.08}" cy="${h*0.1}" r="${w*0.012}" fill="#D4A070" opacity="0.4"/>
         <circle cx="${w*0.92}" cy="${h*0.1}" r="${w*0.012}" fill="#D4A070" opacity="0.4"/>
         <line x1="${w*0.22}" y1="${h*0.8}" x2="${w*0.78}" y2="${h*0.8}" stroke="#D4A070" stroke-width="0.6" opacity="0.45"/>
-        <text x="${w*0.5}" y="${h*0.62}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.085}" font-style="italic" fill="#8A5020" letter-spacing="1">Just Because</text>
+        <text x="${w*0.5}" y="${h*0.62}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.085}" font-style="italic" fill="#8A5020" letter-spacing="1">Thinking of You</text>
       </svg>`;
     }
   },
@@ -2861,7 +2861,7 @@ const CARD_HEADERS = [
   {
     id: 'justbecause-fun-1',
     label: 'Spontaneous',
-    occasions: ['Just because'],
+    occasions: ['Thinking of you'],
     category: 'fun',
     theme: 'blush',
     render(w, h) {
@@ -2881,7 +2881,7 @@ const CARD_HEADERS = [
         ).join('')}
         <!-- Squiggle line -->
         <path d="M${w*0.1} ${h*0.82} Q${w*0.25} ${h*0.77} ${w*0.4} ${h*0.82} Q${w*0.55} ${h*0.87} ${w*0.7} ${h*0.82} Q${w*0.82} ${h*0.78} ${w*0.9} ${h*0.82}" stroke="#F4A7B9" stroke-width="1.5" fill="none" opacity="0.6"/>
-        <text x="${w*0.5}" y="${h*0.62}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.095}" font-weight="700" fill="#C0447A" letter-spacing="0.5">Just Because ♥</text>
+        <text x="${w*0.5}" y="${h*0.62}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.095}" font-weight="700" fill="#C0447A" letter-spacing="0.5">Thinking of You ♥</text>
       </svg>`;
     }
   },
@@ -4496,7 +4496,7 @@ const PDF_HEADER_RENDERERS = {
     doc.setFont('times', 'italic');
     doc.setFontSize(26);
     doc.setTextColor(138, 80, 32);
-    doc.text('Just Because', pw/2, 148, { align: 'center' });
+    doc.text('Thinking of You', pw/2, 148, { align: 'center' });
     return H + 36;
   },
 
@@ -4513,7 +4513,7 @@ const PDF_HEADER_RENDERERS = {
     doc.setFont('times', 'bold');
     doc.setFontSize(26);
     doc.setTextColor(192, 68, 122);
-    doc.text('Just Because', pw/2, 148, { align: 'center' });
+    doc.text('Thinking of You', pw/2, 148, { align: 'center' });
     return H + 36;
   },
 

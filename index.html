@@ -3839,7 +3839,7 @@ async function sendCardEmail() {
         occasion:        A.occasion || '',
         headerStyle:     activeDigitalHeaderCat || 'classic',
         themeId:         activeDigitalHeaderCat === 'color' ? activeTheme : (CARD_HEADERS.find(h => h.id === activeDigitalHeaderId) || {}).theme || activeTheme,
-        headerImageUrl:  (() => { const h = CARD_HEADERS.find(h => h.id === activeDigitalHeaderId); return h && h.image ? 'https://heartpenned.vercel.app/public/headers/' + h.image : null; })(),
+        headerImageUrl:  (() => { const h = CARD_HEADERS.find(h => h.id === activeDigitalHeaderId); return h && h.image ? 'https://heartpenned.com/public/headers/' + h.image : null; })(),
       }),
     });
 

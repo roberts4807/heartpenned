@@ -479,18 +479,8 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
     <!-- Digital delivery panel -->
     <div id="digital-panel" style="display:none;margin-top:1.25rem;background:#F4F6FA;border:1px solid #D0D8E8;border-radius:12px;padding:1.25rem;">
 
-      <!-- Card style picker -->
-      <div class="print-panel-label">Card style</div>
-      <div class="header-category-tabs">
-        <div class="hcat-tab active" id="dhcat-classic" onclick="switchDigitalHeaderCat('classic')">Classic</div>
-        <div class="hcat-tab" id="dhcat-fun" onclick="switchDigitalHeaderCat('fun')">Fun</div>
-        <div class="hcat-tab" id="dhcat-color" onclick="switchDigitalHeaderCat('color')">Color</div>
-      </div>
-      <div class="header-thumbs" id="digital-header-thumbs"></div>
-      <div id="digital-color-swatches" style="display:none;flex-wrap:wrap;gap:8px;margin-bottom:0.5rem;"></div>
-
       <!-- Styled card preview -->
-      <div class="print-panel-label" style="margin-top:0.5rem;">Your card</div>
+      <div class="print-panel-label">Your card</div>
       <div class="print-preview-wrap" id="digital-card-preview" style="margin-bottom:0.85rem;"></div>
 
       <!-- Copy section -->
@@ -3828,11 +3818,11 @@ function getHeaderBodyBg(header) {
 }
 
 function openDigitalPanel() {
-  activeDigitalHeaderCat = 'classic';
-  document.querySelectorAll('#digital-panel .hcat-tab').forEach(t => t.classList.remove('active'));
-  const tab = document.getElementById('dhcat-classic');
-  if (tab) tab.classList.add('active');
-  buildDigitalHeaderThumbs();
+  headersReady.then(() => {
+    activeDigitalHeaderId = activeHeaderId;
+    activeDigitalHeaderCat = activeHeaderCat || 'classic';
+    renderDigitalCardPreview();
+  });
 }
 
 let recipientCount = 1;

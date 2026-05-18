@@ -173,6 +173,9 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
 }
 .email-status.success { color: #2A7A4A; }
 .email-status.error   { color: #C0392B; }
+.recipient-row { display:flex; gap:8px; margin-top:8px; align-items:center; }
+.recipient-remove { background:none; border:none; color:#AAB4C0; font-size:18px; cursor:pointer; padding:0 2px; line-height:1; flex-shrink:0; }
+.recipient-remove:hover { color:#C0392B; }
 
 .ver-tab{padding:5px 14px;border:0.5px solid #C0CCE0;border-radius:20px;font-size:12px;color:#3A4A5A;cursor:pointer;background:white;transition:all 0.15s;font-family:'Inter',sans-serif;}
 .ver-tab.active{background:#1A3A6A;border-color:#1A3A6A;color:white;font-weight:600;}
@@ -476,8 +479,18 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
     <!-- Digital delivery panel -->
     <div id="digital-panel" style="display:none;margin-top:1.25rem;background:#F4F6FA;border:1px solid #D0D8E8;border-radius:12px;padding:1.25rem;">
 
+      <!-- Card style picker -->
+      <div class="print-panel-label">Card style</div>
+      <div class="header-category-tabs">
+        <div class="hcat-tab active" id="dhcat-classic" onclick="switchDigitalHeaderCat('classic')">Classic</div>
+        <div class="hcat-tab" id="dhcat-fun" onclick="switchDigitalHeaderCat('fun')">Fun</div>
+        <div class="hcat-tab" id="dhcat-color" onclick="switchDigitalHeaderCat('color')">Color</div>
+      </div>
+      <div class="header-thumbs" id="digital-header-thumbs"></div>
+      <div id="digital-color-swatches" style="display:none;flex-wrap:wrap;gap:8px;margin-bottom:0.5rem;"></div>
+
       <!-- Styled card preview -->
-      <div class="print-panel-label">Your card</div>
+      <div class="print-panel-label" style="margin-top:0.5rem;">Your card</div>
       <div class="print-preview-wrap" id="digital-card-preview" style="margin-bottom:0.85rem;"></div>
 
       <!-- Copy section -->
@@ -489,12 +502,23 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
       <div class="email-delivery">
         <div class="email-delivery-label">✉ Or send it as a card email</div>
         <div class="email-name-row">
-          <input type="text" class="email-field" id="email-recipient-name" placeholder="Recipient's name (optional)" />
           <input type="text" class="email-field" id="email-sender-name" placeholder="Your name (optional)" />
+          <input type="email" class="email-field" id="email-sender-address" placeholder="Your email — get a copy (optional)" />
         </div>
-        <div class="email-send-row">
-          <input type="email" class="email-field" id="email-recipient-address" placeholder="Recipient's email address" />
-          <button class="btn-send-email" id="btn-send-email" onclick="sendCardEmail()">Send 💌</button>
+
+        <!-- Recipients -->
+        <div id="recipients-list">
+          <div class="recipient-row" id="recipient-row-0">
+            <input type="text" class="email-field" placeholder="Recipient's name (optional)" style="flex:1;" />
+            <input type="email" class="email-field" placeholder="Recipient's email" style="flex:1.4;" />
+          </div>
+        </div>
+        <div style="margin-top:6px;">
+          <button onclick="addRecipient()" style="background:none;border:none;color:#1A3A6A;font-size:13px;font-weight:600;cursor:pointer;padding:0;font-family:'Inter',sans-serif;">+ Add another recipient</button>
+        </div>
+
+        <div style="margin-top:10px;">
+          <button class="btn-send-email" id="btn-send-email" onclick="sendCardEmail()" style="width:100%;">Send 💌</button>
         </div>
         <div class="email-status" id="email-status"></div>
       </div>
@@ -510,6 +534,8 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
 
     <div class="reminder-btn" id="reminder-btn-row" onclick="handleDel('reminder')">
       <div><div class="reminder-text">Save and get a reminder next year</div><div class="reminder-sub">We'll remind you when this occasion comes around again</div></div>
+      <div style="color:#888;font-size:18px;">→</div>
+    </div>
     <div id="reminder-form" style="display:none;margin-top:0.75rem;padding:1rem;background:#F4F6FA;border:1px solid #D0D8E8;border-radius:10px;">
       <div style="font-size:12px;color:#888;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.75rem;">Set your reminder</div>
       <input type="email" id="reminder-email" class="email-field" placeholder="Your email address" style="width:100%;box-sizing:border-box;margin-bottom:8px;" />
@@ -525,8 +551,6 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
         <button class="btn-send-email" id="btn-set-reminder" onclick="setReminder()" style="flex:1;">Remind me</button>
       </div>
       <div id="reminder-status" style="margin-top:8px;font-size:13px;min-height:18px;"></div>
-    </div>
-      <div style="color:#888;font-size:18px;">→</div>
     </div>
     <div class="back-start" onclick="startOver()">← Write another card</div>
   </div>
@@ -3784,10 +3808,12 @@ function renderDigitalCardPreview() {
   const bg = header ? getHeaderBodyBg(header) : (typeof theme.bg === 'string' ? theme.bg : '#FFF8F0');
   const cardText = currentCardText || '';
   const w = container.offsetWidth || 320;
+  // Escape card text for safe HTML insertion
+  const escapeHtml = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   container.innerHTML = `
     <div style="font-family:'Playfair Display',Georgia,serif;border-radius:6px;overflow:hidden;">
       ${header ? header.render(w, 110) : ''}
-      <div style="padding:1.25rem 1.5rem 1rem;font-size:14px;line-height:1.85;color:#1A2A3A;white-space:pre-wrap;background:${bg};">${cardText}</div>
+      <div style="padding:1.25rem 1.5rem 1rem;font-size:14px;line-height:1.85;color:#1A2A3A;white-space:pre-wrap;background:${bg};">${escapeHtml(cardText)}</div>
       <div style="text-align:right;padding:0.25rem 1rem 0.6rem;font-size:11px;color:#7A9CC0;font-style:italic;background:${bg};font-family:'Playfair Display',Georgia,serif;">Heartpenned</div>
     </div>`;
 }
@@ -3809,1313 +3835,122 @@ function openDigitalPanel() {
   buildDigitalHeaderThumbs();
 }
 
-async function sendCardEmail() {
-  const recipientEmail = document.getElementById('email-recipient-address').value.trim();
-  const recipientName  = document.getElementById('email-recipient-name').value.trim();
-  const senderName     = document.getElementById('email-sender-name').value.trim();
-  const statusEl       = document.getElementById('email-status');
-  const btn            = document.getElementById('btn-send-email');
+let recipientCount = 1;
 
-  if (!recipientEmail) {
+function addRecipient() {
+  const list = document.getElementById('recipients-list');
+  const idx = recipientCount++;
+  const row = document.createElement('div');
+  row.className = 'recipient-row';
+  row.id = 'recipient-row-' + idx;
+  row.innerHTML = `
+    <input type="text" class="email-field" placeholder="Recipient's name (optional)" style="flex:1;" />
+    <input type="email" class="email-field" placeholder="Recipient's email" style="flex:1.4;" />
+    <button class="recipient-remove" onclick="removeRecipient('recipient-row-${idx}')" title="Remove">\u00d7</button>
+  `;
+  list.appendChild(row);
+}
+
+function removeRecipient(id) {
+  const row = document.getElementById(id);
+  if (row) row.remove();
+}
+
+async function sendCardEmail() {
+  const senderName    = document.getElementById('email-sender-name').value.trim();
+  const senderEmail   = document.getElementById('email-sender-address').value.trim();
+  const statusEl      = document.getElementById('email-status');
+  const btn           = document.getElementById('btn-send-email');
+
+  const rows = document.querySelectorAll('#recipients-list .recipient-row');
+  const recipients = [];
+  rows.forEach(row => {
+    const inputs = row.querySelectorAll('input');
+    const name  = inputs[0].value.trim();
+    const email = inputs[1].value.trim();
+    if (email) recipients.push({ name, email });
+  });
+
+  if (recipients.length === 0) {
     statusEl.className = 'email-status error';
-    statusEl.textContent = 'Please enter a recipient email address.';
+    statusEl.textContent = 'Please enter at least one recipient email address.';
+    return;
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const invalidEmails = recipients.filter(r => !emailRegex.test(r.email));
+  if (invalidEmails.length > 0) {
+    statusEl.className = 'email-status error';
+    statusEl.textContent = 'One or more email addresses look invalid. Please check and try again.';
     return;
   }
 
   btn.disabled = true;
-  btn.textContent = 'Sending…';
+  btn.textContent = 'Sending...';
   statusEl.className = 'email-status';
   statusEl.textContent = '';
 
+  const headerImgFn = CARD_HEADERS.find(h => h.id === activeDigitalHeaderId);
+  const headerImageUrl = headerImgFn && headerImgFn.image
+    ? 'https://heartpenned.com/public/headers/' + headerImgFn.image
+    : null;
+  const themeId = activeDigitalHeaderCat === 'color' ? activeTheme : (CARD_HEADERS.find(h => h.id === activeDigitalHeaderId) || {}).theme || activeTheme;
+
   try {
-    const response = await fetch('/api/send', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        recipientEmail,
-        recipientName,
-        senderName,
-        cardText:        currentCardText,
-        occasion:        A.occasion || '',
-        headerStyle:     activeDigitalHeaderCat || 'classic',
-        themeId:         activeDigitalHeaderCat === 'color' ? activeTheme : (CARD_HEADERS.find(h => h.id === activeDigitalHeaderId) || {}).theme || activeTheme,
-        headerImageUrl:  (() => { const h = CARD_HEADERS.find(h => h.id === activeDigitalHeaderId); return h && h.image ? 'https://heartpenned.com/public/headers/' + h.image : null; })(),
-      }),
-    });
+    const sends = recipients.map(r =>
+      fetch('/api/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          recipientEmail: r.email,
+          recipientName:  r.name,
+          senderName,
+          cardText:       currentCardText,
+          occasion:       A.occasion || '',
+          headerStyle:    activeDigitalHeaderCat || 'classic',
+          themeId,
+          headerImageUrl,
+        }),
+      }).then(r => r.json())
+    );
 
-    const data = await response.json();
-
-    if (response.ok && data.success) {
-      statusEl.className = 'email-status success';
-      statusEl.textContent = '✓ Card sent to ' + recipientEmail;
-      btn.textContent = 'Sent ✓';
-    } else {
-      throw new Error(data.error || 'Something went wrong.');
+    if (senderEmail && emailRegex.test(senderEmail)) {
+      sends.push(
+        fetch('/api/send', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            recipientEmail: senderEmail,
+            recipientName:  senderName || 'You',
+            senderName:     'HeartPenned',
+            cardText:       currentCardText,
+            occasion:       A.occasion || '',
+            headerStyle:    activeDigitalHeaderCat || 'classic',
+            themeId,
+            headerImageUrl,
+            isSenderCopy:   true,
+          }),
+        }).then(r => r.json())
+      );
     }
+
+    await Promise.all(sends);
+
+    statusEl.className = 'email-status success';
+    statusEl.textContent = recipients.length === 1
+      ? 'Card sent to ' + recipients[0].email + (senderEmail ? ' - Copy sent to you' : '')
+      : 'Card sent to ' + recipients.length + ' recipients' + (senderEmail ? ' - Copy sent to you' : '');
+    btn.textContent = 'Sent!';
+
   } catch (err) {
     statusEl.className = 'email-status error';
     statusEl.textContent = err.message || 'Failed to send. Please try again.';
     btn.disabled = false;
-    btn.textContent = 'Send 💌';
+    btn.textContent = 'Send';
   }
 }
-</script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script>
-// ── PDF generation using jsPDF directly (no html2canvas) ──────────────────
 
-// Each renderer receives (doc, pw, ph, margin) and draws ONLY the header band.
-// downloadPDF draws the full-page body background before calling the renderer.
-// Renderers return the y position where body content should start.
 
-const PDF_HEADER_RENDERERS = {
-
-  'bday-classic-1': function(doc, pw, ph, margin) {
-    const H = 190; // header band height
-    // Header band background
-    doc.setFillColor(255, 248, 240);
-    doc.rect(0, 0, pw, H, 'F');
-
-    // Botanical corners (left)
-    doc.setGState(new doc.GState({opacity: 0.5}));
-    doc.setFillColor(200, 169, 122);
-    doc.ellipse(margin - 8, 55, 10, 28, 'F');
-    doc.ellipse(margin + 10, 28, 8, 18, 'F');
-    doc.setFillColor(184, 148, 90);
-    doc.ellipse(margin - 16, 88, 8, 20, 'F');
-    // Botanical corners (right)
-    doc.setFillColor(200, 169, 122);
-    doc.ellipse(pw - margin + 8, 55, 10, 28, 'F');
-    doc.ellipse(pw - margin - 10, 28, 8, 18, 'F');
-    doc.setFillColor(184, 148, 90);
-    doc.ellipse(pw - margin + 16, 88, 8, 20, 'F');
-    doc.setGState(new doc.GState({opacity: 1}));
-
-    // Divider line at bottom of header
-    doc.setDrawColor(200, 169, 122);
-    doc.setLineWidth(0.5);
-    doc.line(margin + 20, H - 12, pw - margin - 20, H - 12);
-    // Diamond ornament
-    doc.setFillColor(212, 175, 55);
-    doc.setGState(new doc.GState({opacity: 0.8}));
-    const cx = pw/2, cy = H - 12;
-    doc.lines([[5,5],[-5,5],[-5,-5],[5,-5]], cx-5, cy-5, [1,1], 'F');
-    doc.setGState(new doc.GState({opacity: 1}));
-
-    // Occasion text
-    doc.setFont('times', 'italic');
-    doc.setFontSize(32);
-    doc.setTextColor(122, 80, 32);
-    doc.text('Happy Birthday', pw/2, 118, { align: 'center' });
-
-    return H + 36;
-  },
-
-  'bday-fun-1': function(doc, pw, ph, margin) {
-    const H = 190;
-    doc.setFillColor(255, 240, 244);
-    doc.rect(0, 0, pw, H, 'F');
-
-    const dots = [[0.1,0.2,[244,167,185]],[0.22,0.38,[212,175,55]],[0.35,0.12,[150,200,150]],[0.55,0.28,[136,144,224]],[0.7,0.42,[244,167,185]],[0.82,0.15,[212,175,55]],[0.9,0.5,[249,200,154]],[0.15,0.62,[150,200,150]],[0.78,0.68,[136,144,224]]];
-    dots.forEach(([rx,ry,c]) => {
-      doc.setFillColor(c[0],c[1],c[2]);
-      doc.setGState(new doc.GState({opacity: 0.7}));
-      doc.circle(pw*rx, H*ry, 5, 'F');
-    });
-    doc.setGState(new doc.GState({opacity: 1}));
-
-    doc.setDrawColor(244, 167, 185);
-    doc.setLineWidth(1.2);
-    doc.line(margin, H - 10, pw - margin, H - 10);
-
-    doc.setFont('times', 'normal');
-    doc.setFontSize(34);
-    doc.setTextColor(192, 68, 106);
-    doc.text('Happy Birthday!', pw/2, 118, { align: 'center' });
-
-    return H + 36;
-  },
-
-  'wedding-classic-1': function(doc, pw, ph, margin) {
-    const H = 190;
-    doc.setFillColor(255, 255, 240);
-    doc.rect(0, 0, pw, H, 'F');
-
-    doc.setDrawColor(184, 134, 11);
-    doc.setLineWidth(0.8);
-    doc.setGState(new doc.GState({opacity: 0.5}));
-    // Arch stems from bottom corners
-    doc.line(margin + 10, H, margin + 30, H - 80);
-    doc.line(pw - margin - 10, H, pw - margin - 30, H - 80);
-    doc.setFillColor(212, 175, 55);
-    doc.ellipse(margin + 22, 130, 14, 8, 'F');
-    doc.ellipse(margin + 34, 100, 10, 6, 'F');
-    doc.ellipse(pw - margin - 22, 130, 14, 8, 'F');
-    doc.ellipse(pw - margin - 34, 100, 10, 6, 'F');
-    doc.setGState(new doc.GState({opacity: 1}));
-
-    doc.setDrawColor(212, 175, 55);
-    doc.setLineWidth(0.6);
-    doc.line(margin + 30, H - 12, pw - margin - 30, H - 12);
-    doc.setFillColor(212, 175, 55);
-    doc.circle(pw/2, H - 12, 4, 'F');
-
-    doc.setFont('times', 'italic');
-    doc.setFontSize(26);
-    doc.setTextColor(122, 96, 16);
-    doc.text('On Your Wedding Day', pw/2, 118, { align: 'center' });
-
-    return H + 36;
-  },
-
-  'anniversary-classic-1': function(doc, pw, ph, margin) {
-    const H = 190;
-    doc.setFillColor(255, 255, 240);
-    doc.rect(0, 0, pw, H, 'F');
-    doc.setGState(new doc.GState({opacity: 0.5}));
-    doc.setDrawColor(184, 134, 11);
-    doc.setLineWidth(0.8);
-    doc.line(margin + 10, H, margin + 30, H - 80);
-    doc.line(pw - margin - 10, H, pw - margin - 30, H - 80);
-    doc.setFillColor(212, 175, 55);
-    doc.ellipse(margin + 22, 130, 14, 8, 'F');
-    doc.ellipse(margin + 34, 100, 10, 6, 'F');
-    doc.ellipse(pw - margin - 22, 130, 14, 8, 'F');
-    doc.ellipse(pw - margin - 34, 100, 10, 6, 'F');
-    doc.setGState(new doc.GState({opacity: 1}));
-    doc.setDrawColor(212, 175, 55);
-    doc.setLineWidth(0.6);
-    doc.line(margin + 30, H - 12, pw - margin - 30, H - 12);
-    doc.setFillColor(212, 175, 55);
-    doc.circle(pw/2, H - 12, 4, 'F');
-    doc.setFont('times', 'italic');
-    doc.setFontSize(28);
-    doc.setTextColor(122, 96, 16);
-    doc.text('Happy Anniversary', pw/2, 118, { align: 'center' });
-    return H + 36;
-  },
-
-  'anniversary-fun-1': function(doc, pw, ph, margin) {
-    const H = 190;
-    doc.setFillColor(255, 251, 234);
-    doc.rect(0, 0, pw, H, 'F');
-    [[0.1,0.7],[0.15,0.45],[0.08,0.25],[0.22,0.6],[0.18,0.3],[0.82,0.65],[0.88,0.4],[0.92,0.22],[0.78,0.55],[0.85,0.28],[0.5,0.15]].forEach(([rx,ry]) => {
-      doc.setFillColor(212, 175, 55);
-      doc.setGState(new doc.GState({opacity: 0.55}));
-      doc.circle(pw*rx, H*ry, 5, 'F');
-    });
-    doc.setGState(new doc.GState({opacity: 1}));
-    doc.setDrawColor(212, 175, 55);
-    doc.setLineWidth(0.8);
-    doc.line(pw*0.15, H - 14, pw*0.85, H - 14);
-    doc.setFont('times', 'normal');
-    doc.setFontSize(26);
-    doc.setTextColor(138, 106, 16);
-    doc.text('Happy Anniversary!', pw/2, 118, { align: 'center' });
-    return H + 36;
-  },
-
-  'sympathy-classic-1': function(doc, pw, ph, margin) {
-    const H = 210;
-    doc.setFillColor(244, 246, 248);
-    doc.rect(0, 0, pw, H, 'F');
-
-    doc.setDrawColor(106, 128, 152);
-    doc.setLineWidth(0.8);
-    doc.setGState(new doc.GState({opacity: 0.45}));
-    doc.line(pw/2, 20, pw/2, H - 40);
-    doc.setFillColor(138, 155, 176);
-    doc.ellipse(pw/2 - 22, 65, 18, 10, 'F');
-    doc.ellipse(pw/2 + 22, 95, 18, 10, 'F');
-    doc.ellipse(pw/2 - 18, 125, 15, 9, 'F');
-    doc.ellipse(pw/2 + 18, 150, 15, 9, 'F');
-    doc.setGState(new doc.GState({opacity: 1}));
-
-    doc.setDrawColor(138, 155, 176);
-    doc.setLineWidth(0.5);
-    doc.line(pw*0.25, H - 15, pw*0.75, H - 15);
-
-    doc.setFont('times', 'italic');
-    doc.setFontSize(20);
-    doc.setTextColor(74, 96, 112);
-    doc.text('Thinking of You', pw/2, H - 22, { align: 'center' });
-
-    return H + 36;
-  },
-
-  'congrats-classic-1': function(doc, pw, ph, margin) {
-    const H = 190;
-    doc.setFillColor(255, 255, 240);
-    doc.rect(0, 0, pw, H, 'F');
-    doc.setGState(new doc.GState({opacity: 0.6}));
-    doc.setFillColor(184, 160, 32);
-    doc.ellipse(margin - 5, 70, 14, 8, 'F');
-    doc.ellipse(margin + 8, 50, 12, 7, 'F');
-    doc.ellipse(margin - 2, 95, 12, 7, 'F');
-    doc.ellipse(margin + 14, 115, 11, 6, 'F');
-    doc.ellipse(margin + 5, 32, 10, 6, 'F');
-    doc.ellipse(pw - margin + 5, 70, 14, 8, 'F');
-    doc.ellipse(pw - margin - 8, 50, 12, 7, 'F');
-    doc.ellipse(pw - margin + 2, 95, 12, 7, 'F');
-    doc.ellipse(pw - margin - 14, 115, 11, 6, 'F');
-    doc.ellipse(pw - margin - 5, 32, 10, 6, 'F');
-    doc.setGState(new doc.GState({opacity: 1}));
-    doc.setDrawColor(212, 175, 55);
-    doc.setLineWidth(0.6);
-    doc.line(margin + 20, H - 12, pw - margin - 20, H - 12);
-    doc.setFont('times', 'italic');
-    doc.setFontSize(28);
-    doc.setTextColor(122, 96, 16);
-    doc.text('Congratulations', pw/2, 128, { align: 'center' });
-    return H + 36;
-  },
-
-  'congrats-fun-1': function(doc, pw, ph, margin) {
-    const H = 190;
-    doc.setFillColor(238, 240, 255);
-    doc.rect(0, 0, pw, H, 'F');
-    const pieces = [[0.08,0.2,[244,167,185]],[0.18,0.6,[212,175,55]],[0.28,0.15,[150,200,150]],[0.42,0.7,[136,144,224]],[0.58,0.2,[244,167,185]],[0.72,0.65,[212,175,55]],[0.85,0.18,[150,200,150]],[0.92,0.55,[249,200,154]]];
-    pieces.forEach(([rx,ry,c]) => {
-      doc.setFillColor(c[0],c[1],c[2]);
-      doc.setGState(new doc.GState({opacity: 0.8}));
-      doc.rect(pw*rx - 4, H*ry - 4, 8, 8, 'F');
-    });
-    doc.setGState(new doc.GState({opacity: 1}));
-    doc.setFont('times', 'bold');
-    doc.setFontSize(30);
-    doc.setTextColor(58, 74, 204);
-    doc.text('Congratulations!', pw/2, 118, { align: 'center' });
-    return H + 36;
-  },
-
-  'thankyou-classic-1': function(doc, pw, ph, margin) {
-    const H = 190;
-    doc.setFillColor(242, 249, 242);
-    doc.rect(0, 0, pw, H, 'F');
-    doc.setDrawColor(90, 138, 90);
-    doc.setLineWidth(0.8);
-    doc.setGState(new doc.GState({opacity: 0.5}));
-    doc.line(margin + 10, H/2, pw - margin - 10, H/2);
-    doc.setFillColor(106, 170, 106);
-    [0.2, 0.35, 0.65, 0.8].forEach(rx => {
-      doc.ellipse(pw*rx, H/2 - 14, 16, 9, 'F');
-      doc.ellipse(pw*rx + 8, H/2 + 12, 14, 8, 'F');
-    });
-    doc.setFillColor(168, 216, 168);
-    doc.circle(pw/2, H/2, 8, 'F');
-    doc.setFillColor(74, 122, 74);
-    doc.circle(pw/2, H/2, 4, 'F');
-    doc.setGState(new doc.GState({opacity: 1}));
-    doc.setDrawColor(106, 170, 106);
-    doc.setLineWidth(0.5);
-    doc.line(pw*0.25, H - 14, pw*0.75, H - 14);
-    doc.setFont('times', 'italic');
-    doc.setFontSize(26);
-    doc.setTextColor(58, 106, 58);
-    doc.text('Thank You', pw/2, H - 20, { align: 'center' });
-    return H + 36;
-  },
-
-  'valentine-classic-1': function(doc, pw, ph, margin) {
-    const H = 190;
-    doc.setFillColor(255, 240, 244);
-    doc.rect(0, 0, pw, H, 'F');
-    doc.setGState(new doc.GState({opacity: 0.6}));
-    doc.setFillColor(192, 68, 106);
-    doc.circle(margin + 8, 110, 16, 'F');
-    doc.setFillColor(208, 80, 106);
-    doc.circle(margin + 20, 94, 14, 'F');
-    doc.setFillColor(184, 58, 96);
-    doc.circle(margin + 4, 90, 12, 'F');
-    doc.setFillColor(200, 64, 96);
-    doc.circle(margin + 14, 78, 11, 'F');
-    doc.setFillColor(192, 68, 106);
-    doc.circle(pw - margin - 8, 110, 16, 'F');
-    doc.setFillColor(208, 80, 106);
-    doc.circle(pw - margin - 20, 94, 14, 'F');
-    doc.setFillColor(184, 58, 96);
-    doc.circle(pw - margin - 4, 90, 12, 'F');
-    doc.setFillColor(200, 64, 96);
-    doc.circle(pw - margin - 14, 78, 11, 'F');
-    doc.setGState(new doc.GState({opacity: 1}));
-    doc.setFontSize(20);
-    doc.setTextColor(192, 68, 106);
-    doc.text('\u2665', pw/2, 52, { align: 'center' });
-    doc.setDrawColor(192, 68, 106);
-    doc.setLineWidth(0.5);
-    doc.line(pw*0.22, H - 14, pw*0.78, H - 14);
-    doc.setFont('times', 'italic');
-    doc.setFontSize(24);
-    doc.setTextColor(138, 32, 64);
-    doc.text('With All My Love', pw/2, 130, { align: 'center' });
-    return H + 36;
-  },
-
-  'valentine-fun-1': function(doc, pw, ph, margin) {
-    const H = 190;
-    doc.setFillColor(255, 224, 232);
-    doc.rect(0, 0, pw, H, 'F');
-    [[0.08,0.25,18],[0.18,0.65,14],[0.28,0.2,16],[0.72,0.22,16],[0.82,0.65,14],[0.92,0.28,18]].forEach(([rx,ry,sz]) => {
-      doc.setFontSize(sz);
-      doc.setGState(new doc.GState({opacity: 0.6}));
-      doc.setTextColor(255, 68, 102);
-      doc.text('\u2665', pw*rx, H*ry, { align: 'center' });
-    });
-    doc.setGState(new doc.GState({opacity: 0.85}));
-    doc.setFontSize(36);
-    doc.setTextColor(204, 34, 68);
-    doc.text('\u2665', pw/2, 88, { align: 'center' });
-    doc.setGState(new doc.GState({opacity: 1}));
-    doc.setFont('times', 'bold');
-    doc.setFontSize(24);
-    doc.setTextColor(204, 34, 68);
-    doc.text("Happy Valentine's!", pw/2, 148, { align: 'center' });
-    return H + 36;
-  },
-
-  'wedding-fun-1': function(doc, pw, ph, margin) {
-    const H = 190;
-    doc.setFillColor(255, 251, 234);
-    doc.rect(0, 0, pw, H, 'F');
-    [[0.1,0.7],[0.15,0.45],[0.08,0.25],[0.22,0.6],[0.18,0.3],[0.82,0.65],[0.88,0.4],[0.92,0.22],[0.78,0.55],[0.85,0.28],[0.5,0.15]].forEach(([rx,ry]) => {
-      doc.setFillColor(212, 175, 55);
-      doc.setGState(new doc.GState({opacity: 0.55}));
-      doc.circle(pw*rx, H*ry, 5, 'F');
-    });
-    doc.setGState(new doc.GState({opacity: 1}));
-    doc.setDrawColor(212, 175, 55);
-    doc.setLineWidth(0.8);
-    doc.line(pw*0.15, H - 14, pw*0.85, H - 14);
-    doc.setFont('times', 'normal');
-    doc.setFontSize(28);
-    doc.setTextColor(138, 106, 16);
-    doc.text('Cheers to You!', pw/2, 118, { align: 'center' });
-    return H + 36;
-  },
-
-  'sympathy-gentle-1': function(doc, pw, ph, margin) {
-    const H = 190;
-    doc.setFillColor(240, 244, 248);
-    doc.rect(0, 0, pw, H, 'F');
-    doc.setGState(new doc.GState({opacity: 0.45}));
-    doc.setFillColor(138, 160, 176);
-    doc.ellipse(pw/2 - 22, 80, 18, 28, 'F');
-    doc.ellipse(pw/2 + 22, 80, 18, 28, 'F');
-    doc.ellipse(pw/2, 60, 14, 24, 'F');
-    [[0.1,0.2],[0.2,0.65],[0.8,0.62],[0.9,0.22],[0.5,0.08]].forEach(([rx,ry]) => {
-      doc.setFillColor(160, 184, 200);
-      doc.circle(pw*rx, H*ry, 4, 'F');
-    });
-    doc.setGState(new doc.GState({opacity: 1}));
-    doc.setDrawColor(138, 160, 176);
-    doc.setLineWidth(0.5);
-    doc.line(pw*0.3, H - 14, pw*0.7, H - 14);
-    doc.setFont('times', 'italic');
-    doc.setFontSize(20);
-    doc.setTextColor(74, 96, 112);
-    doc.text('You Are Not Alone', pw/2, H - 20, { align: 'center' });
-    return H + 36;
-  },
-
-  'thankyou-fun-1': function(doc, pw, ph, margin) {
-    const H = 190;
-    doc.setFillColor(255, 248, 236);
-    doc.rect(0, 0, pw, H, 'F');
-    doc.setDrawColor(232, 160, 32);
-    doc.setLineWidth(0.8);
-    doc.setGState(new doc.GState({opacity: 0.2}));
-    for (let a = 0; a < 360; a += 30) {
-      const rad = a * Math.PI / 180;
-      doc.line(pw/2, H*0.4, pw/2 + Math.cos(rad)*pw*0.42, H*0.4 + Math.sin(rad)*H*0.42);
-    }
-    doc.setGState(new doc.GState({opacity: 0.3}));
-    doc.setFillColor(245, 192, 48);
-    doc.circle(pw/2, H*0.4, pw*0.09, 'F');
-    doc.setGState(new doc.GState({opacity: 1}));
-    doc.setDrawColor(232, 160, 32);
-    doc.setLineWidth(0.6);
-    doc.line(pw*0.18, H - 14, pw*0.82, H - 14);
-    doc.setFont('times', 'bold');
-    doc.setFontSize(28);
-    doc.setTextColor(184, 112, 16);
-    doc.text('Thank You!', pw/2, 128, { align: 'center' });
-    return H + 36;
-  },
-
-  'christmas-classic-1': function(doc, pw, ph, margin) {
-    const H = 190;
-    doc.setFillColor(240, 248, 240);
-    doc.rect(0, 0, pw, H, 'F');
-    doc.setGState(new doc.GState({opacity: 0.55}));
-    doc.setFillColor(58, 122, 58);
-    [[-5,70,14,8],[ 8,50,12,7],[-2,95,12,7],[14,115,11,6],[5,32,10,6]].forEach(([ox,oy,rx,ry]) => {
-      doc.ellipse(margin+ox, oy, rx, ry, 'F');
-      doc.ellipse(pw-margin-ox, oy, rx, ry, 'F');
-    });
-    doc.setFillColor(204, 34, 34);
-    [[margin+8,28],[margin+18,22],[pw-margin-8,28],[pw-margin-18,22]].forEach(([x,y]) => doc.circle(x,y,6,'F'));
-    doc.setGState(new doc.GState({opacity: 1}));
-    doc.setDrawColor(45, 90, 45);
-    doc.setLineWidth(0.6);
-    doc.line(margin+20, H-12, pw-margin-20, H-12);
-    doc.setFont('times', 'italic');
-    doc.setFontSize(28);
-    doc.setTextColor(26, 58, 26);
-    doc.text('Merry Christmas', pw/2, 128, { align: 'center' });
-    return H + 36;
-  },
-
-  'christmas-fun-1': function(doc, pw, ph, margin) {
-    const H = 190;
-    doc.setFillColor(240, 251, 240);
-    doc.rect(0, 0, pw, H, 'F');
-    [[0.1,0.25,[204,34,34]],[0.2,0.6,[212,175,55]],[0.32,0.18,[45,90,45]],[0.5,0.7,[204,34,34]],[0.68,0.2,[212,175,55]],[0.8,0.62,[45,90,45]],[0.9,0.28,[204,34,34]]].forEach(([rx,ry,c]) => {
-      doc.setFillColor(c[0],c[1],c[2]);
-      doc.setGState(new doc.GState({opacity: 0.75}));
-      doc.circle(pw*rx, H*ry, 7, 'F');
-    });
-    doc.setGState(new doc.GState({opacity: 1}));
-    doc.setFont('times', 'bold');
-    doc.setFontSize(28);
-    doc.setTextColor(204, 34, 34);
-    doc.text('Merry Christmas!', pw/2, 128, { align: 'center' });
-    return H + 36;
-  },
-
-  'mothersday-classic-1': function(doc, pw, ph, margin) {
-    const H = 190;
-    doc.setFillColor(255, 245, 248);
-    doc.rect(0, 0, pw, H, 'F');
-    doc.setGState(new doc.GState({opacity: 0.6}));
-    doc.setFillColor(232, 160, 184);
-    doc.circle(margin+8, 100, 16, 'F');
-    doc.setFillColor(212, 128, 154);
-    doc.circle(margin+20, 84, 14, 'F');
-    doc.setFillColor(232, 160, 184);
-    doc.circle(margin+4, 80, 11, 'F');
-    doc.setFillColor(106, 170, 106);
-    doc.ellipse(margin-6, 130, 12, 7, 'F');
-    doc.circle(margin+8, 100, 16, 'F');
-    doc.setFillColor(232, 160, 184);
-    doc.circle(pw-margin-8, 100, 16, 'F');
-    doc.setFillColor(212, 128, 154);
-    doc.circle(pw-margin-20, 84, 14, 'F');
-    doc.setFillColor(232, 160, 184);
-    doc.circle(pw-margin-4, 80, 11, 'F');
-    doc.setFillColor(106, 170, 106);
-    doc.ellipse(pw-margin+6, 130, 12, 7, 'F');
-    doc.setGState(new doc.GState({opacity: 1}));
-    doc.setDrawColor(192, 112, 144);
-    doc.setLineWidth(0.5);
-    doc.line(pw*0.22, H-14, pw*0.78, H-14);
-    doc.setFont('times', 'italic');
-    doc.setFontSize(24);
-    doc.setTextColor(138, 48, 80);
-    doc.text("Happy Mother's Day", pw/2, 128, { align: 'center' });
-    return H + 36;
-  },
-
-  'mothersday-fun-1': function(doc, pw, ph, margin) {
-    const H = 190;
-    doc.setFillColor(255, 240, 245);
-    doc.rect(0, 0, pw, H, 'F');
-    [[0.1,0.3,[244,114,160]],[0.22,0.65,[232,160,192]],[0.38,0.15,[244,114,160]],[0.5,0.6,[224,96,160]],[0.65,0.18,[244,114,160]],[0.78,0.62,[232,160,192]],[0.9,0.3,[244,114,160]]].forEach(([rx,ry,c]) => {
-      doc.setFillColor(c[0],c[1],c[2]);
-      doc.setGState(new doc.GState({opacity: 0.7}));
-      doc.circle(pw*rx, H*ry, 8, 'F');
-    });
-    doc.setGState(new doc.GState({opacity: 1}));
-    doc.setFont('times', 'bold');
-    doc.setFontSize(24);
-    doc.setTextColor(192, 48, 106);
-    doc.text("Happy Mother's Day!", pw/2, 148, { align: 'center' });
-    return H + 36;
-  },
-
-  'fathersday-classic-1': function(doc, pw, ph, margin) {
-    const H = 190;
-    doc.setFillColor(240, 242, 248);
-    doc.rect(0, 0, pw, H, 'F');
-    doc.setDrawColor(42, 58, 106);
-    doc.setLineWidth(pw*0.006);
-    doc.setGState(new doc.GState({opacity: 0.4}));
-    doc.line(margin*0.6, H*0.08, margin*0.6, H*0.92);
-    doc.line(pw-margin*0.6, H*0.08, pw-margin*0.6, H*0.92);
-    doc.line(margin*0.6, H*0.08, pw-margin*0.6, H*0.08);
-    doc.setGState(new doc.GState({opacity: 1}));
-    doc.setDrawColor(42, 58, 106);
-    doc.setLineWidth(0.8);
-    doc.line(pw*0.2, H-12, pw*0.8, H-12);
-    doc.setFont('times', 'italic');
-    doc.setFontSize(26);
-    doc.setTextColor(26, 42, 90);
-    doc.text("Happy Father's Day", pw/2, 118, { align: 'center' });
-    return H + 36;
-  },
-
-  'fathersday-fun-1': function(doc, pw, ph, margin) {
-    const H = 190;
-    doc.setFillColor(238, 240, 255);
-    doc.rect(0, 0, pw, H, 'F');
-    doc.setFillColor(42, 58, 106);
-    doc.setGState(new doc.GState({opacity: 0.15}));
-    doc.rect(0, 0, pw, H*0.12, 'F');
-    doc.setGState(new doc.GState({opacity: 1}));
-    [[0.1,0.3,[212,175,55]],[0.25,0.65,[42,58,106]],[0.5,0.18,[212,175,55]],[0.75,0.62,[42,58,106]],[0.9,0.28,[212,175,55]]].forEach(([rx,ry,c]) => {
-      doc.setFontSize(14);
-      doc.setTextColor(c[0],c[1],c[2]);
-      doc.setGState(new doc.GState({opacity: 0.6}));
-      doc.text('★', pw*rx, H*ry, { align: 'center' });
-    });
-    doc.setGState(new doc.GState({opacity: 1}));
-    doc.setFont('times', 'bold');
-    doc.setFontSize(26);
-    doc.setTextColor(26, 42, 90);
-    doc.text("Happy Father's Day!", pw/2, 128, { align: 'center' });
-    return H + 36;
-  },
-
-  'getwell-classic-1': function(doc, pw, ph, margin) {
-    const H = 190;
-    doc.setFillColor(255, 248, 240);
-    doc.rect(0, 0, pw, H, 'F');
-    doc.setGState(new doc.GState({opacity: 0.3}));
-    for (let a = 0; a < 360; a += 45) {
-      const rad = a * Math.PI / 180;
-      doc.setDrawColor(232, 160, 32);
-      doc.setLineWidth(0.8);
-      doc.line(pw/2, H*0.32, pw/2 + Math.cos(rad)*pw*0.16, H*0.32 + Math.sin(rad)*H*0.18);
-    }
-    doc.setFillColor(245, 192, 96);
-    doc.setGState(new doc.GState({opacity: 0.35}));
-    doc.circle(pw/2, H*0.32, pw*0.08, 'F');
-    doc.setGState(new doc.GState({opacity: 0.6}));
-    doc.setFillColor(244, 160, 176);
-    doc.circle(margin+12, H*0.7, 10, 'F');
-    doc.circle(pw-margin-12, H*0.7, 10, 'F');
-    doc.setGState(new doc.GState({opacity: 1}));
-    doc.setDrawColor(232, 160, 96);
-    doc.setLineWidth(0.6);
-    doc.line(pw*0.2, H-14, pw*0.8, H-14);
-    doc.setFont('times', 'italic');
-    doc.setFontSize(26);
-    doc.setTextColor(138, 74, 32);
-    doc.text('Get Well Soon', pw/2, 148, { align: 'center' });
-    return H + 36;
-  },
-
-  'getwell-fun-1': function(doc, pw, ph, margin) {
-    const H = 190;
-    doc.setFillColor(255, 248, 232);
-    doc.rect(0, 0, pw, H, 'F');
-    doc.setGState(new doc.GState({opacity: 0.25}));
-    for (let a = 0; a < 360; a += 30) {
-      const rad = a * Math.PI / 180;
-      doc.setDrawColor(245, 160, 32);
-      doc.setLineWidth(0.8);
-      doc.line(pw/2, H*0.38, pw/2 + Math.cos(rad)*pw*0.4, H*0.38 + Math.sin(rad)*H*0.38);
-    }
-    doc.setFillColor(245, 192, 48);
-    doc.setGState(new doc.GState({opacity: 0.5}));
-    doc.circle(pw/2, H*0.38, pw*0.12, 'F');
-    doc.setGState(new doc.GState({opacity: 1}));
-    doc.setFont('times', 'bold');
-    doc.setFontSize(26);
-    doc.setTextColor(184, 96, 16);
-    doc.text('Feel Better Soon!', pw/2, H*0.78, { align: 'center' });
-    return H + 36;
-  },
-
-  'newyear-classic-1': function(doc, pw, ph, margin) {
-    const H = 190;
-    doc.setFillColor(26, 26, 46);
-    doc.rect(0, 0, pw, H, 'F');
-    doc.setFillColor(212, 175, 55);
-    doc.setGState(new doc.GState({opacity: 0.6}));
-    [[0.1,0.15],[0.2,0.4],[0.15,0.65],[0.3,0.2],[0.45,0.55],[0.55,0.15],[0.7,0.45],[0.8,0.2],[0.85,0.6],[0.9,0.35],[0.5,0.35]].forEach(([rx,ry]) => {
-      doc.circle(pw*rx, H*ry, 2, 'F');
-    });
-    [0,60,120,180,240,300].forEach(a => {
-      const rad = a * Math.PI / 180;
-      doc.line(pw*0.2, H*0.3, pw*0.2 + Math.cos(rad)*pw*0.06, H*0.3 + Math.sin(rad)*H*0.08);
-      doc.line(pw*0.8, H*0.28, pw*0.8 + Math.cos(rad)*pw*0.06, H*0.28 + Math.sin(rad)*H*0.08);
-    });
-    doc.setGState(new doc.GState({opacity: 1}));
-    doc.setDrawColor(212, 175, 55);
-    doc.setLineWidth(0.6);
-    doc.line(pw*0.2, H-14, pw*0.8, H-14);
-    doc.setFont('times', 'italic');
-    doc.setFontSize(26);
-    doc.setTextColor(212, 175, 55);
-    doc.text('Happy New Year', pw/2, 128, { align: 'center' });
-    return H + 36;
-  },
-
-  'newyear-fun-1': function(doc, pw, ph, margin) {
-    const H = 190;
-    doc.setFillColor(26, 26, 58);
-    doc.rect(0, 0, pw, H, 'F');
-    [[0.2,0.3,[212,175,55]],[0.5,0.2,[244,114,160]],[0.8,0.32,[136,144,224]]].forEach(([rx,ry,c]) => {
-      doc.setGState(new doc.GState({opacity: 0.7}));
-      [0,45,90,135,180,225,270,315].forEach(a => {
-        const rad = a * Math.PI / 180;
-        doc.setDrawColor(c[0],c[1],c[2]);
-        doc.setLineWidth(0.8);
-        doc.line(pw*rx, H*ry, pw*rx + Math.cos(rad)*pw*0.07, H*ry + Math.sin(rad)*H*0.09);
-      });
-      doc.setFillColor(c[0],c[1],c[2]);
-      doc.setGState(new doc.GState({opacity: 0.9}));
-      doc.circle(pw*rx, H*ry, 5, 'F');
-    });
-    doc.setGState(new doc.GState({opacity: 1}));
-    doc.setFont('times', 'bold');
-    doc.setFontSize(26);
-    doc.setTextColor(212, 175, 55);
-    doc.text('Happy New Year!', pw/2, H*0.82, { align: 'center' });
-    return H + 36;
-  },
-
-  'hanukkah-classic-1': function(doc, pw, ph, margin) {
-    const H = 190;
-    doc.setFillColor(240, 244, 255);
-    doc.rect(0, 0, pw, H, 'F');
-    // Menorah base
-    doc.setFillColor(74, 106, 192);
-    doc.setGState(new doc.GState({opacity: 0.7}));
-    doc.rect(pw/2 - pw*0.18, H*0.72, pw*0.36, H*0.06, 'F');
-    doc.rect(pw/2 - pw*0.012, H*0.34, pw*0.024, H*0.38, 'F');
-    // Arms
-    const arms = [-0.15,-0.10,-0.05,0.05,0.10,0.15,-0.18,0.18];
-    const heights = [0.22,0.28,0.32,0.32,0.28,0.22,0.18,0.18];
-    arms.forEach((x,i) => {
-      doc.rect(pw/2 + pw*x - pw*0.01, H*(1-heights[i])-H*0.38, pw*0.02, H*heights[i], 'F');
-    });
-    // Flames
-    doc.setFillColor(212, 175, 55);
-    [-0.18,-0.15,-0.10,-0.05,0,0.05,0.10,0.15,0.18].forEach((x,i) => {
-      const ht = i===4?0.38:heights[i<4?i:i-1]||0.22;
-      doc.ellipse(pw/2+pw*x, H*(1-ht)-H*0.42, pw*0.012, H*0.04, 'F');
-    });
-    doc.setGState(new doc.GState({opacity: 1}));
-    doc.setDrawColor(74, 106, 192);
-    doc.setLineWidth(0.5);
-    doc.line(pw*0.2, H-14, pw*0.8, H-14);
-    doc.setFont('times', 'italic');
-    doc.setFontSize(22);
-    doc.setTextColor(42, 58, 138);
-    doc.text('Happy Hanukkah', pw/2, H-20, { align: 'center' });
-    return H + 36;
-  },
-
-  'hanukkah-fun-1': function(doc, pw, ph, margin) {
-    const H = 190;
-    doc.setFillColor(232, 236, 255);
-    doc.rect(0, 0, pw, H, 'F');
-    [[0.1,0.2,[74,106,192]],[0.2,0.65,[192,192,224]],[0.35,0.15,[212,175,55]],[0.65,0.18,[74,106,192]],[0.8,0.62,[192,192,224]],[0.9,0.22,[212,175,55]],[0.5,0.1,[74,106,192]]].forEach(([rx,ry,c]) => {
-      doc.setFillColor(c[0],c[1],c[2]);
-      doc.setGState(new doc.GState({opacity: 0.7}));
-      doc.circle(pw*rx, H*ry, 5, 'F');
-    });
-    doc.setGState(new doc.GState({opacity: 1}));
-    doc.setFont('times', 'bold');
-    doc.setFontSize(26);
-    doc.setTextColor(42, 58, 138);
-    doc.text('Happy Hanukkah!', pw/2, 128, { align: 'center' });
-    return H + 36;
-  },
-
-  'thanksgiving-classic-1': function(doc, pw, ph, margin) {
-    const H = 190;
-    doc.setFillColor(255, 245, 232);
-    doc.rect(0, 0, pw, H, 'F');
-    doc.setGState(new doc.GState({opacity: 0.6}));
-    [[margin-5,60,18,26,'#C84820',-30],[margin+8,40,15,22,'#E87020',20],[margin-2,85,14,20,'#D4A020',-15],[pw-margin+5,60,18,26,'#C84820',30],[pw-margin-8,40,15,22,'#E87020',-20],[pw-margin+2,85,14,20,'#D4A020',15]].forEach(([cx,cy,rx,ry,c,rot]) => {
-      doc.setFillColor(...c.match(/\d+/g).map(Number));
-      doc.ellipse(cx, cy, rx, ry, 'F');
-    });
-    doc.setGState(new doc.GState({opacity: 1}));
-    doc.setDrawColor(200, 72, 32);
-    doc.setLineWidth(0.6);
-    doc.line(pw*0.2, H-14, pw*0.8, H-14);
-    doc.setFont('times', 'italic');
-    doc.setFontSize(24);
-    doc.setTextColor(106, 42, 8);
-    doc.text('Happy Thanksgiving', pw/2, 128, { align: 'center' });
-    return H + 36;
-  },
-
-  'thanksgiving-fun-1': function(doc, pw, ph, margin) {
-    const H = 190;
-    doc.setFillColor(255, 240, 220);
-    doc.rect(0, 0, pw, H, 'F');
-    [[0.1,0.25,[200,72,32]],[0.2,0.62,[232,112,32]],[0.32,0.15,[212,160,32]],[0.5,0.68,[200,72,32]],[0.68,0.18,[232,112,32]],[0.8,0.60,[212,160,32]],[0.9,0.28,[200,72,32]]].forEach(([rx,ry,c]) => {
-      doc.setFillColor(c[0],c[1],c[2]);
-      doc.setGState(new doc.GState({opacity: 0.7}));
-      doc.ellipse(pw*rx, H*ry, 12, 18, 'F');
-    });
-    doc.setGState(new doc.GState({opacity: 1}));
-    doc.setFont('times', 'bold');
-    doc.setFontSize(24);
-    doc.setTextColor(106, 42, 8);
-    doc.text('Happy Thanksgiving!', pw/2, 148, { align: 'center' });
-    return H + 36;
-  },
-
-  'easter-classic-1': function(doc, pw, ph, margin) {
-    const H = 190;
-    doc.setFillColor(245, 255, 245);
-    doc.rect(0, 0, pw, H, 'F');
-    doc.setGState(new doc.GState({opacity: 0.65}));
-    doc.setFillColor(244, 208, 232);
-    doc.circle(margin+8, 90, 14, 'F');
-    doc.setFillColor(196, 232, 160);
-    doc.circle(margin+20, 72, 11, 'F');
-    doc.setFillColor(245, 192, 48);
-    doc.circle(margin+4, 72, 9, 'F');
-    doc.setFillColor(244, 208, 232);
-    doc.circle(pw-margin-8, 90, 14, 'F');
-    doc.setFillColor(196, 232, 160);
-    doc.circle(pw-margin-20, 72, 11, 'F');
-    doc.setFillColor(245, 192, 48);
-    doc.circle(pw-margin-4, 72, 9, 'F');
-    // Easter egg center
-    doc.setFillColor(244, 208, 232);
-    doc.ellipse(pw/2, H*0.38, pw*0.06, H*0.1, 'F');
-    doc.setGState(new doc.GState({opacity: 1}));
-    doc.setDrawColor(90, 138, 90);
-    doc.setLineWidth(0.5);
-    doc.line(pw*0.2, H-14, pw*0.8, H-14);
-    doc.setFont('times', 'italic');
-    doc.setFontSize(26);
-    doc.setTextColor(42, 90, 42);
-    doc.text('Happy Easter', pw/2, 148, { align: 'center' });
-    return H + 36;
-  },
-
-  'easter-fun-1': function(doc, pw, ph, margin) {
-    const H = 190;
-    doc.setFillColor(240, 255, 240);
-    doc.rect(0, 0, pw, H, 'F');
-    [[0.12,0.3,[244,160,192]],[0.25,0.62,[160,200,244]],[0.4,0.2,[200,244,160]],[0.55,0.65,[244,208,160]],[0.68,0.22,[208,160,244]],[0.8,0.58,[244,160,192]],[0.9,0.3,[160,200,244]]].forEach(([rx,ry,c]) => {
-      doc.setFillColor(c[0],c[1],c[2]);
-      doc.setGState(new doc.GState({opacity: 0.8}));
-      doc.ellipse(pw*rx, H*ry, 10, 17, 'F');
-    });
-    doc.setGState(new doc.GState({opacity: 1}));
-    doc.setFont('times', 'bold');
-    doc.setFontSize(26);
-    doc.setTextColor(42, 106, 42);
-    doc.text('Happy Easter!', pw/2, 148, { align: 'center' });
-    return H + 36;
-  },
-
-  'halloween-classic-1': function(doc, pw, ph, margin) {
-    const H = 190;
-    doc.setFillColor(26, 10, 46);
-    doc.rect(0, 0, pw, H, 'F');
-    // Moon
-    doc.setFillColor(245, 224, 144);
-    doc.setGState(new doc.GState({opacity: 0.8}));
-    doc.circle(pw*0.75, H*0.22, pw*0.1, 'F');
-    doc.setFillColor(26, 10, 46);
-    doc.circle(pw*0.8, H*0.18, pw*0.09, 'F');
-    // Stars
-    doc.setFillColor(245, 224, 144);
-    doc.setGState(new doc.GState({opacity: 0.6}));
-    [[0.1,0.15],[0.2,0.3],[0.35,0.1],[0.15,0.45],[0.5,0.2],[0.3,0.5]].forEach(([rx,ry]) => doc.circle(pw*rx, H*ry, 2, 'F'));
-    doc.setGState(new doc.GState({opacity: 1}));
-    doc.setDrawColor(200, 144, 232);
-    doc.setLineWidth(0.6);
-    doc.line(pw*0.2, H-14, pw*0.8, H-14);
-    doc.setFont('times', 'italic');
-    doc.setFontSize(24);
-    doc.setTextColor(200, 144, 232);
-    doc.text('Happy Halloween', pw/2, H-20, { align: 'center' });
-    return H + 36;
-  },
-
-  'halloween-fun-1': function(doc, pw, ph, margin) {
-    const H = 190;
-    doc.setFillColor(26, 8, 48);
-    doc.rect(0, 0, pw, H, 'F');
-    // Pumpkins
-    doc.setFillColor(232, 112, 32);
-    doc.setGState(new doc.GState({opacity: 0.8}));
-    doc.ellipse(pw*0.15, H*0.5, pw*0.07, H*0.12, 'F');
-    doc.ellipse(pw*0.85, H*0.55, pw*0.055, H*0.095, 'F');
-    // Stems
-    doc.setFillColor(58, 106, 32);
-    doc.rect(pw*0.148, H*0.36, pw*0.016, H*0.04, 'F');
-    doc.rect(pw*0.848, H*0.44, pw*0.012, H*0.03, 'F');
-    doc.setGState(new doc.GState({opacity: 1}));
-    // Stars
-    doc.setFillColor(245, 224, 144);
-    doc.setGState(new doc.GState({opacity: 0.6}));
-    [[0.3,0.12],[0.7,0.1],[0.85,0.25],[0.5,0.08]].forEach(([rx,ry]) => doc.circle(pw*rx, H*ry, 2, 'F'));
-    doc.setGState(new doc.GState({opacity: 1}));
-    doc.setFont('times', 'bold');
-    doc.setFontSize(26);
-    doc.setTextColor(245, 160, 32);
-    doc.text('Happy Halloween!', pw/2, H*0.82, { align: 'center' });
-    return H + 36;
-  },
-
-  'justbecause-classic-1': function(doc, pw, ph, margin) {
-    const H = 190;
-    doc.setFillColor(255, 248, 240);
-    doc.rect(0, 0, pw, H, 'F');
-    doc.setDrawColor(212, 160, 112);
-    doc.setLineWidth(0.8);
-    doc.setGState(new doc.GState({opacity: 0.35}));
-    doc.rect(margin*0.6, H*0.06, pw-margin*1.2, H*0.88, 'F');
-    doc.setGState(new doc.GState({opacity: 0.4}));
-    doc.setFillColor(184, 144, 96);
-    doc.ellipse(pw/2-pw*0.06, H*0.38, pw*0.055, H*0.09, 'F');
-    doc.ellipse(pw/2+pw*0.06, H*0.32, pw*0.05, H*0.08, 'F');
-    doc.ellipse(pw/2, H*0.28, pw*0.04, H*0.07, 'F');
-    doc.setGState(new doc.GState({opacity: 1}));
-    doc.setDrawColor(212, 160, 112);
-    doc.setLineWidth(0.6);
-    doc.line(pw*0.22, H-14, pw*0.78, H-14);
-    doc.setFont('times', 'italic');
-    doc.setFontSize(26);
-    doc.setTextColor(138, 80, 32);
-    doc.text('Thinking of You', pw/2, 148, { align: 'center' });
-    return H + 36;
-  },
-
-  'justbecause-fun-1': function(doc, pw, ph, margin) {
-    const H = 190;
-    doc.setFillColor(255, 240, 248);
-    doc.rect(0, 0, pw, H, 'F');
-    [[0.1,0.25,[244,167,185]],[0.22,0.6,[212,175,55]],[0.35,0.15,[150,200,150]],[0.5,0.68,[136,144,224]],[0.65,0.2,[244,167,185]],[0.78,0.62,[212,175,55]],[0.9,0.3,[150,200,150]]].forEach(([rx,ry,c]) => {
-      doc.setFillColor(c[0],c[1],c[2]);
-      doc.setGState(new doc.GState({opacity: 0.7}));
-      doc.circle(pw*rx, H*ry, 5, 'F');
-    });
-    doc.setGState(new doc.GState({opacity: 1}));
-    doc.setFont('times', 'bold');
-    doc.setFontSize(26);
-    doc.setTextColor(192, 68, 122);
-    doc.text('Thinking of You', pw/2, 148, { align: 'center' });
-    return H + 36;
-  },
-
-  'apology-classic-1': function(doc, pw, ph, margin) {
-    const H = 190;
-    doc.setFillColor(245, 247, 250);
-    doc.rect(0, 0, pw, H, 'F');
-    doc.setDrawColor(138, 154, 176);
-    doc.setLineWidth(0.5);
-    doc.setGState(new doc.GState({opacity: 0.25}));
-    doc.rect(margin*0.6, H*0.06, pw-margin*1.2, H*0.88, 'F');
-    doc.setGState(new doc.GState({opacity: 0.4}));
-    // Olive branch
-    doc.setDrawColor(122, 144, 112);
-    doc.setLineWidth(0.8);
-    doc.line(pw*0.2, H*0.6, pw*0.5, H*0.3);
-    doc.line(pw*0.5, H*0.3, pw*0.8, H*0.6);
-    doc.setFillColor(138, 170, 128);
-    [[-0.22,0.05],[-0.12,-0.05],[0,0.08],[0.12,-0.03],[0.22,0.06]].forEach(([lx,ly]) => {
-      doc.ellipse(pw/2+pw*lx, H*0.4+H*ly, pw*0.04, H*0.065, 'F');
-    });
-    doc.setGState(new doc.GState({opacity: 1}));
-    doc.setDrawColor(138, 154, 176);
-    doc.setLineWidth(0.5);
-    doc.line(pw*0.25, H-14, pw*0.75, H-14);
-    doc.setFont('times', 'italic');
-    doc.setFontSize(26);
-    doc.setTextColor(58, 74, 90);
-    doc.text("I'm Sorry", pw/2, H-20, { align: 'center' });
-    return H + 36;
-  },
-
-  'apology-fun-1': function(doc, pw, ph, margin) {
-    const H = 190;
-    doc.setFillColor(240, 244, 248);
-    doc.rect(0, 0, pw, H, 'F');
-    [[0.1,0.2],[0.2,0.6],[0.35,0.15],[0.5,0.65],[0.65,0.18],[0.8,0.6],[0.9,0.25]].forEach(([rx,ry]) => {
-      doc.setFillColor(160, 184, 208);
-      doc.setGState(new doc.GState({opacity: 0.5}));
-      doc.circle(pw*rx, H*ry, 4, 'F');
-    });
-    doc.setFontSize(18);
-    doc.setTextColor(128, 144, 168);
-    doc.setGState(new doc.GState({opacity: 0.5}));
-    doc.text('\u2665', pw/2, H*0.38, { align: 'center' });
-    doc.setGState(new doc.GState({opacity: 1}));
-    doc.setDrawColor(138, 154, 176);
-    doc.setLineWidth(0.5);
-    doc.line(pw*0.28, H-14, pw*0.72, H-14);
-    doc.setFont('times', 'italic');
-    doc.setFontSize(24);
-    doc.setTextColor(58, 74, 90);
-    doc.text("I'm Truly Sorry", pw/2, H-20, { align: 'center' });
-    return H + 36;
-  },
-
-  'diwali-classic-1': function(doc, pw, ph, margin) {
-    const H = 190;
-    doc.setFillColor(26, 10, 0);
-    doc.rect(0, 0, pw, H, 'F');
-    doc.setFillColor(200, 74, 0);
-    doc.setGState(new doc.GState({opacity: 0.9}));
-    doc.ellipse(pw/2, H*0.62, pw*0.08, H*0.06, 'F');
-    doc.setFillColor(232, 106, 0);
-    doc.ellipse(pw/2, H*0.58, pw*0.05, H*0.04, 'F');
-    doc.setFillColor(245, 192, 48);
-    doc.ellipse(pw/2, H*0.48, pw*0.018, H*0.06, 'F');
-    doc.ellipse(pw/2, H*0.44, pw*0.01, H*0.04, 'F');
-    [[pw*0.28,H*0.65],[pw*0.72,H*0.65]].forEach(([cx,cy]) => {
-      doc.setFillColor(200, 74, 0);
-      doc.ellipse(cx, cy, pw*0.055, H*0.04, 'F');
-      doc.setFillColor(245, 192, 48);
-      doc.ellipse(cx, cy-H*0.06, pw*0.013, H*0.045, 'F');
-    });
-    doc.setFillColor(212, 175, 55);
-    doc.setGState(new doc.GState({opacity: 0.6}));
-    [[0.1,0.2],[0.9,0.2],[0.15,0.5],[0.85,0.5]].forEach(([rx,ry]) => doc.circle(pw*rx, H*ry, 4, 'F'));
-    doc.setGState(new doc.GState({opacity: 1}));
-    doc.setDrawColor(212, 175, 55);
-    doc.setLineWidth(0.7);
-    doc.line(pw*0.18, H-14, pw*0.82, H-14);
-    doc.setFont('times', 'italic');
-    doc.setFontSize(24);
-    doc.setTextColor(212, 175, 55);
-    doc.text('Happy Diwali', pw/2, H-20, { align: 'center' });
-    return H + 36;
-  },
-
-  'diwali-fun-1': function(doc, pw, ph, margin) {
-    const H = 190;
-    doc.setFillColor(26, 8, 0);
-    doc.rect(0, 0, pw, H, 'F');
-    const colors = [[212,175,55],[200,74,0],[212,175,55],[232,106,0],[245,192,48],[200,74,0],[212,175,55],[232,106,0]];
-    for (let i = 0; i < 8; i++) {
-      const a = i * Math.PI / 4;
-      const c = colors[i];
-      doc.setFillColor(c[0],c[1],c[2]);
-      doc.setGState(new doc.GState({opacity: 0.85}));
-      doc.circle(pw/2 + Math.cos(a)*pw*0.22, H*0.42 + Math.sin(a)*H*0.22, 5, 'F');
-    }
-    for (let i = 0; i < 6; i++) {
-      const a = i * Math.PI / 3;
-      doc.setFillColor(212,175,55);
-      doc.setGState(new doc.GState({opacity: 0.8}));
-      doc.circle(pw/2 + Math.cos(a)*pw*0.12, H*0.42 + Math.sin(a)*H*0.12, 4, 'F');
-    }
-    doc.setFillColor(245,192,48);
-    doc.setGState(new doc.GState({opacity: 0.9}));
-    doc.circle(pw/2, H*0.42, 8, 'F');
-    doc.setGState(new doc.GState({opacity: 1}));
-    doc.setFont('times', 'bold');
-    doc.setFontSize(26);
-    doc.setTextColor(245, 192, 48);
-    doc.text('Happy Diwali!', pw/2, H*0.82, { align: 'center' });
-    return H + 36;
-  },
-
-  'eid-classic-1': function(doc, pw, ph, margin) {
-    const H = 190;
-    doc.setFillColor(10, 20, 40);
-    doc.rect(0, 0, pw, H, 'F');
-    doc.setFillColor(212, 175, 55);
-    doc.setGState(new doc.GState({opacity: 0.9}));
-    doc.circle(pw*0.5, H*0.32, pw*0.12, 'F');
-    doc.setFillColor(10, 20, 40);
-    doc.circle(pw*0.56, H*0.28, pw*0.1, 'F');
-    doc.setFillColor(212, 175, 55);
-    doc.setGState(new doc.GState({opacity: 0.6}));
-    [[0.1,0.15],[0.2,0.35],[0.12,0.6],[0.88,0.15],[0.8,0.35],[0.88,0.6],[0.5,0.12]].forEach(([rx,ry]) => doc.circle(pw*rx, H*ry, 2, 'F'));
-    doc.setGState(new doc.GState({opacity: 1}));
-    doc.setDrawColor(212, 175, 55);
-    doc.setLineWidth(0.7);
-    doc.line(pw*0.18, H-14, pw*0.82, H-14);
-    doc.setFont('times', 'italic');
-    doc.setFontSize(26);
-    doc.setTextColor(212, 175, 55);
-    doc.text('Eid Mubarak', pw/2, H-20, { align: 'center' });
-    return H + 36;
-  },
-
-  'eid-fun-1': function(doc, pw, ph, margin) {
-    const H = 190;
-    doc.setFillColor(10, 20, 40);
-    doc.rect(0, 0, pw, H, 'F');
-    doc.setFillColor(212, 175, 55);
-    doc.setGState(new doc.GState({opacity: 0.85}));
-    doc.circle(pw*0.5, H*0.35, pw*0.15, 'F');
-    doc.setFillColor(10, 20, 40);
-    doc.circle(pw*0.57, H*0.3, pw*0.13, 'F');
-    doc.setFillColor(212, 175, 55);
-    doc.setGState(new doc.GState({opacity: 0.65}));
-    [[0.15,0.18],[0.5,0.1],[0.85,0.18],[0.2,0.7],[0.8,0.7]].forEach(([rx,ry]) => doc.circle(pw*rx, H*ry, 3, 'F'));
-    doc.setGState(new doc.GState({opacity: 1}));
-    doc.setFont('times', 'bold');
-    doc.setFontSize(26);
-    doc.setTextColor(212, 175, 55);
-    doc.text('Eid Mubarak!', pw/2, H*0.82, { align: 'center' });
-    return H + 36;
-  },
-
-  'passover-classic-1': function(doc, pw, ph, margin) {
-    const H = 190;
-    doc.setFillColor(255, 255, 245);
-    doc.rect(0, 0, pw, H, 'F');
-    doc.setGState(new doc.GState({opacity: 0.5}));
-    doc.setFillColor(212, 175, 55);
-    [[margin+5,H*0.3,pw*0.025,H*0.06],[margin+15,H*0.45,pw*0.02,H*0.05],[margin+8,H*0.58,pw*0.02,H*0.05],[pw-margin-5,H*0.3,pw*0.025,H*0.06],[pw-margin-15,H*0.45,pw*0.02,H*0.05],[pw-margin-8,H*0.58,pw*0.02,H*0.05]].forEach(([cx,cy,rx,ry]) => doc.ellipse(cx, cy, rx, ry, 'F'));
-    doc.setGState(new doc.GState({opacity: 1}));
-    doc.setDrawColor(200, 160, 48);
-    doc.setLineWidth(0.6);
-    doc.line(pw*0.2, H-14, pw*0.8, H-14);
-    doc.setFont('times', 'italic');
-    doc.setFontSize(26);
-    doc.setTextColor(122, 80, 16);
-    doc.text('Happy Passover', pw/2, 128, { align: 'center' });
-    return H + 36;
-  },
-
-  'passover-fun-1': function(doc, pw, ph, margin) {
-    const H = 190;
-    doc.setFillColor(255, 255, 240);
-    doc.rect(0, 0, pw, H, 'F');
-    [[0.1,0.2,[212,175,55]],[0.2,0.62,[74,106,192]],[0.35,0.15,[212,175,55]],[0.5,0.65,[74,106,192]],[0.65,0.18,[212,175,55]],[0.8,0.6,[74,106,192]],[0.9,0.25,[212,175,55]]].forEach(([rx,ry,c]) => {
-      doc.setFillColor(c[0],c[1],c[2]);
-      doc.setGState(new doc.GState({opacity: 0.65}));
-      doc.circle(pw*rx, H*ry, 5, 'F');
-    });
-    doc.setGState(new doc.GState({opacity: 1}));
-    doc.setFont('times', 'bold');
-    doc.setFontSize(26);
-    doc.setTextColor(138, 96, 16);
-    doc.text('Chag Sameach!', pw/2, 148, { align: 'center' });
-    return H + 36;
-  },
-
-  'milestone-classic-1': function(doc, pw, ph, margin) {
-    const H = 190;
-    doc.setFillColor(255, 255, 240);
-    doc.rect(0, 0, pw, H, 'F');
-    doc.setDrawColor(212, 175, 55);
-    doc.setLineWidth(pw*0.004);
-    doc.setGState(new doc.GState({opacity: 0.4}));
-    doc.line(pw*0.15, H*0.55, pw*0.85, H*0.55);
-    [0.15,0.35,0.65,0.85].forEach(x => {
-      doc.setFillColor(200, 160, 48);
-      doc.circle(pw*x, H*0.55, 4, 'F');
-    });
-    doc.setFillColor(212, 175, 55);
-    doc.setGState(new doc.GState({opacity: 0.2}));
-    doc.circle(pw/2, H*0.55, pw*0.05, 'F');
-    doc.setGState(new doc.GState({opacity: 0.4}));
-    [[pw*0.08,H*0.1],[pw*0.92,H*0.1]].forEach(([x,y]) => doc.circle(x, y, 4, 'F'));
-    doc.setGState(new doc.GState({opacity: 1}));
-    doc.setDrawColor(212, 175, 55);
-    doc.setLineWidth(0.6);
-    doc.line(pw*0.2, H-14, pw*0.8, H-14);
-    doc.setFont('times', 'italic');
-    doc.setFontSize(24);
-    doc.setTextColor(122, 96, 16);
-    doc.text('A New Milestone', pw/2, 118, { align: 'center' });
-    return H + 36;
-  },
-
-  'milestone-fun-1': function(doc, pw, ph, margin) {
-    const H = 190;
-    doc.setFillColor(238, 240, 255);
-    doc.rect(0, 0, pw, H, 'F');
-    doc.setDrawColor(136, 144, 224);
-    doc.setLineWidth(pw*0.004);
-    doc.setGState(new doc.GState({opacity: 0.5}));
-    doc.line(pw*0.1, H*0.7, pw*0.5, H*0.35);
-    doc.line(pw*0.5, H*0.35, pw*0.88, H*0.15);
-    [[0.1,0.7,[212,175,55]],[0.3,0.5,[136,144,224]],[0.5,0.35,[212,175,55]],[0.7,0.2,[136,144,224]],[0.88,0.15,[212,175,55]]].forEach(([rx,ry,c]) => {
-      doc.setFillColor(c[0],c[1],c[2]);
-      doc.setGState(new doc.GState({opacity: 0.8}));
-      doc.circle(pw*rx, H*ry, 5, 'F');
-    });
-    doc.setGState(new doc.GState({opacity: 1}));
-    doc.setFont('times', 'bold');
-    doc.setFontSize(24);
-    doc.setTextColor(58, 74, 204);
-    doc.text('What a Milestone!', pw/2, H*0.85, { align: 'center' });
-    return H + 36;
-  },
-
-  'nursesday-classic-1': function(doc, pw, ph, margin) {
-    const H = 190;
-    doc.setFillColor(255, 245, 248);
-    doc.rect(0, 0, pw, H, 'F');
-    doc.setFillColor(232, 112, 144);
-    doc.setGState(new doc.GState({opacity: 0.35}));
-    doc.rect(pw/2 - pw*0.03, H*0.18, pw*0.06, H*0.22, 'F');
-    doc.rect(pw/2 - pw*0.1, H*0.25, pw*0.2, H*0.08, 'F');
-    doc.setFillColor(244, 160, 184);
-    doc.setGState(new doc.GState({opacity: 0.4}));
-    [[margin+10,H*0.15,10],[pw-margin-10,H*0.15,10],[margin+8,H*0.75,8],[pw-margin-8,H*0.75,8]].forEach(([x,y,r]) => doc.circle(x, y, r, 'F'));
-    doc.setGState(new doc.GState({opacity: 1}));
-    doc.setDrawColor(232, 112, 144);
-    doc.setLineWidth(0.5);
-    doc.line(pw*0.2, H-14, pw*0.8, H-14);
-    doc.setFont('times', 'italic');
-    doc.setFontSize(22);
-    doc.setTextColor(138, 48, 80);
-    doc.text('Thank You, Nurse', pw/2, H-20, { align: 'center' });
-    return H + 36;
-  },
-
-  'nursesday-fun-1': function(doc, pw, ph, margin) {
-    const H = 190;
-    doc.setFillColor(255, 240, 245);
-    doc.rect(0, 0, pw, H, 'F');
-    [[0.1,0.25],[0.22,0.6],[0.38,0.15],[0.5,0.55],[0.65,0.18],[0.78,0.62],[0.9,0.28],[0.3,0.45],[0.7,0.48]].forEach(([rx,ry]) => {
-      doc.setFillColor(244, 114, 160);
-      doc.setGState(new doc.GState({opacity: 0.6}));
-      doc.setFontSize(12);
-      doc.setTextColor(244, 114, 160);
-      doc.text('\u2665', pw*rx, H*ry, { align: 'center' });
-    });
-    doc.setFontSize(28);
-    doc.setTextColor(224, 96, 160);
-    doc.setGState(new doc.GState({opacity: 0.7}));
-    doc.text('\u2665', pw/2, H*0.38, { align: 'center' });
-    doc.setGState(new doc.GState({opacity: 1}));
-    doc.setFont('times', 'bold');
-    doc.setFontSize(22);
-    doc.setTextColor(192, 48, 96);
-    doc.text('Heroes Wear Scrubs!', pw/2, H*0.72, { align: 'center' });
-    return H + 36;
-  },
-
-  'other-classic-1': function(doc, pw, ph, margin) {
-    const H = 190;
-    doc.setFillColor(255, 248, 240);
-    doc.rect(0, 0, pw, H, 'F');
-    doc.setDrawColor(200, 160, 112);
-    doc.setLineWidth(0.8);
-    doc.setGState(new doc.GState({opacity: 0.3}));
-    doc.rect(margin*0.6, H*0.05, pw-margin*1.2, H*0.9, 'F');
-    doc.setFillColor(212, 160, 96);
-    doc.setGState(new doc.GState({opacity: 0.4}));
-    [[margin*0.6,H*0.05],[pw-margin*0.6,H*0.05],[margin*0.6,H*0.95],[pw-margin*0.6,H*0.95]].forEach(([x,y]) => doc.circle(x, y, 4, 'F'));
-    doc.setGState(new doc.GState({opacity: 0.35}));
-    doc.setFillColor(184, 144, 96);
-    doc.ellipse(pw/2-pw*0.06, H*0.38, pw*0.055, H*0.09, 'F');
-    doc.ellipse(pw/2+pw*0.06, H*0.32, pw*0.05, H*0.08, 'F');
-    doc.ellipse(pw/2, H*0.28, pw*0.04, H*0.07, 'F');
-    doc.setGState(new doc.GState({opacity: 1}));
-    doc.setDrawColor(200, 160, 112);
-    doc.setLineWidth(0.6);
-    doc.line(pw*0.25, H-14, pw*0.75, H-14);
-    doc.setFont('times', 'italic');
-    doc.setFontSize(24);
-    doc.setTextColor(138, 80, 32);
-    doc.text('With Warm Wishes', pw/2, 148, { align: 'center' });
-    return H + 36;
-  },
-
-  'other-fun-1': function(doc, pw, ph, margin) {
-    const H = 190;
-    doc.setFillColor(255, 240, 248);
-    doc.rect(0, 0, pw, H, 'F');
-    [[0.1,0.2,[244,167,185]],[0.2,0.62,[212,175,55]],[0.32,0.15,[150,200,150]],[0.5,0.68,[136,144,224]],[0.65,0.18,[244,167,185]],[0.8,0.6,[212,175,55]],[0.9,0.25,[150,200,150]]].forEach(([rx,ry,c]) => {
-      doc.setFillColor(c[0],c[1],c[2]);
-      doc.setGState(new doc.GState({opacity: 0.7}));
-      doc.circle(pw*rx, H*ry, 5, 'F');
-    });
-    doc.setGState(new doc.GState({opacity: 1}));
-    doc.setFont('times', 'bold');
-    doc.setFontSize(24);
-    doc.setTextColor(192, 68, 122);
-    doc.text('Thinking of You!', pw/2, 148, { align: 'center' });
-    return H + 36;
-  }
-
-};
-
-async function downloadPDF() {
-  const { jsPDF } = window.jspdf;
-  const header = CARD_HEADERS.find(h => h.id === activeHeaderId);
-  const theme = CARD_THEMES.find(t => t.id === (header ? header.theme : activeTheme)) || CARD_THEMES[0];
-  const cardText = currentCardText || '';
-  const occasion = A.occasion || '';
-
-  const btn = document.getElementById('btn-download-pdf');
-  btn.disabled = true;
-  btn.textContent = 'Generating…';
-
-  // Per-theme solid body background colors (no gradients for jsPDF)
-  const bodyBgMap = {
-    warm:     [255, 248, 240],
-    blush:    [255, 240, 244],
-    sage:     [242, 248, 242],
-    twilight: [240, 242, 255],
-    gold:     [255, 255, 240],
-    slate:    [244, 246, 248],
-    dusk:     [253, 244, 255],
-  };
-  const bodyBg = bodyBgMap[theme ? theme.id : 'warm'] || [255, 248, 240];
-
-  try {
-    const doc = new jsPDF({ unit: 'pt', format: 'letter', orientation: 'portrait' });
-    const pw = doc.internal.pageSize.getWidth();
-    const ph = doc.internal.pageSize.getHeight();
-    const margin = 56;
-
-    // Full page body background (warm tone matching theme)
-    doc.setFillColor(bodyBg[0], bodyBg[1], bodyBg[2]);
-    doc.rect(0, 0, pw, ph, 'F');
-
-    // Draw header band on top
-    let contentTop = 60;
-    if (header && header.image) {
-      // Image-based header — fetch and draw
-      try {
-        const imgUrl = `/public/headers/${header.image}`;
-        const imgData = await fetch(imgUrl).then(r => r.blob()).then(blob => new Promise((res, rej) => {
-          const reader = new FileReader();
-          reader.onload = () => res(reader.result);
-          reader.onerror = rej;
-          reader.readAsDataURL(blob);
-        }));
-        const headerH = 140 * (pw / 612);
-        doc.addImage(imgData, 'PNG', 0, 0, pw, headerH);
-        contentTop = headerH + 24;
-      } catch(imgErr) {
-        console.warn('Could not load header image for PDF', imgErr);
-        contentTop = 60;
-      }
-    } else if (header && PDF_HEADER_RENDERERS[header.id]) {
-      contentTop = PDF_HEADER_RENDERERS[header.id](doc, pw, ph, margin);
-    }
-
-    // Card text
-    doc.setFont('times', 'normal');
-    doc.setFontSize(14);
-    doc.setTextColor(26, 42, 58);
-    const lines = doc.splitTextToSize(cardText, pw - margin * 2);
-    doc.text(lines, margin, contentTop, { lineHeightFactor: 1.9 });
-
-    // Watermark
-    doc.setFont('times', 'italic');
-    doc.setFontSize(10);
-    doc.setTextColor(122, 156, 192);
-    doc.text('Heartpenned', pw - margin, ph - 30, { align: 'right' });
-
-    const filename = occasion
-      ? `heartpenned-${occasion.toLowerCase().replace(/\s+/g,'-')}.pdf`
-      : 'heartpenned-card.pdf';
-
-    doc.save(filename);
-  } catch(e) {
-    alert('PDF generation failed: ' + e.message);
-    console.error(e);
-  } finally {
-    btn.disabled = false;
-    btn.textContent = 'Download PDF';
-  }
-}
 </script>
 </body>
 </html>

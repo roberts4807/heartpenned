@@ -291,7 +291,7 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
       <div class="chips" id="qc5-main">
         <div class="chip" data-val="Birthday">Birthday</div><div class="chip" data-val="Anniversary">Anniversary</div><div class="chip" data-val="Valentine's Day">Valentine's Day</div><div class="chip" data-val="Christmas">Christmas</div><div class="chip" data-val="Hanukkah">Hanukkah</div><div class="chip" data-val="Thank you">Thank you</div><div class="chip" data-val="Get well">Get well</div><div class="chip" data-val="Just because">Just because</div><div class="chip" data-val="Father's Day">Father's Day</div><div class="chip" data-val="Mother's Day">Mother's Day</div><div class="chip" data-val="Graduation">Graduation</div><div class="chip" data-val="New milestone">New milestone</div><div class="chip" data-val="National Nurses Day">National Nurses Day</div><div class="chip" data-val="Other Holidays">Other Holidays</div><div class="chip" data-val="Other">Other</div>
       </div>
-      <div class="exp" id="qe-hols"><div class="cgl" style="margin-top:0;">Select the holiday</div><div class="chips" id="qc5-hols"><div class="chip" data-val="Thanksgiving">Thanksgiving</div><div class="chip" data-val="Easter">Easter</div><div class="chip" data-val="New Year">New Year</div><div class="chip" data-val="Halloween">Halloween</div><div class="chip" data-val="Diwali">Diwali</div><div class="chip" data-val="Eid">Eid</div><div class="chip" data-val="Passover">Passover</div></div></div>
+      <div class="exp" id="qe-hols"><div class="cgl" style="margin-top:0;">Select the holiday</div><div class="chips" id="qc5-hols"><div class="chip" data-val="Thanksgiving">Thanksgiving</div><div class="chip" data-val="Easter">Easter</div><div class="chip" data-val="New Year">New Year</div><div class="chip" data-val="Halloween">Halloween</div><div class="chip" data-val="4th of July">4th of July</div><div class="chip" data-val="Diwali">Diwali</div><div class="chip" data-val="Eid">Eid</div><div class="chip" data-val="Passover">Passover</div></div></div>
       <div class="exp" id="qe-other-occ"><input class="text-input" id="t5-other" type="text" placeholder="e.g. Retirement, New baby, Promotion..." oninput="handleOtherOcc()"></div>
       <div class="harder"><div class="harder-label">For harder moments</div><div class="chips" id="qc5-hard"><div class="chip gentle" data-val="Sympathy">Sympathy</div><div class="chip gentle" data-val="Apology">Apology</div></div></div>
       <div class="qnav"><button class="btn-back" onclick="qGo('2b')">← Back</button><button class="btn-next" id="qn5" disabled onclick="routeAfterOcc()">Next →</button></div>
@@ -3132,6 +3132,79 @@ const CARD_HEADERS = [
         <line x1="${w*0.18}" y1="${h*0.8}" x2="${w*0.82}" y2="${h*0.8}" stroke="#C8A030" stroke-width="0.8" opacity="0.5"/>
         <text x="${w*0.5}" y="${h*0.62}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.082}" font-weight="700" fill="#8A6010" letter-spacing="0.5">Chag Sameach!</text>
       </svg>`;
+    }
+  },
+
+  // ── 4TH OF JULY IMAGE HEADERS ─────────────────────────────────────────────
+  {
+    id: 'july4-img-stars',
+    label: 'Stars & Stripes',
+    occasions: ['4th of July'],
+    category: 'classic',
+    theme: 'patriot',
+    image: 'july4-stars.png',
+    render(w, h) {
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/july4-stars.png" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;" alt="4th of July header"/></div>`;
+    }
+  },
+
+  {
+    id: 'july4-img-flag',
+    label: 'Watercolor Flag',
+    occasions: ['4th of July'],
+    category: 'classic',
+    theme: 'patriot',
+    image: 'july4-flag.png',
+    render(w, h) {
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/july4-flag.png" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;" alt="4th of July header"/></div>`;
+    }
+  },
+
+  {
+    id: 'july4-img-botanical',
+    label: 'Patriotic Botanicals',
+    occasions: ['4th of July'],
+    category: 'classic',
+    theme: 'patriot',
+    image: 'july4-botanical.png',
+    render(w, h) {
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/july4-botanical.png" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block;" alt="4th of July header"/></div>`;
+    }
+  },
+
+  {
+    id: 'july4-img-wildflowers',
+    label: 'Wildflowers',
+    occasions: ['4th of July'],
+    category: 'classic',
+    theme: 'patriot',
+    image: 'july4-wildflowers.png',
+    render(w, h) {
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/july4-wildflowers.png" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block;" alt="4th of July header"/></div>`;
+    }
+  },
+
+  {
+    id: 'july4-img-fireworks',
+    label: 'Fireworks',
+    occasions: ['4th of July'],
+    category: 'fun',
+    theme: 'patriot',
+    image: 'july4-fireworks.png',
+    render(w, h) {
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/july4-fireworks.png" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;" alt="4th of July header"/></div>`;
+    }
+  },
+
+  {
+    id: 'july4-img-confetti',
+    label: 'Star Confetti',
+    occasions: ['4th of July'],
+    category: 'fun',
+    theme: 'patriot',
+    image: 'july4-confetti.png',
+    render(w, h) {
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/july4-confetti.png" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block;" alt="4th of July header"/></div>`;
     }
   },
 

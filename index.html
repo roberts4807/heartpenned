@@ -3834,7 +3834,7 @@ function addRecipient() {
   row.innerHTML = `
     <input type="text" class="email-field" placeholder="Recipient's name (optional)" style="flex:1;" />
     <input type="email" class="email-field" placeholder="Recipient's email" style="flex:1.4;" />
-    <button class="recipient-remove" onclick="removeRecipient('recipient-row-${idx}')" title="Remove">&times;</button>
+    <button class="recipient-remove" onclick="removeRecipient('recipient-row-${idx}')" title="Remove">\u00d7</button>
   `;
   list.appendChild(row);
 }

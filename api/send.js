@@ -100,7 +100,7 @@ module.exports = async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { recipientEmail, recipientName, senderName, cardText, occasion, themeId, headerImageUrl } = req.body;
+  const { recipientEmail, recipientName, senderName, cardText, occasion, themeId, headerImageUrl, isSenderCopy } = req.body;
 
   if (!recipientEmail || !cardText) {
     return res.status(400).json({ error: 'Recipient email and card text are required.' });
@@ -115,9 +115,11 @@ module.exports = async function handler(req, res) {
     ? occasion.charAt(0).toUpperCase() + occasion.slice(1)
     : 'A Special Message';
 
-  const subject = senderName
-    ? `${senderName} sent you a ${occasionLabel} card 💌`
-    : `You have a ${occasionLabel} card 💌`;
+  const subject = isSenderCopy
+    ? `Your HeartPenned card — ${occasionLabel} 💌`
+    : senderName
+      ? `${senderName} sent you a ${occasionLabel} card 💌`
+      : `You have a ${occasionLabel} card 💌`;
 
   try {
     const data = await resend.emails.send({

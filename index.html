@@ -3835,10 +3835,11 @@ async function sendCardEmail() {
         recipientEmail,
         recipientName,
         senderName,
-        cardText:    currentCardText,
-        occasion:    A.occasion || '',
-        headerStyle: activeDigitalHeaderCat || 'classic',
-        themeId:     activeDigitalHeaderCat === 'color' ? activeTheme : (CARD_HEADERS.find(h => h.id === activeDigitalHeaderId) || {}).theme || activeTheme,
+        cardText:        currentCardText,
+        occasion:        A.occasion || '',
+        headerStyle:     activeDigitalHeaderCat || 'classic',
+        themeId:         activeDigitalHeaderCat === 'color' ? activeTheme : (CARD_HEADERS.find(h => h.id === activeDigitalHeaderId) || {}).theme || activeTheme,
+        headerImageUrl:  (() => { const h = CARD_HEADERS.find(h => h.id === activeDigitalHeaderId); return h && h.image ? 'https://heartpenned.vercel.app/public/headers/' + h.image : null; })(),
       }),
     });
 

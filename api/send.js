@@ -26,9 +26,7 @@ const themeIdColors = {
 };
 
 function getColors(occasion, themeId) {
-  // If a themeId was passed from the UI, use it
   if (themeId && themeIdColors[themeId]) return themeIdColors[themeId];
-  // Otherwise fall back to occasion-based color
   if (!occasion) return occasionColors.default;
   const key = occasion.toLowerCase();
   for (const [name, colors] of Object.entries(occasionColors)) {
@@ -37,7 +35,7 @@ function getColors(occasion, themeId) {
   return occasionColors.default;
 }
 
-function buildCardEmail({ recipientName, senderName, cardText, occasion, themeId }) {
+function buildCardEmail({ recipientName, senderName, cardText, occasion, themeId, headerImageUrl }) {
   const colors = getColors(occasion, themeId);
   const occasionLabel = occasion
     ? occasion.charAt(0).toUpperCase() + occasion.slice(1)
@@ -48,6 +46,20 @@ function buildCardEmail({ recipientName, senderName, cardText, occasion, themeId
     .filter(p => p.trim())
     .map(p => `<p style="margin:0 0 16px 0;line-height:1.8;">${p.trim()}</p>`)
     .join('');
+
+  // Build header — image if available, gradient fallback otherwise
+  const headerHtml = headerImageUrl
+    ? `<tr>
+        <td style="border-radius:16px 16px 0 0;overflow:hidden;line-height:0;font-size:0;">
+          <img src="${headerImageUrl}" alt="${occasionLabel}" width="560" style="width:100%;max-width:560px;height:160px;object-fit:cover;object-position:top;display:block;border-radius:16px 16px 0 0;" />
+        </td>
+      </tr>`
+    : `<tr>
+        <td style="background:linear-gradient(135deg,${colors.from} 0%,${colors.to} 100%);border-radius:16px 16px 0 0;padding:40px 48px 32px;text-align:center;">
+          <p style="margin:0 0 8px 0;font-size:13px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.85);">HeartPenned</p>
+          <h1 style="margin:0;font-family:Georgia,serif;font-size:28px;font-weight:normal;color:#ffffff;">${occasionLabel}</h1>
+        </td>
+      </tr>`;
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -60,12 +72,7 @@ function buildCardEmail({ recipientName, senderName, cardText, occasion, themeId
   <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color:#f4f4f4;">
     <tr><td style="padding:40px 20px;">
       <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="max-width:560px;margin:0 auto;">
-        <tr>
-          <td style="background:linear-gradient(135deg,${colors.from} 0%,${colors.to} 100%);border-radius:16px 16px 0 0;padding:40px 48px 32px;text-align:center;">
-            <p style="margin:0 0 8px 0;font-size:13px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.85);">HeartPenned</p>
-            <h1 style="margin:0;font-family:Georgia,serif;font-size:28px;font-weight:normal;color:#ffffff;">${occasionLabel}</h1>
-          </td>
-        </tr>
+        ${headerHtml}
         <tr>
           <td style="background-color:#ffffff;padding:48px 48px 40px;border-left:1px solid #e8e8e8;border-right:1px solid #e8e8e8;">
             <div style="font-size:17px;line-height:1.8;color:#2d2d2d;">${paragraphs}</div>
@@ -93,7 +100,7 @@ module.exports = async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { recipientEmail, recipientName, senderName, cardText, occasion, themeId } = req.body;
+  const { recipientEmail, recipientName, senderName, cardText, occasion, themeId, headerImageUrl } = req.body;
 
   if (!recipientEmail || !cardText) {
     return res.status(400).json({ error: 'Recipient email and card text are required.' });
@@ -117,7 +124,7 @@ module.exports = async function handler(req, res) {
       from: 'HeartPenned <hello@heartpenned.com>',
       to: [recipientEmail],
       subject,
-      html: buildCardEmail({ recipientName, senderName, cardText, occasion, themeId }),
+      html: buildCardEmail({ recipientName, senderName, cardText, occasion, themeId, headerImageUrl }),
     });
 
     return res.status(200).json({ success: true, id: data.id });

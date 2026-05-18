@@ -2171,6 +2171,67 @@ const CARD_HEADERS = [
     }
   },
 
+  // ── VALENTINE'S DAY IMAGE HEADERS ─────────────────────────────────────────
+  {
+    id: 'valentines-img-roses',
+    label: 'Crimson Roses',
+    occasions: ["Valentine's Day", 'Valentines Day', 'Valentine'],
+    category: 'classic',
+    theme: 'blush',
+    image: 'valentines-roses.png',
+    render(w, h) {
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/valentines-roses.png" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block;" alt="Valentine's Day header"/></div>`;
+    }
+  },
+
+  {
+    id: 'valentines-img-hearts',
+    label: 'Gold Hearts',
+    occasions: ["Valentine's Day", 'Valentines Day', 'Valentine'],
+    category: 'classic',
+    theme: 'blush',
+    image: 'valentines-hearts.png',
+    render(w, h) {
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/valentines-hearts.png" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block;" alt="Valentine's Day header"/></div>`;
+    }
+  },
+
+  {
+    id: 'valentines-img-gift',
+    label: 'Gift & Hearts',
+    occasions: ["Valentine's Day", 'Valentines Day', 'Valentine'],
+    category: 'fun',
+    theme: 'blush',
+    image: 'valentines-gift.png',
+    render(w, h) {
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/valentines-gift.png" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block;" alt="Valentine's Day header"/></div>`;
+    }
+  },
+
+  {
+    id: 'valentines-img-confetti',
+    label: 'Heart Confetti',
+    occasions: ["Valentine's Day", 'Valentines Day', 'Valentine'],
+    category: 'fun',
+    theme: 'blush',
+    image: 'valentines-confetti.png',
+    render(w, h) {
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/valentines-confetti.png" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block;" alt="Valentine's Day header"/></div>`;
+    }
+  },
+
+  {
+    id: 'valentines-img-candy',
+    label: 'Sweet Candies',
+    occasions: ["Valentine's Day", 'Valentines Day', 'Valentine'],
+    category: 'fun',
+    theme: 'blush',
+    image: 'valentines-candy.png',
+    render(w, h) {
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/valentines-candy.png" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block;" alt="Valentine's Day header"/></div>`;
+    }
+  },
+
   // ── GET WELL ──────────────────────────────────────────────────────────────
   {
     id: 'getwell-classic-1',
@@ -2455,6 +2516,55 @@ const CARD_HEADERS = [
         <line x1="${w*0.15}" y1="${h*0.82}" x2="${w*0.85}" y2="${h*0.82}" stroke="#C84820" stroke-width="0.8" opacity="0.5"/>
         <text x="${w*0.5}" y="${h*0.62}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.082}" font-weight="700" fill="#8B2A08" letter-spacing="0.5">Happy Thanksgiving!</text>
       </svg>`;
+    }
+  },
+
+  // ── THANKSGIVING IMAGE HEADERS ────────────────────────────────────────────
+  {
+    id: 'thanksgiving-img-turkeys',
+    label: 'Turkeys & Leaves',
+    occasions: ['Thanksgiving'],
+    category: 'fun',
+    theme: 'warm',
+    image: 'thanksgiving-turkeys.png',
+    render(w, h) {
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/thanksgiving-turkeys.png" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block;" alt="Thanksgiving header"/></div>`;
+    }
+  },
+
+  {
+    id: 'thanksgiving-img-cornucopia',
+    label: 'Cornucopia',
+    occasions: ['Thanksgiving'],
+    category: 'fun',
+    theme: 'warm',
+    image: 'thanksgiving-cornucopia.png',
+    render(w, h) {
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/thanksgiving-cornucopia.png" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block;" alt="Thanksgiving header"/></div>`;
+    }
+  },
+
+  {
+    id: 'thanksgiving-img-pumpkins',
+    label: 'Soft Pumpkins',
+    occasions: ['Thanksgiving'],
+    category: 'classic',
+    theme: 'warm',
+    image: 'thanksgiving-pumpkins.png',
+    render(w, h) {
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/thanksgiving-pumpkins.png" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block;" alt="Thanksgiving header"/></div>`;
+    }
+  },
+
+  {
+    id: 'thanksgiving-img-botanical',
+    label: 'Gold Harvest',
+    occasions: ['Thanksgiving'],
+    category: 'classic',
+    theme: 'warm',
+    image: 'thanksgiving-botanical.png',
+    render(w, h) {
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/thanksgiving-botanical.png" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block;" alt="Thanksgiving header"/></div>`;
     }
   },
 

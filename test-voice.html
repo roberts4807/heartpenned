@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>HeartPenned — Voice Lab</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:#F0F4FA;color:#1A2A3A;min-height:100vh;}
+
+.lab-header{background:#1A3A6A;padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;}
+.lab-brand{font-family:'Playfair Display',Georgia,serif;color:#fff;font-size:20px;}
+.lab-brand em{font-style:italic;color:#A8C4E8;}
+.lab-tag{font-size:11px;color:#A8C4E8;letter-spacing:0.1em;text-transform:uppercase;background:rgba(255,255,255,0.1);padding:4px 10px;border-radius:20px;}
+
+.lab-wrap{max-width:1140px;margin:0 auto;padding:2rem 1.5rem;}
+.lab-intro{background:#fff;border-radius:12px;padding:1.25rem 1.75rem;margin-bottom:1.75rem;border-left:4px solid #1A3A6A;}
+.lab-intro h2{font-size:15px;font-weight:700;margin-bottom:0.3rem;color:#1A3A6A;}
+.lab-intro p{font-size:13px;color:#667;line-height:1.6;}
+
+.form-card{background:#fff;border-radius:12px;padding:1.75rem 2rem;margin-bottom:1.75rem;box-shadow:0 1px 4px rgba(0,0,0,0.05);}
+.form-card h3{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#AAB;margin-bottom:1.25rem;}
+.field-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.field-grid.three{grid-template-columns:1fr 1fr 1fr;}
+label{display:block;font-size:12px;font-weight:600;color:#667;margin-bottom:4px;}
+input[type=text],input[type=number],select,textarea{width:100%;padding:9px 12px;border:1px solid #D8E0EC;border-radius:8px;font-size:14px;font-family:'Inter',sans-serif;color:#1A2A3A;background:#fff;outline:none;transition:border 0.15s;}
+input:focus,select:focus,textarea:focus{border-color:#1A3A6A;}
+textarea{resize:vertical;line-height:1.6;}
+.opt{font-size:11px;color:#AAB;font-weight:400;}
+
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;}
+.chip{padding:5px 14px;border-radius:20px;border:1px solid #D0D8EC;font-size:12px;font-weight:500;cursor:pointer;color:#445;transition:all 0.15s;user-select:none;}
+.chip.on{background:#1A3A6A;border-color:#1A3A6A;color:#fff;}
+
+.generate-row{text-align:center;margin-bottom:2rem;}
+.btn-generate{background:#1A3A6A;color:#fff;border:none;padding:14px 48px;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;letter-spacing:0.02em;transition:background 0.15s;}
+.btn-generate:hover{background:#243F6F;}
+.btn-generate:disabled{opacity:0.4;cursor:not-allowed;}
+
+.results-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:2rem;}
+@media(max-width:720px){.results-grid,.field-grid,.field-grid.three{grid-template-columns:1fr;}}
+
+.result-col{background:#fff;border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,0.06);overflow:hidden;}
+.result-head{padding:1rem 1.5rem;border-bottom:1px solid #EEF2F8;display:flex;align-items:center;justify-content:space-between;}
+.result-head-left h4{font-size:14px;font-weight:700;color:#1A2A3A;margin-bottom:2px;}
+.result-head-left p{font-size:12px;color:#889;}
+.result-badge{font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;letter-spacing:0.04em;}
+.badge-craft{background:#EEF4FF;color:#1A3A6A;}
+.badge-human{background:#FFF3E8;color:#8B4A10;}
+
+.result-body{padding:1.5rem;}
+.card-output{font-family:'Playfair Display',Georgia,serif;font-size:15px;line-height:1.9;color:#1A2A3A;white-space:pre-wrap;min-height:120px;}
+.word-count{font-size:11px;color:#AAB;margin-top:0.75rem;text-align:right;}
+
+.result-loading{padding:2.5rem 1.5rem;text-align:center;}
+.dots{display:inline-flex;gap:6px;align-items:center;}
+.dots span{width:7px;height:7px;border-radius:50%;background:#C0CCE0;animation:pulse 1.2s ease-in-out infinite;}
+.dots span:nth-child(2){animation-delay:0.2s;}
+.dots span:nth-child(3){animation-delay:0.4s;}
+@keyframes pulse{0%,80%,100%{opacity:0.3;transform:scale(0.85);}40%{opacity:1;transform:scale(1);}}
+.loading-label{margin-top:10px;font-size:13px;color:#889;}
+.result-empty{padding:2.5rem 1.5rem;text-align:center;font-size:13px;color:#AAB;}
+
+.feedback-row{display:flex;gap:8px;margin-top:1rem;padding-top:1rem;border-top:1px solid #F0F4F8;}
+.btn-fb{flex:1;padding:8px;border-radius:8px;border:1px solid #D8E0EC;background:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;color:#556;transition:all 0.15s;}
+.btn-fb:hover{border-color:#1A3A6A;color:#1A3A6A;}
+.btn-fb.winner{background:#1A3A6A;border-color:#1A3A6A;color:#fff;}
+
+.notes-area{background:#FFFBF0;border:1px solid #EDE0B0;border-radius:10px;padding:1rem 1.5rem;margin-bottom:2rem;}
+.notes-area h4{font-size:11px;font-weight:700;color:#8B7020;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.5rem;}
+.notes-area textarea{background:transparent;border:none;outline:none;width:100%;font-size:13px;color:#4A3A10;resize:none;font-family:'Inter',sans-serif;line-height:1.6;}
+
+.run-badge{text-align:center;font-size:12px;color:#AAB;margin-bottom:1rem;}
+</style>
+</head>
+<body>
+
+<div class="lab-header">
+  <div class="lab-brand">Heart<em>penned</em></div>
+  <div class="lab-tag">Voice Lab — Internal</div>
+</div>
+
+<div class="lab-wrap">
+
+  <div class="lab-intro">
+    <h2>Card Voice vs. Human Voice — Side by Side</h2>
+    <p>Same inputs, two different prompts, running simultaneously. Card Voice is the current production prompt. Human Voice is the experimental one — less architecture, more felt. Use the feedback buttons to track which lands better. Notes field below for patterns you notice across runs.</p>
+  </div>
+
+  <div class="form-card">
+    <h3>Inputs</h3>
+    <div class="field-grid three">
+      <div>
+        <label>Occasion</label>
+        <select id="i-occasion">
+          <option value="">— select —</option>
+          <option>Birthday</option>
+          <option>Anniversary</option>
+          <option>Mother's Day</option>
+          <option>Father's Day</option>
+          <option>Sympathy</option>
+          <option>Congratulations</option>
+          <option>Apology</option>
+          <option>Christmas</option>
+          <option>Thanksgiving</option>
+          <option>Wedding</option>
+          <option>National Nurses Day</option>
+        </select>
+      </div>
+      <div>
+        <label>Recipient name <span class="opt">optional</span></label>
+        <input type="text" id="i-name" placeholder="e.g. Sarah">
+      </div>
+      <div>
+        <label>I am their</label>
+        <input type="text" id="i-relationship" placeholder="e.g. husband, daughter, friend">
+      </div>
+    </div>
+
+    <div class="field-grid three" style="margin-top:1rem;">
+      <div>
+        <label>Card from</label>
+        <input type="text" id="i-from" placeholder="e.g. Just me">
+      </div>
+      <div>
+        <label>Recipient age <span class="opt">optional</span></label>
+        <input type="number" id="i-recipient-age" placeholder="e.g. 50">
+      </div>
+      <div>
+        <label>Turning <span class="opt">birthday only</span></label>
+        <input type="number" id="i-birthday-age" placeholder="e.g. 40">
+      </div>
+    </div>
+
+    <div style="margin-top:1rem;">
+      <label>Tone</label>
+      <div class="chips" id="tone-chips">
+        <div class="chip" data-val="Warm and heartfelt">Warm and heartfelt</div>
+        <div class="chip" data-val="Funny and playful">Funny and playful</div>
+        <div class="chip" data-val="Honest and direct">Honest and direct</div>
+        <div class="chip" data-val="Poetic and sentimental">Poetic and sentimental</div>
+        <div class="chip" data-val="Lighthearted but real">Lighthearted but real</div>
+        <div class="chip" data-val="Reserved but sincere">Reserved but sincere</div>
+        <div class="chip" data-val="Tender and gentle">Tender and gentle</div>
+        <div class="chip" data-val="Celebratory and upbeat">Celebratory and upbeat</div>
+      </div>
+    </div>
+
+    <div style="margin-top:1rem;">
+      <label>Want them to feel</label>
+      <div class="chips" id="feel-chips">
+        <div class="chip" data-val="seen">Seen</div>
+        <div class="chip" data-val="loved">Loved</div>
+        <div class="chip" data-val="proud">Proud</div>
+        <div class="chip" data-val="celebrated">Celebrated</div>
+        <div class="chip" data-val="appreciated">Appreciated</div>
+        <div class="chip" data-val="supported">Supported</div>
+        <div class="chip" data-val="understood">Understood</div>
+        <div class="chip" data-val="not alone">Not alone</div>
+      </div>
+    </div>
+
+    <div class="field-grid" style="margin-top:1rem;">
+      <div>
+        <label>Spirituality</label>
+        <select id="i-spirituality">
+          <option value="None">None</option>
+          <option value="Gently spiritual">Gently spiritual</option>
+          <option value="Faith-based">Faith-based</option>
+        </select>
+      </div>
+      <div>
+        <label>Length</label>
+        <select id="i-length">
+          <option value="standard card length — 50 to 80 words">Standard (50–80 words)</option>
+          <option value="short and sweet — 25 to 40 words">Short and sweet (25–40 words)</option>
+          <option value="handwritten note — 90 to 130 words">Handwritten note (90–130 words)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field-grid" style="margin-top:1rem;">
+      <div>
+        <label>Shared memory <span class="opt">optional</span></label>
+        <textarea id="i-memory" rows="2" placeholder="A specific moment or detail to weave in…"></textarea>
+      </div>
+      <div>
+        <label>Relationship context <span class="opt">writer briefing only — never in card</span></label>
+        <textarea id="i-ctx" rows="2" placeholder="What the writer should know but never say…"></textarea>
+      </div>
+    </div>
+
+    <div class="field-grid" style="margin-top:1rem;">
+      <div>
+        <label>Include in card <span class="opt">optional</span></label>
+        <textarea id="i-misc" rows="2" placeholder="Anything specific to work in…"></textarea>
+      </div>
+      <div>
+        <label>Sign-off <span class="opt">optional</span></label>
+        <input type="text" id="i-signoff" placeholder="e.g. Love, Mom">
+      </div>
+    </div>
+  </div>
+
+  <div class="generate-row">
+    <button class="btn-generate" id="btn-gen" onclick="runBoth()">Generate both voices →</button>
+  </div>
+
+  <div id="run-badge" class="run-badge" style="display:none;"></div>
+
+  <div class="results-grid" id="results-grid" style="display:none;">
+    <div class="result-col">
+      <div class="result-head">
+        <div class="result-head-left">
+          <h4>Card Voice</h4>
+          <p>Crafted, structured, polished</p>
+        </div>
+        <div class="result-badge badge-craft">Current</div>
+      </div>
+      <div id="craft-body" class="result-body">
+        <div class="result-empty">Output will appear here</div>
+      </div>
+    </div>
+    <div class="result-col">
+      <div class="result-head">
+        <div class="result-head-left">
+          <h4>Human Voice</h4>
+          <p>Personal, felt, hand-written</p>
+        </div>
+        <div class="result-badge badge-human">Experimental</div>
+      </div>
+      <div id="human-body" class="result-body">
+        <div class="result-empty">Output will appear here</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="notes-area" id="notes-area" style="display:none;">
+    <h4>Lab notes</h4>
+    <textarea id="lab-notes" rows="4" placeholder="What's working, what isn't, patterns you're noticing across runs…"></textarea>
+  </div>
+
+</div>
+
+<script>
+const tones = new Set();
+const feels = new Set();
+let runCount = 0;
+
+document.querySelectorAll('#tone-chips .chip').forEach(c => {
+  c.addEventListener('click', () => {
+    c.classList.toggle('on');
+    tones[c.classList.contains('on') ? 'add' : 'delete'](c.dataset.val);
+  });
+});
+document.querySelectorAll('#feel-chips .chip').forEach(c => {
+  c.addEventListener('click', () => {
+    c.classList.toggle('on');
+    feels[c.classList.contains('on') ? 'add' : 'delete'](c.dataset.val);
+  });
+});
+
+function getInputs() {
+  return {
+    name:         document.getElementById('i-name').value.trim(),
+    occasion:     document.getElementById('i-occasion').value,
+    relationship: document.getElementById('i-relationship').value.trim(),
+    from:         document.getElementById('i-from').value.trim() || 'Just me',
+    recipientAge: document.getElementById('i-recipient-age').value.trim(),
+    birthdayAge:  document.getElementById('i-birthday-age').value.trim(),
+    toneVal:      [...tones].join(' + ') || 'Warm and heartfelt',
+    feelVal:      [...feels].join(', ') || 'loved',
+    spirituality: document.getElementById('i-spirituality').value,
+    length:       document.getElementById('i-length').value,
+    memory:       document.getElementById('i-memory').value.trim(),
+    ctx:          document.getElementById('i-ctx').value.trim(),
+    misc:         document.getElementById('i-misc').value.trim(),
+    signoff:      document.getElementById('i-signoff').value.trim(),
+  };
+}
+
+function getSpiritualRule(s) {
+  if (!s || s === 'None') return 'No spiritual language of any kind.';
+  if (s === 'Gently spiritual') return 'Use gently universal spiritual language — grace, light, presence, purpose — without naming any religion.';
+  return 'Use warm faith-based language. Universal faith language.';
+}
+
+function getOccasionRules(inp) {
+  const o = inp.occasion;
+  if (o === 'Sympathy') return 'Sympathy. Gentleness and presence only. No silver linings. No fixing. Let them feel less alone.';
+  if (o === 'Apology') return 'Apology. Sincere and direct. No deflecting. Own the moment.';
+  if (o === "Mother's Day") return "Mother's Day. Do not mention holiday by name. No clichés: no Happy Mother's Day, no unconditional love, no SuperMom.";
+  if (o === "Father's Day") return "Father's Day. Do not mention holiday by name. No clichés.";
+  if (o === 'National Nurses Day') return 'National Nurses Day. Specific and respectful. No generic heroism.';
+  if (o === 'Birthday' && inp.birthdayAge) return `Birthday. Turning ${inp.birthdayAge}.${[30,40,50,60,70,80].includes(Number(inp.birthdayAge)) ? ' Milestone.' : ''}`;
+  return '';
+}
+
+function buildCraftPrompt(inp) {
+  return `ROLE AND STANDARD:
+You are a senior greeting card writer with 20 years of experience. Your singular job is to write a card message that feels like it was written by someone who truly knows this recipient — not by a card company, not by AI. The gold standard: the recipient reads this and feels completely seen — not an idealized version of themselves, but exactly who they are in this relationship right now. You write for real relationships — complicated, evolving, quietly loving, deeply loving.
+
+INPUTS:
+${inp.name ? 'RECIPIENT NAME: ' + inp.name : ''}
+CARD FROM: ${inp.from}
+I AM THEIR: ${inp.relationship || '—'}
+${inp.recipientAge ? 'RECIPIENT AGE: ' + inp.recipientAge : ''}
+OCCASION: ${inp.occasion || '—'}
+${inp.birthdayAge ? 'TURNING: ' + inp.birthdayAge : ''}
+TONE: ${inp.toneVal}
+SPIRITUALITY: ${inp.spirituality || 'None'}
+WANT THEM TO FEEL: ${inp.feelVal}
+LENGTH: ${inp.length}
+FORMAT: write it like a letter
+${inp.memory ? 'SHARED MEMORY (card content): "' + inp.memory + '"' : ''}
+${inp.misc ? 'INCLUDE IN CARD: "' + inp.misc + '"' : ''}
+
+RELATIONSHIP CONTEXT — CONFIDENTIAL WRITER BRIEFING ONLY:
+"${inp.ctx}"
+CRITICAL: Private context for the writer — never the card. Use it to calibrate emotional distance and what to avoid. Complicated feelings must never surface. The card always finds and builds from what is true and good.
+
+CARD ARCHITECTURE:
+1. OPENING — Specific and true about the recipient. Never generic. Never name the occasion.
+2. MIDDLE — Amplify what was expressed. Give it more weight. Never project beyond what was provided.
+3. CLOSING LINE — Inevitable. Quiet weight. They will remember it.
+
+TONE GUIDE:
+Warm and heartfelt: Flowing sentences, gentle rhythm, never saccharine.
+Funny and playful: Short punchy sentences, wit over jokes, warmth underneath.
+Honest and direct: Plain language, no flourish, feels said aloud.
+Poetic and sentimental: Rhythm and imagery, earned emotion, beauty through specificity.
+Lighthearted but real: Starts light, lands with genuine feeling.
+Reserved but sincere: Understated, says less means more.
+Celebratory and upbeat: Energetic, warm, joy-forward.
+Tender and gentle: Soft, careful, quietly loving.
+
+LENGTH: Short and sweet 25-40 words. Standard card length 50-80 words. Handwritten note 90-130 words.
+SPIRITUALITY: ${getSpiritualRule(inp.spirituality)}
+${getOccasionRules(inp) ? 'OCCASION: ' + getOccasionRules(inp) : ''}
+NAME RULE: ${inp.name ? 'You may use "' + inp.name + '" once only if it fits naturally mid-card. Never in the opening or closing. Never more than once.' : 'No name.'}
+SIGN-OFF: ${inp.signoff ? 'End the card with exactly: "' + inp.signoff + '" on its own line.' : 'No sign-off. Do NOT add "Love," or any closing. End with the last line of the message.'}
+ABSOLUTE RULES:
+- Write ONLY the card message. No greeting.
+- Amplify what was expressed — never project or assume beyond it.
+- Never quote inputs verbatim — transform into language with more weight.
+- Never use "journey," "words cannot express," or end with "always."
+- End the card with a celebration of the occasion as the final line.`;
+}
+
+function buildHumanPrompt(inp) {
+  return `You are not a card writer. You are the person sending this — someone who feels things deeply and has the rare ability to actually put it into words. You don't construct a card. You sit down, you think about this person, and you write. It comes out the way real feeling comes out — not in three tidy sections, but the way a thought unfolds when you're being honest with yourself.
+
+The person reading this should feel like it was written specifically for them, on a specific day, by someone who actually knows them. Not crafted. Written.
+
+WHO IS RECEIVING THIS:
+${inp.name ? 'Name: ' + inp.name : ''}
+Occasion: ${inp.occasion || '—'}
+${inp.birthdayAge ? 'Turning: ' + inp.birthdayAge : ''}
+Relationship: I am their ${inp.relationship || '—'}
+${inp.recipientAge ? 'Their age: ' + inp.recipientAge : ''}
+
+WHAT I WANT THEM TO FEEL: ${inp.feelVal}
+TONE: ${inp.toneVal}
+LENGTH: ${inp.length}
+${inp.memory ? '\nSOMETHING REAL TO DRAW FROM:\n"' + inp.memory + '"\nThis is a real moment. Use it the way memory actually surfaces — not as an anecdote, but as evidence of something.' : ''}
+${inp.misc ? '\nSOMETHING TO INCLUDE:\n"' + inp.misc + '"' : ''}
+${inp.ctx ? '\nWHAT I KNOW BUT WON\'T SAY IN THE CARD:\n"' + inp.ctx + '"\nLet this shape the emotional temperature. Never put it in the card. Let it inform what you reach for and what you leave alone.' : ''}
+
+SPIRITUALITY: ${getSpiritualRule(inp.spirituality)}
+${getOccasionRules(inp) ? 'OCCASION NOTES: ' + getOccasionRules(inp) : ''}
+SIGN-OFF: ${inp.signoff ? 'End with exactly: "' + inp.signoff + '" on its own line.' : 'No sign-off. End on the last true thing.'}
+NAME: ${inp.name ? 'You may use "' + inp.name + '" once, naturally, if it earns its place. Never forced.' : 'No name.'}
+
+HOW THIS SHOULD READ:
+- Like a real person wrote it, not a service
+- Sentences that sound like they were spoken first, then written down
+- It can start mid-thought — no setup, no "Dear [name]"
+- Allowed to be a little uneven — real writing isn't perfectly balanced
+- One moment of genuine surprise — a line they won't see coming
+- Ends on something that will stay with them
+
+WHAT IT MUST NEVER DO:
+- Sound like a greeting card
+- Use "journey," "unconditional love," "words cannot express," or "always" as a closing
+- Be generic enough to work for anyone else
+- Project emotion the sender didn't express
+- Feel constructed
+
+Write ONLY the message. No explanation, no commentary, no title.`;
+}
+
+async function callAPI(prompt) {
+  const res = await fetch('/api/generate', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ prompt })
+  });
+  const data = await res.json();
+  if (data.error) throw new Error(data.error);
+  return (data.text || '').replace(/\*([^*]+)\*/g, '$1').replace(/\*\*([^*]+)\*\*/g, '$1');
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function setLoading(id, label) {
+  document.getElementById(id).innerHTML = `
+    <div class="result-loading">
+      <div class="dots"><span></span><span></span><span></span></div>
+      <div class="loading-label">${label}</div>
+    </div>`;
+}
+
+function renderResult(id, text) {
+  const words = text.trim().split(/\s+/).length;
+  document.getElementById(id).innerHTML = `
+    <div class="card-output">${escHtml(text.trim())}</div>
+    <div class="word-count">${words} words</div>
+    <div class="feedback-row">
+      <button class="btn-fb" onclick="markWinner(this)">👍 This one lands</button>
+      <button class="btn-fb" onclick="copyText(this)" data-text="${escHtml(text.trim())}">Copy text</button>
+    </div>`;
+}
+
+function markWinner(btn) {
+  document.querySelectorAll('.btn-fb').forEach(b => b.classList.remove('winner'));
+  btn.classList.add('winner');
+  btn.textContent = '✓ Picked this one';
+}
+
+function copyText(btn) {
+  const text = btn.dataset.text;
+  navigator.clipboard.writeText(text).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+  });
+  btn.textContent = 'Copied!';
+  setTimeout(() => btn.textContent = 'Copy text', 1500);
+}
+
+async function runBoth() {
+  const inp = getInputs();
+  if (!inp.occasion) { alert('Please select an occasion.'); return; }
+  if (!inp.relationship) { alert('Please fill in your relationship to the recipient.'); return; }
+
+  runCount++;
+  const btn = document.getElementById('btn-gen');
+  btn.disabled = true;
+  btn.textContent = 'Generating…';
+
+  document.getElementById('results-grid').style.display = 'grid';
+  document.getElementById('notes-area').style.display = 'block';
+  document.getElementById('run-badge').style.display = 'block';
+  document.getElementById('run-badge').textContent = `Run #${runCount}`;
+
+  setLoading('craft-body', 'Writing the card voice…');
+  setLoading('human-body', 'Writing the human voice…');
+
+  const [craftRes, humanRes] = await Promise.allSettled([
+    callAPI(buildCraftPrompt(inp)),
+    callAPI(buildHumanPrompt(inp))
+  ]);
+
+  craftRes.status === 'fulfilled'
+    ? renderResult('craft-body', craftRes.value)
+    : document.getElementById('craft-body').innerHTML = `<div class="result-empty" style="color:#c00;">Error: ${craftRes.reason.message}</div>`;
+
+  humanRes.status === 'fulfilled'
+    ? renderResult('human-body', humanRes.value)
+    : document.getElementById('human-body').innerHTML = `<div class="result-empty" style="color:#c00;">Error: ${humanRes.reason.message}</div>`;
+
+  btn.disabled = false;
+  btn.textContent = 'Generate again →';
+}
+</script>
+</body>
+</html>

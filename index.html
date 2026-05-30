@@ -349,8 +349,18 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
 
     <div class="qstep" id="q8">
       <div class="question" id="q9-text">Tell us about your relationship</div>
-      <div class="honest-note">Cards should reflect real relationships — not perfect ones. Be honest. This helps us get the tone right — <strong>it's for our eyes only</strong>, not the card.</div>
-      <textarea class="text-input" id="t9" rows="3" placeholder="e.g. She has always made every person in the room feel like the most important one there. Or — it's complicated, but she showed up when it mattered." oninput="checkReq(9)"></textarea>
+      <div class="honest-note">Be honest. This is where your heart meets the words.<br><em>It's for our eyes only, not the card.</em></div>
+      <div class="cgl" style="margin-top:1rem;">How would you describe it? <span style="font-weight:400;color:#AAB4C0;">(Pick 1 or 2 that feel most true)</span></div>
+      <div class="chips" id="rel-chips">
+        <div class="chip" data-val="loving" onclick="toggleRelChip(this)">Loving</div>
+        <div class="chip" data-val="easy and comfortable" onclick="toggleRelChip(this)">Easy and comfortable</div>
+        <div class="chip" data-val="complicated" onclick="toggleRelChip(this)">Complicated</div>
+        <div class="chip" data-val="rebuilding" onclick="toggleRelChip(this)">Rebuilding</div>
+        <div class="chip" data-val="we've been through a lot" onclick="toggleRelChip(this)">We've been through a lot</div>
+        <div class="chip" data-val="long distance" onclick="toggleRelChip(this)">Long distance</div>
+      </div>
+      <div class="cgl" style="margin-top:1rem;">Anything else to add? <span class="opt-tag">optional</span></div>
+      <textarea class="text-input" id="t9" rows="3" placeholder="She has always inspired me to be the best I could be. Or — it's complicated, but she showed up when it mattered." oninput="updateRelCtx()"></textarea>
       <div class="qnav"><button class="btn-back" onclick="qGo(7)">← Back</button><button class="btn-next" id="qn9" disabled onclick="qGo(9)">Next →</button></div>
     </div>
 
@@ -548,7 +558,7 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
 
 </div>
 <script>
-const A={kids:[],tones:[],feels:[]};
+const A={kids:[],tones:[],feels:[],relChips:[]};
 let kidCount=1,versionCount=1,currentCardText='',savedVersions=[],activeVersionIdx=0;
 const PARTNER_VALS=['Husband','Wife','Partner'];
 const Q_ORDER=[1,2,'2b',4,'4b','4c',5,6,7,8,9,10,11,12,13,'13b'];
@@ -690,6 +700,23 @@ function handleToneOther(){
 function checkReq(n){
   const v=document.getElementById('t'+n).value.trim();
   if(n===9){A.relationshipCtx=v;document.getElementById('qn9').disabled=v.length<3;}
+}
+
+// Relationship chips — multi-select
+function toggleRelChip(el){
+  const val = el.dataset.val;
+  const idx = A.relChips.indexOf(val);
+  if(idx === -1){ A.relChips.push(val); el.classList.add('selected'); }
+  else { A.relChips.splice(idx,1); el.classList.remove('selected'); }
+  updateRelCtx();
+}
+
+function updateRelCtx(){
+  const freeText = document.getElementById('t9').value.trim();
+  const chipText = A.relChips.length ? A.relChips.join(', ') : '';
+  const combined = [chipText, freeText].filter(Boolean).join('. ');
+  A.relationshipCtx = combined;
+  document.getElementById('qn9').disabled = (A.relChips.length === 0 && freeText.length < 3);
 }
 
 function routeAfterOcc(){

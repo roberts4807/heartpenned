@@ -136,10 +136,11 @@ module.exports = async function handler(req, res) {
       : `You have a ${occasionLabel} card 💌`;
 
   try {
-    const data = await resend.emails.send({
+  const data = await resend.emails.send({
       from: 'HeartPenned <hello@heartpenned.com>',
       to: [recipientEmail],
       subject,
+      ...(req.body.senderEmail && !isSenderCopy ? { reply_to: req.body.senderEmail } : {}),
       html: buildCardEmail({ recipientName, senderName, cardText, occasion, themeId, headerImageUrl, isSenderCopy }),
     });
 

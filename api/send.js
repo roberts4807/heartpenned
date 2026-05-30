@@ -97,8 +97,9 @@ function buildCardEmail({ recipientName, senderName, cardText, occasion, themeId
         </tr>
         <tr>
           <td style="padding:24px 0 0;text-align:center;">
-            <p style="margin:0;font-family:Arial,sans-serif;font-size:12px;color:#999999;">
-              Sent with <a href="https://heartpenned.com" style="color:${colors.accent};text-decoration:none;">HeartPenned</a> &middot; Because some words matter
+            <p style="margin:0;font-family:Arial,sans-serif;font-size:12px;color:#999999;line-height:1.8;">
+              Sent with <a href="https://heartpenned.com" style="color:${colors.accent};text-decoration:none;">HeartPenned</a><br>
+              <strong style="color:#666666;">Simply reply to respond to sender.</strong>
             </p>
           </td>
         </tr>
@@ -136,10 +137,11 @@ module.exports = async function handler(req, res) {
       : `You have a ${occasionLabel} card 💌`;
 
   try {
-    const data = await resend.emails.send({
+  const data = await resend.emails.send({
       from: 'HeartPenned <hello@heartpenned.com>',
       to: [recipientEmail],
       subject,
+      ...(req.body.senderEmail && !isSenderCopy ? { reply_to: req.body.senderEmail } : {}),
       html: buildCardEmail({ recipientName, senderName, cardText, occasion, themeId, headerImageUrl, isSenderCopy }),
     });
 

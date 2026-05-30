@@ -349,15 +349,27 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
 
     <div class="qstep" id="q8">
       <div class="question" id="q9-text">Tell us about your relationship</div>
-      <div class="honest-note">Cards should reflect real relationships — not perfect ones. Be honest. This helps us get the tone right — <strong>it's for our eyes only</strong>, not the card.</div>
-      <textarea class="text-input" id="t9" rows="3" placeholder="e.g. She has always made every person in the room feel like the most important one there. Or — it's complicated, but she showed up when it mattered." oninput="checkReq(9)"></textarea>
+      <div class="honest-note">Be honest. This is where your heart meets the words.<br><em>It's for our eyes only, not the card.</em></div>
+      <div class="cgl" style="margin-top:1rem;"><span style="font-weight:400;color:#AAB4C0;text-transform:none;letter-spacing:0;">Pick 1 or 2 that feel most true</span></div>
+      <div class="chips" id="rel-chips">
+        <div class="chip" data-val="loving" onclick="toggleRelChip(this)">Loving</div>
+        <div class="chip" data-val="easy and comfortable" onclick="toggleRelChip(this)">Easy and comfortable</div>
+        <div class="chip" data-val="complicated" onclick="toggleRelChip(this)">Complicated</div>
+        <div class="chip" data-val="rebuilding" onclick="toggleRelChip(this)">Rebuilding</div>
+        <div class="chip" data-val="we've been through a lot" onclick="toggleRelChip(this)">We've been through a lot</div>
+        <div class="chip" data-val="long distance" onclick="toggleRelChip(this)">Long distance</div>
+      </div>
+      <div class="cgl" style="margin-top:1rem;">Anything else to add? <span class="opt-tag">optional</span></div>
+      <textarea class="text-input" id="t9" rows="3" placeholder="e.g. She has always inspired me to be the best I could be. Or — it's complicated, but she showed up when it mattered." oninput="updateRelCtx()"></textarea>
       <div class="qnav"><button class="btn-back" onclick="qGo(7)">← Back</button><button class="btn-next" id="qn9" disabled onclick="qGo(9)">Next →</button></div>
     </div>
 
     <div class="qstep" id="q9">
-      <div class="question" id="q10-text">Is there a moment you'd want woven in? <span class="opt-tag">optional</span></div>
-      <div class="subtext">The cards that include a real moment are the ones people keep.</div>
-      <textarea class="text-input" id="t10" rows="3" placeholder="e.g. The night she drove four hours to help me move and never once complained." oninput="A.memory=this.value"></textarea>
+      <div class="question" id="q10-text">Memories <span class="opt-tag">optional</span></div>
+      <div class="subtext">Cards that include real moments often mean the most.</div>
+      <textarea class="text-input" id="t10a" rows="2" placeholder="e.g. The night she drove four hours to help me move and never once complained." oninput="updateMemories()" style="margin-bottom:8px;"></textarea>
+      <textarea class="text-input" id="t10b" rows="2" placeholder="e.g. The way she always knew when something was wrong before I said a word." oninput="updateMemories()" style="margin-bottom:8px;"></textarea>
+      <textarea class="text-input" id="t10c" rows="2" placeholder="e.g. That trip we took where everything went wrong and we laughed the whole time." oninput="updateMemories()"></textarea>
       <div class="qnav"><button class="btn-back" onclick="qGo(8)">← Back</button><div style="display:flex;align-items:center;gap:16px;"><span class="skip-link" onclick="qGo(10)">Skip</span><button class="btn-next" onclick="qGo(10)">Next →</button></div></div>
     </div>
 
@@ -431,6 +443,9 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
       <button class="action-btn" onclick="toggleRev()">Something doesn't<br>feel right</button>
       <button class="action-btn" onclick="tryAnother()">Try a different<br>version</button>
       <button class="action-btn primary" onclick="showDelivery()">This is<br>the one ✓</button>
+    </div>
+    <div style="margin-top:0.5rem;margin-bottom:0.25rem;">
+      <button class="btn-back" onclick="qGo(11)" style="font-size:13px;">← Back to questions</button>
     </div>
     <div class="edit-bar" id="edit-bar">
       <button class="btn-edit-myself" onclick="startEditing()">✏ Edit myself</button>
@@ -548,7 +563,7 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
 
 </div>
 <script>
-const A={kids:[],tones:[],feels:[]};
+const A={kids:[],tones:[],feels:[],relChips:[]};
 let kidCount=1,versionCount=1,currentCardText='',savedVersions=[],activeVersionIdx=0;
 const PARTNER_VALS=['Husband','Wife','Partner'];
 const Q_ORDER=[1,2,'2b',4,'4b','4c',5,6,7,8,9,10,11,12,13,'13b'];
@@ -672,7 +687,7 @@ function handleName(){
   A.name=v;
   document.getElementById('qn1').disabled=v.length<1;
   document.getElementById('q9-text').textContent=v?'Tell us about your relationship with '+v:'Tell us about your relationship';
-  document.getElementById('q10-text').innerHTML=v?'Is there a moment with '+v+' you\'d want woven in? <span class="opt-tag">optional</span>':'Is there a moment you\'d want woven in? <span class="opt-tag">optional</span>';
+  document.getElementById('q10-text').innerHTML=v?'Memories with '+v+' <span class="opt-tag">optional</span>':'Memories <span class="opt-tag">optional</span>';
 }
 
 function handleOtherOcc(){
@@ -690,6 +705,30 @@ function handleToneOther(){
 function checkReq(n){
   const v=document.getElementById('t'+n).value.trim();
   if(n===9){A.relationshipCtx=v;document.getElementById('qn9').disabled=v.length<3;}
+}
+
+// Relationship chips — multi-select
+function toggleRelChip(el){
+  const val = el.dataset.val;
+  const idx = A.relChips.indexOf(val);
+  if(idx === -1){ A.relChips.push(val); el.classList.add('selected'); }
+  else { A.relChips.splice(idx,1); el.classList.remove('selected'); }
+  updateRelCtx();
+}
+
+function updateRelCtx(){
+  const freeText = document.getElementById('t9').value.trim();
+  const chipText = A.relChips.length ? A.relChips.join(', ') : '';
+  const combined = [chipText, freeText].filter(Boolean).join('. ');
+  A.relationshipCtx = combined;
+  document.getElementById('qn9').disabled = (A.relChips.length === 0 && freeText.length < 3);
+}
+
+function updateMemories(){
+  const m1 = document.getElementById('t10a').value.trim();
+  const m2 = document.getElementById('t10b').value.trim();
+  const m3 = document.getElementById('t10c').value.trim();
+  A.memory = [m1, m2, m3].filter(Boolean).join(' / ');
 }
 
 function routeAfterOcc(){

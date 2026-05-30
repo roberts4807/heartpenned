@@ -99,7 +99,7 @@ function buildCardEmail({ recipientName, senderName, cardText, occasion, themeId
           <td style="padding:24px 0 0;text-align:center;">
             <p style="margin:0;font-family:Arial,sans-serif;font-size:12px;color:#999999;line-height:1.8;">
               Sent with <a href="https://heartpenned.com" style="color:${colors.accent};text-decoration:none;">HeartPenned</a><br>
-              <strong style="color:#666666;">Simply click reply to respond to sender.</strong>
+              <strong style="color:#666666;">Simply reply to respond to sender.</strong>
             </p>
           </td>
         </tr>

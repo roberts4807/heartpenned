@@ -53,7 +53,8 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
 .name-input:focus{outline:none;border-bottom-color:#2A4A80 !important;}
 .number-input{width:80px;padding:10px 12px;font-size:16px;border:0.5px solid #C0CCE0 !important;border-radius:8px;background:#FFFFFF !important;color:#0A1A2A !important;font-family:'Inter',sans-serif;color-scheme:light;}
 .qnav{display:flex;justify-content:space-between;align-items:center;margin-top:1.75rem;}
-.btn-back{background:#FFFFFF !important;border:0.5px solid #C0CCE0 !important;color:#3A4A5A !important;padding:10px 20px;border-radius:8px;font-size:14px;cursor:pointer;font-family:'Inter',sans-serif;}
+.btn-back{background:#FFFFFF !important;border:0.5px solid #C0CCE0 !important;color:#3A4A5A !important;padding:10px 20px;border-radius:8px;font-size:14px;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.15s;}
+.btn-back:hover{border-color:#2A4A80 !important;color:#1A3060 !important;background:#EEF2FA !important;}
 .btn-next{background:#1A3A6A !important;color:#FFFFFF !important;border:none !important;font-weight:700;padding:10px 28px;border-radius:8px;font-size:14px;cursor:pointer;font-family:'Inter',sans-serif;}
 .btn-next:disabled{opacity:0.35;cursor:not-allowed;}
 .skip-link{font-size:13px;color:#888;cursor:pointer;text-decoration:underline;text-underline-offset:2px;}
@@ -444,8 +445,8 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
       <button class="action-btn" onclick="tryAnother()">Try a different<br>version</button>
       <button class="action-btn primary" onclick="showDelivery()">This is<br>the one ✓</button>
     </div>
-    <div style="margin-top:0.5rem;margin-bottom:0.25rem;">
-      <button class="btn-back" onclick="qGo(11)" style="font-size:13px;">← Back to questions</button>
+    <div style="margin-top:0.75rem;margin-bottom:0.25rem;text-align:center;">
+      <button class="btn-back" onclick="showScreen('q');qGo('13b')" style="font-size:13px;">← Back to questions</button>
     </div>
     <div class="edit-bar" id="edit-bar">
       <button class="btn-edit-myself" onclick="startEditing()">✏ Edit myself</button>
@@ -460,7 +461,7 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
   </div>
 </div>
 
-<div class="screen" id="screen-delivery">
+<div class="screen" id="screen-style">
   <div class="top-nav"><div class="nav-brand" onclick="showScreen('landing')">Heart<em>penned</em></div></div>
   <div style="max-width:560px;margin:0 auto;padding:1.5rem 2rem;">
     <div class="card-surface" style="margin-bottom:1.25rem;">
@@ -471,7 +472,7 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
       <div class="card-mark">Heartpenned</div>
     </div>
 
-    <!-- Delivery screen style picker -->
+    <!-- Style picker -->
     <div style="margin-bottom:1rem;">
       <div class="print-panel-label">Card style</div>
       <div class="header-category-tabs">
@@ -483,6 +484,16 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
       <div id="delivery-color-swatches" style="display:none;flex-wrap:wrap;gap:8px;margin-bottom:0.5rem;"></div>
     </div>
 
+    <div style="display:flex;gap:12px;margin-top:0.5rem;margin-bottom:1rem;">
+      <button class="btn-back" onclick="showScreen('card')" style="flex:1;">← Back</button>
+      <button class="action-btn primary" onclick="showSendOptions()" style="flex:1;padding:11px 6px;">Next →</button>
+    </div>
+  </div>
+</div>
+
+<div class="screen" id="screen-delivery">
+  <div class="top-nav"><div class="nav-brand" onclick="showScreen('landing')">Heart<em>penned</em></div></div>
+  <div style="max-width:560px;margin:0 auto;padding:1.5rem 2rem;">
     <div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:1rem;">How would you like to send it?</div>
     <div class="del-grid">
       <div class="d-btn" id="dbtn-digital" onclick="handleDel('digital')"><div class="d-btn-title">Send digitally</div><div class="d-btn-sub">Copy &amp; paste to text or email</div></div>
@@ -557,6 +568,7 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
       </div>
       <div id="reminder-status" style="margin-top:8px;font-size:13px;min-height:18px;"></div>
     </div>
+    <button class="btn-back" onclick="showScreen('style')" style="font-size:13px;margin-bottom:12px;">← Back</button>
     <div class="back-start" onclick="startOver()">← Write another card</div>
   </div>
 </div>
@@ -621,7 +633,7 @@ function applyDefaultHeader(occ) {
 
     // Set delivery card-surface background
     const bodyBg = getHeaderBodyBg(header);
-    const delSurface = document.querySelector('#screen-delivery .card-surface');
+    const delSurface = document.querySelector('#screen-style .card-surface');
     if (delSurface) delSurface.style.background = bodyBg;
     activeTheme = header.theme;
   });
@@ -915,6 +927,10 @@ Celebratory and upbeat: Energetic, warm, joy-forward.
 Tender and gentle: Soft, careful, quietly loving.
 
 LENGTH: Short and sweet 25-40 words. Standard card length 50-80 words. Handwritten note 90-130 words.
+FROM GUIDANCE: If the card is from "Just me" — singular voice throughout, never use "we." If from "Me and my partner" — warm collective voice, use "we" and "us" naturally. If from "From family" or "varies — from family" — inclusive collective voice, written on behalf of everyone.
+RELATIONSHIP GUIDANCE: Use the relationship type to shape emotional register. Writing to a spouse or partner: intimate and knowing. To a parent: respectful, warm, honoring. To a child: nurturing, proud, full of belief in them. To a friend: easy, real, peer-level warmth. To a colleague: professional warmth, never overly personal.
+CHILDREN GUIDANCE: If children are listed, they may be referenced naturally once if it fits — never more. Do not make the card about the children. They add texture, not focus.
+AGE GUIDANCE: Use sender and recipient ages to calibrate vocabulary, cultural references, and emotional register. A card from an older sender carries more gravitas; a younger sender reads lighter and more immediate. For teen senders, write naturally and warmly — do not use slang, Gen Z references, or try to sound "young." If the recipient is older, never reference their age in a way that could feel diminishing or make them feel old. The card should feel timeless regardless of age.
 SPIRITUALITY: ${spiritualRule}
 OCCASION: ${occasionRules}
 OPENING: ${A.opening?'Start the card with exactly: "'+A.opening+'" — use this and nothing else as the opening.':'No opening line. Do NOT add "Dear [name]" or any greeting. Start directly with the card message.'}
@@ -929,7 +945,7 @@ ABSOLUTE RULES:
 - People before pets when listing names
 - Never quote inputs verbatim — transform into language with more weight
 - Never use "journey," "words cannot express," or end with "always"
-- End the card with a celebration of the occasion as the final line (e.g. "Happy Birthday," "Happy Mother's Day," "Happy Graduation")`;
+- For celebratory occasions (birthday, anniversary, graduation, congratulations, wedding, thanksgiving, christmas), end with a warm celebration of the occasion as the final line (e.g. "Happy Birthday," "Happy Anniversary"). For emotionally complex occasions (sympathy, illness, apology, thinking of you), end with the natural emotional close of the card — do not force an occasion label as the final line.`;
 }
 
 function cleanText(text) {
@@ -987,7 +1003,7 @@ async function tryAnother(){
 }
 
 function switchDeliveryStyle(cat) {
-  document.querySelectorAll('#screen-delivery .hcat-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('#screen-style .hcat-tab').forEach(t => t.classList.remove('active'));
   document.getElementById('delcat-' + cat).classList.add('active');
 
   const thumbs = document.getElementById('delivery-header-thumbs');
@@ -1005,7 +1021,7 @@ function switchDeliveryStyle(cat) {
         activeTheme = t.id;
         activeHeaderId = null;
         activeDigitalHeaderId = null;
-        applyTheme(t.id, [document.querySelector('#screen-delivery .card-surface')]);
+        applyTheme(t.id, [document.querySelector('#screen-style .card-surface')]);
         // Clear header zone
         const dz = document.getElementById('del-card-header-zone');
         if (dz) dz.innerHTML = '';
@@ -1034,8 +1050,8 @@ function switchDeliveryStyle(cat) {
         const delZone = document.getElementById('del-card-header-zone');
         const bodyBg = getHeaderBodyBg(h);
         if (delZone) delZone.innerHTML = h.render(delZone.offsetWidth || 320, 140);
-        applyTheme(h.theme, [document.querySelector('#screen-delivery .card-surface')]);
-        document.querySelector('#screen-delivery .card-surface').style.background = bodyBg;
+        applyTheme(h.theme, [document.querySelector('#screen-style .card-surface')]);
+        document.querySelector('#screen-style .card-surface').style.background = bodyBg;
       };
       thumbs.appendChild(wrap);
     });
@@ -1048,11 +1064,15 @@ function switchDeliveryStyle(cat) {
 
 function showDelivery(){
   document.getElementById('del-card-text').textContent = currentCardText;
-  showScreen('delivery');
+  showScreen('style');
   headersReady.then(() => {
     applyDefaultHeader(A.occasion || '');
     switchDeliveryStyle('classic');
   });
+}
+
+function showSendOptions(){
+  showScreen('delivery');
 }
 
 function handleDel(type){

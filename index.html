@@ -568,8 +568,10 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
       </div>
       <div id="reminder-status" style="margin-top:8px;font-size:13px;min-height:18px;"></div>
     </div>
-    <button class="btn-back" onclick="showScreen('style')" style="font-size:13px;margin-bottom:12px;">← Back</button>
-    <div class="back-start" onclick="startOver()">← Write another card</div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:0.5rem;">
+      <button class="btn-back" onclick="showScreen('style')" style="font-size:13px;">← Back</button>
+      <div class="back-start" onclick="startOver()" style="margin:0;">← Write another card</div>
+    </div>
   </div>
 </div>
 

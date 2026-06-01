@@ -204,6 +204,7 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
 .btn-download-pdf{width:100%;padding:0.85rem;background:#1A3A6A;color:white;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;letter-spacing:0.02em;}
 .btn-download-pdf:disabled{opacity:0.4;cursor:not-allowed;}
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
 <div class="app">
@@ -4002,6 +4003,105 @@ async function sendCardEmail() {
   }
 }
 
+async function downloadPDF() {
+  const btn = document.getElementById('btn-download-pdf');
+  btn.disabled = true;
+  btn.textContent = 'Generating...';
+
+  try {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ orientation: 'portrait', unit: 'pt', format: 'letter' });
+
+    const pageW = 612;
+    const margin = 48;
+    const cardW = pageW - margin * 2;
+    const headerZoneH = 140;
+
+    // ── Header image ──────────────────────────────────────────────────────────
+    const header = CARD_HEADERS.find(h => h.id === activeHeaderId);
+    let headerDrawn = false;
+
+    if (header && header.image) {
+      try {
+        const imgData = await new Promise((resolve, reject) => {
+          const img = new Image();
+          img.crossOrigin = 'anonymous';
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            // Pre-crop on canvas to avoid jsPDF clipping issues
+            const imgAspect = img.width / img.height;
+            const zoneAspect = cardW / headerZoneH;
+            let sx, sy, sw, sh;
+            if (imgAspect > zoneAspect) {
+              // Image wider — fit to height, crop sides
+              sh = img.height;
+              sw = sh * zoneAspect;
+              sx = (img.width - sw) / 2;
+              sy = 0;
+            } else {
+              // Image taller — fit to width, crop top/bottom
+              sw = img.width;
+              sh = sw / zoneAspect;
+              sx = 0;
+              sy = (img.height - sh) / 2;
+            }
+            canvas.width = sw;
+            canvas.height = sh;
+            canvas.getContext('2d').drawImage(img, sx, sy, sw, sh, 0, 0, sw, sh);
+            resolve(canvas.toDataURL('image/png'));
+          };
+          img.onerror = reject;
+          img.src = '/public/headers/' + header.image;
+        });
+
+        doc.addImage(imgData, 'PNG', margin, margin, cardW, headerZoneH, '', 'FAST');
+        headerDrawn = true;
+      } catch (e) {
+        console.warn('Header image failed, using color fallback.', e);
+      }
+    }
+
+    if (!headerDrawn) {
+      const bg = getHeaderBodyBg(header) || '#EEF2FA';
+      doc.setFillColor(bg);
+      doc.rect(margin, margin, cardW, headerZoneH, 'F');
+    }
+
+    // ── Card body ─────────────────────────────────────────────────────────────
+    const bodyBg = getHeaderBodyBg(header) || '#FFF8F0';
+    const bodyTop = margin + headerZoneH;
+    const cardText = currentCardText || '';
+    const bodyPadX = 24;
+    const bodyPadY = 28;
+
+    doc.setFont('Times', 'normal');
+    doc.setFontSize(13);
+    doc.setTextColor('#1A2A3A');
+    const textLines = doc.splitTextToSize(cardText, cardW - bodyPadX * 2);
+    const lineH = 22;
+    const textBlockH = textLines.length * lineH;
+    const bodyH = textBlockH + bodyPadY * 2 + 24;
+
+    doc.setFillColor(bodyBg);
+    doc.rect(margin, bodyTop, cardW, bodyH, 'F');
+
+    doc.text(textLines, margin + bodyPadX, bodyTop + bodyPadY + 13, { lineHeightFactor: 1.6 });
+
+    // Watermark
+    doc.setFont('Times', 'italic');
+    doc.setFontSize(10);
+    doc.setTextColor('#7A9CC0');
+    doc.text('Heartpenned', margin + cardW - bodyPadX, bodyTop + bodyH - 12, { align: 'right' });
+
+    doc.save('heartpenned-card.pdf');
+  } catch (err) {
+    console.error('PDF generation failed:', err);
+    alert('Sorry, PDF generation failed. Please try again.');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Download PDF';
+  }
+}
 
 </script>
 </body>

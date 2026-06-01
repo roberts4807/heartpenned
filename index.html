@@ -862,7 +862,7 @@ function buildPrompt(isRev,note){
   const toneVal=[...A.tones,...(A.toneOther?[A.toneOther]:[])].join(' + ')||'Warm and heartfelt';
   const feelVal=A.feels.join(', ')||'loved';
   const spiritualRule=A.spirituality==='None'||!A.spirituality?'No spiritual language of any kind.':A.spirituality==='Gently spiritual'?'Use gently universal spiritual language — grace, light, presence, purpose — without naming any religion.':'Use warm faith-based language.'+(A.faithTradition?' Tradition: '+A.faithTradition+'.':' Universal faith language.');
-  const occasionRules=isLoss?'Sympathy. Gentleness and presence only. No silver linings. No fixing. Let them feel less alone.':isApology?'Apology. Sincere and direct. No deflecting. Own the moment.':isMD?'Mother\'s Day. Do not mention holiday by name. No clichés: no Happy Mother\'s Day, no unconditional love, no SuperMom. Honor the day through specificity.'+(kidsText?' Children: '+kidsText+'. Adult children reflect on what was already built. Young children tenderness about now.':''):isFD?'Father\'s Day. Do not mention holiday by name. No clichés.'+(kidsText?' Children: '+kidsText+'.':''):isNND?'National Nurses Day. Specific and respectful. No generic heroism.':isBirthday&&A.birthdayAge?'Birthday. Turning '+A.birthdayAge+'.'+(([30,40,50,60,70,80].includes(Number(A.birthdayAge)))?' Milestone.':''):'';
+  const occasionRules=isLoss?'Sympathy. Gentleness and presence only. No silver linings. No fixing. Let them feel less alone.':isApology?'Apology. Sincere and direct. No deflecting. Own the moment.':isMD?'Mother\'s Day. No clichés: no unconditional love, no SuperMom. Honor the day through specificity. End the card with Happy Mother\'s Day as the final line.'+(kidsText?' Children: '+kidsText+'. Adult children reflect on what was already built. Young children tenderness about now.':''):isFD?'Father\'s Day. No clichés. End the card with Happy Father\'s Day as the final line.'+(kidsText?' Children: '+kidsText+'.':''):isNND?'National Nurses Day. Specific and respectful. No generic heroism.':isBirthday&&A.birthdayAge?'Birthday. Turning '+A.birthdayAge+'.'+(([30,40,50,60,70,80].includes(Number(A.birthdayAge)))?' Milestone.':''):'';
   if(isRev){
     return `This is a targeted revision of a greeting card.
 
@@ -948,7 +948,7 @@ ABSOLUTE RULES:
 - People before pets when listing names
 - Never quote inputs verbatim — transform into language with more weight
 - Never use "journey," "words cannot express," or end with "always"
-- For celebratory occasions (birthday, anniversary, graduation, congratulations, wedding, thanksgiving, christmas), end with a warm celebration of the occasion as the final line (e.g. "Happy Birthday," "Happy Anniversary"). For emotionally complex occasions (sympathy, illness, apology, thinking of you), end with the natural emotional close of the card — do not force an occasion label as the final line.`;
+- For celebratory occasions (birthday, anniversary, graduation, congratulations, wedding, thanksgiving, christmas, father's day, mother's day), end with a warm celebration of the occasion as the final line (e.g. "Happy Birthday," "Happy Anniversary," "Happy Father's Day," "Happy Mother's Day"). For emotionally complex occasions (sympathy, illness, apology, thinking of you), end with the natural emotional close of the card — do not force an occasion label as the final line.`;
 }
 
 function cleanText(text) {

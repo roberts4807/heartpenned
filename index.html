@@ -1057,7 +1057,7 @@ function switchDeliveryStyle(cat) {
         const wrap = document.createElement('div');
         wrap.className = 'header-thumb' + (h.id === activeHeaderId ? ' selected' : '');
         wrap.innerHTML = h.render(120, 60) + `<div class="header-thumb-label">${h.label}</div>`;
-        wrap.onclick = () => selectDeliveryHeader(h, wrap);
+        wrap.onclick = () => selectDeliveryHeader(h, wrap, 'suggested');
         row.appendChild(wrap);
       });
       thumbs.appendChild(row);
@@ -1096,7 +1096,7 @@ function switchDeliveryStyle(cat) {
         const wrap = document.createElement('div');
         wrap.className = 'header-thumb' + (h.id === activeHeaderId ? ' selected' : '');
         wrap.innerHTML = h.render(120, 60) + `<div class="header-thumb-label">${h.label}</div>`;
-        wrap.onclick = () => selectDeliveryHeader(h, wrap);
+        wrap.onclick = () => selectDeliveryHeader(h, wrap, 'browseall');
         row.appendChild(wrap);
       });
       thumbs.appendChild(row);
@@ -1104,7 +1104,7 @@ function switchDeliveryStyle(cat) {
   }
 }
 
-function selectDeliveryHeader(h, wrap) {
+function selectDeliveryHeader(h, wrap, fromCat) {
   activeHeaderId = h.id;
   activeDigitalHeaderId = h.id;
   document.querySelectorAll('#delivery-header-thumbs .header-thumb').forEach(t => t.classList.remove('selected'));
@@ -1114,6 +1114,11 @@ function selectDeliveryHeader(h, wrap) {
   if (delZone) delZone.innerHTML = h.render(delZone.offsetWidth || 320, 140);
   applyTheme(h.theme, [document.querySelector('#screen-style .card-surface')]);
   document.querySelector('#screen-style .card-surface').style.background = bodyBg;
+
+  if (fromCat === 'browseall') {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setTimeout(() => switchDeliveryStyle('suggested'), 300);
+  }
 }
 
 function showDelivery(){

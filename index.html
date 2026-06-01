@@ -475,13 +475,13 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
 
     <!-- Style picker -->
     <div style="margin-bottom:1rem;">
-      <div class="print-panel-label">Card style</div>
+      <div class="print-panel-label">Card Header</div>
       <div class="header-category-tabs">
-        <div class="hcat-tab active" id="delcat-classic" onclick="switchDeliveryStyle('classic')">Classic</div>
-        <div class="hcat-tab" id="delcat-fun" onclick="switchDeliveryStyle('fun')">Fun</div>
+        <div class="hcat-tab active" id="delcat-suggested" onclick="switchDeliveryStyle('suggested')">Suggested</div>
+        <div class="hcat-tab" id="delcat-browseall" onclick="switchDeliveryStyle('browseall')">Browse All</div>
         <div class="hcat-tab" id="delcat-color" onclick="switchDeliveryStyle('color')">Color</div>
       </div>
-      <div class="header-thumbs" id="delivery-header-thumbs"></div>
+      <div id="delivery-header-thumbs"></div>
       <div id="delivery-color-swatches" style="display:none;flex-wrap:wrap;gap:8px;margin-bottom:0.5rem;"></div>
     </div>
 
@@ -1025,7 +1025,6 @@ function switchDeliveryStyle(cat) {
         activeHeaderId = null;
         activeDigitalHeaderId = null;
         applyTheme(t.id, [document.querySelector('#screen-style .card-surface')]);
-        // Clear header zone
         const dz = document.getElementById('del-card-header-zone');
         if (dz) dz.innerHTML = '';
         colorSwatches.querySelectorAll('div').forEach(sw => sw.style.border = '2px solid transparent');
@@ -1033,36 +1032,88 @@ function switchDeliveryStyle(cat) {
       };
       colorSwatches.appendChild(s);
     });
-  } else {
-    thumbs.style.display = 'flex';
+
+  } else if (cat === 'suggested') {
+    thumbs.style.display = 'block';
     colorSwatches.style.display = 'none';
-    // Build header thumbs for delivery screen
-    let headers = getHeadersForOccasion(A.occasion, cat);
-    if (!headers.length) headers = getFallbackHeaders(cat);
     thumbs.innerHTML = '';
-    headers.forEach(h => {
-      const wrap = document.createElement('div');
-      wrap.className = 'header-thumb' + (h.id === activeHeaderId ? ' selected' : '');
-      wrap.innerHTML = h.render(120, 60) + `<div class="header-thumb-label">${h.label}</div>`;
-      wrap.onclick = () => {
-        activeHeaderId = h.id;
-        activeDigitalHeaderId = h.id;
-        thumbs.querySelectorAll('.header-thumb').forEach(t => t.classList.remove('selected'));
-        wrap.classList.add('selected');
-        // Re-render delivery card header
-        const delZone = document.getElementById('del-card-header-zone');
-        const bodyBg = getHeaderBodyBg(h);
-        if (delZone) delZone.innerHTML = h.render(delZone.offsetWidth || 320, 140);
-        applyTheme(h.theme, [document.querySelector('#screen-style .card-surface')]);
-        document.querySelector('#screen-style .card-surface').style.background = bodyBg;
-      };
-      thumbs.appendChild(wrap);
+
+    // Show Classic section then Fun section, each with a label
+    ['classic', 'fun'].forEach(subcat => {
+      let headers = getHeadersForOccasion(A.occasion, subcat);
+      if (!headers.length) headers = getFallbackHeaders(subcat);
+      if (!headers.length) return;
+
+      const sectionLabel = document.createElement('div');
+      sectionLabel.style.cssText = 'font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.06em;margin:0.75rem 0 0.4rem;';
+      sectionLabel.textContent = subcat === 'classic' ? 'Classic' : 'Fun';
+      thumbs.appendChild(sectionLabel);
+
+      const row = document.createElement('div');
+      row.className = 'header-thumbs';
+      row.style.marginBottom = '0.25rem';
+
+      headers.forEach(h => {
+        const wrap = document.createElement('div');
+        wrap.className = 'header-thumb' + (h.id === activeHeaderId ? ' selected' : '');
+        wrap.innerHTML = h.render(120, 60) + `<div class="header-thumb-label">${h.label}</div>`;
+        wrap.onclick = () => selectDeliveryHeader(h, wrap);
+        row.appendChild(wrap);
+      });
+      thumbs.appendChild(row);
     });
-    // Auto-select first if needed
-    if (headers.length && !activeHeaderId) {
-      headers[0] && thumbs.firstChild && thumbs.firstChild.click();
+
+    // Auto-select first classic if nothing selected
+    if (!activeHeaderId) {
+      const first = thumbs.querySelector('.header-thumb');
+      if (first) first.click();
     }
+
+  } else if (cat === 'browseall') {
+    thumbs.style.display = 'block';
+    colorSwatches.style.display = 'none';
+    thumbs.innerHTML = '';
+
+    // Group all headers by occasion label
+    const groups = {};
+    CARD_HEADERS.forEach(h => {
+      const occ = (h.occasions && h.occasions[0]) ? h.occasions[0] : 'Other';
+      if (!groups[occ]) groups[occ] = [];
+      groups[occ].push(h);
+    });
+
+    Object.keys(groups).sort().forEach(occ => {
+      const sectionLabel = document.createElement('div');
+      sectionLabel.style.cssText = 'font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.06em;margin:0.75rem 0 0.4rem;';
+      sectionLabel.textContent = occ.charAt(0).toUpperCase() + occ.slice(1);
+      thumbs.appendChild(sectionLabel);
+
+      const row = document.createElement('div');
+      row.className = 'header-thumbs';
+      row.style.marginBottom = '0.25rem';
+
+      groups[occ].forEach(h => {
+        const wrap = document.createElement('div');
+        wrap.className = 'header-thumb' + (h.id === activeHeaderId ? ' selected' : '');
+        wrap.innerHTML = h.render(120, 60) + `<div class="header-thumb-label">${h.label}</div>`;
+        wrap.onclick = () => selectDeliveryHeader(h, wrap);
+        row.appendChild(wrap);
+      });
+      thumbs.appendChild(row);
+    });
   }
+}
+
+function selectDeliveryHeader(h, wrap) {
+  activeHeaderId = h.id;
+  activeDigitalHeaderId = h.id;
+  document.querySelectorAll('#delivery-header-thumbs .header-thumb').forEach(t => t.classList.remove('selected'));
+  wrap.classList.add('selected');
+  const delZone = document.getElementById('del-card-header-zone');
+  const bodyBg = getHeaderBodyBg(h);
+  if (delZone) delZone.innerHTML = h.render(delZone.offsetWidth || 320, 140);
+  applyTheme(h.theme, [document.querySelector('#screen-style .card-surface')]);
+  document.querySelector('#screen-style .card-surface').style.background = bodyBg;
 }
 
 function showDelivery(){
@@ -1070,7 +1121,7 @@ function showDelivery(){
   showScreen('style');
   headersReady.then(() => {
     applyDefaultHeader(A.occasion || '');
-    switchDeliveryStyle('classic');
+    switchDeliveryStyle('suggested');
   });
 }
 
@@ -4007,20 +4058,15 @@ async function downloadPDF() {
   const btn = document.getElementById('btn-download-pdf');
   btn.disabled = true;
   btn.textContent = 'Generating...';
-
   try {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ orientation: 'portrait', unit: 'pt', format: 'letter' });
-
     const pageW = 612;
     const margin = 48;
     const cardW = pageW - margin * 2;
     const headerZoneH = 140;
-
-    // ── Header image ──────────────────────────────────────────────────────────
     const header = CARD_HEADERS.find(h => h.id === activeHeaderId);
     let headerDrawn = false;
-
     if (header && header.image) {
       try {
         const imgData = await new Promise((resolve, reject) => {
@@ -4028,73 +4074,50 @@ async function downloadPDF() {
           img.crossOrigin = 'anonymous';
           img.onload = () => {
             const canvas = document.createElement('canvas');
-            // Pre-crop on canvas to avoid jsPDF clipping issues
             const imgAspect = img.width / img.height;
             const zoneAspect = cardW / headerZoneH;
             let sx, sy, sw, sh;
             if (imgAspect > zoneAspect) {
-              // Image wider — fit to height, crop sides
-              sh = img.height;
-              sw = sh * zoneAspect;
-              sx = (img.width - sw) / 2;
-              sy = 0;
+              sh = img.height; sw = sh * zoneAspect;
+              sx = (img.width - sw) / 2; sy = 0;
             } else {
-              // Image taller — fit to width, crop top/bottom
-              sw = img.width;
-              sh = sw / zoneAspect;
-              sx = 0;
-              sy = (img.height - sh) / 2;
+              sw = img.width; sh = sw / zoneAspect;
+              sx = 0; sy = (img.height - sh) / 2;
             }
-            canvas.width = sw;
-            canvas.height = sh;
+            canvas.width = sw; canvas.height = sh;
             canvas.getContext('2d').drawImage(img, sx, sy, sw, sh, 0, 0, sw, sh);
             resolve(canvas.toDataURL('image/png'));
           };
           img.onerror = reject;
           img.src = '/public/headers/' + header.image;
         });
-
         doc.addImage(imgData, 'PNG', margin, margin, cardW, headerZoneH, '', 'FAST');
         headerDrawn = true;
-      } catch (e) {
-        console.warn('Header image failed, using color fallback.', e);
-      }
+      } catch(e) { console.warn('Header image failed.', e); }
     }
-
     if (!headerDrawn) {
-      const bg = getHeaderBodyBg(header) || '#EEF2FA';
-      doc.setFillColor(bg);
+      doc.setFillColor(getHeaderBodyBg(header) || '#EEF2FA');
       doc.rect(margin, margin, cardW, headerZoneH, 'F');
     }
-
-    // ── Card body ─────────────────────────────────────────────────────────────
     const bodyBg = getHeaderBodyBg(header) || '#FFF8F0';
     const bodyTop = margin + headerZoneH;
     const cardText = currentCardText || '';
-    const bodyPadX = 24;
-    const bodyPadY = 28;
-
+    const bodyPadX = 24; const bodyPadY = 28;
     doc.setFont('Times', 'normal');
     doc.setFontSize(13);
     doc.setTextColor('#1A2A3A');
     const textLines = doc.splitTextToSize(cardText, cardW - bodyPadX * 2);
     const lineH = 22;
-    const textBlockH = textLines.length * lineH;
-    const bodyH = textBlockH + bodyPadY * 2 + 24;
-
+    const bodyH = textLines.length * lineH + bodyPadY * 2 + 24;
     doc.setFillColor(bodyBg);
     doc.rect(margin, bodyTop, cardW, bodyH, 'F');
-
     doc.text(textLines, margin + bodyPadX, bodyTop + bodyPadY + 13, { lineHeightFactor: 1.6 });
-
-    // Watermark
     doc.setFont('Times', 'italic');
     doc.setFontSize(10);
     doc.setTextColor('#7A9CC0');
     doc.text('Heartpenned', margin + cardW - bodyPadX, bodyTop + bodyH - 12, { align: 'right' });
-
     doc.save('heartpenned-card.pdf');
-  } catch (err) {
+  } catch(err) {
     console.error('PDF generation failed:', err);
     alert('Sorry, PDF generation failed. Please try again.');
   } finally {

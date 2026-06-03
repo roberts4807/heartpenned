@@ -1206,8 +1206,12 @@ function handleDel(type){
     gp.style.display=isOpen?'none':'block';
     if(gb) gb.style.borderColor=isOpen?'#D0D8E8':'#2A4A80';
   } else if(type==='reminder'){
-    document.getElementById('reminder-form').style.display='block';
-    document.getElementById('reminder-email').focus();
+    const rf=document.getElementById('reminder-form');
+    const rb=document.getElementById('reminder-btn-row');
+    const isOpen=rf.style.display==='block';
+    rf.style.display=isOpen?'none':'block';
+    if(rb) rb.style.borderColor=isOpen?'#D0D8E8':'#2A4A80';
+    if(!isOpen) document.getElementById('reminder-email').focus();
   }
 }
 

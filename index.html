@@ -255,8 +255,12 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
 
     <div class="qstep active" id="q1">
       <div class="question">Who are you writing to?</div>
-      <div class="subtext">Just their first name — this makes every question that follows feel personal.</div>
+      <div class="subtext">A name helps personalize — but it's optional.</div>
       <input class="text-input" id="t-name" type="text" placeholder="Their name..." oninput="handleName()" autocomplete="off" style="width:100%;box-sizing:border-box;">
+      <label style="display:inline-flex;align-items:center;gap:8px;margin-top:0.6rem;cursor:pointer;font-size:0.85rem;color:#888;">
+        <input type="checkbox" id="chk-noname" onchange="handleNoName()" style="width:15px;height:15px;cursor:pointer;accent-color:#7a9cbf;">
+        No name needed
+      </label>
       <div style="margin-top:1.75rem;">
         <div class="question" style="margin-bottom:0.5rem;margin-top:0;">They are my... <span class="opt-tag">optional</span></div>
         <input class="text-input" id="t-relationship-free" type="text" placeholder="e.g. Mom, best friend, college roommate..." oninput="A.relationship=this.value.trim()" autocomplete="off" style="width:100%;box-sizing:border-box;">
@@ -698,11 +702,34 @@ function resetEmailSection(){
 }
 
 function handleName(){
+  const chk=document.getElementById('chk-noname');
+  if(chk&&chk.checked) return;
   const v=document.getElementById('t-name').value.trim();
   A.name=v;
   document.getElementById('qn1').disabled=v.length<1;
   document.getElementById('q9-text').textContent=v?'Tell us about your relationship with '+v:'Tell us about your relationship';
   document.getElementById('q10-text').innerHTML=v?'Memories with '+v+' <span class="opt-tag">optional</span>':'Memories <span class="opt-tag">optional</span>';
+}
+function handleNoName(){
+  const chk=document.getElementById('chk-noname');
+  const inp=document.getElementById('t-name');
+  if(chk.checked){
+    A.name='';
+    inp.value='';
+    inp.disabled=true;
+    inp.style.opacity='0.4';
+    document.getElementById('qn1').disabled=false;
+    document.getElementById('q9-text').textContent='Tell us about your relationship';
+    document.getElementById('q10-text').innerHTML='Memories <span class="opt-tag">optional</span>';
+  } else {
+    inp.disabled=false;
+    inp.style.opacity='1';
+    const v=inp.value.trim();
+    A.name=v;
+    document.getElementById('qn1').disabled=v.length<1;
+    document.getElementById('q9-text').textContent=v?'Tell us about your relationship with '+v:'Tell us about your relationship';
+    document.getElementById('q10-text').innerHTML=v?'Memories with '+v+' <span class="opt-tag">optional</span>':'Memories <span class="opt-tag">optional</span>';
+  }
 }
 
 function handleOtherOcc(){
@@ -1188,6 +1215,8 @@ function startOver(){
   kidCount=1;versionCount=1;currentCardText='';savedVersions=[];activeVersionIdx=0;A.opening='';
   document.querySelectorAll('.chip').forEach(c=>c.classList.remove('selected'));
   document.querySelectorAll('textarea,input[type=text],input[type=number]').forEach(t=>t.value='');
+  const noNameChk=document.getElementById('chk-noname');
+  if(noNameChk){noNameChk.checked=false;const ni=document.getElementById('t-name');if(ni){ni.disabled=false;ni.style.opacity='1';}}
   document.querySelectorAll('.btn-next').forEach(b=>b.disabled=true);
   document.querySelectorAll('.exp').forEach(e=>e.classList.remove('open'));
   document.getElementById('rev-box').classList.remove('open');

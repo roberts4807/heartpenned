@@ -1182,22 +1182,26 @@ function handleDel(type){
   document.querySelectorAll('.d-btn').forEach(b=>b.classList.remove('active'));
 
   if(type==='digital'){
-    document.getElementById('dbtn-digital').classList.add('active');
-    document.getElementById('print-panel').style.display='none';
     const panel=document.getElementById('digital-panel');
-    panel.style.display='block';
-    document.getElementById('copy-box').value=currentCardText;
-    document.getElementById('copy-confirm').style.display='none';
-    document.getElementById('copy-btn').textContent='Copy text to clipboard';
-    openDigitalPanel();
-  } else if(type==='print'){
-    document.getElementById('digital-panel').style.display='none';
-    const pp = document.getElementById('print-panel');
-    pp.style.display = pp.style.display === 'none' ? 'block' : 'none';
-    if (pp.style.display === 'block') openPrintPanel();
-  } else if(type==='mail'){
-    document.getElementById('digital-panel').style.display='none';
+    const isOpen=panel.style.display==='block';
     document.getElementById('print-panel').style.display='none';
+    if(isOpen){
+      panel.style.display='none';
+    } else {
+      document.getElementById('dbtn-digital').classList.add('active');
+      panel.style.display='block';
+      document.getElementById('copy-box').value=currentCardText;
+      document.getElementById('copy-confirm').style.display='none';
+      document.getElementById('copy-btn').textContent='Copy text to clipboard';
+      openDigitalPanel();
+    }
+  } else if(type==='print'){
+    const pp=document.getElementById('print-panel');
+    const isOpen=pp.style.display==='block';
+    document.getElementById('digital-panel').style.display='none';
+    pp.style.display=isOpen?'none':'block';
+    if(!isOpen) openPrintPanel();
+  } else if(type==='mail'){
     alert('Mailing physical cards is coming soon to Heartpenned.');
   } else if(type==='gift'){
     const gp=document.getElementById('gift-panel');

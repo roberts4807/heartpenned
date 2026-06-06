@@ -4,6 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Heartpenned — Helping you say what you already know</title>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-SFDPGMBSGR"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-SFDPGMBSGR');
+</script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Inter:wght@300;400;500;600&display=swap');
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -219,7 +227,11 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
     <div class="hero-title"><em>Helping you say what you want to say</em></div>
     <div class="hero-sub">The words are already there — we'll help you find them. Answer a few honest questions about the person receiving the card.</div>
     <button class="hero-btn" onclick="startQ()">Write my card →</button>
-    <div class="hero-link" onclick="showScreen('about')">What is Heartpenned?</div>
+    <div style="margin-top:1.5rem;text-align:center;max-width:280px;">
+      <div style="font-size:12px;color:#1A2A3A;font-weight:600;margin-bottom:0.4rem;">What is Heartpenned?</div>
+      <div style="font-size:13px;color:#1A2A3A;line-height:1.7;margin-bottom:0.5rem;">You know that feeling, standing in the card aisle...</div>
+      <div class="hero-link" onclick="showScreen('about')">Read more →</div>
+    </div>
   </div>
 </div>
 
@@ -503,7 +515,7 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
     <div class="del-grid">
       <div class="d-btn" id="dbtn-digital" onclick="handleDel('digital')"><div class="d-btn-title">Send digitally</div><div class="d-btn-sub">Copy &amp; paste to text or email</div></div>
       <div class="d-btn" onclick="handleDel('print')"><div class="d-btn-title">Print at home</div><div class="d-btn-sub">Download as PDF</div></div>
-      <div class="d-btn" onclick="handleDel('mail')"><div class="d-btn-title">Mail it</div><div class="d-btn-sub">We print and send it</div></div>
+      <div class="d-btn" onclick="gtag('event', 'mail_it_click', {'event_category': 'delivery', 'event_label': 'Mail it - Coming Soon'}); handleDel('mail')"><div class="d-btn-title">Mail it</div><div class="d-btn-sub">We print and send it</div></div>
     </div>
 
     <!-- Digital delivery panel -->

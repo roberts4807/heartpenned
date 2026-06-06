@@ -1057,24 +1057,19 @@ async function tryAnother(){
 async function shortenCard(){
   document.getElementById('rev-box').classList.remove('open');
   const shortenBtn = document.querySelector('.action-btn[onclick="shortenCard()"]');
-  const currentLength = A.length || 'handwritten note — 90 to 130 words';
-  let nextLength;
-  if(currentLength.includes('90')||currentLength.includes('handwritten')){
-    nextLength='standard card length — 50 to 80 words';
-  } else if(currentLength.includes('50')||currentLength.includes('standard')){
-    nextLength='short and sweet — 25 to 40 words';
-  } else {
-    return;
-  }
-  showScreen('gen');document.getElementById('gen-label').textContent='Shortening your card...';
-  A.length=nextLength;
+  const isLengthen = shortenBtn && shortenBtn.textContent.trim() === 'Lengthen';
+  const nextLength = isLengthen ? 'handwritten note — 90 to 130 words' : 'standard card length — 50 to 80 words';
+
+  showScreen('gen');
+  document.getElementById('gen-label').textContent = isLengthen ? 'Lengthening your card...' : 'Shortening your card...';
+  A.length = nextLength;
   versionCount++;
   try{
-    const text=await callAPI(buildPrompt(false)+'\n\nIMPORTANT: Write a shorter version of this card. Keep the same emotional core, voice, and key details — just tighter and more concise.');
+    const text=await callAPI(buildPrompt(false)+'\n\nIMPORTANT: Write a version of this card at the specified length. Keep the same emotional core, voice, and key details.');
     const cleaned=cleanText(text);
     currentCardText=cleaned;saveVersion(cleaned);document.getElementById('card-text').textContent=cleaned;document.getElementById('del-card-text').textContent=cleaned;buildSwatches();resetEmailSection();showScreen('card');setTimeout(()=>applyDefaultHeader(A.occasion||''),50);
-    if(nextLength.includes('25')||nextLength.includes('short and sweet')){
-      if(shortenBtn){shortenBtn.disabled=true;shortenBtn.style.opacity='0.4';shortenBtn.style.cursor='not-allowed';}
+    if(shortenBtn){
+      shortenBtn.textContent = isLengthen ? 'Shorten' : 'Lengthen';
     }
   }catch(e){alert('Something went wrong: '+e.message);showScreen('card');}
 }

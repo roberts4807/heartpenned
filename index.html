@@ -830,7 +830,7 @@ document.querySelectorAll('.kid-s').forEach(c=>c.addEventListener('click',()=>{
   c.classList.add('selected');setKid(kid,'sex',c.dataset.sex);
 }));
 
-const chipCfg={'qc2':{key:'from',btn:'qn2'},'qc12':{key:'length',btn:'qn12'},'qc13':{key:'rhyme',btn:'qn13'}};
+const chipCfg={'qc2':{key:'from',btn:'qn2'},'qc13':{key:'rhyme',btn:'qn13'}};
 Object.entries(chipCfg).forEach(([gid,cfg])=>{
   const g=document.getElementById(gid);if(!g)return;
   g.querySelectorAll('.chip').forEach(chip=>chip.addEventListener('click',()=>{
@@ -1025,6 +1025,7 @@ async function callAPI(prompt){
 async function submitCard(){
   showScreen('gen');document.getElementById('gen-label').textContent='Finding the right words...';
   versionCount=1;savedVersions=[];activeVersionIdx=0;isShortened=false;updateVersionTabs();
+  A.length='handwritten note — 90 to 130 words';
   try{
     const text=await callAPI(buildPrompt(false));
     const cleaned=cleanText(text);

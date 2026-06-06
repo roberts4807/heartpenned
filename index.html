@@ -406,7 +406,7 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
       <div class="chips" id="qc13">
         <div class="chip" data-val="Yes — rhyme it">Yes, rhyme it</div><div class="chip" data-val="No — write it like a letter">No, don't rhyme</div><div class="chip" data-val="Surprise me">Surprise me</div>
       </div>
-      <div class="qnav"><button class="btn-back" onclick="qGo(11)">← Back</button><button class="btn-next" id="qn13" disabled onclick="qGo(13)">Next →</button></div>
+      <div class="qnav"><button class="btn-back" onclick="qGo(10)">← Back</button><button class="btn-next" id="qn13" disabled onclick="qGo(13)">Next →</button></div>
     </div>
      <div class="qstep" id="q13">
       <div class="question">How would you like to open the card? <span class="opt-tag">optional</span></div>
@@ -650,7 +650,7 @@ function getThemeForOccasion(occ) {
 }
 
 function applyDefaultHeader(occ) {
-  (() => {
+  Promise.resolve().then(() => {
     let header = CARD_HEADERS.find(h => h.category === 'classic' && h.occasions.some(o => o.toLowerCase() === (occ||'').toLowerCase()));
     if (!header) header = CARD_HEADERS[0];
 
@@ -1201,7 +1201,7 @@ function selectDeliveryHeader(h, wrap, fromCat) {
 function showDelivery(){
   document.getElementById('del-card-text').textContent = currentCardText;
   showScreen('style');
-  (() => {
+  Promise.resolve().then(() => {
     applyDefaultHeader(A.occasion || '');
     switchDeliveryStyle('suggested');
   });
@@ -4008,7 +4008,7 @@ function getHeaderBodyBg(header) {
 }
 
 function openDigitalPanel() {
-  (() => {
+  Promise.resolve().then(() => {
     activeDigitalHeaderId = activeHeaderId;
     activeDigitalHeaderCat = activeHeaderCat || 'classic';
     renderDigitalCardPreview();

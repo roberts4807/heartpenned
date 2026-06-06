@@ -16,13 +16,17 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
 .nav-brand{font-family:'Playfair Display',serif;font-size:22px;color:#2A4A80;cursor:pointer;}
 .nav-brand em{font-style:italic;}
 .nav-link{font-size:13px;color:#2A4A80;cursor:pointer;text-decoration:underline;text-underline-offset:2px;}
-.hero{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:520px;padding:3rem 2rem;text-align:center;background:#E8EFF8;}
+.hero{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:520px;padding:3rem 2rem 3.5rem;text-align:center;background:#E8EFF8;}
+.hero-hook{font-size:16px;color:#1A2A3A;line-height:1.85;max-width:420px;margin-bottom:0.75rem;}
+.hero-hook em{font-style:italic;}
+.hero-divider{width:40px;height:1px;background:#B0BED0;margin:1.5rem auto;}
 .hero-eyebrow{font-size:12px;color:#1A3A6A;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:1.25rem;font-weight:600;}
 .hero-title{font-family:'Playfair Display',serif;font-size:38px;font-weight:400;color:#0A1A2A;line-height:1.25;margin-bottom:1rem;max-width:480px;}
 .hero-title em{font-style:italic;color:#2A5A9A;}
 .hero-sub{font-size:16px;color:#1A2A3A;line-height:1.75;margin-bottom:2.5rem;max-width:420px;}
 .hero-btn{background:#1A3A6A !important;color:#FFFFFF !important;border:none !important;padding:14px 40px;border-radius:30px;font-size:16px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;}
 .hero-link{font-size:13px;color:#1A3A6A;margin-top:1.25rem;cursor:pointer;text-decoration:underline;text-underline-offset:2px;font-weight:500;}
+@media(max-width:600px){.hero{padding:2rem 1.5rem;min-height:0;}.hero-title{font-size:26px;}.hero-hook{font-size:14px;}.hero-divider{margin:0.85rem auto;}}
 .about-wrap{max-width:560px;margin:0 auto;padding:3rem 2rem;}
 .about-title{font-family:'Playfair Display',serif;font-size:28px;color:#0A1A2A;margin-bottom:1.5rem;}
 .about-body{font-size:15px;color:#3A4A5A;line-height:1.85;}
@@ -217,7 +221,8 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
   <div class="hero">
     <div class="hero-eyebrow">A new kind of greeting card</div>
     <div class="hero-title"><em>Helping you say what you want to say</em></div>
-    <div class="hero-sub">The words are already there — we'll help you find them. Answer a few honest questions about the person receiving the card.</div>
+    <div class="hero-divider"></div>
+    <div class="hero-hook">You know that feeling — standing in the card aisle, reading one after another, shaking your head. Nothing quite <em>you.</em> Nothing quite them. Answer a few honest questions and we'll help you write something personal, specific, and true.</div>
     <button class="hero-btn" onclick="startQ()">Write my card →</button>
     <div class="hero-link" onclick="showScreen('about')">What is Heartpenned?</div>
   </div>
@@ -504,6 +509,7 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
       <div class="d-btn" id="dbtn-digital" onclick="handleDel('digital')"><div class="d-btn-title">Send digitally</div><div class="d-btn-sub">Copy &amp; paste to text or email</div></div>
       <div class="d-btn" onclick="handleDel('print')"><div class="d-btn-title">Print at home</div><div class="d-btn-sub">Download as PDF</div></div>
       <div class="d-btn" onclick="handleDel('mail')"><div class="d-btn-title">Mail it</div><div class="d-btn-sub">We print and send it</div></div>
+      <div class="d-btn" onclick="handleDel('gift')"><div class="d-btn-title">Add a gift card</div><div class="d-btn-sub">Send something with it</div></div>
     </div>
 
     <!-- Digital delivery panel -->
@@ -552,7 +558,6 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
       </div>
     </div>
 
-    <div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.06em;margin-top:1.5rem;margin-bottom:0.75rem;">What's next?</div>
     <div class="reminder-btn" id="reminder-btn-row" onclick="handleDel('reminder')">
       <div><div class="reminder-text">Save and get a reminder next year</div><div class="reminder-sub">We'll remind you when this occasion comes around again</div></div>
       <div style="color:#888;font-size:18px;">→</div>
@@ -572,22 +577,6 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
         <button class="btn-send-email" id="btn-set-reminder" onclick="setReminder()" style="flex:1;">Remind me</button>
       </div>
       <div id="reminder-status" style="margin-top:8px;font-size:13px;min-height:18px;"></div>
-    </div>
-
-    <!-- Gift card row -->
-    <div class="reminder-btn" id="gift-btn-row" onclick="handleDel('gift')" style="margin-top:8px;">
-      <div><div class="reminder-text">Add a gift card</div><div class="reminder-sub">Sent separately — we'll point you to the right place.</div></div>
-      <div style="color:#888;font-size:18px;">→</div>
-    </div>
-    <div id="gift-panel" style="display:none;margin-top:0.75rem;padding:1rem;background:#F4F6FA;border:1px solid #D0D8E8;border-radius:10px;">
-      <div style="font-size:12px;color:#888;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.75rem;">Choose a gift card</div>
-      <div style="display:flex;flex-direction:column;gap:8px;">
-        <a href="https://www.starbucks.com/gift" target="_blank" rel="noopener" style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:#fff;border:0.5px solid #D0D8E8;border-radius:8px;text-decoration:none;color:#0A1A2A;font-size:14px;font-family:'Inter',sans-serif;">Starbucks <span style="color:#888;font-size:13px;">Buy →</span></a>
-        <a href="https://www.dunkindonuts.com/en/gift-cards" target="_blank" rel="noopener" style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:#fff;border:0.5px solid #D0D8E8;border-radius:8px;text-decoration:none;color:#0A1A2A;font-size:14px;font-family:'Inter',sans-serif;">Dunkin' <span style="color:#888;font-size:13px;">Buy →</span></a>
-        <a href="https://www.amazon.com/gift-cards" target="_blank" rel="noopener" style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:#fff;border:0.5px solid #D0D8E8;border-radius:8px;text-decoration:none;color:#0A1A2A;font-size:14px;font-family:'Inter',sans-serif;">Amazon <span style="color:#888;font-size:13px;">Buy →</span></a>
-        <a href="https://www.opentable.com/gift-cards" target="_blank" rel="noopener" style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:#fff;border:0.5px solid #D0D8E8;border-radius:8px;text-decoration:none;color:#0A1A2A;font-size:14px;font-family:'Inter',sans-serif;">Restaurant (OpenTable) <span style="color:#888;font-size:13px;">Buy →</span></a>
-        <a href="https://www.giftcards.com" target="_blank" rel="noopener" style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:#fff;border:0.5px solid #D0D8E8;border-radius:8px;text-decoration:none;color:#0A1A2A;font-size:14px;font-family:'Inter',sans-serif;">More options <span style="color:#888;font-size:13px;">Browse →</span></a>
-      </div>
     </div>
     <div style="display:flex;justify-content:space-between;align-items:center;margin-top:0.5rem;">
       <button class="btn-back" onclick="showScreen('style')" style="font-size:13px;">← Back</button>
@@ -1182,40 +1171,30 @@ function handleDel(type){
   document.querySelectorAll('.d-btn').forEach(b=>b.classList.remove('active'));
 
   if(type==='digital'){
-    const panel=document.getElementById('digital-panel');
-    const isOpen=panel.style.display==='block';
+    document.getElementById('dbtn-digital').classList.add('active');
     document.getElementById('print-panel').style.display='none';
-    if(isOpen){
-      panel.style.display='none';
-    } else {
-      document.getElementById('dbtn-digital').classList.add('active');
-      panel.style.display='block';
-      document.getElementById('copy-box').value=currentCardText;
-      document.getElementById('copy-confirm').style.display='none';
-      document.getElementById('copy-btn').textContent='Copy text to clipboard';
-      openDigitalPanel();
-    }
+    const panel=document.getElementById('digital-panel');
+    panel.style.display='block';
+    document.getElementById('copy-box').value=currentCardText;
+    document.getElementById('copy-confirm').style.display='none';
+    document.getElementById('copy-btn').textContent='Copy text to clipboard';
+    openDigitalPanel();
   } else if(type==='print'){
-    const pp=document.getElementById('print-panel');
-    const isOpen=pp.style.display==='block';
     document.getElementById('digital-panel').style.display='none';
-    pp.style.display=isOpen?'none':'block';
-    if(!isOpen) openPrintPanel();
+    const pp = document.getElementById('print-panel');
+    pp.style.display = pp.style.display === 'none' ? 'block' : 'none';
+    if (pp.style.display === 'block') openPrintPanel();
   } else if(type==='mail'){
+    document.getElementById('digital-panel').style.display='none';
+    document.getElementById('print-panel').style.display='none';
     alert('Mailing physical cards is coming soon to Heartpenned.');
   } else if(type==='gift'){
-    const gp=document.getElementById('gift-panel');
-    const gb=document.getElementById('gift-btn-row');
-    const isOpen=gp.style.display==='block';
-    gp.style.display=isOpen?'none':'block';
-    if(gb) gb.style.borderColor=isOpen?'#D0D8E8':'#2A4A80';
+    document.getElementById('digital-panel').style.display='none';
+    document.getElementById('print-panel').style.display='none';
+    alert('Gift card integration is coming soon to Heartpenned.');
   } else if(type==='reminder'){
-    const rf=document.getElementById('reminder-form');
-    const rb=document.getElementById('reminder-btn-row');
-    const isOpen=rf.style.display==='block';
-    rf.style.display=isOpen?'none':'block';
-    if(rb) rb.style.borderColor=isOpen?'#D0D8E8':'#2A4A80';
-    if(!isOpen) document.getElementById('reminder-email').focus();
+    document.getElementById('reminder-form').style.display='block';
+    document.getElementById('reminder-email').focus();
   }
 }
 

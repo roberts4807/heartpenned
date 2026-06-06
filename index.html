@@ -991,6 +991,7 @@ NAME RULE: ${name?'You may use "'+name+'" once only if it fits naturally mid-car
 SIGN-OFF: ${A.signoff?'End the card with exactly: "'+A.signoff+'" on its own line — use this and nothing else.':'No sign-off. Do NOT add "Love," or any closing. End with the last line of the message.'}
 ABSOLUTE RULES:
 - Write ONLY the card message
+- Structure the card in 2-3 short paragraphs. Never write it as one long unbroken block.
 - No greeting
 - Amplify what was expressed — never project or assume beyond it
 - Never assume anything about people not described in the inputs
@@ -1072,7 +1073,7 @@ async function shortenCard(){
   A.length = nextLength;
   versionCount++;
   try{
-    const text=await callAPI(buildPrompt(false)+'\n\nIMPORTANT: Write a version of this card at the specified length. Keep the same emotional core, voice, and key details.');
+    const text=await callAPI(buildPrompt(false)+'\n\nIMPORTANT: Write a version of this card at the specified length. Keep the same emotional core, voice, and key details. Match the paragraph structure and format of the current version — same number of paragraphs, same rhythm.');
     const cleaned=cleanText(text);
     currentCardText=cleaned;saveVersion(cleaned);document.getElementById('card-text').textContent=cleaned;document.getElementById('del-card-text').textContent=cleaned;buildSwatches();resetEmailSection();showScreen('card');setTimeout(()=>applyDefaultHeader(A.occasion||''),50);
     isShortened = !isShortened;

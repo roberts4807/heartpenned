@@ -220,6 +220,10 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
     <div class="hero-sub">The words are already there — we'll help you find them. Answer a few honest questions about the person receiving the card.</div>
     <button class="hero-btn" onclick="startQ()">Write my card →</button>
     <div class="hero-link" onclick="showScreen('about')">What is Heartpenned?</div>
+    <div style="margin-top:1.75rem;max-width:300px;text-align:center;font-size:14px;color:#1A2A3A;line-height:1.8;">
+      <p style="margin:0 0 1rem;">You know that feeling, standing in the card aisle, reading one after another, shaking your head. Nothing quite <em>you.</em> Nothing quite them.</p>
+      <p style="margin:0;">That's why we built Heartpenned.</p>
+    </div>
   </div>
 </div>
 
@@ -255,8 +259,12 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
 
     <div class="qstep active" id="q1">
       <div class="question">Who are you writing to?</div>
-      <div class="subtext">Just their first name — this makes every question that follows feel personal.</div>
+      <div class="subtext">A name helps personalize — but it's optional.</div>
       <input class="text-input" id="t-name" type="text" placeholder="Their name..." oninput="handleName()" autocomplete="off" style="width:100%;box-sizing:border-box;">
+      <label style="display:inline-flex;align-items:center;gap:8px;margin-top:0.6rem;cursor:pointer;font-size:0.85rem;color:#888;">
+        <input type="checkbox" id="chk-noname" onchange="handleNoName()" style="width:15px;height:15px;cursor:pointer;accent-color:#7a9cbf;">
+        No name needed
+      </label>
       <div style="margin-top:1.75rem;">
         <div class="question" style="margin-bottom:0.5rem;margin-top:0;">They are my... <span class="opt-tag">optional</span></div>
         <input class="text-input" id="t-relationship-free" type="text" placeholder="e.g. Mom, best friend, college roommate..." oninput="A.relationship=this.value.trim()" autocomplete="off" style="width:100%;box-sizing:border-box;">
@@ -698,11 +706,34 @@ function resetEmailSection(){
 }
 
 function handleName(){
+  const chk=document.getElementById('chk-noname');
+  if(chk&&chk.checked) return;
   const v=document.getElementById('t-name').value.trim();
   A.name=v;
   document.getElementById('qn1').disabled=v.length<1;
   document.getElementById('q9-text').textContent=v?'Tell us about your relationship with '+v:'Tell us about your relationship';
   document.getElementById('q10-text').innerHTML=v?'Memories with '+v+' <span class="opt-tag">optional</span>':'Memories <span class="opt-tag">optional</span>';
+}
+function handleNoName(){
+  const chk=document.getElementById('chk-noname');
+  const inp=document.getElementById('t-name');
+  if(chk.checked){
+    A.name='';
+    inp.value='';
+    inp.disabled=true;
+    inp.style.opacity='0.4';
+    document.getElementById('qn1').disabled=false;
+    document.getElementById('q9-text').textContent='Tell us about your relationship';
+    document.getElementById('q10-text').innerHTML='Memories <span class="opt-tag">optional</span>';
+  } else {
+    inp.disabled=false;
+    inp.style.opacity='1';
+    const v=inp.value.trim();
+    A.name=v;
+    document.getElementById('qn1').disabled=v.length<1;
+    document.getElementById('q9-text').textContent=v?'Tell us about your relationship with '+v:'Tell us about your relationship';
+    document.getElementById('q10-text').innerHTML=v?'Memories with '+v+' <span class="opt-tag">optional</span>':'Memories <span class="opt-tag">optional</span>';
+  }
 }
 
 function handleOtherOcc(){
@@ -862,7 +893,7 @@ function buildPrompt(isRev,note){
   const toneVal=[...A.tones,...(A.toneOther?[A.toneOther]:[])].join(' + ')||'Warm and heartfelt';
   const feelVal=A.feels.join(', ')||'loved';
   const spiritualRule=A.spirituality==='None'||!A.spirituality?'No spiritual language of any kind.':A.spirituality==='Gently spiritual'?'Use gently universal spiritual language — grace, light, presence, purpose — without naming any religion.':'Use warm faith-based language.'+(A.faithTradition?' Tradition: '+A.faithTradition+'.':' Universal faith language.');
-  const occasionRules=isLoss?'Sympathy. Gentleness and presence only. No silver linings. No fixing. Let them feel less alone.':isApology?'Apology. Sincere and direct. No deflecting. Own the moment.':isMD?'Mother\'s Day. Do not mention holiday by name. No clichés: no Happy Mother\'s Day, no unconditional love, no SuperMom. Honor the day through specificity.'+(kidsText?' Children: '+kidsText+'. Adult children reflect on what was already built. Young children tenderness about now.':''):isFD?'Father\'s Day. Do not mention holiday by name. No clichés.'+(kidsText?' Children: '+kidsText+'.':''):isNND?'National Nurses Day. Specific and respectful. No generic heroism.':isBirthday&&A.birthdayAge?'Birthday. Turning '+A.birthdayAge+'.'+(([30,40,50,60,70,80].includes(Number(A.birthdayAge)))?' Milestone.':''):'';
+  const occasionRules=isLoss?'Sympathy. Gentleness and presence only. No silver linings. No fixing. Let them feel less alone.':isApology?'Apology. Sincere and direct. No deflecting. Own the moment.':isMD?'Mother\'s Day. No clichés: no unconditional love, no SuperMom. Honor the day through specificity. End the card with Happy Mother\'s Day as the final line.'+(kidsText?' Children: '+kidsText+'. Adult children reflect on what was already built. Young children tenderness about now.':''):isFD?'Father\'s Day. No clichés. End the card with Happy Father\'s Day as the final line.'+(kidsText?' Children: '+kidsText+'.':''):isNND?'National Nurses Day. Specific and respectful. No generic heroism.':isBirthday&&A.birthdayAge?'Birthday. Turning '+A.birthdayAge+'.'+(([30,40,50,60,70,80].includes(Number(A.birthdayAge)))?' Milestone.':''):'';
   if(isRev){
     return `This is a targeted revision of a greeting card.
 
@@ -948,7 +979,7 @@ ABSOLUTE RULES:
 - People before pets when listing names
 - Never quote inputs verbatim — transform into language with more weight
 - Never use "journey," "words cannot express," or end with "always"
-- For celebratory occasions (birthday, anniversary, graduation, congratulations, wedding, thanksgiving, christmas), end with a warm celebration of the occasion as the final line (e.g. "Happy Birthday," "Happy Anniversary"). For emotionally complex occasions (sympathy, illness, apology, thinking of you), end with the natural emotional close of the card — do not force an occasion label as the final line.`;
+- For celebratory occasions (birthday, anniversary, graduation, congratulations, wedding, thanksgiving, christmas, father's day, mother's day), end with a warm celebration of the occasion as the final line (e.g. "Happy Birthday," "Happy Anniversary," "Happy Father's Day," "Happy Mother's Day"). For emotionally complex occasions (sympathy, illness, apology, thinking of you), end with the natural emotional close of the card — do not force an occasion label as the final line.`;
 }
 
 function cleanText(text) {
@@ -1057,7 +1088,7 @@ function switchDeliveryStyle(cat) {
         const wrap = document.createElement('div');
         wrap.className = 'header-thumb' + (h.id === activeHeaderId ? ' selected' : '');
         wrap.innerHTML = h.render(120, 60) + `<div class="header-thumb-label">${h.label}</div>`;
-        wrap.onclick = () => selectDeliveryHeader(h, wrap);
+        wrap.onclick = () => selectDeliveryHeader(h, wrap, 'suggested');
         row.appendChild(wrap);
       });
       thumbs.appendChild(row);
@@ -1096,7 +1127,7 @@ function switchDeliveryStyle(cat) {
         const wrap = document.createElement('div');
         wrap.className = 'header-thumb' + (h.id === activeHeaderId ? ' selected' : '');
         wrap.innerHTML = h.render(120, 60) + `<div class="header-thumb-label">${h.label}</div>`;
-        wrap.onclick = () => selectDeliveryHeader(h, wrap);
+        wrap.onclick = () => selectDeliveryHeader(h, wrap, 'browseall');
         row.appendChild(wrap);
       });
       thumbs.appendChild(row);
@@ -1104,7 +1135,7 @@ function switchDeliveryStyle(cat) {
   }
 }
 
-function selectDeliveryHeader(h, wrap) {
+function selectDeliveryHeader(h, wrap, fromCat) {
   activeHeaderId = h.id;
   activeDigitalHeaderId = h.id;
   document.querySelectorAll('#delivery-header-thumbs .header-thumb').forEach(t => t.classList.remove('selected'));
@@ -1114,6 +1145,11 @@ function selectDeliveryHeader(h, wrap) {
   if (delZone) delZone.innerHTML = h.render(delZone.offsetWidth || 320, 140);
   applyTheme(h.theme, [document.querySelector('#screen-style .card-surface')]);
   document.querySelector('#screen-style .card-surface').style.background = bodyBg;
+
+  if (fromCat === 'browseall') {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setTimeout(() => switchDeliveryStyle('suggested'), 300);
+  }
 }
 
 function showDelivery(){
@@ -1183,6 +1219,8 @@ function startOver(){
   kidCount=1;versionCount=1;currentCardText='';savedVersions=[];activeVersionIdx=0;A.opening='';
   document.querySelectorAll('.chip').forEach(c=>c.classList.remove('selected'));
   document.querySelectorAll('textarea,input[type=text],input[type=number]').forEach(t=>t.value='');
+  const noNameChk=document.getElementById('chk-noname');
+  if(noNameChk){noNameChk.checked=false;const ni=document.getElementById('t-name');if(ni){ni.disabled=false;ni.style.opacity='1';}}
   document.querySelectorAll('.btn-next').forEach(b=>b.disabled=true);
   document.querySelectorAll('.exp').forEach(e=>e.classList.remove('open'));
   document.getElementById('rev-box').classList.remove('open');

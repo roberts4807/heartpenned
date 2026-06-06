@@ -1024,11 +1024,12 @@ async function callAPI(prompt){
 
 async function submitCard(){
   showScreen('gen');document.getElementById('gen-label').textContent='Finding the right words...';
-  versionCount=1;savedVersions=[];activeVersionIdx=0;updateVersionTabs();
+  versionCount=1;savedVersions=[];activeVersionIdx=0;isShortened=false;updateVersionTabs();
   try{
     const text=await callAPI(buildPrompt(false));
     const cleaned=cleanText(text);
     currentCardText=cleaned;saveVersion(cleaned);document.getElementById('card-text').textContent=cleaned;document.getElementById('del-card-text').textContent=cleaned;buildSwatches();resetEmailSection();showScreen('card');setTimeout(()=>applyDefaultHeader(A.occasion||''),50);
+    const sb=document.querySelector('.action-btn[onclick="shortenCard()"]');if(sb)sb.textContent='Shorten';
   }catch(e){alert('Something went wrong: '+e.message);showScreen('q');}
 }
 
@@ -1058,23 +1059,23 @@ async function tryAnother(){
   }catch(e){alert('Something went wrong: '+e.message);showScreen('card');}
 }
 
+let isShortened = false;
+
 async function shortenCard(){
   document.getElementById('rev-box').classList.remove('open');
   const shortenBtn = document.querySelector('.action-btn[onclick="shortenCard()"]');
-  const isLengthen = shortenBtn && shortenBtn.textContent.trim() === 'Lengthen';
-  const nextLength = isLengthen ? 'handwritten note — 90 to 130 words' : 'standard card length — 50 to 80 words';
+  const nextLength = isShortened ? 'handwritten note — 90 to 130 words' : 'standard card length — 50 to 80 words';
 
   showScreen('gen');
-  document.getElementById('gen-label').textContent = isLengthen ? 'Lengthening your card...' : 'Shortening your card...';
+  document.getElementById('gen-label').textContent = isShortened ? 'Lengthening your card...' : 'Shortening your card...';
   A.length = nextLength;
   versionCount++;
   try{
     const text=await callAPI(buildPrompt(false)+'\n\nIMPORTANT: Write a version of this card at the specified length. Keep the same emotional core, voice, and key details.');
     const cleaned=cleanText(text);
     currentCardText=cleaned;saveVersion(cleaned);document.getElementById('card-text').textContent=cleaned;document.getElementById('del-card-text').textContent=cleaned;buildSwatches();resetEmailSection();showScreen('card');setTimeout(()=>applyDefaultHeader(A.occasion||''),50);
-    if(shortenBtn){
-      shortenBtn.textContent = isLengthen ? 'Shorten' : 'Lengthen';
-    }
+    isShortened = !isShortened;
+    if(shortenBtn) shortenBtn.textContent = isShortened ? 'Lengthen' : 'Shorten';
   }catch(e){alert('Something went wrong: '+e.message);showScreen('card');}
 }
 
@@ -1268,7 +1269,7 @@ function copyCard(){
 
 function startOver(){
   Object.keys(A).forEach(k=>{if(k==='kids')A.kids=[];else if(k==='tones')A.tones=[];else if(k==='feels')A.feels=[];else delete A[k];});
-  kidCount=1;versionCount=1;currentCardText='';savedVersions=[];activeVersionIdx=0;A.opening='';
+  kidCount=1;versionCount=1;currentCardText='';savedVersions=[];activeVersionIdx=0;isShortened=false;A.opening='';
   document.querySelectorAll('.chip').forEach(c=>c.classList.remove('selected'));
   document.querySelectorAll('textarea,input[type=text],input[type=number]').forEach(t=>t.value='');
   const noNameChk=document.getElementById('chk-noname');

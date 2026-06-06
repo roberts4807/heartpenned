@@ -450,6 +450,7 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
         <button class="btn-edit-done" onclick="doneEditing()">Save as new version</button>
       </div>
     </div>
+    <div id="version-warn" style="display:none;text-align:center;font-size:12px;color:#9A6A20;background:#FFF8EC;border:0.5px solid #E8C97A;border-radius:6px;padding:8px 12px;margin-bottom:0.75rem;">One more version available. Generating another will remove your oldest saved version.</div>
     <div class="action-row">
       <button class="action-btn" onclick="toggleRev()">Something doesn't<br>feel right</button>
       <button class="action-btn" onclick="tryAnother()">Try a different<br>version</button>
@@ -999,6 +1000,7 @@ ABSOLUTE RULES:
 - Never use "journey," "words cannot express," or end with "always"
 - Never use em dashes (—) anywhere in the card. They are a clear AI writing signal. Use periods, commas, or line breaks instead.
 - CRITICAL: Never invent specific moments, events, or details not provided by the user. If no memory or specific moment was shared, write around feeling and relationship — never fabricate a story, proposal, or event.
+- CRITICAL: Treat every user input as a fact to reflect, not a story to expand. If someone says "two kittens" — say two kittens. Do not add chaos, drama, or narrative color around it. If someone says "two sons" — say two sons. Do not editorialize about how they turned out or imply anything about their story. Report what was given. Embellish the emotion, never the facts.
 - For celebratory occasions (birthday, anniversary, graduation, congratulations, wedding, thanksgiving, christmas, father's day, mother's day), end with a warm celebration of the occasion as the final line (e.g. "Happy Birthday," "Happy Anniversary," "Happy Father's Day," "Happy Mother's Day"). For emotionally complex occasions (sympathy, illness, apology, thinking of you), end with the natural emotional close of the card — do not force an occasion label as the final line.`;
 }
 
@@ -1288,15 +1290,20 @@ document.querySelectorAll('.qstep').forEach((s,i)=>{if(i>0)s.style.display='none
 
 function saveVersion(text, isRevision){
   if(isRevision && savedVersions.length > 0){
-    // Replace current version in place, preserve all others
     savedVersions[activeVersionIdx] = text;
   } else {
-    // Rolling window - oldest drops off, newest always lands in last slot
-    if(savedVersions.length >= 3) savedVersions.shift();
+    if(savedVersions.length >= 5) savedVersions.shift();
     savedVersions.push(text);
     activeVersionIdx = savedVersions.length - 1;
   }
   updateVersionTabs();
+  if(!isRevision && savedVersions.length === 4){
+    const warn = document.getElementById('version-warn');
+    if(warn) warn.style.display='block';
+  } else {
+    const warn = document.getElementById('version-warn');
+    if(warn) warn.style.display='none';
+  }
 }
 
 function updateVersionTabs(){

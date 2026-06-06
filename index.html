@@ -950,7 +950,7 @@ ${kidsText?'CHILDREN: '+kidsText:''}
 TONE: ${toneVal}
 SPIRITUALITY: ${A.spirituality||'None'}
 WANT THEM TO FEEL: ${feelVal}
-LENGTH: ${A.length||'standard card length — 50 to 80 words'}
+LENGTH: ${A.length||'handwritten note — 90 to 130 words'}
 FORMAT: ${A.rhyme||'write it like a letter'}
 ${A.memory?'SHARED MEMORY (card content): "'+A.memory+'"':''}
 ${A.misc?'INCLUDE IN CARD (fair game): "'+A.misc+'"':''}
@@ -978,7 +978,7 @@ Reserved but sincere: Understated, says less means more.
 Celebratory and upbeat: Energetic, warm, joy-forward.
 Tender and gentle: Soft, careful, quietly loving.
 
-LENGTH: Short and sweet 25-40 words. Standard card length 50-80 words. Handwritten note 90-130 words.
+LENGTH: Standard card length 50-80 words. Handwritten note 90-130 words.
 FROM GUIDANCE: If the card is from "Just me" — singular voice throughout, never use "we." If from "Me and my partner" — warm collective voice, use "we" and "us" naturally. If from "From family" or "varies — from family" — inclusive collective voice, written on behalf of everyone.
 RELATIONSHIP GUIDANCE: Use the relationship type to shape emotional register. Writing to a spouse or partner: intimate and knowing. To a parent: respectful, warm, honoring. To a child: nurturing, proud, full of belief in them. To a friend: easy, real, peer-level warmth. To a colleague: professional warmth, never overly personal.
 CHILDREN GUIDANCE: If children are listed, they may be referenced naturally once if it fits — never more. Do not make the card about the children. They add texture, not focus.
@@ -997,11 +997,13 @@ ABSOLUTE RULES:
 - People before pets when listing names
 - Never quote inputs verbatim — transform into language with more weight
 - Never use "journey," "words cannot express," or end with "always"
+- Never use em dashes (—) anywhere in the card. They are a clear AI writing signal. Use periods, commas, or line breaks instead.
+- CRITICAL: Never invent specific moments, events, or details not provided by the user. If no memory or specific moment was shared, write around feeling and relationship — never fabricate a story, proposal, or event.
 - For celebratory occasions (birthday, anniversary, graduation, congratulations, wedding, thanksgiving, christmas, father's day, mother's day), end with a warm celebration of the occasion as the final line (e.g. "Happy Birthday," "Happy Anniversary," "Happy Father's Day," "Happy Mother's Day"). For emotionally complex occasions (sympathy, illness, apology, thinking of you), end with the natural emotional close of the card — do not force an occasion label as the final line.`;
 }
 
 function cleanText(text) {
-  return text.replace(/\*([^*]+)\*/g, '$1').replace(/\*\*([^*]+)\*\*/g, '$1');
+  return text.replace(/\*([^*]+)\*/g, '$1').replace(/\*\*([^*]+)\*\*/g, '$1').replace(/\s*—\s*/g, '. ').replace(/\s*–\s*/g, ', ');
 }
 
 async function callAPI(prompt){

@@ -395,17 +395,10 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
       <div class="question">Anything else to include? <span class="opt-tag">optional</span></div>
       <div class="subtext">A detail, a quality, a moment — whatever you put here goes in the card.</div>
       <textarea class="text-input" id="t11" rows="3" placeholder="e.g. She just got promoted after years of working toward it. He always cries at commercials but pretends he doesn't." oninput="A.misc=this.value"></textarea>
-      <div class="qnav"><button class="btn-back" onclick="qGo(9)">← Back</button><div style="display:flex;align-items:center;gap:16px;"><span class="skip-link" onclick="qGo(11)">Skip</span><button class="btn-next" onclick="qGo(11)">Next →</button></div></div>
+      <div class="qnav"><button class="btn-back" onclick="qGo(9)">← Back</button><div style="display:flex;align-items:center;gap:16px;"><span class="skip-link" onclick="qGo(12)">Skip</span><button class="btn-next" onclick="qGo(12)">Next →</button></div></div>
     </div>
 
-    <div class="qstep" id="q11">
-      <div class="question">Length of message</div>
-      <div class="chips" id="qc12">
-        <div class="chip" data-val="short and sweet — 25 to 40 words">Short and sweet</div><div class="chip" data-val="standard card length — 50 to 80 words">Standard card length</div><div class="chip" data-val="handwritten note — 90 to 130 words">Handwritten note</div>
-      </div>
-      <div style="margin-top:0.75rem;font-size:12px;color:#888;line-height:2;">Short and sweet — one thought, said perfectly<br>Standard card length — complete and warm, nothing wasted<br>Handwritten note — personal and spacious, like something written at a kitchen table</div>
-      <div class="qnav"><button class="btn-back" onclick="qGo(10)">← Back</button><button class="btn-next" id="qn12" disabled onclick="qGo(12)">Next →</button></div>
-    </div>
+
 
     <div class="qstep" id="q12">
       <div class="question">Should it rhyme?</div>
@@ -457,12 +450,14 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
         <button class="btn-edit-done" onclick="doneEditing()">Save as new version</button>
       </div>
     </div>
+    <div id="version-warn" style="display:none;text-align:center;font-size:12px;color:#9A6A20;background:#FFF8EC;border:0.5px solid #E8C97A;border-radius:6px;padding:8px 12px;margin-bottom:0.75rem;">One more version available. Generating another will remove your oldest saved version.</div>
     <div class="action-row">
       <button class="action-btn" onclick="toggleRev()">Something doesn't<br>feel right</button>
       <button class="action-btn" onclick="tryAnother()">Try a different<br>version</button>
-      <button class="action-btn primary" onclick="showDelivery()">This is<br>the one ✓</button>
+      <button class="action-btn" onclick="shortenCard()">Shorten</button>
     </div>
-    <div style="margin-top:0.75rem;margin-bottom:0.25rem;text-align:center;">
+    <div style="margin-top:0.75rem;margin-bottom:0.25rem;display:flex;align-items:center;justify-content:center;gap:1.5rem;">
+      <button class="action-btn primary" onclick="showDelivery()">This is the one ✓</button>
       <button class="btn-back" onclick="showScreen('q');qGo('13b')" style="font-size:13px;">← Back to questions</button>
     </div>
     <div class="edit-bar" id="edit-bar">
@@ -613,7 +608,7 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
 const A={kids:[],tones:[],feels:[],relChips:[]};
 let kidCount=1,versionCount=1,currentCardText='',savedVersions=[],activeVersionIdx=0;
 const PARTNER_VALS=['Husband','Wife','Partner'];
-const Q_ORDER=[1,2,'2b',4,'4b','4c',5,6,7,8,9,10,11,12,13,'13b'];
+const Q_ORDER=[1,2,'2b',4,'4b','4c',5,6,7,8,9,10,12,13,'13b'];
 
 // ── Card background themes ──────────────────────────────────────────────
 const CARD_THEMES = [
@@ -835,7 +830,7 @@ document.querySelectorAll('.kid-s').forEach(c=>c.addEventListener('click',()=>{
   c.classList.add('selected');setKid(kid,'sex',c.dataset.sex);
 }));
 
-const chipCfg={'qc2':{key:'from',btn:'qn2'},'qc12':{key:'length',btn:'qn12'},'qc13':{key:'rhyme',btn:'qn13'}};
+const chipCfg={'qc2':{key:'from',btn:'qn2'},'qc13':{key:'rhyme',btn:'qn13'}};
 Object.entries(chipCfg).forEach(([gid,cfg])=>{
   const g=document.getElementById(gid);if(!g)return;
   g.querySelectorAll('.chip').forEach(chip=>chip.addEventListener('click',()=>{
@@ -931,7 +926,7 @@ CRITICAL: The instruction above is a direct command. If it says to remove a word
 
 CARRY OVER ALL ORIGINAL RULES:
 - TONE: ${toneVal}
-- LENGTH: ${A.length||'standard card length — 50 to 80 words'}
+- LENGTH: ${A.length||'handwritten note — 90 to 130 words'}
 - SPIRITUALITY: ${spiritualRule}
 - FORMAT: ${A.rhyme||'write it like a letter'}
 - NAME RULE: ${A.name?'Use "'+A.name+'" once only — never more than once.':'No name.'}
@@ -956,7 +951,7 @@ ${kidsText?'CHILDREN: '+kidsText:''}
 TONE: ${toneVal}
 SPIRITUALITY: ${A.spirituality||'None'}
 WANT THEM TO FEEL: ${feelVal}
-LENGTH: ${A.length||'standard card length — 50 to 80 words'}
+LENGTH: ${A.length||'handwritten note — 90 to 130 words'}
 FORMAT: ${A.rhyme||'write it like a letter'}
 ${A.memory?'SHARED MEMORY (card content): "'+A.memory+'"':''}
 ${A.misc?'INCLUDE IN CARD (fair game): "'+A.misc+'"':''}
@@ -984,7 +979,7 @@ Reserved but sincere: Understated, says less means more.
 Celebratory and upbeat: Energetic, warm, joy-forward.
 Tender and gentle: Soft, careful, quietly loving.
 
-LENGTH: Short and sweet 25-40 words. Standard card length 50-80 words. Handwritten note 90-130 words.
+LENGTH: Standard card length 50-80 words. Handwritten note 90-130 words.
 FROM GUIDANCE: If the card is from "Just me" — singular voice throughout, never use "we." If from "Me and my partner" — warm collective voice, use "we" and "us" naturally. If from "From family" or "varies — from family" — inclusive collective voice, written on behalf of everyone.
 RELATIONSHIP GUIDANCE: Use the relationship type to shape emotional register. Writing to a spouse or partner: intimate and knowing. To a parent: respectful, warm, honoring. To a child: nurturing, proud, full of belief in them. To a friend: easy, real, peer-level warmth. To a colleague: professional warmth, never overly personal.
 CHILDREN GUIDANCE: If children are listed, they may be referenced naturally once if it fits — never more. Do not make the card about the children. They add texture, not focus.
@@ -996,6 +991,7 @@ NAME RULE: ${name?'You may use "'+name+'" once only if it fits naturally mid-car
 SIGN-OFF: ${A.signoff?'End the card with exactly: "'+A.signoff+'" on its own line — use this and nothing else.':'No sign-off. Do NOT add "Love," or any closing. End with the last line of the message.'}
 ABSOLUTE RULES:
 - Write ONLY the card message
+- Structure the card in 2-3 short paragraphs. Never write it as one long unbroken block.
 - No greeting
 - Amplify what was expressed — never project or assume beyond it
 - Never assume anything about people not described in the inputs
@@ -1003,11 +999,14 @@ ABSOLUTE RULES:
 - People before pets when listing names
 - Never quote inputs verbatim — transform into language with more weight
 - Never use "journey," "words cannot express," or end with "always"
+- Never use em dashes (—) anywhere in the card. They are a clear AI writing signal. Use periods, commas, or line breaks instead.
+- CRITICAL: Never invent specific moments, events, or details not provided by the user. If no memory or specific moment was shared, write around feeling and relationship — never fabricate a story, proposal, or event.
+- CRITICAL: Treat every user input as a fact to reflect, not a story to expand. If someone says "two kittens" — say two kittens. Do not add chaos, drama, or narrative color around it. If someone says "two sons" — say two sons. Do not editorialize about how they turned out or imply anything about their story. Report what was given. Embellish the emotion, never the facts.
 - For celebratory occasions (birthday, anniversary, graduation, congratulations, wedding, thanksgiving, christmas, father's day, mother's day), end with a warm celebration of the occasion as the final line (e.g. "Happy Birthday," "Happy Anniversary," "Happy Father's Day," "Happy Mother's Day"). For emotionally complex occasions (sympathy, illness, apology, thinking of you), end with the natural emotional close of the card — do not force an occasion label as the final line.`;
 }
 
 function cleanText(text) {
-  return text.replace(/\*([^*]+)\*/g, '$1').replace(/\*\*([^*]+)\*\*/g, '$1');
+  return text.replace(/\*([^*]+)\*/g, '$1').replace(/\*\*([^*]+)\*\*/g, '$1').replace(/\s*—\s*/g, '. ').replace(/\s*–\s*/g, ', ');
 }
 
 async function callAPI(prompt){
@@ -1026,11 +1025,13 @@ async function callAPI(prompt){
 
 async function submitCard(){
   showScreen('gen');document.getElementById('gen-label').textContent='Finding the right words...';
-  versionCount=1;savedVersions=[];activeVersionIdx=0;updateVersionTabs();
+  versionCount=1;savedVersions=[];activeVersionIdx=0;isShortened=false;updateVersionTabs();
+  A.length='handwritten note — 90 to 130 words';
   try{
     const text=await callAPI(buildPrompt(false));
     const cleaned=cleanText(text);
     currentCardText=cleaned;saveVersion(cleaned);document.getElementById('card-text').textContent=cleaned;document.getElementById('del-card-text').textContent=cleaned;buildSwatches();resetEmailSection();showScreen('card');setTimeout(()=>applyDefaultHeader(A.occasion||''),50);
+    const sb=document.querySelector('.action-btn[onclick="shortenCard()"]');if(sb)sb.textContent='Shorten';
   }catch(e){alert('Something went wrong: '+e.message);showScreen('q');}
 }
 
@@ -1057,6 +1058,26 @@ async function tryAnother(){
     const text=await callAPI(buildPrompt(false)+'\n\nIMPORTANT: Completely different opening, structure, and closing. Do not repeat or echo the previous version.');
     const cleaned=cleanText(text);
     currentCardText=cleaned;saveVersion(cleaned);document.getElementById('card-text').textContent=cleaned;document.getElementById('del-card-text').textContent=cleaned;buildSwatches();resetEmailSection();showScreen('card');setTimeout(()=>applyDefaultHeader(A.occasion||''),50);
+  }catch(e){alert('Something went wrong: '+e.message);showScreen('card');}
+}
+
+let isShortened = false;
+
+async function shortenCard(){
+  document.getElementById('rev-box').classList.remove('open');
+  const shortenBtn = document.querySelector('.action-btn[onclick="shortenCard()"]');
+  const nextLength = isShortened ? 'handwritten note — 90 to 130 words' : 'standard card length — 50 to 80 words';
+
+  showScreen('gen');
+  document.getElementById('gen-label').textContent = isShortened ? 'Lengthening your card...' : 'Shortening your card...';
+  A.length = nextLength;
+  versionCount++;
+  try{
+    const text=await callAPI(buildPrompt(false)+'\n\nIMPORTANT: Write a version of this card at the specified length. Keep the same emotional core, voice, and key details. Match the paragraph structure and format of the current version — same number of paragraphs, same rhythm.');
+    const cleaned=cleanText(text);
+    currentCardText=cleaned;saveVersion(cleaned);document.getElementById('card-text').textContent=cleaned;document.getElementById('del-card-text').textContent=cleaned;buildSwatches();resetEmailSection();showScreen('card');setTimeout(()=>applyDefaultHeader(A.occasion||''),50);
+    isShortened = !isShortened;
+    if(shortenBtn) shortenBtn.textContent = isShortened ? 'Lengthen' : 'Shorten';
   }catch(e){alert('Something went wrong: '+e.message);showScreen('card');}
 }
 
@@ -1250,7 +1271,7 @@ function copyCard(){
 
 function startOver(){
   Object.keys(A).forEach(k=>{if(k==='kids')A.kids=[];else if(k==='tones')A.tones=[];else if(k==='feels')A.feels=[];else delete A[k];});
-  kidCount=1;versionCount=1;currentCardText='';savedVersions=[];activeVersionIdx=0;A.opening='';
+  kidCount=1;versionCount=1;currentCardText='';savedVersions=[];activeVersionIdx=0;isShortened=false;A.opening='';
   document.querySelectorAll('.chip').forEach(c=>c.classList.remove('selected'));
   document.querySelectorAll('textarea,input[type=text],input[type=number]').forEach(t=>t.value='');
   const noNameChk=document.getElementById('chk-noname');
@@ -1272,15 +1293,20 @@ document.querySelectorAll('.qstep').forEach((s,i)=>{if(i>0)s.style.display='none
 
 function saveVersion(text, isRevision){
   if(isRevision && savedVersions.length > 0){
-    // Replace current version in place, preserve all others
     savedVersions[activeVersionIdx] = text;
   } else {
-    // Rolling window - oldest drops off, newest always lands in last slot
-    if(savedVersions.length >= 3) savedVersions.shift();
+    if(savedVersions.length >= 5) savedVersions.shift();
     savedVersions.push(text);
     activeVersionIdx = savedVersions.length - 1;
   }
   updateVersionTabs();
+  if(!isRevision && savedVersions.length === 4){
+    const warn = document.getElementById('version-warn');
+    if(warn) warn.style.display='block';
+  } else {
+    const warn = document.getElementById('version-warn');
+    if(warn) warn.style.display='none';
+  }
 }
 
 function updateVersionTabs(){

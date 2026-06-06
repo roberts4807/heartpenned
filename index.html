@@ -650,7 +650,7 @@ function getThemeForOccasion(occ) {
 }
 
 function applyDefaultHeader(occ) {
-  headersReady.then(() => {
+  (() => {
     let header = CARD_HEADERS.find(h => h.category === 'classic' && h.occasions.some(o => o.toLowerCase() === (occ||'').toLowerCase()));
     if (!header) header = CARD_HEADERS[0];
 
@@ -992,6 +992,7 @@ SIGN-OFF: ${A.signoff?'End the card with exactly: "'+A.signoff+'" on its own lin
 ABSOLUTE RULES:
 - Write ONLY the card message
 - Structure the card in 2-3 short paragraphs. Never write it as one long unbroken block.
+- Always write in second person, speaking directly to the recipient. Never slip into third person (e.g. never "the person who..." or "someone who..."). Use "you" and "your" throughout. When referring to shared experiences between sender and recipient, use "we," "us," and "our" — never "both of you," "the two of you," or any phrasing that positions the writer as an outside observer.
 - No greeting
 - Amplify what was expressed — never project or assume beyond it
 - Never assume anything about people not described in the inputs
@@ -1200,7 +1201,7 @@ function selectDeliveryHeader(h, wrap, fromCat) {
 function showDelivery(){
   document.getElementById('del-card-text').textContent = currentCardText;
   showScreen('style');
-  headersReady.then(() => {
+  (() => {
     applyDefaultHeader(A.occasion || '');
     switchDeliveryStyle('suggested');
   });
@@ -3794,28 +3795,6 @@ const CARD_HEADERS = [
 
 ];
 
-// ── Dynamic image headers from headers.json ────────────────────────────────
-function buildImageHeader(h) {
-  return {
-    id: h.id,
-    label: h.label,
-    occasions: h.occasions,
-    category: h.category,
-    theme: h.theme,
-    image: h.image,
-    render(w, ht) {
-      return `<div style="width:${w}px;height:${ht}px;overflow:hidden;"><img src="/public/headers/${h.image}" style="width:100%;height:100%;object-fit:cover;object-position:${h.position||'center'};display:block;" alt="${h.label} header"/></div>`;
-    }
-  };
-}
-
-const headersReady = fetch('/headers.json')
-  .then(r => r.json())
-  .then(data => {
-    data.forEach(h => CARD_HEADERS.push(buildImageHeader(h)));
-  })
-  .catch(e => console.warn('Could not load headers.json', e));
-
 // ── Header system state ────────────────────────────────────────────────────
 let activeHeaderId = null;
 let activeHeaderCat = 'classic';
@@ -4029,7 +4008,7 @@ function getHeaderBodyBg(header) {
 }
 
 function openDigitalPanel() {
-  headersReady.then(() => {
+  (() => {
     activeDigitalHeaderId = activeHeaderId;
     activeDigitalHeaderCat = activeHeaderCat || 'classic';
     renderDigitalCardPreview();

@@ -1036,7 +1036,7 @@ async function submitCard(){
   }catch(e){alert('Something went wrong: '+e.message);showScreen('q');}
 }
 
-function toggleRev(){document.getElementById('rev-box').classList.toggle('open');}
+function toggleRev(){const rb=document.getElementById('rev-box');rb.classList.toggle('open');if(rb.classList.contains('open')){setTimeout(()=>rb.scrollIntoView({behavior:'smooth',block:'nearest'}),50);}}
 function setEx(t){document.getElementById('rev-input').value=t;document.getElementById('rev-btn').disabled=false;}
 function checkRev(){document.getElementById('rev-btn').disabled=document.getElementById('rev-input').value.trim().length<3;}
 

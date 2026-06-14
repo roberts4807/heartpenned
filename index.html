@@ -1103,7 +1103,7 @@ function switchDeliveryStyle(cat) {
         activeDigitalHeaderId = null;
         applyTheme(t.id, [document.querySelector('#screen-style .card-surface')]);
         const dz = document.getElementById('del-card-header-zone');
-        if (dz) dz.innerHTML = '';
+        if (dz) { dz.innerHTML = ''; dz.style.display = 'none'; }
         colorSwatches.querySelectorAll('div').forEach(sw => sw.style.border = '2px solid transparent');
         s.style.border = '2px solid #1A3A6A';
       };
@@ -1114,6 +1114,9 @@ function switchDeliveryStyle(cat) {
     thumbs.style.display = 'block';
     colorSwatches.style.display = 'none';
     thumbs.innerHTML = '';
+    // Restore header zone visibility in case it was hidden by color selection
+    const dz = document.getElementById('del-card-header-zone');
+    if (dz) dz.style.display = '';
 
     // Show Classic section then Fun section, each with a label
     ['classic', 'fun'].forEach(subcat => {
@@ -1150,6 +1153,9 @@ function switchDeliveryStyle(cat) {
     thumbs.style.display = 'block';
     colorSwatches.style.display = 'none';
     thumbs.innerHTML = '';
+    // Restore header zone visibility in case it was hidden by color selection
+    const dzb = document.getElementById('del-card-header-zone');
+    if (dzb) dzb.style.display = '';
 
     // Group all headers by occasion label
     const groups = {};
@@ -1188,7 +1194,7 @@ function selectDeliveryHeader(h, wrap, fromCat) {
   wrap.classList.add('selected');
   const delZone = document.getElementById('del-card-header-zone');
   const bodyBg = getHeaderBodyBg(h);
-  if (delZone) delZone.innerHTML = h.render(delZone.offsetWidth || 320, 140);
+  if (delZone) { delZone.style.display = ''; delZone.innerHTML = h.render(delZone.offsetWidth || 320, 140); }
   applyTheme(h.theme, [document.querySelector('#screen-style .card-surface')]);
   document.querySelector('#screen-style .card-surface').style.background = bodyBg;
 
@@ -4143,8 +4149,9 @@ async function downloadPDF() {
     const cardW = pageW - margin * 2;
     const headerZoneH = 140;
     const header = CARD_HEADERS.find(h => h.id === activeHeaderId);
+    const isColorOnly = !activeHeaderId; // color swatch selected, no image
     let headerDrawn = false;
-    if (header && header.image) {
+    if (!isColorOnly && header && header.image) {
       try {
         const imgData = await new Promise((resolve, reject) => {
           const img = new Image();
@@ -4172,12 +4179,16 @@ async function downloadPDF() {
         headerDrawn = true;
       } catch(e) { console.warn('Header image failed.', e); }
     }
-    if (!headerDrawn) {
+    // Only draw colored header zone if an image header is selected
+    if (!headerDrawn && !isColorOnly) {
       doc.setFillColor(getHeaderBodyBg(header) || '#EEF2FA');
       doc.rect(margin, margin, cardW, headerZoneH, 'F');
     }
-    const bodyBg = getHeaderBodyBg(header) || '#FFF8F0';
-    const bodyTop = margin + headerZoneH;
+    const theme = THEMES.find(t => t.id === activeTheme) || THEMES[0];
+    const bodyBg = isColorOnly
+      ? (typeof theme.bg === 'string' && !theme.bg.includes('gradient') ? theme.bg : '#F4F8FF')
+      : (getHeaderBodyBg(header) || '#FFF8F0');
+    const bodyTop = isColorOnly ? margin : margin + headerZoneH;
     const cardText = currentCardText || '';
     const bodyPadX = 24; const bodyPadY = 28;
     doc.setFont('Times', 'normal');

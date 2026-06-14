@@ -1214,6 +1214,14 @@ function showDelivery(){
 }
 
 function showSendOptions(){
+  // Ensure header zone reflects the currently selected header before proceeding
+  const dz = document.getElementById('del-card-header-zone');
+  if (dz && activeDigitalHeaderId) {
+    const h = CARD_HEADERS.find(h => h.id === activeDigitalHeaderId);
+    if (h) { dz.style.display = ''; dz.innerHTML = h.render(dz.offsetWidth || 320, 140); }
+  } else if (dz && !activeDigitalHeaderId) {
+    dz.style.display = 'none';
+  }
   showScreen('delivery');
 }
 

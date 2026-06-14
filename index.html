@@ -509,62 +509,60 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
   <div class="top-nav"><div class="nav-brand" onclick="showScreen('landing')">Heart<em>penned</em></div></div>
   <div style="max-width:560px;margin:0 auto;padding:1.5rem 2rem;">
     <div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:1rem;">How would you like to send it?</div>
+    <!-- 2x2 delivery grid -->
     <div class="del-grid">
-      <div class="d-btn" id="dbtn-digital" onclick="handleDel('digital')"><div class="d-btn-title">Send digitally</div><div class="d-btn-sub">Copy &amp; paste to text or email</div></div>
+      <div class="d-btn" id="dbtn-digital" onclick="handleDel('digital')"><div class="d-btn-title">Send digitally</div><div class="d-btn-sub">Email or text</div></div>
       <div class="d-btn" onclick="handleDel('print')"><div class="d-btn-title">Print at home</div><div class="d-btn-sub">Download as PDF</div></div>
-      <div class="d-btn" onclick="handleDel('text')"><div class="d-btn-title">Text it</div><div class="d-btn-sub">Send via messages app</div></div>
       <div class="d-btn" onclick="gtag('event', 'mail_it_click', {'event_category': 'delivery', 'event_label': 'Mail it - Coming Soon'}); handleDel('mail')"><div class="d-btn-title">Mail it</div><div class="d-btn-sub">We print and send it</div></div>
+      <div class="d-btn" id="dbtn-copytext" onclick="handleDel('copytext')"><div class="d-btn-title">Copy text</div><div class="d-btn-sub">Paste anywhere</div></div>
     </div>
 
-    <!-- Digital delivery panel -->
+    <!-- Send Digitally panel — expands to show Email it + Text it sub-options -->
     <div id="digital-panel" style="display:none;margin-top:1.25rem;background:#F4F6FA;border:1px solid #D0D8E8;border-radius:12px;padding:1.25rem;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.25rem;">
+        <div class="d-btn" id="dbtn-email" onclick="handleDigitalSub('email')" style="padding:12px;"><div class="d-btn-title">Email it</div><div class="d-btn-sub">Send as card email</div></div>
+        <div class="d-btn" id="dbtn-textit" onclick="handleDigitalSub('textit')" style="padding:12px;"><div class="d-btn-title">Text it</div><div class="d-btn-sub">Send via messages</div></div>
+      </div>
 
-      <!-- Styled card preview -->
-      <div class="print-panel-label">Your card</div>
-      <div class="print-preview-wrap" id="digital-card-preview" style="margin-bottom:0.85rem;"></div>
+      <!-- Card preview -->
+      <div class="print-preview-wrap" id="digital-card-preview" style="margin-bottom:0.85rem;display:none;"></div>
 
-      <!-- Copy section -->
-      <button id="copy-btn" onclick="copyCard()" style="width:100%;padding:0.85rem;background:#1A3A6A;color:white;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;letter-spacing:0.02em;font-family:'Inter',sans-serif;">Copy text to clipboard</button>
-      <div id="copy-confirm" style="display:none;text-align:center;margin-top:0.6rem;font-size:13px;color:#2A7A4A;font-weight:500;">&#10003; Copied! Paste it into a text or email.</div>
-      <textarea id="copy-box" readonly style="position:absolute;left:-9999px;top:0;"></textarea>
-
-      <!-- Email delivery -->
-      <div class="email-delivery">
-        <div class="email-delivery-label">✉ Or send it as a card email</div>
-        <div class="email-name-row">
-          <input type="text" class="email-field" id="email-sender-name" placeholder="Your name (optional)" />
-          <input type="email" class="email-field" id="email-sender-address" placeholder="Your email — get a copy (optional)" />
-        </div>
-
-        <!-- Recipients -->
-        <div id="recipients-list">
-          <div class="recipient-row" id="recipient-row-0">
-            <input type="text" class="email-field" placeholder="Recipient's name (optional)" style="flex:1;" />
-            <input type="email" class="email-field" placeholder="Recipient's email" style="flex:1.4;" />
+      <!-- Email sub-panel -->
+      <div id="email-sub-panel" style="display:none;">
+        <div class="email-delivery">
+          <div class="email-name-row">
+            <input type="text" class="email-field" id="email-sender-name" placeholder="Your name (optional)" />
+            <input type="email" class="email-field" id="email-sender-address" placeholder="Your email — get a copy (optional)" />
           </div>
+          <div id="recipients-list">
+            <div class="recipient-row" id="recipient-row-0">
+              <input type="text" class="email-field" placeholder="Recipient's name (optional)" style="flex:1;" />
+              <input type="email" class="email-field" placeholder="Recipient's email" style="flex:1.4;" />
+            </div>
+          </div>
+          <div style="margin-top:6px;">
+            <button onclick="addRecipient()" style="background:none;border:none;color:#1A3A6A;font-size:13px;font-weight:600;cursor:pointer;padding:0;font-family:'Inter',sans-serif;">+ Add another recipient</button>
+          </div>
+          <div style="margin-top:10px;">
+            <button class="btn-send-email" id="btn-send-email" onclick="sendCardEmail()" style="width:100%;">Send 💌</button>
+          </div>
+          <div class="email-status" id="email-status"></div>
         </div>
-        <div style="margin-top:6px;">
-          <button onclick="addRecipient()" style="background:none;border:none;color:#1A3A6A;font-size:13px;font-weight:600;cursor:pointer;padding:0;font-family:'Inter',sans-serif;">+ Add another recipient</button>
-        </div>
+      </div>
 
-        <div style="margin-top:10px;">
-          <button class="btn-send-email" id="btn-send-email" onclick="sendCardEmail()" style="width:100%;">Send 💌</button>
-        </div>
-        <div class="email-status" id="email-status"></div>
+      <!-- Text it sub-panel -->
+      <div id="textit-sub-panel" style="display:none;">
+        <p style="font-size:13px;color:#3A4A5A;margin:0 0 0.85rem;">A shareable link is coming soon. For now, copy the card text and paste it into your messages app.</p>
+        <button id="text-copy-btn" onclick="copyTextCard()" style="width:100%;padding:0.85rem;background:#1A3A6A;color:white;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;letter-spacing:0.02em;font-family:Inter,sans-serif;">Copy card text</button>
+        <div id="text-copy-confirm" style="display:none;text-align:center;margin-top:0.6rem;font-size:13px;color:#2A7A4A;font-weight:500;">&#10003; Copied! Paste into your messages app.</div>
       </div>
     </div>
-    <!-- Text it panel -->
-    <div id="text-panel" style="display:none;margin-top:1.25rem;background:#F4F6FA;border:1px solid #D0D8E8;border-radius:12px;padding:1.25rem;">
-      <div class="print-panel-label">Text it</div>
-      <div id="text-mobile-section">
-        <p style="font-size:13px;color:#3A4A5A;margin:0 0 1rem;">Tap below to open your messages app with the card pre-loaded. Just add the recipient and hit send.</p>
-        <button id="text-open-btn" onclick="openTextApp()" style="width:100%;padding:0.85rem;background:#1A3A6A;color:white;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;letter-spacing:0.02em;font-family:Inter,sans-serif;">Open in Messages →</button>
-      </div>
-      <div id="text-desktop-section" style="display:none;">
-        <p style="font-size:13px;color:#3A4A5A;margin:0 0 0.75rem;">Copy the card below and paste it into your messaging app.</p>
-        <button id="text-copy-btn" onclick="copyTextCard()" style="width:100%;padding:0.85rem;background:#1A3A6A;color:white;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;letter-spacing:0.02em;font-family:Inter,sans-serif;">Copy card text</button>
-        <div id="text-copy-confirm" style="display:none;text-align:center;margin-top:0.6rem;font-size:13px;color:#2A7A4A;font-weight:500;">&#10003; Copied! Paste it into your messages app.</div>
-      </div>
+
+    <!-- Copy text panel -->
+    <div id="copytext-panel" style="display:none;margin-top:1.25rem;background:#F4F6FA;border:1px solid #D0D8E8;border-radius:12px;padding:1.25rem;">
+      <textarea id="copy-box" readonly style="position:absolute;left:-9999px;top:0;"></textarea>
+      <button id="copy-btn" onclick="copyCard()" style="width:100%;padding:0.85rem;background:#1A3A6A;color:white;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;letter-spacing:0.02em;font-family:'Inter',sans-serif;">Copy text to clipboard</button>
+      <div id="copy-confirm" style="display:none;text-align:center;margin-top:0.6rem;font-size:13px;color:#2A7A4A;font-weight:500;">&#10003; Copied!</div>
     </div>
     <!-- Print at Home panel -->
     <div id="print-panel" style="display:none;">
@@ -781,6 +779,23 @@ function handleOtherOcc(){
   const v=document.getElementById('t5-other').value.trim();
   A.occasion=v;A.isOtherOccasion=true;document.getElementById('qn5').disabled=v.length<2;
   document.getElementById('q-counter').textContent=v?v+' Card':'Writing Your Card';
+}
+
+function handleDigitalSub(sub){
+  document.querySelectorAll('#digital-panel .d-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('email-sub-panel').style.display='none';
+  document.getElementById('textit-sub-panel').style.display='none';
+  document.getElementById('digital-card-preview').style.display='none';
+
+  if(sub==='email'){
+    document.getElementById('dbtn-email').classList.add('active');
+    document.getElementById('email-sub-panel').style.display='block';
+    document.getElementById('digital-card-preview').style.display='block';
+    openDigitalPanel();
+  } else if(sub==='textit'){
+    document.getElementById('dbtn-textit').classList.add('active');
+    document.getElementById('textit-sub-panel').style.display='block';
+  }
 }
 
 function openTextPanel(){
@@ -1264,7 +1279,7 @@ function showSendOptions(){
   // Reset panels so nothing shows until user clicks a delivery option
   document.getElementById('digital-panel').style.display = 'none';
   document.getElementById('print-panel').style.display = 'none';
-  document.getElementById('text-panel').style.display = 'none';
+  const ctp=document.getElementById('copytext-panel'); if(ctp) ctp.style.display='none';
   document.querySelectorAll('.d-btn').forEach(b => b.classList.remove('active'));
   showScreen('delivery');
 }

@@ -476,13 +476,6 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
 <div class="screen" id="screen-style">
   <div class="top-nav"><div class="nav-brand" onclick="showScreen('landing')">Heart<em>penned</em></div></div>
   <div style="max-width:560px;margin:0 auto;padding:1.5rem 2rem;">
-    <div class="card-surface" style="margin-bottom:1.25rem;">
-      <div class="card-header-zone" id="del-card-header-zone"></div>
-      <svg class="card-corner" style="top:10px;left:10px;width:28px;height:28px;" viewBox="0 0 32 32"><path d="M2 16 Q2 2 16 2" stroke="#2A4A80" stroke-width="1" fill="none"/><circle cx="2" cy="2" r="2" fill="#2A4A80"/></svg>
-      <svg class="card-corner" style="bottom:10px;right:10px;width:28px;height:28px;" viewBox="0 0 32 32"><path d="M30 16 Q30 30 16 30" stroke="#2A4A80" stroke-width="1" fill="none"/><circle cx="30" cy="30" r="2" fill="#2A4A80"/></svg>
-      <div class="card-text" id="del-card-text" style="font-size:14px;"></div>
-      <div class="card-mark">Heartpenned</div>
-    </div>
 
     <!-- Style picker -->
     <div style="margin-bottom:1rem;">
@@ -494,6 +487,15 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
       </div>
       <div id="delivery-header-thumbs"></div>
       <div id="delivery-color-swatches" style="display:none;flex-wrap:wrap;gap:8px;margin-bottom:0.5rem;"></div>
+    </div>
+
+    <!-- Card preview updates as header is selected -->
+    <div class="card-surface" style="margin-bottom:1.25rem;">
+      <div class="card-header-zone" id="del-card-header-zone"></div>
+      <svg class="card-corner" style="top:10px;left:10px;width:28px;height:28px;" viewBox="0 0 32 32"><path d="M2 16 Q2 2 16 2" stroke="#2A4A80" stroke-width="1" fill="none"/><circle cx="2" cy="2" r="2" fill="#2A4A80"/></svg>
+      <svg class="card-corner" style="bottom:10px;right:10px;width:28px;height:28px;" viewBox="0 0 32 32"><path d="M30 16 Q30 30 16 30" stroke="#2A4A80" stroke-width="1" fill="none"/><circle cx="30" cy="30" r="2" fill="#2A4A80"/></svg>
+      <div class="card-text" id="del-card-text" style="font-size:14px;"></div>
+      <div class="card-mark">Heartpenned</div>
     </div>
 
     <div style="display:flex;gap:12px;margin-top:0.5rem;margin-bottom:1rem;">

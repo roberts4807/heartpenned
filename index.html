@@ -514,8 +514,6 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
     </div>
 
     <!-- Digital delivery panel -->
-    <div id="delivery-card-preview" style="margin-bottom:1.25rem;background:white;border:1px solid #D0D8E8;border-radius:8px;overflow:hidden;"></div>
-    <!-- Digital delivery panel -->
     <div id="digital-panel" style="display:none;margin-top:1.25rem;background:#F4F6FA;border:1px solid #D0D8E8;border-radius:12px;padding:1.25rem;">
 
       <!-- Styled card preview -->
@@ -1220,25 +1218,10 @@ function showSendOptions(){
   activeDigitalHeaderId = activeHeaderId;
   activeDigitalHeaderCat = activeHeaderCat || 'classic';
   showScreen('delivery');
-  // Render all previews immediately
+  // Pre-render previews so they're ready when user clicks Send Digitally or Print
   Promise.resolve().then(() => {
     renderDigitalCardPreview();
     renderPrintPreview();
-    // Render persistent top preview
-    const container = document.getElementById('delivery-card-preview');
-    if (container) {
-      const header = CARD_HEADERS.find(h => h.id === activeHeaderId);
-      const theme = CARD_THEMES.find(t => t.id === activeTheme) || CARD_THEMES[0];
-      const bg = header ? getHeaderBodyBg(header) : (typeof theme.bg === 'string' ? theme.bg : '#FFF8F0');
-      const w = container.offsetWidth || 320;
-      const escapeHtml = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-      container.innerHTML = `
-        <div style="font-family:'Playfair Display',Georgia,serif;border-radius:6px;overflow:hidden;">
-          ${header ? header.render(w, 110) : ''}
-          <div style="padding:1.25rem 1.5rem 1rem;font-size:14px;line-height:1.85;color:#1A2A3A;white-space:pre-wrap;background:${bg};">${escapeHtml(currentCardText||'')}</div>
-          <div style="text-align:right;padding:0.25rem 1rem 0.6rem;font-size:11px;color:#7A9CC0;font-style:italic;background:${bg};font-family:'Playfair Display',Georgia,serif;">Heartpenned</div>
-        </div>`;
-    }
   });
 }
 

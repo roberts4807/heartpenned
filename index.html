@@ -507,6 +507,8 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
   <div class="top-nav"><div class="nav-brand" onclick="showScreen('landing')">Heart<em>penned</em></div></div>
   <div style="max-width:560px;margin:0 auto;padding:1.5rem 2rem;">
     <div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:1rem;">How would you like to send it?</div>
+    <!-- Persistent card preview — always visible on delivery screen -->
+    <div id="delivery-card-preview" style="margin-bottom:1.25rem;background:white;border:1px solid #D0D8E8;border-radius:8px;overflow:hidden;"></div>
     <div class="del-grid">
       <div class="d-btn" id="dbtn-digital" onclick="handleDel('digital')"><div class="d-btn-title">Send digitally</div><div class="d-btn-sub">Copy &amp; paste to text or email</div></div>
       <div class="d-btn" onclick="handleDel('print')"><div class="d-btn-title">Print at home</div><div class="d-btn-sub">Download as PDF</div></div>
@@ -1214,15 +1216,30 @@ function showDelivery(){
 }
 
 function showSendOptions(){
-  // Ensure header zone reflects the currently selected header before proceeding
-  const dz = document.getElementById('del-card-header-zone');
-  if (dz && activeDigitalHeaderId) {
-    const h = CARD_HEADERS.find(h => h.id === activeDigitalHeaderId);
-    if (h) { dz.style.display = ''; dz.innerHTML = h.render(dz.offsetWidth || 320, 140); }
-  } else if (dz && !activeDigitalHeaderId) {
-    dz.style.display = 'none';
-  }
+  // Sync digital header to currently selected header
+  activeDigitalHeaderId = activeHeaderId;
+  activeDigitalHeaderCat = activeHeaderCat || 'classic';
   showScreen('delivery');
+  // Render all previews immediately
+  Promise.resolve().then(() => {
+    renderDigitalCardPreview();
+    renderPrintPreview();
+    // Render persistent top preview
+    const container = document.getElementById('delivery-card-preview');
+    if (container) {
+      const header = CARD_HEADERS.find(h => h.id === activeHeaderId);
+      const theme = CARD_THEMES.find(t => t.id === activeTheme) || CARD_THEMES[0];
+      const bg = header ? getHeaderBodyBg(header) : (typeof theme.bg === 'string' ? theme.bg : '#FFF8F0');
+      const w = container.offsetWidth || 320;
+      const escapeHtml = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      container.innerHTML = `
+        <div style="font-family:'Playfair Display',Georgia,serif;border-radius:6px;overflow:hidden;">
+          ${header ? header.render(w, 110) : ''}
+          <div style="padding:1.25rem 1.5rem 1rem;font-size:14px;line-height:1.85;color:#1A2A3A;white-space:pre-wrap;background:${bg};">${escapeHtml(currentCardText||'')}</div>
+          <div style="text-align:right;padding:0.25rem 1rem 0.6rem;font-size:11px;color:#7A9CC0;font-style:italic;background:${bg};font-family:'Playfair Display',Georgia,serif;">Heartpenned</div>
+        </div>`;
+    }
+  });
 }
 
 function handleDel(type){

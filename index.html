@@ -4184,10 +4184,12 @@ async function downloadPDF() {
       doc.setFillColor(getHeaderBodyBg(header) || '#EEF2FA');
       doc.rect(margin, margin, cardW, headerZoneH, 'F');
     }
-    const theme = THEMES.find(t => t.id === activeTheme) || THEMES[0];
-    const bodyBg = isColorOnly
-      ? (typeof theme.bg === 'string' && !theme.bg.includes('gradient') ? theme.bg : '#F4F8FF')
-      : (getHeaderBodyBg(header) || '#FFF8F0');
+    const theme = CARD_THEMES.find(t => t.id === activeTheme) || CARD_THEMES[0];
+    // Extract solid color for PDF (jsPDF can't render gradients)
+    const themePdfBg = theme.bg.includes('gradient')
+      ? theme.bg.match(/#[0-9A-Fa-f]{6}/)?.[0] || '#F4F8FF'
+      : theme.bg;
+    const bodyBg = isColorOnly ? themePdfBg : (getHeaderBodyBg(header) || '#FFF8F0');
     const bodyTop = isColorOnly ? margin : margin + headerZoneH;
     const cardText = currentCardText || '';
     const bodyPadX = 24; const bodyPadY = 28;

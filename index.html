@@ -651,8 +651,14 @@ function getThemeForOccasion(occ) {
 
 function applyDefaultHeader(occ) {
   Promise.resolve().then(() => {
-    let header = CARD_HEADERS.find(h => h.category === 'classic' && h.occasions.some(o => o.toLowerCase() === (occ||'').toLowerCase()));
-    if (!header) header = CARD_HEADERS[0];
+    let header;
+    if (A.isOtherOccasion) {
+      // Custom typed occasion — use Other-mapped headers
+      header = CARD_HEADERS.find(h => h.category === 'classic' && h.occasions.includes('Other'));
+    } else {
+      header = CARD_HEADERS.find(h => h.category === 'classic' && h.occasions.some(o => o.toLowerCase() === (occ||'').toLowerCase()));
+    }
+    if (!header) header = CARD_HEADERS.find(h => h.occasions.includes('Other') && h.category === 'classic') || CARD_HEADERS[0];
 
     activeHeaderId = header.id;
     activeDigitalHeaderId = header.id;
@@ -757,7 +763,7 @@ function handleNoName(){
 
 function handleOtherOcc(){
   const v=document.getElementById('t5-other').value.trim();
-  A.occasion=v;document.getElementById('qn5').disabled=v.length<2;
+  A.occasion=v;A.isOtherOccasion=true;document.getElementById('qn5').disabled=v.length<2;
   document.getElementById('q-counter').textContent=v?v+' Card':'Writing Your Card';
 }
 
@@ -870,7 +876,7 @@ document.getElementById('qc5-main')?.querySelectorAll('.chip').forEach(chip=>chi
   chip.classList.add('selected');
   if(chip.dataset.val==='Other Holidays'){document.getElementById('qe-hols').classList.add('open');document.getElementById('qe-other-occ').classList.remove('open');A.occasion='';document.getElementById('qn5').disabled=true;}
   else if(chip.dataset.val==='Other'){document.getElementById('qe-other-occ').classList.add('open');document.getElementById('qe-hols').classList.remove('open');A.occasion='';document.getElementById('qn5').disabled=true;}
-  else{document.getElementById('qe-hols').classList.remove('open');document.getElementById('qe-other-occ').classList.remove('open');A.occasion=chip.dataset.val;document.getElementById('qn5').disabled=false;
+  else{document.getElementById('qe-hols').classList.remove('open');document.getElementById('qe-other-occ').classList.remove('open');A.occasion=chip.dataset.val;A.isOtherOccasion=false;document.getElementById('qn5').disabled=false;
     document.getElementById('q-counter').textContent=A.occasion+' Card';}
 }));
 document.getElementById('qc5-hols')?.querySelectorAll('.chip').forEach(chip=>chip.addEventListener('click',()=>{
@@ -1966,7 +1972,7 @@ const CARD_HEADERS = [
   {
     id: 'thankyou-img-roses',
     label: 'Blush Roses',
-    occasions: ['Thank you', 'Thank You'],
+    occasions: ["Thank you", "Thank You", "Other"],
     category: 'classic',
     theme: 'blush',
     image: 'thankyou-roses.png',
@@ -1978,7 +1984,7 @@ const CARD_HEADERS = [
   {
     id: 'thankyou-img-botanical',
     label: 'Gold Botanicals',
-    occasions: ['Thank you', 'Thank You'],
+    occasions: ["Thank you", "Thank You", "Other"],
     category: 'classic',
     theme: 'sage',
     image: 'thankyou-botanical.png',
@@ -2002,7 +2008,7 @@ const CARD_HEADERS = [
   {
     id: 'thankyou-img-sunflowers',
     label: 'Sunflowers',
-    occasions: ['Thank you', 'Thank You'],
+    occasions: ["Thank you", "Thank You", "Other"],
     category: 'fun',
     theme: 'warm',
     image: 'thankyou-sunflowers.png',
@@ -2352,7 +2358,7 @@ const CARD_HEADERS = [
   {
     id: 'toy-img-classic',
     label: 'Wildflowers',
-    occasions: ['Thinking of you'],
+    occasions: ["Thinking of you", "Other"],
     category: 'classic',
     theme: 'sage',
     image: 'thinkingofyou-classic.png',
@@ -2364,7 +2370,7 @@ const CARD_HEADERS = [
   {
     id: 'toy-img-minimal',
     label: 'Envelope',
-    occasions: ['Thinking of you'],
+    occasions: ["Thinking of you", "Other"],
     category: 'classic',
     theme: 'warm',
     image: 'thinkingofyou-minimal.png',
@@ -3116,7 +3122,7 @@ const CARD_HEADERS = [
   {
     id: 'justbecause-classic-1',
     label: 'Simply Warm',
-    occasions: ['Thinking of you'],
+    occasions: ["Thinking of you", "Other"],
     category: 'classic',
     theme: 'warm',
     render(w, h) {
@@ -3149,7 +3155,7 @@ const CARD_HEADERS = [
   {
     id: 'justbecause-fun-1',
     label: 'Spontaneous',
-    occasions: ['Thinking of you'],
+    occasions: ["Thinking of you", "Other"],
     category: 'fun',
     theme: 'blush',
     render(w, h) {
@@ -3573,7 +3579,7 @@ const CARD_HEADERS = [
   {
     id: 'milestone-classic-1',
     label: 'Milestone',
-    occasions: ['New milestone'],
+    occasions: ["New milestone", "Other"],
     category: 'classic',
     theme: 'gold',
     render(w, h) {
@@ -3604,7 +3610,7 @@ const CARD_HEADERS = [
   {
     id: 'milestone-fun-1',
     label: 'Next Chapter',
-    occasions: ['New milestone'],
+    occasions: ["New milestone", "Other"],
     category: 'fun',
     theme: 'twilight',
     render(w, h) {
@@ -3813,15 +3819,23 @@ let activeHeaderId = null;
 let activeHeaderCat = 'classic';
 
 function getHeadersForOccasion(occ, cat) {
-  return CARD_HEADERS.filter(h => {
+  // If user typed a custom occasion, always use Other-mapped headers
+  if (A.isOtherOccasion) {
+    return CARD_HEADERS.filter(h => h.occasions.includes('Other') && h.category === cat);
+  }
+  const results = CARD_HEADERS.filter(h => {
     const occMatch = !occ || h.occasions.some(o => o.toLowerCase() === (occ||'').toLowerCase());
     return occMatch && h.category === cat;
   });
+  if (!results.length && occ) {
+    return CARD_HEADERS.filter(h => h.occasions.includes('Other') && h.category === cat);
+  }
+  return results;
 }
 
 function getFallbackHeaders(cat) {
-  // Return empty — no cross-occasion bleed
-  return [];
+  const others = CARD_HEADERS.filter(h => h.occasions.includes('Other') && h.category === cat);
+  return others.length ? others : [];
 }
 
 function switchHeaderCat(cat) {

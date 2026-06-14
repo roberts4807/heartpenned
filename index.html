@@ -512,6 +512,7 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
     <div class="del-grid">
       <div class="d-btn" id="dbtn-digital" onclick="handleDel('digital')"><div class="d-btn-title">Send digitally</div><div class="d-btn-sub">Copy &amp; paste to text or email</div></div>
       <div class="d-btn" onclick="handleDel('print')"><div class="d-btn-title">Print at home</div><div class="d-btn-sub">Download as PDF</div></div>
+      <div class="d-btn" onclick="handleDel('text')"><div class="d-btn-title">Text it</div><div class="d-btn-sub">Send via messages app</div></div>
       <div class="d-btn" onclick="gtag('event', 'mail_it_click', {'event_category': 'delivery', 'event_label': 'Mail it - Coming Soon'}); handleDel('mail')"><div class="d-btn-title">Mail it</div><div class="d-btn-sub">We print and send it</div></div>
     </div>
 
@@ -550,6 +551,19 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
           <button class="btn-send-email" id="btn-send-email" onclick="sendCardEmail()" style="width:100%;">Send 💌</button>
         </div>
         <div class="email-status" id="email-status"></div>
+      </div>
+    </div>
+    <!-- Text it panel -->
+    <div id="text-panel" style="display:none;margin-top:1.25rem;background:#F4F6FA;border:1px solid #D0D8E8;border-radius:12px;padding:1.25rem;">
+      <div class="print-panel-label">Text it</div>
+      <div id="text-mobile-section">
+        <p style="font-size:13px;color:#3A4A5A;margin:0 0 1rem;">Tap below to open your messages app with the card pre-loaded. Just add the recipient and hit send.</p>
+        <button id="text-open-btn" onclick="openTextApp()" style="width:100%;padding:0.85rem;background:#1A3A6A;color:white;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;letter-spacing:0.02em;font-family:Inter,sans-serif;">Open in Messages →</button>
+      </div>
+      <div id="text-desktop-section" style="display:none;">
+        <p style="font-size:13px;color:#3A4A5A;margin:0 0 0.75rem;">Copy the card below and paste it into your messaging app.</p>
+        <button id="text-copy-btn" onclick="copyTextCard()" style="width:100%;padding:0.85rem;background:#1A3A6A;color:white;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;letter-spacing:0.02em;font-family:Inter,sans-serif;">Copy card text</button>
+        <div id="text-copy-confirm" style="display:none;text-align:center;margin-top:0.6rem;font-size:13px;color:#2A7A4A;font-weight:500;">&#10003; Copied! Paste it into your messages app.</div>
       </div>
     </div>
     <!-- Print at Home panel -->
@@ -767,6 +781,28 @@ function handleOtherOcc(){
   const v=document.getElementById('t5-other').value.trim();
   A.occasion=v;A.isOtherOccasion=true;document.getElementById('qn5').disabled=v.length<2;
   document.getElementById('q-counter').textContent=v?v+' Card':'Writing Your Card';
+}
+
+function openTextPanel(){
+  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  document.getElementById('text-mobile-section').style.display = isMobile ? 'block' : 'none';
+  document.getElementById('text-desktop-section').style.display = isMobile ? 'none' : 'block';
+}
+
+function openTextApp(){
+  const text = encodeURIComponent(currentCardText);
+  window.open('sms:?body=' + text, '_blank');
+}
+
+function copyTextCard(){
+  navigator.clipboard.writeText(currentCardText).then(() => {
+    document.getElementById('text-copy-btn').textContent = 'Copied!';
+    document.getElementById('text-copy-confirm').style.display = 'block';
+    setTimeout(() => {
+      document.getElementById('text-copy-btn').textContent = 'Copy card text';
+      document.getElementById('text-copy-confirm').style.display = 'none';
+    }, 3000);
+  });
 }
 
 function handleToneOther(){
@@ -1228,6 +1264,7 @@ function showSendOptions(){
   // Reset panels so nothing shows until user clicks a delivery option
   document.getElementById('digital-panel').style.display = 'none';
   document.getElementById('print-panel').style.display = 'none';
+  document.getElementById('text-panel').style.display = 'none';
   document.querySelectorAll('.d-btn').forEach(b => b.classList.remove('active'));
   showScreen('delivery');
 }
@@ -1256,6 +1293,13 @@ function handleDel(type){
     document.getElementById('digital-panel').style.display='none';
     pp.style.display=isOpen?'none':'block';
     if(!isOpen) openPrintPanel();
+  } else if(type==='text'){
+    const tp=document.getElementById('text-panel');
+    const isOpen=tp.style.display==='block';
+    document.getElementById('digital-panel').style.display='none';
+    document.getElementById('print-panel').style.display='none';
+    tp.style.display=isOpen?'none':'block';
+    if(!isOpen) openTextPanel();
   } else if(type==='mail'){
     alert('Mailing physical cards is coming soon to Heartpenned.');
   } else if(type==='gift'){

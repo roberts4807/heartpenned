@@ -1217,12 +1217,11 @@ function showSendOptions(){
   // Sync digital header to currently selected header
   activeDigitalHeaderId = activeHeaderId;
   activeDigitalHeaderCat = activeHeaderCat || 'classic';
+  // Reset panels so nothing shows until user clicks a delivery option
+  document.getElementById('digital-panel').style.display = 'none';
+  document.getElementById('print-panel').style.display = 'none';
+  document.querySelectorAll('.d-btn').forEach(b => b.classList.remove('active'));
   showScreen('delivery');
-  // Pre-render previews so they're ready when user clicks Send Digitally or Print
-  Promise.resolve().then(() => {
-    renderDigitalCardPreview();
-    renderPrintPreview();
-  });
 }
 
 function handleDel(type){

@@ -757,7 +757,7 @@ function handleNoName(){
 
 function handleOtherOcc(){
   const v=document.getElementById('t5-other').value.trim();
-  A.occasion=v;document.getElementById('qn5').disabled=v.length<2;
+  A.occasion=v;A.isOtherOccasion=true;document.getElementById('qn5').disabled=v.length<2;
   document.getElementById('q-counter').textContent=v?v+' Card':'Writing Your Card';
 }
 
@@ -870,7 +870,7 @@ document.getElementById('qc5-main')?.querySelectorAll('.chip').forEach(chip=>chi
   chip.classList.add('selected');
   if(chip.dataset.val==='Other Holidays'){document.getElementById('qe-hols').classList.add('open');document.getElementById('qe-other-occ').classList.remove('open');A.occasion='';document.getElementById('qn5').disabled=true;}
   else if(chip.dataset.val==='Other'){document.getElementById('qe-other-occ').classList.add('open');document.getElementById('qe-hols').classList.remove('open');A.occasion='';document.getElementById('qn5').disabled=true;}
-  else{document.getElementById('qe-hols').classList.remove('open');document.getElementById('qe-other-occ').classList.remove('open');A.occasion=chip.dataset.val;document.getElementById('qn5').disabled=false;
+  else{document.getElementById('qe-hols').classList.remove('open');document.getElementById('qe-other-occ').classList.remove('open');A.occasion=chip.dataset.val;A.isOtherOccasion=false;document.getElementById('qn5').disabled=false;
     document.getElementById('q-counter').textContent=A.occasion+' Card';}
 }));
 document.getElementById('qc5-hols')?.querySelectorAll('.chip').forEach(chip=>chip.addEventListener('click',()=>{
@@ -3813,15 +3813,23 @@ let activeHeaderId = null;
 let activeHeaderCat = 'classic';
 
 function getHeadersForOccasion(occ, cat) {
-  return CARD_HEADERS.filter(h => {
+  // If user typed a custom occasion, always use Other-mapped headers
+  if (A.isOtherOccasion) {
+    return CARD_HEADERS.filter(h => h.occasions.includes('Other') && h.category === cat);
+  }
+  const results = CARD_HEADERS.filter(h => {
     const occMatch = !occ || h.occasions.some(o => o.toLowerCase() === (occ||'').toLowerCase());
     return occMatch && h.category === cat;
   });
+  if (!results.length && occ) {
+    return CARD_HEADERS.filter(h => h.occasions.includes('Other') && h.category === cat);
+  }
+  return results;
 }
 
 function getFallbackHeaders(cat) {
-  // Return empty — no cross-occasion bleed
-  return [];
+  const others = CARD_HEADERS.filter(h => h.occasions.includes('Other') && h.category === cat);
+  return others.length ? others : [];
 }
 
 function switchHeaderCat(cat) {

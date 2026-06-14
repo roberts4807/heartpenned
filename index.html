@@ -507,14 +507,14 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
   <div class="top-nav"><div class="nav-brand" onclick="showScreen('landing')">Heart<em>penned</em></div></div>
   <div style="max-width:560px;margin:0 auto;padding:1.5rem 2rem;">
     <div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:1rem;">How would you like to send it?</div>
-    <!-- Persistent card preview — always visible on delivery screen -->
-    <div id="delivery-card-preview" style="margin-bottom:1.25rem;background:white;border:1px solid #D0D8E8;border-radius:8px;overflow:hidden;"></div>
     <div class="del-grid">
       <div class="d-btn" id="dbtn-digital" onclick="handleDel('digital')"><div class="d-btn-title">Send digitally</div><div class="d-btn-sub">Copy &amp; paste to text or email</div></div>
       <div class="d-btn" onclick="handleDel('print')"><div class="d-btn-title">Print at home</div><div class="d-btn-sub">Download as PDF</div></div>
       <div class="d-btn" onclick="gtag('event', 'mail_it_click', {'event_category': 'delivery', 'event_label': 'Mail it - Coming Soon'}); handleDel('mail')"><div class="d-btn-title">Mail it</div><div class="d-btn-sub">We print and send it</div></div>
     </div>
 
+    <!-- Digital delivery panel -->
+    <div id="delivery-card-preview" style="margin-bottom:1.25rem;background:white;border:1px solid #D0D8E8;border-radius:8px;overflow:hidden;"></div>
     <!-- Digital delivery panel -->
     <div id="digital-panel" style="display:none;margin-top:1.25rem;background:#F4F6FA;border:1px solid #D0D8E8;border-radius:12px;padding:1.25rem;">
 

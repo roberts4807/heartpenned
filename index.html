@@ -552,8 +552,8 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
 
       <!-- Text it sub-panel -->
       <div id="textit-sub-panel" style="display:none;">
-        <p style="font-size:13px;color:#3A4A5A;margin:0 0 0.85rem;">A shareable link is coming soon. For now, copy the card text and paste it into your messages app.</p>
-        <button id="text-copy-btn" onclick="copyTextCard()" style="width:100%;padding:0.85rem;background:#1A3A6A;color:white;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;letter-spacing:0.02em;font-family:Inter,sans-serif;">Copy card text</button>
+        <p style="font-size:13px;color:#3A4A5A;margin:0 0 0.85rem;">Copy a link to your card and paste it into your messages app. The recipient will see your full card in their browser.</p>
+        <button id="text-copy-btn" onclick="copyTextCard()" style="width:100%;padding:0.85rem;background:#1A3A6A;color:white;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;letter-spacing:0.02em;font-family:Inter,sans-serif;">Copy link to share</button>
         <div id="text-copy-confirm" style="display:none;text-align:center;margin-top:0.6rem;font-size:13px;color:#2A7A4A;font-weight:500;">&#10003; Copied! Paste into your messages app.</div>
       </div>
     </div>
@@ -804,20 +804,49 @@ function openTextPanel(){
   document.getElementById('text-desktop-section').style.display = isMobile ? 'none' : 'block';
 }
 
-function openTextApp(){
-  const text = encodeURIComponent(currentCardText);
-  window.open('sms:?body=' + text, '_blank');
-}
+async function copyTextCard(){
+  const btn = document.getElementById('text-copy-btn');
+  const confirm = document.getElementById('text-copy-confirm');
+  btn.textContent = 'Generating link...';
+  btn.disabled = true;
 
-function copyTextCard(){
-  navigator.clipboard.writeText(currentCardText).then(() => {
-    document.getElementById('text-copy-btn').textContent = 'Copied!';
-    document.getElementById('text-copy-confirm').style.display = 'block';
-    setTimeout(() => {
-      document.getElementById('text-copy-btn').textContent = 'Copy card text';
-      document.getElementById('text-copy-confirm').style.display = 'none';
-    }, 3000);
-  });
+  try {
+    // Save card and get shareable link
+    const res = await fetch('/api/save-card', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        cardText: currentCardText,
+        headerId: activeHeaderId || null,
+        themeId: activeTheme || 'warm',
+        occasion: A.occasion || '',
+        senderName: ''
+      })
+    });
+    const data = await res.json();
+
+    if (data.url) {
+      const textContent = data.url;
+      await navigator.clipboard.writeText(textContent);
+      btn.textContent = 'Link copied!';
+      confirm.textContent = '✓ Card link copied — paste it into your messages app.';
+      confirm.style.display = 'block';
+    } else {
+      throw new Error('No URL returned');
+    }
+  } catch(e) {
+    // Fallback to plain text copy
+    await navigator.clipboard.writeText(currentCardText);
+    btn.textContent = 'Text copied!';
+    confirm.textContent = '✓ Card text copied — paste into your messages app.';
+    confirm.style.display = 'block';
+  }
+
+  btn.disabled = false;
+  setTimeout(() => {
+    btn.textContent = 'Copy link to share';
+    confirm.style.display = 'none';
+  }, 4000);
 }
 
 function handleToneOther(){

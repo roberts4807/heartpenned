@@ -651,8 +651,14 @@ function getThemeForOccasion(occ) {
 
 function applyDefaultHeader(occ) {
   Promise.resolve().then(() => {
-    let header = CARD_HEADERS.find(h => h.category === 'classic' && h.occasions.some(o => o.toLowerCase() === (occ||'').toLowerCase()));
-    if (!header) header = CARD_HEADERS[0];
+    let header;
+    if (A.isOtherOccasion) {
+      // Custom typed occasion — use Other-mapped headers
+      header = CARD_HEADERS.find(h => h.category === 'classic' && h.occasions.includes('Other'));
+    } else {
+      header = CARD_HEADERS.find(h => h.category === 'classic' && h.occasions.some(o => o.toLowerCase() === (occ||'').toLowerCase()));
+    }
+    if (!header) header = CARD_HEADERS.find(h => h.occasions.includes('Other') && h.category === 'classic') || CARD_HEADERS[0];
 
     activeHeaderId = header.id;
     activeDigitalHeaderId = header.id;

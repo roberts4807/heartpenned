@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HeartPenned — A card for you</title>
+  <meta property="og:title" content="Someone sent you a card 💌" />
+  <meta property="og:description" content="Open to read your personal message from HeartPenned." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #F0F4F8;
+      font-family: 'Playfair Display', Georgia, serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1rem;
+    }
+    .brand {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 22px;
+      color: #1A3A6A;
+      margin-bottom: 1.5rem;
+      letter-spacing: 0.01em;
+    }
+    .brand em { font-style: italic; font-weight: 400; }
+    .card {
+      background: white;
+      border-radius: 16px;
+      border: 0.5px solid #B8CDE8;
+      max-width: 560px;
+      width: 100%;
+      overflow: hidden;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    }
+    .card-header-zone {
+      width: 100%;
+      height: 160px;
+      overflow: hidden;
+    }
+    .card-header-zone img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top;
+      display: block;
+    }
+    .card-body {
+      padding: 2rem 2.25rem 1.5rem;
+      font-size: 16px;
+      line-height: 1.85;
+      color: #1A2A3A;
+    }
+    .card-body p { margin-bottom: 1rem; }
+    .card-body p:last-child { margin-bottom: 0; }
+    .card-mark {
+      text-align: right;
+      padding: 0.5rem 2.25rem 1.25rem;
+      font-size: 12px;
+      color: #7A9CC0;
+      font-style: italic;
+    }
+    .loading {
+      text-align: center;
+      padding: 3rem;
+      color: #7A9CC0;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+    }
+    .error {
+      text-align: center;
+      padding: 3rem;
+      color: #C04040;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+    }
+    .footer {
+      margin-top: 1.5rem;
+      text-align: center;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      color: #7A9CC0;
+    }
+    .footer a {
+      color: #1A3A6A;
+      text-decoration: none;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="brand">Heart<em>penned</em></div>
+
+  <div class="card" id="card-container">
+    <div class="loading" id="loading">Loading your card...</div>
+  </div>
+
+  <div class="footer" style="margin-top:1.5rem;">
+    Want to write a card like this? <a href="https://heartpenned.com">Try HeartPenned →</a>
+  </div>
+
+  <script>
+    // Header image map — mirrors CARD_HEADERS in index.html
+    const HEADER_IMAGES = {
+      'birthday-classic-1':      null,
+      'birthday-fun-1':          null,
+      'birthday-img-confetti':   'birthday-confetti.png',
+      'birthday-img-balloons':   'birthday-balloons.png',
+      'birthday-img-floral':     'birthday-floral.png',
+      'birthday-img-garden':     'birthday-garden.png',
+      'birthday-img-celebration':'birthday-celebration.png',
+      'valentine-img-classic':   'valentines-hearts-gold.png',
+      'valentines-img-roses':    'valentines-roses.png',
+      'valentines-img-hearts':   'valentines-hearts.png',
+      'valentines-img-gift':     'valentines-gift.png',
+      'valentines-img-confetti': 'valentines-confetti.png',
+      'valentines-img-candy':    'valentines-candy.png',
+      'thankyou-img-roses':      'thankyou-roses.png',
+      'thankyou-img-botanical':  'thankyou-botanical.png',
+      'thankyou-img-confetti':   'thankyou-confetti.png',
+      'thankyou-img-sunflowers': 'thankyou-sunflowers.png',
+      'anniversary-img-sunset':  'anniversary-sunset.png',
+      'anniversary-img-floral':  'anniversary-floral.png',
+      'sympathy-img-candles':    'sympathy-candles.png',
+      'sympathy-img-floral':     'sympathy-floral.png',
+    };
+
+    const THEME_COLORS = {
+      warm:     '#F5E8D0',
+      blush:    '#FFF0F4',
+      sage:     '#F0F5F0',
+      twilight: '#F0F0FA',
+      gold:     '#FAFAF0',
+      slate:    '#F0F4F8',
+      dusk:     '#F8F0FA',
+    };
+
+    async function loadCard() {
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get('id');
+
+      if (!id) {
+        showError('No card ID found.');
+        return;
+      }
+
+      try {
+        const res = await fetch(`https://www.heartpenned.com/api/get-card?id=${id}`);
+        if (!res.ok) throw new Error('Card not found');
+        const data = await res.json();
+        renderCard(data);
+      } catch(e) {
+        showError('This card could not be found. It may have expired or the link may be incorrect.');
+      }
+    }
+
+    function renderCard(data) {
+      const { cardText, headerId, themeId } = data;
+      const container = document.getElementById('card-container');
+
+      // Header
+      let headerHtml = '';
+      const imgFile = headerId ? HEADER_IMAGES[headerId] : null;
+      if (imgFile) {
+        headerHtml = `<div class="card-header-zone"><img src="/public/headers/${imgFile}" alt="Card header" /></div>`;
+      }
+
+      // Body background
+      const bg = THEME_COLORS[themeId] || '#FFFFFF';
+
+      // Format paragraphs
+      const paragraphs = cardText
+        .split('\n')
+        .filter(p => p.trim())
+        .map(p => `<p>${escapeHtml(p.trim())}</p>`)
+        .join('');
+
+      container.innerHTML = `
+        ${headerHtml}
+        <div class="card-body" style="background:${bg};">${paragraphs}</div>
+        <div class="card-mark" style="background:${bg};">Heartpenned</div>
+      `;
+    }
+
+    function escapeHtml(s) {
+      return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    function showError(msg) {
+      document.getElementById('card-container').innerHTML = `<div class="error">${msg}</div>`;
+    }
+
+    loadCard();
+  </script>
+</body>
+</html>

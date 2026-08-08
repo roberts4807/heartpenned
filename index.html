@@ -374,7 +374,8 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
         <div class="chip" data-val="easy and comfortable" onclick="toggleRelChip(this)">Easy and comfortable</div>
         <div class="chip" data-val="complicated" onclick="toggleRelChip(this)">Complicated</div>
         <div class="chip" data-val="rebuilding" onclick="toggleRelChip(this)">Rebuilding</div>
-        <div class="chip" data-val="we've been through a lot" onclick="toggleRelChip(this)">We've been through a lot</div>
+        <div class="chip" data-val="we've grown through a lot together — it brought us closer" onclick="toggleRelChip(this)">Grown through a lot together</div>
+        <div class="chip" data-val="it's been a hard season between us" onclick="toggleRelChip(this)">It's been a hard season</div>
         <div class="chip" data-val="long distance" onclick="toggleRelChip(this)">Long distance</div>
       </div>
       <div class="cgl" style="margin-top:1rem;">Anything else to add? <span class="opt-tag">optional</span></div>
@@ -395,24 +396,14 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
       <div class="question">Anything else to include? <span class="opt-tag">optional</span></div>
       <div class="subtext">A detail, a quality, a moment — whatever you put here goes in the card.</div>
       <textarea class="text-input" id="t11" rows="3" placeholder="e.g. She just got promoted after years of working toward it. He always cries at commercials but pretends he doesn't." oninput="A.misc=this.value"></textarea>
-      <div class="qnav"><button class="btn-back" onclick="qGo(9)">← Back</button><div style="display:flex;align-items:center;gap:16px;"><span class="skip-link" onclick="qGo(12)">Skip</span><button class="btn-next" onclick="qGo(12)">Next →</button></div></div>
+      <div class="qnav"><button class="btn-back" onclick="qGo(9)">← Back</button><div style="display:flex;align-items:center;gap:16px;"><span class="skip-link" onclick="qGo(13)">Skip</span><button class="btn-next" onclick="qGo(13)">Next →</button></div></div>
     </div>
 
-
-
-    <div class="qstep" id="q12">
-      <div class="question">Should it rhyme?</div>
-      <div class="subtext">Rhyme can feel magical or forced — you know which one this person would love.</div>
-      <div class="chips" id="qc13">
-        <div class="chip" data-val="Yes — rhyme it">Yes, rhyme it</div><div class="chip" data-val="No — write it like a letter">No, don't rhyme</div><div class="chip" data-val="Surprise me">Surprise me</div>
-      </div>
-      <div class="qnav"><button class="btn-back" onclick="qGo(10)">← Back</button><button class="btn-next" id="qn13" disabled onclick="qGo(13)">Next →</button></div>
-    </div>
-     <div class="qstep" id="q13">
+    <div class="qstep" id="q13">
       <div class="question">How would you like to open the card? <span class="opt-tag">optional</span></div>
       <div class="subtext">This goes at the very top of the card, exactly as you write it.</div>
       <textarea class="text-input" id="t-opening" rows="2" placeholder="e.g. Dear Rachel," oninput="A.opening=this.value.trim()"></textarea>
-      <div class="qnav"><button class="btn-back" onclick="qGo(12)">← Back</button><button class="btn-next" onclick="qGo('13b')">Next →</button></div>
+      <div class="qnav"><button class="btn-back" onclick="qGo(10)">← Back</button><button class="btn-next" onclick="qGo('13b')">Next →</button></div>
     </div>
 
     <div class="qstep" id="q13b">
@@ -622,7 +613,7 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
 const A={kids:[],tones:[],feels:[],relChips:[]};
 let kidCount=1,versionCount=1,currentCardText='',savedVersions=[],activeVersionIdx=0;
 const PARTNER_VALS=['Husband','Wife','Partner'];
-const Q_ORDER=[1,2,'2b',4,'4b','4c',5,6,7,8,9,10,12,13,'13b'];
+const Q_ORDER=[1,2,'2b',4,'4b','4c',5,6,7,8,9,10,13,'13b'];
 
 // ── Card background themes ──────────────────────────────────────────────
 const CARD_THEMES = [
@@ -918,7 +909,7 @@ document.querySelectorAll('.kid-s').forEach(c=>c.addEventListener('click',()=>{
   c.classList.add('selected');setKid(kid,'sex',c.dataset.sex);
 }));
 
-const chipCfg={'qc2':{key:'from',btn:'qn2'},'qc13':{key:'rhyme',btn:'qn13'}};
+const chipCfg={'qc2':{key:'from',btn:'qn2'}};
 Object.entries(chipCfg).forEach(([gid,cfg])=>{
   const g=document.getElementById(gid);if(!g)return;
   g.querySelectorAll('.chip').forEach(chip=>chip.addEventListener('click',()=>{

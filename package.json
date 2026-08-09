@@ -1,3 +1,7 @@
 {
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+  "name": "heartpenned",
+  "version": "1.0.0",
+  "dependencies": {
+    "resend": "^6.18.1"
+  }
 }

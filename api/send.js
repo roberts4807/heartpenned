@@ -51,7 +51,7 @@ function buildCardEmail({ recipientName, senderName, cardText, occasion, themeId
   const headerHtml = headerImageUrl
     ? `<tr>
         <td style="border-radius:16px 16px 0 0;overflow:hidden;line-height:0;font-size:0;">
-          <img src="${headerImageUrl}" alt="${occasionLabel}" width="560" style="width:100%;max-width:560px;height:160px;object-fit:cover;object-position:top;display:block;border-radius:16px 16px 0 0;" />
+          <img src="${headerImageUrl}" alt="${occasionLabel}" width="560" style="width:100%;max-width:560px;height:auto;display:block;border-radius:16px 16px 0 0;" />
         </td>
       </tr>`
     : `<tr>

@@ -542,9 +542,9 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
 
       <!-- Text it sub-panel -->
       <div id="textit-sub-panel" style="display:none;">
-        <p style="font-size:13px;color:#3A4A5A;margin:0 0 0.85rem;">Copy a link to your card and paste it into your messages app. The recipient will see your full card in their browser.</p>
-        <button id="text-copy-btn" onclick="copyTextCard()" style="width:100%;padding:0.85rem;background:#1A3A6A;color:white;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;letter-spacing:0.02em;font-family:Inter,sans-serif;">Copy link to share</button>
-        <div id="text-copy-confirm" style="display:none;text-align:center;margin-top:0.6rem;font-size:13px;color:#2A7A4A;font-weight:500;">&#10003; Copied! Paste into your messages app.</div>
+        <p style="font-size:13px;color:#3A4A5A;margin:0 0 0.85rem;">Send your card as a picture through Messages, WhatsApp, Messenger, or any app you like.</p>
+        <button id="text-share-btn" onclick="shareCardImage()" disabled style="width:100%;padding:0.85rem;background:#1A3A6A;color:white;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;letter-spacing:0.02em;font-family:Inter,sans-serif;">Preparing your card...</button>
+        <div id="text-share-status" style="text-align:center;margin-top:0.6rem;font-size:13px;font-weight:500;min-height:18px;"></div>
       </div>
     </div>
 
@@ -785,6 +785,7 @@ function handleDigitalSub(sub){
   } else if(sub==='textit'){
     document.getElementById('dbtn-textit').classList.add('active');
     document.getElementById('textit-sub-panel').style.display='block';
+    prepareCardImage();
   }
 }
 

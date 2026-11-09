@@ -921,7 +921,7 @@ async function prepareCardImage() {
 async function shareCardImage() {
   const status = document.getElementById('text-share-status');
   if (!preparedCardFile) { prepareCardImage(); return; }
-  const shareText = 'Made for you with Heartpenned 💌 https://heartpenned.com';
+  const shareText = 'Made for you with heartpenned.com 💌';
   if (window.gtag) gtag('event', 'share_card_image', { event_category: 'delivery' });
 
   if (navigator.canShare && navigator.canShare({ files: [preparedCardFile] })) {

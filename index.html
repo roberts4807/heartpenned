@@ -542,9 +542,9 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
 
       <!-- Text it sub-panel -->
       <div id="textit-sub-panel" style="display:none;">
-        <p style="font-size:13px;color:#3A4A5A;margin:0 0 0.85rem;">Copy a link to your card and paste it into your messages app. The recipient will see your full card in their browser.</p>
-        <button id="text-copy-btn" onclick="copyTextCard()" style="width:100%;padding:0.85rem;background:#1A3A6A;color:white;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;letter-spacing:0.02em;font-family:Inter,sans-serif;">Copy link to share</button>
-        <div id="text-copy-confirm" style="display:none;text-align:center;margin-top:0.6rem;font-size:13px;color:#2A7A4A;font-weight:500;">&#10003; Copied! Paste into your messages app.</div>
+        <p style="font-size:13px;color:#3A4A5A;margin:0 0 0.85rem;">Send your card as a picture through Messages, WhatsApp, Messenger, or any app you like.</p>
+        <button id="text-share-btn" onclick="shareCardImage()" disabled style="width:100%;padding:0.85rem;background:#1A3A6A;color:white;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;letter-spacing:0.02em;font-family:Inter,sans-serif;">Preparing your card...</button>
+        <div id="text-share-status" style="text-align:center;margin-top:0.6rem;font-size:13px;font-weight:500;min-height:18px;"></div>
       </div>
     </div>
 
@@ -785,6 +785,7 @@ function handleDigitalSub(sub){
   } else if(sub==='textit'){
     document.getElementById('dbtn-textit').classList.add('active');
     document.getElementById('textit-sub-panel').style.display='block';
+    prepareCardImage();
   }
 }
 
@@ -794,51 +795,159 @@ function openTextPanel(){
   document.getElementById('text-desktop-section').style.display = isMobile ? 'none' : 'block';
 }
 
-async function copyTextCard(){
-  const btn = document.getElementById('text-copy-btn');
-  const confirm = document.getElementById('text-copy-confirm');
-  btn.textContent = 'Generating link...';
-  btn.disabled = true;
+// ── Text it: share card as an image ───────────────────────────────────────
+let preparedCardFile = null;
 
-  try {
-    // Save card and get shareable link
-    const res = await fetch('/api/save-card', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        cardText: currentCardText,
-        headerId: activeHeaderId || null,
-        themeId: activeTheme || 'warm',
-        occasion: A.occasion || '',
-        senderName: ''
-      })
-    });
-    const data = await res.json();
-
-    if (data.url) {
-      const textContent = data.url;
-      await navigator.clipboard.writeText(textContent);
-      btn.textContent = 'Link copied!';
-      confirm.textContent = '✓ Card link copied — paste it into your messages app.';
-      confirm.style.display = 'block';
-    } else {
-      throw new Error('No URL returned');
-    }
-  } catch(e) {
-    // Fallback to plain text copy
-    await navigator.clipboard.writeText(currentCardText);
-    btn.textContent = 'Text copied!';
-    confirm.textContent = '✓ Card text copied — paste into your messages app.';
-    confirm.style.display = 'block';
-  }
-
-  btn.disabled = false;
-  setTimeout(() => {
-    btn.textContent = 'Copy link to share';
-    confirm.style.display = 'none';
-  }, 4000);
+function loadCardImg(src) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = reject;
+    img.src = src;
+  });
 }
 
+function drawImageCover(ctx, img, x, y, w, h) {
+  const imgRatio = img.width / img.height;
+  const zoneRatio = w / h;
+  let sx, sy, sw, sh;
+  if (imgRatio > zoneRatio) { sh = img.height; sw = sh * zoneRatio; sx = (img.width - sw) / 2; sy = 0; }
+  else { sw = img.width; sh = sw / zoneRatio; sx = 0; sy = (img.height - sh) / 2; }
+  ctx.drawImage(img, sx, sy, sw, sh, x, y, w, h);
+}
+
+function wrapCardLines(ctx, text, maxW) {
+  const lines = [];
+  text.split('\n').forEach(para => {
+    if (!para.trim()) { lines.push(''); return; }
+    let line = '';
+    para.split(' ').forEach(word => {
+      const test = line ? line + ' ' + word : word;
+      if (line && ctx.measureText(test).width > maxW) { lines.push(line); line = word; }
+      else { line = test; }
+    });
+    lines.push(line);
+  });
+  return lines;
+}
+
+async function renderCardImageBlob() {
+  const W = 1200, PAD = 90, FONT = 42, LINE_H = 74, FOOTER_H = 130;
+  const header = CARD_HEADERS.find(h => h.id === activeHeaderId);
+  const HEADER_H = header ? 400 : 0;
+
+  let bodyBg;
+  if (header) {
+    bodyBg = getHeaderBodyBg(header);
+  } else {
+    const theme = CARD_THEMES.find(t => t.id === activeTheme) || CARD_THEMES[0];
+    bodyBg = theme.bg.includes('gradient') ? (theme.bg.match(/#[0-9A-Fa-f]{6}/) || ['#F4F8FF'])[0] : theme.bg;
+  }
+
+  try {
+    await document.fonts.load(FONT + 'px "Playfair Display"');
+    await document.fonts.load('italic 30px "Playfair Display"');
+  } catch (e) {}
+
+  const measure = document.createElement('canvas').getContext('2d');
+  measure.font = FONT + 'px "Playfair Display", Georgia, serif';
+  const lines = wrapCardLines(measure, currentCardText || '', W - PAD * 2);
+  const textH = lines.reduce((sum, l) => sum + (l ? LINE_H : LINE_H * 0.6), 0);
+  const H = Math.round(HEADER_H + PAD + textH + PAD * 0.5 + FOOTER_H);
+
+  const canvas = document.createElement('canvas');
+  canvas.width = W;
+  canvas.height = H;
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = bodyBg;
+  ctx.fillRect(0, 0, W, H);
+
+  if (header) {
+    try {
+      const src = header.image
+        ? '/public/headers/' + header.image
+        : 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(header.render(W, HEADER_H));
+      const img = await loadCardImg(src);
+      drawImageCover(ctx, img, 0, 0, W, HEADER_H);
+    } catch (e) { console.warn('Header image failed to load for share image.', e); }
+  }
+
+  ctx.font = measure.font;
+  ctx.fillStyle = '#1A2A3A';
+  let y = HEADER_H + PAD + FONT;
+  lines.forEach(l => {
+    if (l) { ctx.fillText(l, PAD, y); y += LINE_H; }
+    else { y += LINE_H * 0.6; }
+  });
+
+  const footerTop = H - FOOTER_H;
+  ctx.strokeStyle = 'rgba(122,156,192,0.45)';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.moveTo(W * 0.3, footerTop + 30);
+  ctx.lineTo(W * 0.7, footerTop + 30);
+  ctx.stroke();
+  ctx.font = 'italic 30px "Playfair Display", Georgia, serif';
+  ctx.fillStyle = '#7A9CC0';
+  ctx.textAlign = 'center';
+  ctx.fillText('Written with Heartpenned  ·  heartpenned.com', W / 2, footerTop + 85);
+
+  return new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+}
+
+async function prepareCardImage() {
+  const btn = document.getElementById('text-share-btn');
+  const status = document.getElementById('text-share-status');
+  preparedCardFile = null;
+  btn.disabled = true;
+  btn.textContent = 'Preparing your card...';
+  status.textContent = '';
+  try {
+    const blob = await renderCardImageBlob();
+    if (!blob) throw new Error('Image could not be created');
+    preparedCardFile = new File([blob], 'heartpenned-card.png', { type: 'image/png' });
+    const canShareFile = navigator.canShare && navigator.canShare({ files: [preparedCardFile] });
+    btn.textContent = canShareFile ? 'Share card' : 'Download card image';
+    btn.disabled = false;
+  } catch (e) {
+    console.error('Card image failed:', e);
+    btn.textContent = 'Try again';
+    btn.disabled = false;
+    status.style.color = '#C0392B';
+    status.textContent = "We couldn't prepare the image. Tap to try again.";
+  }
+}
+
+async function shareCardImage() {
+  const status = document.getElementById('text-share-status');
+  if (!preparedCardFile) { prepareCardImage(); return; }
+  const shareText = 'Made for you with heartpenned.com 💌';
+  if (window.gtag) gtag('event', 'share_card_image', { event_category: 'delivery' });
+
+  if (navigator.canShare && navigator.canShare({ files: [preparedCardFile] })) {
+    try {
+      await navigator.share({ files: [preparedCardFile], text: shareText });
+      status.style.color = '#2A7A4A';
+      status.textContent = '✓ Shared';
+    } catch (e) {
+      if (e.name !== 'AbortError') {
+        status.style.color = '#C0392B';
+        status.textContent = "Sharing didn't work. Try again, or use Email it instead.";
+      }
+    }
+  } else {
+    const url = URL.createObjectURL(preparedCardFile);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'heartpenned-card.png';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    status.style.color = '#2A7A4A';
+    status.textContent = "✓ Downloaded. Attach it to any message, and add heartpenned.com if you'd like.";
+  }
+}
 function handleToneOther(){
   const v=document.getElementById('t6-other').value.trim();
   A.toneOther=v;

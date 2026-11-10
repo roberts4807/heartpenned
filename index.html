@@ -2425,6 +2425,17 @@ const CARD_HEADERS = [
       return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/christmas-reindeer.png" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;" alt="Christmas reindeer header"/></div>`;
     }
   },
+    {
+    id: 'christmas-img-cookies',
+    label: 'Cookies',
+    occasions: ['Christmas'],
+    category: 'fun',
+    theme: 'warm',
+    image: 'christmas-cookies.png',
+    render(w, h) {
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/christmas-cookies.png" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;" alt="Christmas cookies header"/></div>`;
+    }
+  },
   // ── MOTHER'S DAY ──────────────────────────────────────────────────────────
   {
     id: 'mothersday-classic-1',

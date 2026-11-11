@@ -75,7 +75,7 @@ function unsubscribeUrl(email) {
 // ---------------------------------------------------------------------------
 
 const PER_IP_PER_DAY = 25;        // email sends per visitor (sender copies count too)
-const PER_RECIPIENT_PER_DAY = 3;  // cards to the same address
+const PER_RECIPIENT_PER_DAY = 10;  // cards to the same address
 const GLOBAL_PER_DAY = 300;       // emergency brake for the whole site
 const MAX_CARD_CHARS = 4000;
 const HEADER_PREFIX = 'https://heartpenned.com/public/headers/';

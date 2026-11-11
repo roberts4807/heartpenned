@@ -7,7 +7,7 @@ module.exports = async function handler(req, res) {
 
   const { cardText, headerId, themeId, occasion, senderName } = req.body;
 
-  if (!cardText) {
+  if (!cardText || typeof cardText !== 'string' || cardText.length > 4000) {
     return res.status(400).json({ error: 'Card text is required.' });
   }
 
@@ -23,8 +23,8 @@ module.exports = async function handler(req, res) {
       createdAt:  Date.now(),
     };
 
-    const url = process.env.KV_REST_API_URL;
-    const token = process.env.KV_REST_API_TOKEN;
+    const url = process.env.HP_KV_REST_API_URL;
+    const token = process.env.HP_KV_REST_API_TOKEN;
 
     // Use direct SET with EX via Upstash REST API
     const redisRes = await fetch(`${url}/set/card:${id}?EX=7776000`, {

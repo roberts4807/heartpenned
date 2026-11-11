@@ -2,12 +2,44 @@ const { Resend } = require('resend');
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
+// ---------- Rate limit helpers ----------
+const REDIS_URL = process.env.HP_KV_REST_API_URL;
+const REDIS_TOKEN = process.env.HP_KV_REST_API_TOKEN;
+
+async function redis(cmd) {
+  const r = await fetch(REDIS_URL, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${REDIS_TOKEN}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify(cmd),
+  });
+  const d = await r.json();
+  if (d.error) throw new Error(d.error);
+  return d.result;
+}
+async function allow(key, limit, windowSec) {
+  try {
+    const n = await redis(['INCR', key]);
+    if (n === 1) await redis(['EXPIRE', key, windowSec]);
+    return n <= limit;
+  } catch (e) {
+    console.error('Rate limit check failed:', e);
+    return true;
+  }
+}
+function clientIp(req) {
+  return (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || 'unknown';
+}
+function today() { return new Date().toISOString().slice(0, 10); }
+// ----------------------------------------
+
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { email, occasion, recipientName, occasionDate, reminderDate } = req.body;
+  const { email, occasionDate, reminderDate } = req.body || {};
+  const occasion = String((req.body || {}).occasion || '').replace(/[\r\n]+/g, ' ').slice(0, 60);
+  const recipientName = String((req.body || {}).recipientName || '').replace(/[\r\n]+/g, ' ').slice(0, 80);
 
   if (!email) {
     return res.status(400).json({ error: 'Email is required.' });
@@ -18,13 +50,19 @@ module.exports = async function handler(req, res) {
     return res.status(400).json({ error: 'Invalid email address.' });
   }
 
+  const ip = clientIp(req);
+  if (!(await allow(`rl:remind:ip:${ip}:${today()}`, 5, 86400)) ||
+      !(await allow(`rl:remind:global:${today()}`, 100, 172800))) {
+    return res.status(429).json({ error: 'Too many reminders right now. Please try again tomorrow.' });
+  }
+
   const occasionLabel = occasion
     ? occasion.charAt(0).toUpperCase() + occasion.slice(1)
     : 'Special occasion';
 
   // Format dates nicely
   function niceDate(d) {
-    if (!d) return null;
+    if (!d || !/^\d{4}-\d{2}-\d{2}$/.test(d)) return null;
     const obj = new Date(d + 'T12:00:00');
     return obj.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
   }

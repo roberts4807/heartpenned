@@ -1,6 +1,84 @@
 const { Resend } = require('resend');
+const { createHmac } = require('crypto');
 
 const resend = new Resend(process.env.RESEND_API_KEY);
+
+// ---------- Shared guard helpers (Redis rate limits + owner alerts) ----------
+const REDIS_URL = process.env.HP_KV_REST_API_URL;
+const REDIS_TOKEN = process.env.HP_KV_REST_API_TOKEN;
+const ALERT_TO = process.env.ALERT_EMAIL || 'roberts4807@gmail.com';
+let lastLocalAlert = 0;
+
+async function redis(cmd) {
+  const r = await fetch(REDIS_URL, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${REDIS_TOKEN}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify(cmd),
+  });
+  const d = await r.json();
+  if (d.error) throw new Error(d.error);
+  return d.result;
+}
+
+async function allow(key, limit, windowSec) {
+  try {
+    const n = await redis(['INCR', key]);
+    if (n === 1) await redis(['EXPIRE', key, windowSec]);
+    return n <= limit;
+  } catch (e) {
+    console.error('Rate limit check failed:', e);
+    alertOwner('Redis unreachable', String(e));
+    return true;
+  }
+}
+
+async function alertOwner(subject, detail) {
+  try {
+    let shouldSend = true;
+    try {
+      const ok = await redis(['SET', `alert:${subject}`, '1', 'EX', 3600, 'NX']);
+      shouldSend = ok === 'OK';
+    } catch {
+      shouldSend = Date.now() - lastLocalAlert > 3600 * 1000;
+    }
+    if (!shouldSend) return;
+    lastLocalAlert = Date.now();
+    await resend.emails.send({
+      from: 'HeartPenned Alerts <hello@heartpenned.com>',
+      to: [ALERT_TO],
+      subject: `HeartPenned alert: ${subject}`,
+      text: `${subject}\n\n${detail}\n\nTime: ${new Date().toISOString()}`,
+    });
+  } catch (e) {
+    console.error('Alert email failed:', e);
+  }
+}
+
+function clientIp(req) {
+  return (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || 'unknown';
+}
+function today() { return new Date().toISOString().slice(0, 10); }
+
+function escapeHtml(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+function cleanLine(s, max) {
+  return String(s == null ? '' : s).replace(/[\r\n\t]+/g, ' ').trim().slice(0, max);
+}
+function unsubscribeUrl(email) {
+  const e = email.toLowerCase();
+  const t = createHmac('sha256', process.env.RESEND_API_KEY || '').update(e).digest('hex').slice(0, 32);
+  return `https://heartpenned.com/api/unsubscribe?e=${encodeURIComponent(e)}&t=${t}`;
+}
+// ---------------------------------------------------------------------------
+
+const PER_IP_PER_DAY = 25;        // email sends per visitor (sender copies count too)
+const PER_RECIPIENT_PER_DAY = 10;  // cards to the same address
+const GLOBAL_PER_DAY = 300;       // emergency brake for the whole site
+const MAX_CARD_CHARS = 4000;
+const HEADER_PREFIX = 'https://heartpenned.com/public/headers/';
 
 // Colors keyed by occasion (fallback when no themeId passed)
 const occasionColors = {
@@ -35,16 +113,16 @@ function getColors(occasion, themeId) {
   return occasionColors.default;
 }
 
-function buildCardEmail({ recipientName, senderName, cardText, occasion, themeId, headerImageUrl, isSenderCopy }) {
+function buildCardEmail({ recipientName, senderName, cardText, occasion, themeId, headerImageUrl, isSenderCopy, unsubUrl }) {
   const colors = getColors(occasion, themeId);
-  const occasionLabel = occasion
+  const occasionLabel = escapeHtml(occasion
     ? occasion.charAt(0).toUpperCase() + occasion.slice(1)
-    : 'A Special Message';
+    : 'A Special Message');
 
   const paragraphs = cardText
     .split('\n')
     .filter(p => p.trim())
-    .map(p => `<p style="margin:0 0 16px 0;line-height:1.8;">${p.trim()}</p>`)
+    .map(p => `<p style="margin:0 0 16px 0;line-height:1.8;">${escapeHtml(p.trim())}</p>`)
     .join('');
 
   // Build header — image if available, gradient fallback otherwise
@@ -62,7 +140,7 @@ function buildCardEmail({ recipientName, senderName, cardText, occasion, themeId
       </tr>`;
 
   // Confirmation banner shown only to sender
-  const recipientDisplay = recipientName || 'your recipient';
+  const recipientDisplay = escapeHtml(recipientName || 'your recipient');
   const confirmationBanner = isSenderCopy
     ? `<tr>
         <td style="background-color:#F0F4FF;border:1px solid #D0D8F0;border-radius:10px;padding:16px 24px;margin-bottom:24px;">
@@ -101,6 +179,7 @@ function buildCardEmail({ recipientName, senderName, cardText, occasion, themeId
               Sent with <a href="https://heartpenned.com" style="color:${colors.accent};text-decoration:none;">HeartPenned</a><br>
               <strong style="color:#666666;">Simply reply to respond to sender.</strong>
             </p>
+            ${unsubUrl ? `<p style="margin:8px 0 0;font-family:Arial,sans-serif;font-size:11px;color:#bbbbbb;">Don't want cards sent through HeartPenned? <a href="${unsubUrl}" style="color:#bbbbbb;text-decoration:underline;">Unsubscribe</a></p>` : ''}
           </td>
         </tr>
       </table>
@@ -115,15 +194,48 @@ module.exports = async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { recipientEmail, recipientName, senderName, cardText, occasion, themeId, headerImageUrl, isSenderCopy } = req.body;
+  const body = req.body || {};
+  const isSenderCopy = !!body.isSenderCopy;
+  const recipientEmail = cleanLine(body.recipientEmail, 254).toLowerCase();
+  const recipientName  = cleanLine(body.recipientName, 80);
+  const senderName     = cleanLine(body.senderName, 80);
+  const senderEmail    = cleanLine(body.senderEmail, 254);
+  const occasion       = cleanLine(body.occasion, 60);
+  const themeId        = cleanLine(body.themeId, 30);
+  const cardText       = typeof body.cardText === 'string' ? body.cardText : '';
+  const headerImageUrl = typeof body.headerImageUrl === 'string' && body.headerImageUrl.startsWith(HEADER_PREFIX)
+    && !body.headerImageUrl.includes('..') ? body.headerImageUrl : null;
 
-  if (!recipientEmail || !cardText) {
+  if (!recipientEmail || !cardText.trim()) {
     return res.status(400).json({ error: 'Recipient email and card text are required.' });
+  }
+  if (cardText.length > MAX_CARD_CHARS) {
+    return res.status(400).json({ error: 'This card is too long to send by email.' });
   }
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(recipientEmail)) {
     return res.status(400).json({ error: 'Invalid email address.' });
+  }
+
+  // Respect people who unsubscribed
+  try {
+    if (await redis(['GET', `unsub:${recipientEmail}`])) {
+      return res.status(400).json({ error: `${recipientEmail} has asked not to receive cards from HeartPenned.` });
+    }
+  } catch (e) { console.error('Unsubscribe check failed:', e); }
+
+  // Rate limits
+  const ip = clientIp(req);
+  if (!(await allow(`rl:send:ip:${ip}:${today()}`, PER_IP_PER_DAY, 86400))) {
+    return res.status(429).json({ error: "You've sent a lot of cards today! Please try again tomorrow." });
+  }
+  if (!isSenderCopy && !(await allow(`rl:send:to:${recipientEmail}:${today()}`, PER_RECIPIENT_PER_DAY, 86400))) {
+    return res.status(429).json({ error: `${recipientEmail} has already received several cards today. Please try again tomorrow.` });
+  }
+  if (!(await allow(`rl:send:global:${today()}`, GLOBAL_PER_DAY, 172800))) {
+    alertOwner('Daily email limit reached', `The site-wide cap of ${GLOBAL_PER_DAY} emails per day was hit.`);
+    return res.status(429).json({ error: 'HeartPenned is sending a lot of cards right now. Please try again later.' });
   }
 
   const occasionLabel = occasion
@@ -136,18 +248,24 @@ module.exports = async function handler(req, res) {
       ? `${senderName} sent you a ${occasionLabel} card 💌`
       : `You have a ${occasionLabel} card 💌`;
 
+  const unsubUrl = isSenderCopy ? null : unsubscribeUrl(recipientEmail);
+  const replyTo = !isSenderCopy && senderEmail && emailRegex.test(senderEmail) ? senderEmail : null;
+
   try {
-  const data = await resend.emails.send({
+    const { data, error } = await resend.emails.send({
       from: 'HeartPenned <hello@heartpenned.com>',
       to: [recipientEmail],
       subject,
-      ...(req.body.senderEmail && !isSenderCopy ? { reply_to: req.body.senderEmail } : {}),
-      html: buildCardEmail({ recipientName, senderName, cardText, occasion, themeId, headerImageUrl, isSenderCopy }),
+      ...(replyTo ? { reply_to: replyTo } : {}),
+      ...(unsubUrl ? { headers: { 'List-Unsubscribe': `<${unsubUrl}>` } } : {}),
+      html: buildCardEmail({ recipientName, senderName, cardText, occasion, themeId, headerImageUrl, isSenderCopy, unsubUrl }),
     });
+    if (error) throw new Error(error.message || JSON.stringify(error));
 
-    return res.status(200).json({ success: true, id: data.id });
+    return res.status(200).json({ success: true, id: data && data.id });
   } catch (error) {
     console.error('Resend error:', error);
+    await alertOwner('Email sending failing', String(error && error.message || error));
     return res.status(500).json({ error: 'Failed to send email. Please try again.' });
   }
 };

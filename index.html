@@ -1224,7 +1224,7 @@ async function submitCard(){
     const cleaned=cleanText(text);
     currentCardText=cleaned;saveVersion(cleaned);document.getElementById('card-text').textContent=cleaned;document.getElementById('del-card-text').textContent=cleaned;buildSwatches();resetEmailSection();showScreen('card');setTimeout(()=>applyDefaultHeader(A.occasion||''),50);
     const sb=document.querySelector('.action-btn[onclick="shortenCard()"]');if(sb)sb.textContent='Shorten';
-  }catch(e){alert('Something went wrong: '+e.message);showScreen('q');}
+  }catch(e){alert(e.message);showScreen('q');}
 }
 
 function toggleRev(){const rb=document.getElementById('rev-box');rb.classList.toggle('open');if(rb.classList.contains('open')){setTimeout(()=>rb.scrollIntoView({behavior:'smooth',block:'nearest'}),50);}}
@@ -1239,7 +1239,7 @@ async function submitRev(){
     const text=await callAPI(buildPrompt(true,note));
     const cleaned=cleanText(text);
     currentCardText=cleaned;saveVersion(cleaned,false);document.getElementById('card-text').textContent=cleaned;document.getElementById('del-card-text').textContent=cleaned;buildSwatches();resetEmailSection();showScreen('card');setTimeout(()=>applyDefaultHeader(A.occasion||''),50);
-  }catch(e){alert('Something went wrong: '+e.message);showScreen('card');}
+  }catch(e){alert(e.message);showScreen('card');}
 }
 
 async function tryAnother(){
@@ -1250,7 +1250,7 @@ async function tryAnother(){
     const text=await callAPI(buildPrompt(false)+'\n\nIMPORTANT: Completely different opening, structure, and closing. Do not repeat or echo the previous version.');
     const cleaned=cleanText(text);
     currentCardText=cleaned;saveVersion(cleaned);document.getElementById('card-text').textContent=cleaned;document.getElementById('del-card-text').textContent=cleaned;buildSwatches();resetEmailSection();showScreen('card');setTimeout(()=>applyDefaultHeader(A.occasion||''),50);
-  }catch(e){alert('Something went wrong: '+e.message);showScreen('card');}
+  }catch(e){alert(e.message);showScreen('card');}
 }
 
 let isShortened = false;
@@ -1270,7 +1270,7 @@ async function shortenCard(){
     currentCardText=cleaned;saveVersion(cleaned);document.getElementById('card-text').textContent=cleaned;document.getElementById('del-card-text').textContent=cleaned;buildSwatches();resetEmailSection();showScreen('card');setTimeout(()=>applyDefaultHeader(A.occasion||''),50);
     isShortened = !isShortened;
     if(shortenBtn) shortenBtn.textContent = isShortened ? 'Lengthen' : 'Shorten';
-  }catch(e){alert('Something went wrong: '+e.message);showScreen('card');}
+  }catch(e){alert(e.message);showScreen('card');}
 }
 
 function switchDeliveryStyle(cat) {
@@ -4825,7 +4825,12 @@ async function sendCardEmail() {
       );
     }
 
-    await Promise.all(sends);
+    const results = await Promise.all(sends);
+    const failed = results.filter(r => !r || !r.success);
+    if (failed.length) {
+      const msg = (failed[0] && failed[0].error) || 'Failed to send. Please try again.';
+      throw new Error(failed.length < results.length ? 'Some cards were sent, but not all. ' + msg : msg);
+    }
 
     statusEl.className = 'email-status success';
     statusEl.textContent = recipients.length === 1

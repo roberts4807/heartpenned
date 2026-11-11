@@ -79,7 +79,8 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
 @keyframes pulse{0%,100%{opacity:0.3;transform:scale(0.8)}50%{opacity:1;transform:scale(1)}}
 .gen-label{font-size:15px;color:#3A4A5A;}
 .card-surface{background:#F4F8FF;border:0.5px solid #B8CDE8;border-radius:16px;padding:2rem 1.75rem;margin-bottom:1.25rem;position:relative;overflow:hidden;transition:background 0.4s ease;}
-.card-header-zone{margin:-2rem -1.75rem 1.5rem;overflow:hidden;border-radius:14px 14px 0 0;height:140px;}
+.card-header-zone{margin:-2rem -1.75rem 1.5rem;overflow:hidden;border-radius:14px 14px 0 0;aspect-ratio:3/1;height:auto;}
+.card-header-zone > div,.card-header-zone > svg{width:100% !important;height:100% !important;}
 .card-corner{position:absolute;opacity:0.15;}
 .card-text{font-family:'Playfair Display',serif;font-size:16px;line-height:1.95;color:#1A2A3A;white-space:pre-wrap;position:relative;z-index:1;}
 .swatch-row{display:flex;gap:8px;justify-content:center;margin-bottom:1.1rem;flex-wrap:wrap;}
@@ -4601,7 +4602,7 @@ function renderPrintPreview() {
   const w = container.offsetWidth || 320;
   container.innerHTML = `
     <div style="background:${bg};font-family:'Playfair Display',Georgia,serif;border-radius:6px;overflow:hidden;">
-      ${header ? header.render(w, 110) : ''}
+      ${header ? header.render(w, Math.round(w / 3)) : ''}
       <div style="padding:1.5rem 1.75rem 1.25rem;font-size:14px;line-height:1.9;color:#1A2A3A;white-space:pre-wrap;">${cardText}</div>
       <div style="text-align:right;padding:0.5rem 1.25rem 0.75rem;font-size:11px;color:#7A9CC0;font-style:italic;letter-spacing:0.06em;font-family:'Playfair Display',Georgia,serif;">Heartpenned</div>
     </div>`;
@@ -4702,7 +4703,7 @@ function renderDigitalCardPreview() {
   const escapeHtml = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   container.innerHTML = `
     <div style="font-family:'Playfair Display',Georgia,serif;border-radius:6px;overflow:hidden;">
-      ${header ? header.render(w, 110) : ''}
+      ${header ? header.render(w, Math.round(w / 3)) : ''}
       <div style="padding:1.25rem 1.5rem 1rem;font-size:14px;line-height:1.85;color:#1A2A3A;white-space:pre-wrap;background:${bg};">${escapeHtml(cardText)}</div>
       <div style="text-align:right;padding:0.25rem 1rem 0.6rem;font-size:11px;color:#7A9CC0;font-style:italic;background:${bg};font-family:'Playfair Display',Georgia,serif;">Heartpenned</div>
     </div>`;
@@ -4856,7 +4857,7 @@ async function downloadPDF() {
     const pageW = 612;
     const margin = 48;
     const cardW = pageW - margin * 2;
-    const headerZoneH = 140;
+    const headerZoneH = Math.round(cardW / 3); // matches 3:1 header images
     const header = CARD_HEADERS.find(h => h.id === activeHeaderId);
     const isColorOnly = !activeHeaderId; // color swatch selected, no image
     let headerDrawn = false;

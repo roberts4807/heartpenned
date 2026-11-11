@@ -5,13 +5,13 @@ module.exports = async function handler(req, res) {
 
   const { id } = req.query;
 
-  if (!id) {
+  if (!id || !/^[a-f0-9]{8}$/.test(id)) {
     return res.status(400).json({ error: 'Card ID is required.' });
   }
 
   try {
-    const url = process.env.KV_REST_API_URL;
-    const token = process.env.KV_REST_API_TOKEN;
+    const url = process.env.HP_KV_REST_API_URL;
+    const token = process.env.HP_KV_REST_API_TOKEN;
 
     const redisRes = await fetch(`${url}/get/card:${id}`, {
       headers: {

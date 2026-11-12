@@ -91,6 +91,17 @@ const OPENING_MOVES = [
   'Open with a short, simple sentence. Let the next sentence do the work.',
 ];
 
+// When the sender gave no memories or details, give each card a different focus
+// so cards differ in content, not just in their first line.
+const ANGLES = [
+  'Center the middle on one specific quality of theirs and how it shows up in the sender\'s life.',
+  'Center the middle on what everyday life with them is like, from the sender\'s side of the relationship.',
+  'Center the middle on what the sender hopes for them in the year ahead, grounded in who they are.',
+  'Center the middle on gratitude: what the sender is thankful for about them and about this relationship.',
+  'Center the middle on who they have become, or what they have grown into, as the sender sees it. Never invent specific events.',
+  'Center the middle on what the sender admires in how they treat other people.',
+];
+
 function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 
 function buildPrompt(A, currentCardText, mode, note){
@@ -118,6 +129,8 @@ function buildPrompt(A, currentCardText, mode, note){
     : A.from==='On behalf of someone else' ? 'The person filling this out is writing for someone else. Write in the voice of the actual sender, singular unless the inputs say otherwise. Never mention that someone helped write it.'
     : 'Singular voice throughout. Never use "we" to mean the sender.';
   const celebratory = CELEBRATORY.test(A.occasion||'') && !isLoss && !isApology;
+  const hasSpecifics = !!((A.memory||'').trim() || (A.misc||'').trim());
+  const angleLine = (hasSpecifics || isLoss || isApology) ? '' : '\n- FOCUS FOR THIS CARD (no memories or details were given): ' + pick(ANGLES) + ' Keep the card centered on this one focus rather than touching on everything.';
 
   const faithText=(A.faithTradition||'');
 const isChristianFaith=/christ|catholic|protestant|baptist|methodist|lutheran|presbyterian|episcopal|evangelical|pentecostal|anglican|denominational|latter.day|\blds\b|mormon/i.test(faithText)||(/orthodox/i.test(faithText)&&!/jew/i.test(faithText));
@@ -143,7 +156,9 @@ This field is private context for the writer, never the card. Use it to understa
 - Never use em dashes (—) anywhere in the card. They are a clear AI writing signal. Use periods, commas, or line breaks instead.
 - Never use "journey," "words cannot express," or end with "always"
 - Never open with "There is something about," "There's something about," "Something about," or any variation. Start somewhere else entirely.
-- Avoid stock greeting-card moves, including: "That's not nothing," "That is everything," "That's actually everything," "not a small thing," "exactly as you are," "right here, right now," "more than you know," "more than words can say," "the world is a better place with you in it," "you deserve the world," and "gives back even a fraction of what you give." Say the specific thing instead.
+- Avoid stock greeting-card moves, including: "That's not nothing," "That is everything," "That's actually everything," "not a small thing," "exactly as you are," "right here, right now," "more than you know," "more than words can say," "the world is a better place with you in it," "you deserve the world," and "gives back even a fraction of what you give," "ordinary days," "doesn't announce itself," "I don't take that lightly," "hard to name" or "can't quite name," "reflected back to you," and "everything you give." Say the specific thing instead.
+- Use the "Not X, but Y" or "Not loud or complicated. Just..." construction at most once per card.
+- Do not use "light" as a metaphor for the person unless the user used it.
 - Use contractions the way people naturally talk (you're, I'm, don't, it's, here's). Avoid stiff phrasing like "I do not" or "Here is to you" unless the tone is formal.
 - CRITICAL: Never invent specific moments, events, or details not provided by the user. If no memory or specific moment was shared, write around feeling and relationship. Never fabricate a story, proposal, or event.
 - CRITICAL: Treat every user input as a fact to reflect, not a story to expand. If someone says "two kittens," say two kittens. Do not add drama or narrative color. Embellish the feeling, never the facts.`;
@@ -218,7 +233,7 @@ FEELINGS: ${feelingsRule}
 SHAPE:
 - ${pick(OPENING_MOVES)} Never name the occasion in the opening.
 - Middle: amplify what was expressed and give it room, in the card's tone. This is where most of the length lives. Build it from everything provided: who they are to the sender, the relationship context, the occasion, their ages and stage of life, what the sender wants them to feel, and any memories or details. If no memories were given, develop the feeling and the relationship more fully instead: what this person is like, what they bring to the sender's life, what the sender wishes for them. Never invent events or facts.
-- Ending: as the TONE section says for this tone.
+- Ending: as the TONE section says for this tone.${angleLine}
 - Paragraphs: two or three short paragraphs. Never one long unbroken block.
 
 LENGTH: ${lengthRule}

@@ -76,7 +76,7 @@ const TONE_GUIDE = {
   'Honest and direct': 'Plain language, no flourish, sounds said aloud. Ends plainly, the way a person would actually stop talking.',
   'Poetic and sentimental': 'Rhythm and imagery, earned emotion, beauty through specificity. This is the tone where a resonant closing line belongs.',
   'Lighthearted but real': 'Starts light, has one genuine beat, and does not linger on it. Ends light or warm, not heavy.',
-  'Reserved but sincere': 'Understated. Fewer words. Says less and means more. No big closing line; a plain, sincere sentence is enough.',
+  'Reserved but sincere': 'Understated. Plain, unshowy sentences. Restraint in feeling, not in length. No big closing line; a plain, sincere sentence is enough.',
   'Celebratory and upbeat': 'Energetic, warm, joy-forward. Ends on celebration and good wishes, not reflection.',
   'Tender and gentle': 'Soft, careful, quietly loving. Ends gently.',
 };
@@ -131,7 +131,7 @@ const spiritualRule=A.spirituality==='None'||!A.spirituality?'No spiritual langu
     ? 'End with a short, warm wish for the occasion as the final line (e.g. "Happy Birthday!"). It can be light or playful if the tone is; it does not need to be solemn.'
     : 'End with the natural close of the card for this tone. Do not force an occasion label as the final line.';
 
-  const intensityRule = 'Match emotional intensity to the tone, the occasion, and the relationship. Most cards should be warm but not weighty. Understatement usually lands harder than declaration. Not every card needs a profound moment or a memorable final line. Never escalate beyond what the tone and inputs call for.';
+  const intensityRule = 'Match emotional intensity to the tone, the occasion, and the relationship. Most cards should be warm but not weighty. Understatement usually lands harder than declaration. Not every card needs a profound moment or a memorable final line. Never escalate beyond what the tone and inputs call for. Restraint is about emotional intensity, never length: a light or understated card still fills its full LENGTH.';
   const feelingsRule = 'The feelings above are the goal underneath the card, not words to put in it. Let them come through what is said; do not announce them (never write "you are deeply loved" or "I see you"). The TONE decides how they are expressed: in a funny card, "deeply loved" might show up as affectionate teasing, or one sincere line; in a reserved card, as one plain sentence.';
 
   const privateCtx = `RELATIONSHIP CONTEXT — CONFIDENTIAL WRITER BRIEFING ONLY:
@@ -191,6 +191,7 @@ OCCASION: ${A.occasion||'—'}
 ${birthdayAge?'TURNING: '+birthdayAge:''}
 ${kidsText?'CHILDREN: '+kidsText:''}
 TONE: ${toneVal}
+LENGTH: ${lengthRule}
 SPIRITUALITY: ${A.spirituality||'None'}
 WANT THEM TO FEEL: ${feelVal}
 ${A.memory?'SHARED MEMORY (card content): "'+A.memory+'"':''}
@@ -213,9 +214,9 @@ FEELINGS: ${feelingsRule}
 
 SHAPE:
 - ${pick(OPENING_MOVES)} Never name the occasion in the opening.
-- Middle: reflect what the sender shared, in the card's tone. Never project beyond what was provided.
+- Middle: amplify what was expressed and give it room, in the card's tone. This is where most of the length lives. Build it from everything provided: who they are to the sender, the relationship context, the occasion, their ages and stage of life, what the sender wants them to feel, and any memories or details. If no memories were given, develop the feeling and the relationship more fully instead: what this person is like, what they bring to the sender's life, what the sender wishes for them. Never invent events or facts.
 - Ending: as the TONE section says for this tone.
-- Paragraphs: one to three short paragraphs, whatever suits the length and tone. Never one long unbroken block.
+- Paragraphs: two or three short paragraphs. Never one long unbroken block.
 
 LENGTH: ${lengthRule}
 FROM GUIDANCE: ${fromGuide}
@@ -236,7 +237,9 @@ ${coreRules}
 - Never assume anything about people not described in the inputs
 - Card stays entirely about the recipient
 - People before pets when listing names
-- Never quote inputs verbatim. Put them in your own words, in the card's tone.`;
+- Never quote inputs verbatim. Put them in your own words, in the card's tone.
+
+BEFORE YOU FINISH: count the words. If the card is under the LENGTH range, develop the middle further until it is within range.`;
 }
 
 const ANOTHER_SUFFIX = '\n\nIMPORTANT: Completely different opening, structure, and closing. Do not repeat or echo the previous version.';

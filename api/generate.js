@@ -169,7 +169,7 @@ This field is private context for the writer, never the card. Use it to understa
 - CRITICAL: Never invent specific moments, events, or details not provided by the user. If no memory or specific moment was shared, write around feeling and relationship. Never fabricate a story, proposal, or event.
 - CRITICAL: Treat every user input as a fact to reflect, not a story to expand. If someone says "two kittens," say two kittens. Do not add drama or narrative color. Embellish the feeling, never the facts.
 - CRITICAL: When building on a memory or detail, expand its meaning, not its contents. Do not add concrete specifics that were not given: no objects, habits, quirks, scenes, or jokes about things that may not have happened (if they shared a room, do not mention bunk beds, blankets, bedhead, or who snored). Humor must come from what the user actually said, not from invented details.
-- Never use the word "Honestly" (or "To be honest").
+- Never use the word "honestly" anywhere in the card, in any position or capitalization, and never "to be honest."
 - Use "quiet" or "quietly" at most once per card.`;
 
   if(isRev){
@@ -249,7 +249,7 @@ LENGTH: ${lengthRule}
 FROM GUIDANCE: ${fromGuide}
 RELATIONSHIP GUIDANCE: Use who the recipient is to the sender to shape the register. To a spouse or partner: intimate and knowing. To a parent: respectful, warm, honoring. To a child: nurturing, proud, full of belief in them. To a friend: easy, real, peer-level. To a sibling: familiar, often teasing. To a colleague: professional warmth, never overly personal.
 CHILDREN GUIDANCE: If children are listed, they may be referenced naturally once if it fits, never more. Do not make the card about the children.
-AGE GUIDANCE: Use sender and recipient ages to calibrate vocabulary, references, and register. For teen senders, write naturally and warmly; no slang or trying to sound "young." If the recipient is older, never reference their age in a way that could feel diminishing.
+AGE GUIDANCE: Use sender and recipient ages to calibrate vocabulary, references, and register. The ages are broad ranges for calibration only: never state or guess the recipient's age in the card (no "your forties or fifties") unless a specific age was given for the occasion. For teen senders, write naturally and warmly; no slang or trying to sound "young." If the recipient is older, never reference their age in a way that could feel diminishing.
 SPIRITUALITY: ${spiritualRule}
 OCCASION: ${occasionRules||'—'}
 OPENING: ${A.opening?'Start the card with exactly: "'+A.opening+'". Use this and nothing else as the opening.':'No opening line. Do NOT add "Dear [name]" or any greeting. Start directly with the card message.'}

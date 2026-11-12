@@ -167,7 +167,10 @@ This field is private context for the writer, never the card. Use it to understa
 - Do not use "light" as a metaphor for the person unless the user used it.
 - Use contractions the way people naturally talk (you're, I'm, don't, it's, here's). Avoid stiff phrasing like "I do not" or "Here is to you" unless the tone is formal.
 - CRITICAL: Never invent specific moments, events, or details not provided by the user. If no memory or specific moment was shared, write around feeling and relationship. Never fabricate a story, proposal, or event.
-- CRITICAL: Treat every user input as a fact to reflect, not a story to expand. If someone says "two kittens," say two kittens. Do not add drama or narrative color. Embellish the feeling, never the facts.`;
+- CRITICAL: Treat every user input as a fact to reflect, not a story to expand. If someone says "two kittens," say two kittens. Do not add drama or narrative color. Embellish the feeling, never the facts.
+- CRITICAL: When building on a memory or detail, expand its meaning, not its contents. Do not add concrete specifics that were not given: no objects, habits, quirks, scenes, or jokes about things that may not have happened (if they shared a room, do not mention bunk beds, blankets, bedhead, or who snored). Humor must come from what the user actually said, not from invented details.
+- Never use the word "Honestly" (or "To be honest").
+- Use "quiet" or "quietly" at most once per card.`;
 
   if(isRev){
     return `This is a targeted revision of a greeting card.

@@ -129,6 +129,10 @@ function buildPrompt(A, currentCardText, mode, note){
     : A.from==='On behalf of someone else' ? 'The person filling this out is writing for someone else. Write in the voice of the actual sender, singular unless the inputs say otherwise. Never mention that someone helped write it.'
     : 'Singular voice throughout. Never use "we" to mean the sender.';
   const celebratory = CELEBRATORY.test(A.occasion||'') && !isLoss && !isApology;
+  const openingHasName = !!(name && A.opening && A.opening.toLowerCase().includes(name.toLowerCase()));
+  const nameRule = !name ? 'No name.'
+    : openingHasName ? 'The opening already uses "'+name+'". Do not use the name anywhere else in the card, including the final occasion wish (for example, "Happy Birthday!" rather than "Happy Birthday, '+name+'").'
+    : 'You may use "'+name+'" once only if it fits naturally mid-card. Never in the closing or final line. Never more than once.';
   const hasSpecifics = !!((A.memory||'').trim() || (A.misc||'').trim());
   const angleLine = (hasSpecifics || isLoss || isApology) ? '' : '\n- FOCUS FOR THIS CARD (no memories or details were given): ' + pick(ANGLES) + ' Keep the card centered on this one focus rather than touching on everything.';
 
@@ -156,7 +160,9 @@ This field is private context for the writer, never the card. Use it to understa
 - Never use em dashes (—) anywhere in the card. They are a clear AI writing signal. Use periods, commas, or line breaks instead.
 - Never use "journey," "words cannot express," or end with "always"
 - Never open with "There is something about," "There's something about," "Something about," or any variation. Start somewhere else entirely.
-- Avoid stock greeting-card moves, including: "That's not nothing," "That is everything," "That's actually everything," "not a small thing," "exactly as you are," "right here, right now," "more than you know," "more than words can say," "the world is a better place with you in it," "you deserve the world," and "gives back even a fraction of what you give," "ordinary days," "doesn't announce itself," "I don't take that lightly," "hard to name" or "can't quite name," "reflected back to you," and "everything you give." Say the specific thing instead.
+- Avoid stock greeting-card moves, including: "That's not nothing," "That is everything," "That's actually everything," "not a small thing," "exactly as you are," "right here, right now," "more than you know," "more than words can say," "the world is a better place with you in it," "you deserve the world," and "gives back even a fraction of what you give," "ordinary days," "doesn't announce itself," "I don't take that lightly," "hard to name" or "can't quite name," "reflected back to you," "everything you give," "more than I say," "I don't take (it/you) for granted," "you deserve a beautiful day," "a birthday as good as you are," "you've arrived at another birthday," and "I find myself thinking." Say the specific thing instead.
+- Do not use "held" or "feel held" as a metaphor.
+- Do not close with a wish that something good comes back to them, finds its way back, or returns to them, in any wording. Find a different kind of wish.
 - Use the "Not X, but Y" or "Not loud or complicated. Just..." construction at most once per card.
 - Do not use "light" as a metaphor for the person unless the user used it.
 - Use contractions the way people naturally talk (you're, I'm, don't, it's, here's). Avoid stiff phrasing like "I do not" or "Here is to you" unless the tone is formal.
@@ -182,7 +188,7 @@ ORIGINAL CONTEXT (keep consistent unless the fix above says otherwise):
 - WANT THEM TO FEEL: ${feelVal}
 - LENGTH: ${lengthRule}
 - SPIRITUALITY: ${spiritualRule}
-- NAME RULE: ${name?'Use "'+name+'" once only, never more than once.':'No name.'}
+- NAME RULE: ${nameRule}
 - OPENING: ${A.opening?'Start with exactly: "'+A.opening+'"':'No greeting or opening line.'}
 - SIGN-OFF: ${A.signoff?'End with exactly: "'+A.signoff+'"':'No sign-off.'}
 ${A.misc?'- INCLUDE IN CARD: "'+A.misc+'". Keep this in the card.':''}
@@ -244,7 +250,7 @@ AGE GUIDANCE: Use sender and recipient ages to calibrate vocabulary, references,
 SPIRITUALITY: ${spiritualRule}
 OCCASION: ${occasionRules||'—'}
 OPENING: ${A.opening?'Start the card with exactly: "'+A.opening+'". Use this and nothing else as the opening.':'No opening line. Do NOT add "Dear [name]" or any greeting. Start directly with the card message.'}
-NAME RULE: ${name?'You may use "'+name+'" once only if it fits naturally mid-card. Never in the opening or closing. Never more than once.':'No name.'}
+NAME RULE: ${nameRule}
 SIGN-OFF: ${A.signoff?'End the card with exactly: "'+A.signoff+'" on its own line. Use this and nothing else.':'No sign-off. Do NOT add "Love," or any closing. End with the last line of the message.'}
 FINAL LINE: ${closingRule}
 
@@ -260,7 +266,10 @@ ${coreRules}
 BEFORE YOU FINISH: count the words. If the card is under the LENGTH range, develop the middle further until it is within range.`;
 }
 
-const ANOTHER_SUFFIX = '\n\nIMPORTANT: Completely different opening, structure, and closing. Do not repeat or echo the previous version.';
+function anotherSuffix(currentCardText){
+  return (currentCardText ? `\n\nPREVIOUS VERSION (for contrast only):\n"${currentCardText}"` : '')
+    + '\n\nIMPORTANT: Write a new version with a completely different opening sentence, structure, and closing. Do not reuse the previous version\'s first sentence, its key phrases, or its central image.';
+}
 function resizeSuffix(A, currentCardText){
   const shorter = A.length===LENGTHS[1];
   return `\n\nCURRENT VERSION:\n"${currentCardText}"\n\nIMPORTANT: Rewrite this current version so it is noticeably ${shorter?'shorter':'longer'}, at the specified length${shorter?'. If it is already near that length, cut it by about a third':''}. Keep the same emotional core, voice, tone, and key details. ${shorter?'Cut rather than rephrase.':'Add depth from the inputs, never invented details.'}`;
@@ -314,7 +323,7 @@ export default async function handler(req, res) {
   try {
     if (action === 'revise') prompt = buildPrompt(answers, currentCardText, 'revise', note);
     else prompt = buildPrompt(answers, currentCardText, action)
-      + (action === 'another' ? ANOTHER_SUFFIX : action === 'shorten' ? resizeSuffix(answers, currentCardText) : '');
+      + (action === 'another' ? anotherSuffix(currentCardText) : action === 'shorten' ? resizeSuffix(answers, currentCardText) : '');
   } catch (e) {
     console.error('Prompt build error:', e);
     return res.status(400).json({ error: 'Something about those answers did not work. Please try again.' });

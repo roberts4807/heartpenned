@@ -385,7 +385,7 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
 
     <div class="qstep" id="q9">
       <div class="question" id="q10-text">Memories <span class="opt-tag">optional</span></div>
-      <div class="subtext">Cards that include real moments often mean the most.</div>
+      <div class="subtext">Even one small detail makes a big difference: a habit, a saying, something only they do.</div>
       <textarea class="text-input" id="t10a" rows="2" placeholder="e.g. The night she drove four hours to help me move and never once complained." oninput="updateMemories()" style="margin-bottom:8px;"></textarea>
       <textarea class="text-input" id="t10b" rows="2" placeholder="e.g. The way she always knew when something was wrong before I said a word." oninput="updateMemories()" style="margin-bottom:8px;"></textarea>
       <textarea class="text-input" id="t10c" rows="2" placeholder="e.g. That trip we took where everything went wrong and we laughed the whole time." oninput="updateMemories()"></textarea>
@@ -613,6 +613,7 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
 const A={kids:[],tones:[],feels:[],relChips:[]};
 let kidCount=1,versionCount=1,currentCardText='',savedVersions=[],activeVersionIdx=0;
 const PARTNER_VALS=['Husband','Wife','Partner'];
+const PARTNER_RE=/\b(husband|wife|partner|spouse|hubby|wifey)\b/i;
 const Q_ORDER=[1,2,'2b',4,'4b','4c',5,6,7,8,9,10,13,'13b'];
 
 // ── Card background themes ──────────────────────────────────────────────
@@ -987,14 +988,14 @@ function updateMemories(){
 function routeAfterOcc(){
   const occ=A.occasion,rel=A.relationship;
   if(occ==='Birthday')qGo('4b');
-  else if((occ==="Mother's Day"||occ==="Father's Day")&&PARTNER_VALS.includes(rel))qGo('4c');
+  else if((occ==="Mother's Day"||occ==="Father's Day")&&PARTNER_RE.test(rel||''))qGo('4c');
   else qGo(5);
 }
 
 function backFromTone(){
   const occ=A.occasion,rel=A.relationship;
   if(occ==='Birthday')qGo('4b');
-  else if((occ==="Mother's Day"||occ==="Father's Day")&&PARTNER_VALS.includes(rel))qGo('4c');
+  else if((occ==="Mother's Day"||occ==="Father's Day")&&PARTNER_RE.test(rel||''))qGo('4c');
   else qGo(4);
 }
 
@@ -1381,7 +1382,7 @@ function copyCard(){
 }
 
 function startOver(){
-  Object.keys(A).forEach(k=>{if(k==='kids')A.kids=[];else if(k==='tones')A.tones=[];else if(k==='feels')A.feels=[];else delete A[k];});
+  Object.keys(A).forEach(k=>{if(k==='kids')A.kids=[];else if(k==='tones')A.tones=[];else if(k==='feels')A.feels=[];else if(k==='relChips')A.relChips=[];else delete A[k];});
   kidCount=1;versionCount=1;currentCardText='';savedVersions=[];activeVersionIdx=0;isShortened=false;A.opening='';
   document.querySelectorAll('.chip').forEach(c=>c.classList.remove('selected'));
   document.querySelectorAll('textarea,input[type=text],input[type=number]').forEach(t=>t.value='');

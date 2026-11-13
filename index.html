@@ -214,6 +214,7 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
 .btn-download-pdf:disabled{opacity:0.4;cursor:not-allowed;}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script async src="https://tally.so/widgets/embed.js"></script>
 </head>
 <body>
 <div class="app">
@@ -562,6 +563,13 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
         <div class="print-preview-wrap" id="print-preview"></div>
         <button class="btn-download-pdf" id="btn-download-pdf" onclick="downloadPDF()">Download PDF</button>
       </div>
+    </div>
+
+    <!-- Feedback prompt (testing) — appears after the card is sent, printed, shared, or copied -->
+    <div id="feedback-prompt" style="display:none;margin-top:1.5rem;padding:1.1rem 1.25rem;background:#FFF8EE;border:1px solid #EBD9B8;border-radius:12px;text-align:center;">
+      <div style="font-size:15px;font-weight:600;color:#0A1A2A;margin-bottom:4px;font-family:'Inter',sans-serif;">How did your card feel?</div>
+      <div style="font-size:13px;color:#5A6A7A;margin-bottom:0.85rem;font-family:'Inter',sans-serif;">We're still shaping HeartPenned. A few quick questions, under a minute.</div>
+      <button onclick="openFeedback()" style="padding:0.7rem 1.4rem;background:#1A3A6A;color:white;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;">Share feedback</button>
     </div>
 
     <div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.06em;margin-top:1.5rem;margin-bottom:0.75rem;">What's next?</div>
@@ -931,6 +939,7 @@ async function shareCardImage() {
       await navigator.share({ files: [preparedCardFile], text: shareText });
       status.style.color = '#2A7A4A';
       status.textContent = '✓ Shared';
+      showFeedbackPrompt('share');
     } catch (e) {
       if (e.name !== 'AbortError') {
         status.style.color = '#C0392B';
@@ -948,6 +957,7 @@ async function shareCardImage() {
     setTimeout(() => URL.revokeObjectURL(url), 1000);
     status.style.color = '#2A7A4A';
     status.textContent = "✓ Downloaded. Attach it to any message, and add heartpenned.com if you'd like.";
+    showFeedbackPrompt('share');
   }
 }
 function handleToneOther(){
@@ -1312,7 +1322,25 @@ function showSendOptions(){
   document.getElementById('print-panel').style.display = 'none';
   const ctp=document.getElementById('copytext-panel'); if(ctp) ctp.style.display='none';
   document.querySelectorAll('.d-btn').forEach(b => b.classList.remove('active'));
+  const fb=document.getElementById('feedback-prompt'); if(fb) fb.style.display='none';
   showScreen('delivery');
+}
+
+// ── Feedback prompt (Tally form yX2GAW) ──
+const FEEDBACK_FORM_ID = 'yX2GAW';
+function showFeedbackPrompt(source){
+  const fb = document.getElementById('feedback-prompt');
+  if (!fb || fb.style.display === 'block') return;
+  fb.style.display = 'block';
+  if (window.gtag) gtag('event', 'feedback_prompt_shown', { event_category: 'feedback', event_label: source || '' });
+}
+function openFeedback(){
+  if (window.gtag) gtag('event', 'feedback_open', { event_category: 'feedback' });
+  if (window.Tally && typeof window.Tally.openPopup === 'function') {
+    window.Tally.openPopup(FEEDBACK_FORM_ID, { layout: 'modal', width: 520, autoClose: 3000 });
+  } else {
+    window.open('https://tally.so/r/' + FEEDBACK_FORM_ID, '_blank', 'noopener');
+  }
 }
 
 function handleDel(type){
@@ -1368,6 +1396,7 @@ function copyCard(){
   const text = currentCardText || '';
   navigator.clipboard.writeText(text).then(()=>{
     document.getElementById('copy-confirm').style.display='block';
+    showFeedbackPrompt('copy');
     const btn=document.getElementById('copy-btn');
     btn.textContent='Copied ✓';
     btn.style.background='#2A7A4A';
@@ -1378,6 +1407,7 @@ function copyCard(){
     box.select();
     document.execCommand('copy');
     document.getElementById('copy-confirm').style.display='block';
+    showFeedbackPrompt('copy');
   });
 }
 
@@ -4736,6 +4766,7 @@ async function sendCardEmail() {
       ? 'Card sent to ' + recipients[0].email + (senderEmail ? ' - Copy sent to you' : '')
       : 'Card sent to ' + recipients.length + ' recipients' + (senderEmail ? ' - Copy sent to you' : '');
     btn.textContent = 'Sent!';
+    showFeedbackPrompt('email');
 
   } catch (err) {
     statusEl.className = 'email-status error';
@@ -4815,6 +4846,7 @@ async function downloadPDF() {
     doc.setTextColor('#7A9CC0');
     doc.text('Heartpenned', margin + cardW - bodyPadX, bodyTop + bodyH - 12, { align: 'right' });
     doc.save('heartpenned-card.pdf');
+    showFeedbackPrompt('pdf');
   } catch(err) {
     console.error('PDF generation failed:', err);
     alert('Sorry, PDF generation failed. Please try again.');

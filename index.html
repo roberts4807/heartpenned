@@ -567,9 +567,9 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
 
     <!-- Feedback prompt (testing) — appears after the card is sent, printed, shared, or copied -->
     <div id="feedback-prompt" style="display:none;margin-top:1.5rem;padding:1.1rem 1.25rem;background:#FFF8EE;border:1px solid #EBD9B8;border-radius:12px;text-align:center;">
-      <div style="font-size:15px;font-weight:600;color:#0A1A2A;margin-bottom:4px;font-family:'Inter',sans-serif;">How did your card feel?</div>
-      <div style="font-size:13px;color:#5A6A7A;margin-bottom:0.85rem;font-family:'Inter',sans-serif;">We're still shaping HeartPenned. A few quick questions, under a minute.</div>
-      <button onclick="openFeedback()" style="padding:0.7rem 1.4rem;background:#1A3A6A;color:white;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;">Share feedback</button>
+      <div style="font-size:15px;font-weight:600;color:#0A1A2A;margin-bottom:4px;font-family:'Inter',sans-serif;">You're one of our first testers</div>
+      <div style="font-size:13px;color:#5A6A7A;margin-bottom:0.85rem;font-family:'Inter',sans-serif;">Tell us what worked and what didn't. Under a minute.</div>
+      <button onclick="openFeedback()" style="padding:0.7rem 1.4rem;background:#1A3A6A;color:white;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;">Give feedback</button>
     </div>
 
     <div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.06em;margin-top:1.5rem;margin-bottom:0.75rem;">What's next?</div>
@@ -1328,14 +1328,29 @@ function showSendOptions(){
 
 // ── Feedback prompt (Tally form yX2GAW) ──
 const FEEDBACK_FORM_ID = 'yX2GAW';
+// Tester mode: visitors who arrive via heartpenned.com/?tester=1 get the form
+// opened automatically after their card goes out. Remembered for the browser tab.
+const IS_TESTER = (function(){
+  try {
+    if (new URLSearchParams(window.location.search).get('tester') === '1') {
+      sessionStorage.setItem('hp_tester', '1');
+      return true;
+    }
+    return sessionStorage.getItem('hp_tester') === '1';
+  } catch (e) { return false; }
+})();
 function showFeedbackPrompt(source){
   const fb = document.getElementById('feedback-prompt');
   if (!fb || fb.style.display === 'block') return;
   fb.style.display = 'block';
-  if (window.gtag) gtag('event', 'feedback_prompt_shown', { event_category: 'feedback', event_label: source || '' });
+  if (window.gtag) gtag('event', 'feedback_prompt_shown', { event_category: 'feedback', event_label: source || '', tester: IS_TESTER ? 'yes' : 'no' });
+  if (IS_TESTER) {
+    // Short pause so the tester sees their "Sent" / "Copied" confirmation first
+    setTimeout(openFeedback, 1500);
+  }
 }
 function openFeedback(){
-  if (window.gtag) gtag('event', 'feedback_open', { event_category: 'feedback' });
+  if (window.gtag) gtag('event', 'feedback_open', { event_category: 'feedback', tester: IS_TESTER ? 'yes' : 'no' });
   if (window.Tally && typeof window.Tally.openPopup === 'function') {
     window.Tally.openPopup(FEEDBACK_FORM_ID, { layout: 'modal', width: 520, autoClose: 3000 });
   } else {

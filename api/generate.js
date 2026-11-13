@@ -1,7 +1,7 @@
 // ---------- Shared guard helpers (Redis rate limits + owner alerts) ----------
 const REDIS_URL = process.env.HP_KV_REST_API_URL;
 const REDIS_TOKEN = process.env.HP_KV_REST_API_TOKEN;
-const ALERT_TO = process.env.ALERT_EMAIL || 'roberts4807@gmail.com';
+const ALERT_TO = process.env.ALERT_EMAIL || 'hello@heartpenned.com';
 let lastLocalAlert = 0;
 
 async function redis(cmd) {

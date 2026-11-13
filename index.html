@@ -245,14 +245,9 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
   <div class="about-wrap">
     <div class="about-title">About Heartpenned</div>
     <div class="about-body">
-      <p>You know that feeling. Standing in the card aisle, reading one after another, shaking your head.</p>
-      <p>Some say too much. Some don't say nearly enough. Some are close — but not quite right. Not quite <em>you.</em></p>
-      <p>Maybe the card is too grand for what you actually have. Maybe it's not grand enough. Maybe you love this person in a way that's specific and deep and completely yours — and nothing on that rack comes close to capturing it.</p>
-      <p>So you settle. You sign your name and hope it lands.</p>
-      <p>It doesn't have to be that way.</p>
-      <p>The truth is, you already know exactly what to say. You know the specific thing they do that nobody else notices. You remember the moment that changed things between you. You know how this relationship actually feels.</p>
-      <p>You just need help finding the words.</p>
-      <p>That's what we built. Answer a few honest questions and we'll help you write something personal, specific, and true. The kind of card people keep.</p>
+      <p>You know that feeling. Standing in the card aisle, reading one after another, shaking your head. Some say too much. Some don't say enough. None of them ring true to your relationship.</p>
+      <p>You know what you feel. Heartpenned helps you find the words.</p>
+      <p>Answer a few honest questions and we'll help you write something personal, specific, and true. The kind of card people keep.</p>
       <div class="about-tagline">Real relationships deserve the right words.<br>For those the card aisle was not built for.</div>
     </div>
     <div style="margin-top:2rem;"><button class="hero-btn" onclick="startQ()">Write my card →</button></div>
@@ -570,6 +565,7 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
       <div style="font-size:15px;font-weight:600;color:#0A1A2A;margin-bottom:4px;font-family:'Inter',sans-serif;">You're one of our first testers</div>
       <div style="font-size:13px;color:#5A6A7A;margin-bottom:0.85rem;font-family:'Inter',sans-serif;">Tell us what worked and what didn't. Under a minute.</div>
       <button onclick="openFeedback()" style="padding:0.7rem 1.4rem;background:#1A3A6A;color:white;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;">Give feedback</button>
+      <div id="feedback-inline" style="display:none;margin-top:0.85rem;text-align:left;"></div>
     </div>
 
     <div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.06em;margin-top:1.5rem;margin-bottom:0.75rem;">What's next?</div>
@@ -1323,6 +1319,8 @@ function showSendOptions(){
   const ctp=document.getElementById('copytext-panel'); if(ctp) ctp.style.display='none';
   document.querySelectorAll('.d-btn').forEach(b => b.classList.remove('active'));
   const fb=document.getElementById('feedback-prompt'); if(fb) fb.style.display='none';
+  const fbi=document.getElementById('feedback-inline'); if(fbi) fbi.style.display='none';
+  const fbb=document.querySelector('#feedback-prompt button'); if(fbb) fbb.style.display='';
   showScreen('delivery');
 }
 
@@ -1345,12 +1343,35 @@ function showFeedbackPrompt(source){
   fb.style.display = 'block';
   if (window.gtag) gtag('event', 'feedback_prompt_shown', { event_category: 'feedback', event_label: source || '', tester: IS_TESTER ? 'yes' : 'no' });
   if (IS_TESTER) {
-    // Short pause so the tester sees their "Sent" / "Copied" confirmation first
-    setTimeout(openFeedback, 1500);
+    // Testers: show the form right on the page (no popup, so nothing can block it)
+    setTimeout(showInlineFeedback, 1200);
+  } else {
+    setTimeout(() => { try { fb.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) {} }, 600);
   }
 }
+function showInlineFeedback(){
+  const wrap = document.getElementById('feedback-inline');
+  const fb = document.getElementById('feedback-prompt');
+  if (!wrap) return;
+  if (!wrap.dataset.loaded) {
+    wrap.innerHTML = '<iframe src="https://tally.so/embed/' + FEEDBACK_FORM_ID +
+      '?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1" loading="lazy" width="100%" height="900" ' +
+      'frameborder="0" marginheight="0" marginwidth="0" title="HeartPenned Feedback" style="border:0;width:100%;min-height:600px;"></iframe>' +
+      '<div style="font-size:12px;color:#888;text-align:center;margin-top:6px;">Form not showing? <a href="https://tally.so/r/' + FEEDBACK_FORM_ID +
+      '" target="_blank" rel="noopener" style="color:#1A3A6A;">Open it here</a></div>';
+    wrap.dataset.loaded = '1';
+    // Let Tally resize the frame to fit, if its script is available
+    try { if (window.Tally && window.Tally.loadEmbeds) window.Tally.loadEmbeds(); } catch (e) {}
+  }
+  wrap.style.display = 'block';
+  const fbBtn = fb && fb.querySelector('button'); if (fbBtn) fbBtn.style.display = 'none';
+  if (window.gtag) gtag('event', 'feedback_open', { event_category: 'feedback', tester: IS_TESTER ? 'yes' : 'no', method: 'inline' });
+  try { (fb || wrap).scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) {}
+}
 function openFeedback(){
-  if (window.gtag) gtag('event', 'feedback_open', { event_category: 'feedback', tester: IS_TESTER ? 'yes' : 'no' });
+  // Tapping the button: testers get the on-page form; others get the popup or a new tab
+  if (IS_TESTER) { showInlineFeedback(); return; }
+  if (window.gtag) gtag('event', 'feedback_open', { event_category: 'feedback', tester: 'no' });
   if (window.Tally && typeof window.Tally.openPopup === 'function') {
     window.Tally.openPopup(FEEDBACK_FORM_ID, { layout: 'modal', width: 520, autoClose: 3000 });
   } else {

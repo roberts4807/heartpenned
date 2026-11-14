@@ -135,6 +135,9 @@ function buildPrompt(A, currentCardText, mode, note){
     : 'You may use "'+name+'" once only if it fits naturally mid-card. Never in the closing or final line. Never more than once.';
   const hasSpecifics = !!((A.memory||'').trim() || (A.misc||'').trim());
   const angleLine = (hasSpecifics || isLoss || isApology) ? '' : '\n- FOCUS FOR THIS CARD (no memories or details were given): ' + pick(ANGLES) + ' Keep the card centered on this one focus rather than touching on everything.';
+  // The sender skipped every detail question and chose "Keep it classic".
+  const isClassic = !!A.classic && !hasSpecifics;
+  const classicLine = isClassic ? '\n- CLASSIC CARD: The sender shared no personal details and chose a classic card. Write a warm, traditional greeting card message, the kind a thoughtful store-bought card would say: gracious, universal sentiments about the occasion and the relationship. Do not describe their personality, habits, or what they are like to be around, and do not imply any knowledge of their life or of moments you share. Nothing should need to be true about this specific person for the card to ring true. This overrides the instruction above to describe what this person is like or what they bring to the sender\'s life. Still follow TONE, LENGTH, NAME, OPENING, and SIGN-OFF exactly.' : '';
 
   const faithText=(A.faithTradition||'');
 const isChristianFaith=/christ|catholic|protestant|baptist|methodist|lutheran|presbyterian|episcopal|evangelical|pentecostal|anglican|denominational|latter.day|\blds\b|mormon/i.test(faithText)||(/orthodox/i.test(faithText)&&!/jew/i.test(faithText));
@@ -242,7 +245,7 @@ FEELINGS: ${feelingsRule}
 SHAPE:
 - ${pick(OPENING_MOVES)} Never name the occasion in the opening.
 - Middle: amplify what was expressed and give it room, in the card's tone. This is where most of the length lives. Build it from everything provided: who they are to the sender, the relationship context, the occasion, their ages and stage of life, what the sender wants them to feel, and any memories or details. If no memories were given, develop the feeling and the relationship more fully instead: what this person is like, what they bring to the sender's life, what the sender wishes for them. Never invent events or facts.
-- Ending: as the TONE section says for this tone.${angleLine}
+- Ending: as the TONE section says for this tone.${isClassic ? classicLine : angleLine}
 - Paragraphs: two or three short paragraphs. Never one long unbroken block.
 
 LENGTH: ${lengthRule}

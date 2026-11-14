@@ -96,6 +96,21 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
 .action-btn.primary{background:#1A3A6A !important;border-color:#1A3A6A !important;color:#fff !important;font-weight:700;}
 .m-br{display:none;}
 @media (max-width:480px){.m-br{display:block;}}
+.gq{border-top:0.5px solid #E0E6F0;padding:12px 0;}
+.gq-sum,.gq-body{display:none;}
+.gq-title{font-size:14px;color:#AAB4C0;}
+.gq.open .gq-title{font-size:15px;font-weight:600;color:#0A1A2A;margin-bottom:8px;cursor:default;}
+.gq.open .gq-body{display:block;}
+.gq.done .gq-title{display:none;}
+.gq.done .gq-sum{display:flex;justify-content:space-between;gap:12px;cursor:pointer;}
+.gq-sum-q{font-size:13px;color:#888;margin-bottom:2px;}
+.gq-sum-a{font-size:14px;color:#0A1A2A;}
+.gq-sum-a.skipped{color:#AAB4C0;font-style:italic;}
+.gq-edit{font-size:12px;color:#2A4A80;white-space:nowrap;}
+.gq-row{display:flex;align-items:center;justify-content:space-between;margin-top:8px;}
+.gq-btns{display:flex;align-items:center;gap:14px;}
+.gq-next{padding:8px 18px !important;font-size:13px !important;}
+.gq-add{font-size:13px;color:#2A4A80;cursor:pointer;}
 .m-only{display:none;}
 @media (max-width:600px){.m-only{display:block;}}
 .rev-box{display:none;background:#F4F6FA;border-radius:12px;padding:1.25rem;margin-bottom:1.25rem;border:0.5px solid #D0D8E8;}
@@ -363,7 +378,7 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
         <div class="chip" data-val="None">None</div><div class="chip" data-val="Gently spiritual">Gently spiritual</div><div class="chip" data-val="Openly faith-based">Openly faith-based</div>
       </div>
       <div class="exp" id="qe-faith"><input class="text-input" id="t7-faith" type="text" placeholder="Any tradition? e.g. Christian, Jewish, Muslim, Hindu — or leave blank" oninput="A.faithTradition=this.value"></div>
-      <div class="qnav"><button class="btn-back" onclick="qGo(6)">← Back</button><button class="btn-next" id="qn7" disabled onclick="qGo(8)">Next →</button></div>
+      <div class="qnav"><button class="btn-back" onclick="qGo(6)">← Back</button><button class="btn-next" id="qn7" disabled onclick="qGo(9)">Next →</button></div>
     </div>
 
     <div class="qstep" id="q8">
@@ -380,30 +395,44 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
       </div>
       <div class="cgl" style="margin-top:1rem;">Anything else to add? <span class="opt-tag">optional</span></div>
       <textarea class="text-input" id="t9" rows="3" placeholder="e.g. She has always inspired me to be the best I could be. Or — it's complicated, but she showed up when it mattered." oninput="updateRelCtx()"></textarea>
-      <div class="qnav"><button class="btn-back" onclick="qGo(7)">← Back</button><button class="btn-next" id="qn9" disabled onclick="qGo(9)">Next →</button></div>
+      <div class="qnav"><button class="btn-back" onclick="qGo(9)">← Back</button><button class="btn-next" id="qn9" disabled onclick="qGo(13)">Next →</button></div>
     </div>
 
     <div class="qstep" id="q9">
-      <div class="question" id="q10-text">Memories <span class="opt-tag">optional</span></div>
-      <div class="subtext">Even one small detail makes a big difference: a habit, a saying, something only they do.</div>
-      <textarea class="text-input" id="t10a" rows="2" placeholder="e.g. The night she drove four hours to help me move and never once complained." oninput="updateMemories()" style="margin-bottom:8px;"></textarea>
-      <textarea class="text-input" id="t10b" rows="2" placeholder="e.g. The way she always knew when something was wrong before I said a word." oninput="updateMemories()" style="margin-bottom:8px;"></textarea>
-      <textarea class="text-input" id="t10c" rows="2" placeholder="e.g. That trip we took where everything went wrong and we laughed the whole time." oninput="updateMemories()"></textarea>
-      <div class="qnav"><button class="btn-back" onclick="qGo(8)">← Back</button><div style="display:flex;align-items:center;gap:16px;"><span class="skip-link" onclick="qGo(10)">Skip</span><button class="btn-next" onclick="qGo(10)">Next →</button></div></div>
-    </div>
-
-    <div class="qstep" id="q10">
-      <div class="question">Anything else to include? <span class="opt-tag">optional</span></div>
-      <div class="subtext">A detail, a quality, a moment — whatever you put here goes in the card.</div>
-      <textarea class="text-input" id="t11" rows="3" placeholder="e.g. She just got promoted after years of working toward it. He always cries at commercials but pretends he doesn't." oninput="A.misc=this.value"></textarea>
-      <div class="qnav"><button class="btn-back" onclick="qGo(9)">← Back</button><div style="display:flex;align-items:center;gap:16px;"><span class="skip-link" onclick="qGo(13)">Skip</span><button class="btn-next" onclick="qGo(13)">Next →</button></div></div>
+      <div class="question" id="q10-text">Tell us about them</div>
+      <div class="subtext" style="margin-bottom:0.75rem;">A few quick questions. A few words each is plenty.</div>
+      <div class="gq open" id="gq1">
+        <div class="gq-sum" onclick="gqOpen(1)"><div><div class="gq-sum-q">1. What's a moment with them that stuck with you?</div><div class="gq-sum-a" id="gq1-a"></div></div><div class="gq-edit">Edit</div></div>
+        <div class="gq-title" onclick="gqOpen(1)">1. What's a moment with them that stuck with you?</div>
+        <div class="gq-body">
+          <textarea class="text-input" id="t10a" rows="2" placeholder="e.g. The night they drove four hours to help me move." oninput="updateDetails()"></textarea><textarea class="text-input" id="t10b" rows="2" placeholder="e.g. The night they drove four hours to help me move." oninput="updateDetails()" style="display:none;margin-top:8px;"></textarea><textarea class="text-input" id="t10c" rows="2" placeholder="e.g. The night they drove four hours to help me move." oninput="updateDetails()" style="display:none;margin-top:8px;"></textarea>
+          <div class="gq-row"><div><span class="gq-add" id="gq-add-moment" onclick="addMoment()">+ Add another moment</span></div><div class="gq-btns"><span class="skip-link" onclick="gqAdvance(1)">Skip</span><button class="btn-next gq-next" onclick="gqAdvance(1)">Next</button></div></div>
+        </div>
+      </div>
+      <div class="gq todo" id="gq2">
+        <div class="gq-sum" onclick="gqOpen(2)"><div><div class="gq-sum-q">2. What's a quality you appreciate in them?</div><div class="gq-sum-a" id="gq2-a"></div></div><div class="gq-edit">Edit</div></div>
+        <div class="gq-title" onclick="gqOpen(2)">2. What's a quality you appreciate in them?</div>
+        <div class="gq-body">
+          <textarea class="text-input" id="t-quality" rows="2" placeholder="e.g. Their patience. Nothing ever seems to rattle them." oninput="updateDetails()"></textarea>
+          <div class="gq-row"><div></div><div class="gq-btns"><span class="skip-link" onclick="gqAdvance(2)">Skip</span><button class="btn-next gq-next" onclick="gqAdvance(2)">Next</button></div></div>
+        </div>
+      </div>
+      <div class="gq todo" id="gq3">
+        <div class="gq-sum" onclick="gqOpen(3)"><div><div class="gq-sum-q">3. What's going on in their life right now?</div><div class="gq-sum-a" id="gq3-a"></div></div><div class="gq-edit">Edit</div></div>
+        <div class="gq-title" onclick="gqOpen(3)">3. What's going on in their life right now?</div>
+        <div class="gq-body">
+          <textarea class="text-input" id="t-news" rows="2" placeholder="e.g. They just started a new job." oninput="updateDetails()"></textarea>
+          <div class="gq-row"><div></div><div class="gq-btns"><span class="skip-link" onclick="gqAdvance(3)">Skip</span><button class="btn-next gq-next" onclick="gqAdvance(3)">Next</button></div></div>
+        </div>
+      </div>
+      <div class="qnav" style="border-top:0.5px solid #E0E6F0;padding-top:1rem;"><button class="btn-back" onclick="qGo(7)">← Back</button><button class="btn-next" id="qn10" disabled onclick="detailsNext()">Next →</button></div>
     </div>
 
     <div class="qstep" id="q13">
       <div class="question">How would you like to open the card? <span class="opt-tag">optional</span></div>
       <div class="subtext">This goes at the very top of the card, exactly as you write it.</div>
       <textarea class="text-input" id="t-opening" rows="2" placeholder="e.g. Dear Rachel," oninput="A.opening=this.value.trim()"></textarea>
-      <div class="qnav"><button class="btn-back" onclick="qGo(10)">← Back</button><button class="btn-next" onclick="qGo('13b')">Next →</button></div>
+      <div class="qnav"><button class="btn-back" onclick="qGo(8)">← Back</button><button class="btn-next" onclick="qGo('13b')">Next →</button></div>
     </div>
 
     <div class="qstep" id="q13b">
@@ -625,7 +654,7 @@ const A={kids:[],tones:[],feels:[],relChips:[]};
 let kidCount=1,versionCount=1,currentCardText='',savedVersions=[],activeVersionIdx=0;
 const PARTNER_VALS=['Husband','Wife','Partner'];
 const PARTNER_RE=/\b(husband|wife|partner|spouse|hubby|wifey)\b/i;
-const Q_ORDER=[1,2,'2b',4,'4b','4c',5,6,7,8,9,10,13,'13b'];
+const Q_ORDER=[1,2,'2b',4,'4b','4c',5,6,7,9,8,13,'13b'];
 
 // ── Card background themes ──────────────────────────────────────────────
 const CARD_THEMES = [
@@ -734,7 +763,7 @@ function qShowStep(n){
   document.getElementById('q-counter').textContent=occLabel;
 }
 function qGo(n){qShowStep(n);}
-function qSkip(n){if(n===1){A.name='';qGo(2);}}
+function qSkip(n){if(n===1){A.name='';document.getElementById('q9-text').textContent='Tell us about your relationship';document.getElementById('q10-text').textContent='Tell us about them';qGo(2);}}
 
 function resetEmailSection(){
   const btn = document.getElementById('btn-send-email');
@@ -754,7 +783,7 @@ function handleName(){
   A.name=v;
   document.getElementById('qn1').disabled=v.length<1;
   document.getElementById('q9-text').textContent=v?'Tell us about your relationship with '+v:'Tell us about your relationship';
-  document.getElementById('q10-text').innerHTML=v?'Memories with '+v+' <span class="opt-tag">optional</span>':'Memories <span class="opt-tag">optional</span>';
+  document.getElementById('q10-text').textContent=v?'Tell us about '+v:'Tell us about them';
 }
 function handleNoName(){
   const chk=document.getElementById('chk-noname');
@@ -766,7 +795,7 @@ function handleNoName(){
     inp.style.opacity='0.4';
     document.getElementById('qn1').disabled=false;
     document.getElementById('q9-text').textContent='Tell us about your relationship';
-    document.getElementById('q10-text').innerHTML='Memories <span class="opt-tag">optional</span>';
+    document.getElementById('q10-text').textContent='Tell us about them';
   } else {
     inp.disabled=false;
     inp.style.opacity='1';
@@ -774,7 +803,7 @@ function handleNoName(){
     A.name=v;
     document.getElementById('qn1').disabled=v.length<1;
     document.getElementById('q9-text').textContent=v?'Tell us about your relationship with '+v:'Tell us about your relationship';
-    document.getElementById('q10-text').innerHTML=v?'Memories with '+v+' <span class="opt-tag">optional</span>':'Memories <span class="opt-tag">optional</span>';
+    document.getElementById('q10-text').textContent=v?'Tell us about '+v:'Tell us about them';
   }
 }
 
@@ -991,12 +1020,66 @@ function updateRelCtx(){
   document.getElementById('qn9').disabled = (A.relChips.length === 0 && freeText.length < 3);
 }
 
-function updateMemories(){
-  const m1 = document.getElementById('t10a').value.trim();
-  const m2 = document.getElementById('t10b').value.trim();
-  const m3 = document.getElementById('t10c').value.trim();
-  A.memory = [m1, m2, m3].filter(Boolean).join(' / ');
+// ── "Tell us about them" guided questions ──
+function _val(id){const el=document.getElementById(id);return el?el.value.trim():'';}
+function updateDetails(){
+  A.memory=['t10a','t10b','t10c'].map(_val).filter(Boolean).join(' / ');
+  const q=_val('t-quality'), n=_val('t-news');
+  A.misc=[q?'A quality the sender appreciates in them: '+q:'', n?'What is going on in their life right now: '+n:''].filter(Boolean).join('. ');
+  if(A.memory||A.misc) A.classic=false;
 }
+function gqSummary(i){
+  const ids=i===1?['t10a','t10b','t10c']:i===2?['t-quality']:['t-news'];
+  const txt=ids.map(_val).filter(Boolean).join(' · ');
+  const el=document.getElementById('gq'+i+'-a');
+  el.textContent=txt||'Skipped';
+  el.classList.toggle('skipped',!txt);
+}
+function gqSet(i,state){const el=document.getElementById('gq'+i);el.classList.remove('open','done','todo');el.classList.add(state);}
+function gqOpen(i){
+  for(let k=1;k<=3;k++){
+    const el=document.getElementById('gq'+k);
+    if(k===i) continue;
+    if(el.classList.contains('open')){gqSummary(k);gqSet(k,'done');}
+  }
+  gqSet(i,'open');
+  const ta=document.querySelector('#gq'+i+' textarea');
+  if(ta) setTimeout(()=>{try{ta.focus({preventScroll:true});}catch(e){}},50);
+}
+function gqAdvance(i){
+  updateDetails();
+  gqSummary(i);gqSet(i,'done');
+  const next=[1,2,3].find(k=>k>i&&!document.getElementById('gq'+k).classList.contains('done'));
+  if(next) gqOpen(next);
+  if(i===3||!next) document.getElementById('qn10').disabled=false;
+}
+function addMoment(){
+  const b=document.getElementById('t10b'), c=document.getElementById('t10c');
+  if(b.style.display==='none'){b.style.display='block';b.focus();}
+  else if(c.style.display==='none'){c.style.display='block';c.focus();document.getElementById('gq-add-moment').style.display='none';}
+}
+function resetDetailsPage(){
+  ['t10b','t10c'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});
+  const add=document.getElementById('gq-add-moment');if(add)add.style.display='';
+  gqSet(1,'open');gqSet(2,'todo');gqSet(3,'todo');
+  const nb=document.getElementById('qn10');if(nb)nb.disabled=true;
+  const t=document.getElementById('q10-text');if(t)t.textContent='Tell us about them';
+  const r=document.getElementById('q9-text');if(r)r.textContent='Tell us about your relationship';
+}
+function detailsNext(){
+  updateDetails();
+  if(!A.memory&&!A.misc){document.getElementById('classic-modal').style.display='flex';if(window.gtag)gtag('event','details_empty_prompt_shown',{event_category:'details'});return;}
+  if(window.gtag) gtag('event','details_given',{event_category:'details'});
+  qGo(8);
+}
+function classicChoice(addDetail){
+  document.getElementById('classic-modal').style.display='none';
+  if(window.gtag) gtag('event','details_empty_choice',{event_category:'details',event_label:addDetail?'add_detail':'keep_classic'});
+  if(addDetail){gqOpen(1);return;}
+  A.classic=true;
+  qGo(8);
+}
+
 
 function routeAfterOcc(){
   const occ=A.occasion,rel=A.relationship;
@@ -1477,6 +1560,7 @@ function startOver(){
   kidCount=1;versionCount=1;currentCardText='';savedVersions=[];activeVersionIdx=0;isShortened=false;A.opening='';
   document.querySelectorAll('.chip').forEach(c=>c.classList.remove('selected'));
   document.querySelectorAll('textarea,input[type=text],input[type=number]').forEach(t=>t.value='');
+  resetDetailsPage();
   const noNameChk=document.getElementById('chk-noname');
   if(noNameChk){noNameChk.checked=false;const ni=document.getElementById('t-name');if(ni){ni.disabled=false;ni.style.opacity='1';}}
   document.querySelectorAll('.btn-next').forEach(b=>b.disabled=true);
@@ -4918,5 +5002,13 @@ async function downloadPDF() {
 }
 
 </script>
+<div id="classic-modal" style="display:none;position:fixed;inset:0;background:rgba(10,26,42,0.45);z-index:9999;align-items:center;justify-content:center;padding:20px;">
+  <div style="background:white;border-radius:14px;max-width:400px;width:100%;padding:28px 26px 22px;box-shadow:0 10px 40px rgba(0,0,0,0.2);font-family:'Inter',sans-serif;">
+    <div style="font-size:19px;font-weight:600;color:#0A1A2A;margin-bottom:10px;">Want to add one small detail?</div>
+    <div style="font-size:14px;color:#3A4A5A;line-height:1.6;margin-bottom:22px;">The details are what make a card feel like it could only be from you. Without them, we'll write a warm, classic card instead.</div>
+    <button class="action-btn primary" onclick="classicChoice(true)" style="width:100%;padding:13px;font-size:14px;margin-bottom:10px;border-radius:8px;">Add a detail</button>
+    <button class="action-btn" onclick="classicChoice(false)" style="width:100%;padding:12px;font-size:14px;border-radius:8px;">Keep it classic</button>
+  </div>
+</div>
 </body>
 </html>

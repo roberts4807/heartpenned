@@ -113,6 +113,8 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
 .gq-btns{display:flex;align-items:center;gap:14px;}
 .gq-next{padding:8px 18px !important;font-size:13px !important;}
 .gq-add{font-size:13px;color:#2A4A80;cursor:pointer;}
+.gq-last .gq-btns{display:none;}
+.gq-last .gq-row{display:none;}
 .gq-note{font-size:12px;color:#888;margin:-4px 0 8px;}
 .m-only{display:none;}
 @media (max-width:600px){.m-only{display:block;}}
@@ -431,9 +433,9 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
           <div class="gq-row"><div></div><div class="gq-btns"><span class="skip-link" onclick="gqAdvance(3)">Skip</span><button class="btn-next gq-next" onclick="gqAdvance(3)">Next</button></div></div>
         </div>
       </div>
-      <div class="gq todo" id="gq4">
+      <div class="gq todo gq-last" id="gq4">
         <div class="gq-sum" onclick="gqOpen(4)"><div><div class="gq-sum-q">4. Anything going on in their life right now to include?</div><div class="gq-sum-a" id="gq4-a"></div></div><div class="gq-edit">Edit</div></div>
-        <div class="gq-title" onclick="gqOpen(4)">4. Anything going on in their life right now to include?</div>
+        <div class="gq-title" onclick="gqOpen(4)">4. Anything going on in their life right now to include? <span class="opt-tag">optional</span></div>
         <div class="gq-body">
           <textarea class="text-input" id="t-news" rows="2" placeholder="e.g. They just started a new job." oninput="updateDetails()"></textarea>
           <div class="gq-row"><div></div><div class="gq-btns"><span class="skip-link" onclick="gqAdvance(4)">Skip</span><button class="btn-next gq-next" onclick="gqAdvance(4)">Next</button></div></div>
@@ -1057,10 +1059,11 @@ function gqOpen(i){
   for(let k=1;k<=GQ_N;k++){
     if(k===i) continue;
     if(document.getElementById('gq'+k).classList.contains('open')){
-      if(gqCompleted.has(k)){gqSummary(k);gqSet(k,'done');} else gqSet(k,'todo');
+      if(gqCompleted.has(k)||_vals(k).length){gqCompleted.add(k);gqSummary(k);gqSet(k,'done');} else gqSet(k,'todo');
     }
   }
   gqSet(i,'open');
+  if(i===GQ_N){gqCompleted.add(i);document.getElementById('qn10').disabled=false;}
   const ta=document.querySelector('#gq'+i+' textarea');
   if(ta) setTimeout(()=>{try{ta.focus({preventScroll:true});}catch(e){}},50);
 }
@@ -1068,10 +1071,7 @@ function gqAdvance(i){
   updateDetails();
   gqCompleted.add(i);
   gqSummary(i);gqSet(i,'done');
-  let next=null;
-  for(let k=1;k<=GQ_N;k++){if(!gqCompleted.has(k)){next=k;break;}}
-  if(next) gqOpen(next);
-  else document.getElementById('qn10').disabled=false;
+  if(i<GQ_N) gqOpen(i+1);
 }
 function addMore(i){
   const hidden=GQ_IDS[i].map(id=>document.getElementById(id)).filter(el=>el.style.display==='none');

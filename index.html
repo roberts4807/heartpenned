@@ -1051,11 +1051,14 @@ function gqSummary(i){
   el.textContent=txt||'Skipped';
   el.classList.toggle('skipped',!txt);
 }
+const gqCompleted=new Set(); // questions finished with Next or Skip
 function gqSet(i,state){const el=document.getElementById('gq'+i);el.classList.remove('open','done','todo');el.classList.add(state);}
 function gqOpen(i){
   for(let k=1;k<=GQ_N;k++){
     if(k===i) continue;
-    if(document.getElementById('gq'+k).classList.contains('open')){gqSummary(k);gqSet(k,'done');}
+    if(document.getElementById('gq'+k).classList.contains('open')){
+      if(gqCompleted.has(k)){gqSummary(k);gqSet(k,'done');} else gqSet(k,'todo');
+    }
   }
   gqSet(i,'open');
   const ta=document.querySelector('#gq'+i+' textarea');
@@ -1063,11 +1066,12 @@ function gqOpen(i){
 }
 function gqAdvance(i){
   updateDetails();
+  gqCompleted.add(i);
   gqSummary(i);gqSet(i,'done');
   let next=null;
-  for(let k=i+1;k<=GQ_N;k++){if(!document.getElementById('gq'+k).classList.contains('done')){next=k;break;}}
+  for(let k=1;k<=GQ_N;k++){if(!gqCompleted.has(k)){next=k;break;}}
   if(next) gqOpen(next);
-  if(i===GQ_N||!next) document.getElementById('qn10').disabled=false;
+  else document.getElementById('qn10').disabled=false;
 }
 function addMore(i){
   const hidden=GQ_IDS[i].map(id=>document.getElementById(id)).filter(el=>el.style.display==='none');
@@ -1077,6 +1081,7 @@ function addMore(i){
 }
 function resetDetailsPage(){
   [1,2].forEach(i=>{GQ_IDS[i].slice(1).forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});const a=document.getElementById('gq-add-'+i);if(a)a.style.display='';});
+  gqCompleted.clear();
   gqSet(1,'open');for(let k=2;k<=GQ_N;k++)gqSet(k,'todo');
   const nb=document.getElementById('qn10');if(nb)nb.disabled=true;
   const t=document.getElementById('q10-text');if(t)t.textContent='Tell us about them';

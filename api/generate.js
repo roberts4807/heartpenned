@@ -90,6 +90,21 @@ const OPENING_MOVES = [
   'Open with something about where they are in life right now, using only what the inputs say.',
   'Open with a short, simple sentence. Let the next sentence do the work.',
 ];
+// Used for every thin-detail card, and as one of the random choices for rich cards.
+const OCCASION_OPENING = 'Open with the occasion: a fresh line about what this day or moment means for them, not a stock greeting.';
+
+// Details are "rich" when 2+ of the four detail questions were answered, or when
+// one was answered with at least RICH_DETAIL_CHARS characters (labels not counted).
+// Otherwise they are "thin": the card blends in occasion warmth and wishes
+// instead of describing the person.
+const RICH_DETAIL_CHARS = 100;
+const DETAIL_LABELS = ['Qualities the sender appreciates in them: ', 'What they mean to the sender: ', 'What is going on in their life right now: '];
+function hasRichDetails(A){
+  const misc = A.misc || '';
+  const answered = (A.memory ? 1 : 0) + DETAIL_LABELS.filter(l => misc.includes(l)).length;
+  const chars = ((A.memory||'').split(' / ').join('') + DETAIL_LABELS.reduce((s, l) => s.split(l).join(''), misc)).trim().length;
+  return answered >= 2 || chars >= RICH_DETAIL_CHARS;
+}
 
 // When the sender gave no memories or details, give each card a different focus
 // so cards differ in content, not just in their first line.
@@ -142,12 +157,21 @@ function buildPrompt(A, currentCardText, mode, note){
   const roleText = isClassic
     ? 'You are a senior greeting card writer with 20 years of experience. The sender chose a CLASSIC card and shared no personal details. Write the kind of message found in a beautifully written store-bought card: warm, gracious, traditional greeting-card language that would ring true for anyone in this relationship on this occasion. It should feel lovely and sincere, never generic filler, never cheesy, no rhymes.'
     : 'You are a senior greeting card writer with 20 years of experience. Your job is to write a card message that sounds like the sender wrote it themselves, on a good day, to this specific person. Not a card company, not AI. It should sound like this relationship actually sounds: sometimes tender, sometimes funny, sometimes plain. Real cards vary in tone and shape.';
+  // Regular cards: thin details lean on the occasion; rich details stay fully personal.
+  const isThin = !isClassic && !isApology && !hasRichDetails(A);
   const openText = isClassic
     ? 'Open warmly and simply. It may open with a wish or a warm line about the occasion.'
-    : pick(OPENING_MOVES) + ' Never name the occasion in the opening.';
+    : (isThin ? OCCASION_OPENING : pick([...OPENING_MOVES, OCCASION_OPENING])) + ' Don\'t open with the occasion greeting itself (no "Happy Birthday!" as the first line; that belongs at the end).';
   const middleText = isClassic
     ? 'Middle: sentiments that fit the occasion. For a birthday, holiday, anniversary, graduation, or milestone: heartfelt wishes (for the day, the year ahead, what you hope for them). For sympathy: comfort and presence, never wishes about the future or silver linings. For thank you: sincere gratitude. For get well: wishes for healing, rest, and comfort. For thinking of you: warmth and a reminder that they are on the sender\'s mind. For an apology: a sincere, simple acknowledgment and the hope to make things right, never celebration. If it fits, add one meaningful universal reflection on the occasion or on this kind of relationship (for example, what another year means, or what a good friend is). Do not describe this person: no personality traits, habits, what they are like, how they make the sender feel, or what they bring to the sender\'s life. No first-person musing ("I think," "I don\'t always know the right words"). Speak to them warmly in second person.'
-    : 'Middle: amplify what was expressed and give it room, in the card\'s tone. This is where most of the length lives. Build it from everything provided: who they are to the sender, the relationship context, the occasion, their ages and stage of life, what the sender wants them to feel, and any memories or details. If no memories were given, develop the feeling and the relationship more fully instead: what this person is like, what they bring to the sender\'s life, what the sender wishes for them. Never invent events or facts.';
+    : isThin
+    ? 'Middle: the sender shared only a little. Build on exactly what they gave and give it room, in the card\'s tone, but do not fill the rest by describing who this person is, their traits, or what they bring to the sender\'s life beyond what was given. Fill it instead with the occasion itself (what this day, season, or milestone means and marks for them; for sympathy, a simple acknowledgment of the loss and comfort), warm wishes for them, and, if it fits, one universal reflection on this kind of relationship. Never invent events or facts.'
+    : 'Middle: amplify what was expressed and give it room, in the card\'s tone. This is where most of the length lives. Build it from everything provided: who they are to the sender, the relationship context, the occasion, their ages and stage of life, what the sender wants them to feel, and any memories or details. If no memories were given, develop the feeling and the relationship more fully instead: what this person is like, what they bring to the sender\'s life, what the sender wishes for them. Never invent events or facts.'
+      + (isApology ? '' : ' Give the occasion itself real presence too: at least one line about what this day, season, or milestone means and what it marks for them, connected to them where possible. For sympathy, this means acknowledging the loss simply, without explaining or interpreting it.');
+  const wishLine = (isClassic || isApology) ? ''
+    : '\n- Include at least one genuine wish for them in the body of the card, not only the closing occasion line. Shape it to the occasion: for a celebration, what you hope this day or year holds for them; for sympathy, comfort, rest, or company in the days ahead, never a silver lining; for get well, healing and rest; for thank you or thinking of you, something good for them. In a funny or light tone, the wish can be playful.';
+  const musingLine = isClassic ? ''
+    : '\n- At most one sentence of first-person musing, where the sender reflects on their own thoughts or on writing the card ("I think...", "I keep coming back to...", "I don\'t always know the right words"). Plain feeling toward them ("I\'m so proud of you") is fine. Keep the attention on them and the occasion.';
 
   const faithText=(A.faithTradition||'');
 const isChristianFaith=/christ|catholic|protestant|baptist|methodist|lutheran|presbyterian|episcopal|evangelical|pentecostal|anglican|denominational|latter.day|\blds\b|mormon/i.test(faithText)||(/orthodox/i.test(faithText)&&!/jew/i.test(faithText));
@@ -258,7 +282,7 @@ FEELINGS: ${feelingsRule}
 
 SHAPE:
 - ${openText}
-- ${middleText}
+- ${middleText}${wishLine}
 - Ending: as the TONE section says for this tone.${isClassic ? classicLine : angleLine}
 - Paragraphs: two or three short paragraphs. Never one long unbroken block.
 
@@ -281,7 +305,7 @@ ${coreRules}
 - Never assume anything about people not described in the inputs
 - Card stays entirely about the recipient
 - People before pets when listing names
-- Never quote inputs verbatim. Put them in your own words, in the card's tone.
+- Never quote inputs verbatim. Put them in your own words, in the card's tone.${musingLine}
 
 BEFORE YOU FINISH: count the words. If the card is under the LENGTH range, develop the middle further until it is within range${isClassic ? ' (with more warm wishes or a universal reflection, never details about the person)' : ''}.`;
 }

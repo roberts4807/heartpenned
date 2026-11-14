@@ -91,9 +91,13 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
 
 .card-mark{position:absolute;bottom:12px;right:16px;font-size:11px;color:#7A9CC0;letter-spacing:0.06em;font-family:'Playfair Display',serif;font-style:italic;}
 .action-row{display:flex;gap:8px;margin-bottom:1.25rem;}
-.action-btn{flex:1;padding:11px 6px;border-radius:8px;font-size:12px;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.15s;text-align:center;border:0.5px solid #C0CCE0;background:white;color:#3A4A5A;line-height:1.5;}
+.action-btn{flex:1;padding:11px 6px;border-radius:8px;font-size:12px;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.15s;text-align:center;border:0.5px solid #C0CCE0;background:white;color:#3A4A5A;line-height:1.5;font-weight:600;}
 .action-btn:hover{border-color:#2A4A80;color:#1A3060;background:#EEF2FA;}
 .action-btn.primary{background:#1A3A6A !important;border-color:#1A3A6A !important;color:#fff !important;font-weight:700;}
+.m-br{display:none;}
+@media (max-width:480px){.m-br{display:block;}}
+.m-only{display:none;}
+@media (max-width:600px){.m-only{display:block;}}
 .rev-box{display:none;background:#F4F6FA;border-radius:12px;padding:1.25rem;margin-bottom:1.25rem;border:0.5px solid #D0D8E8;}
 .rev-box.open{display:block;}
 .rev-label{font-size:13px;font-weight:500;color:#0A1A2A;margin-bottom:0.4rem;}
@@ -444,7 +448,7 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
       <button class="action-btn" onclick="shortenCard()">Shorten</button>
     </div>
     <div style="margin-top:0.75rem;margin-bottom:0.25rem;display:flex;align-items:center;justify-content:center;gap:1.5rem;">
-      <button class="action-btn primary" onclick="showDelivery()">This is the one ✓</button>
+      <button class="action-btn primary" onclick="showDelivery()" style="font-size:14px;line-height:1.35;">Love it!<span class="m-br"></span> Pick a design →</button>
       <button class="btn-back" onclick="showScreen('q');qGo('13b')" style="font-size:13px;">← Back to questions</button>
     </div>
     <div class="edit-bar" id="edit-bar">
@@ -466,7 +470,7 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
 
     <!-- Style picker -->
     <div style="margin-bottom:1rem;">
-      <div class="print-panel-label">Card Header</div>
+      <div class="print-panel-label" id="del-design-top">Card Design</div>
       <div class="header-category-tabs">
         <div class="hcat-tab active" id="delcat-suggested" onclick="switchDeliveryStyle('suggested')">Suggested</div>
         <div class="hcat-tab" id="delcat-browseall" onclick="switchDeliveryStyle('browseall')">Browse All</div>
@@ -483,6 +487,9 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
       <svg class="card-corner" style="bottom:10px;right:10px;width:28px;height:28px;" viewBox="0 0 32 32"><path d="M30 16 Q30 30 16 30" stroke="#2A4A80" stroke-width="1" fill="none"/><circle cx="30" cy="30" r="2" fill="#2A4A80"/></svg>
       <div class="card-text" id="del-card-text" style="font-size:14px;"></div>
       <div class="card-mark">Heartpenned</div>
+    </div>
+    <div class="m-only" style="text-align:center;margin:-0.5rem 0 1rem;">
+      <button onclick="scrollToDesignOptions()" style="background:none;border:none;color:#2A4A80;font-size:13px;font-family:'Inter',sans-serif;cursor:pointer;padding:6px;text-decoration:underline;">↑ Choose a different design</button>
     </div>
 
     <div style="display:flex;gap:12px;margin-top:0.5rem;margin-bottom:1rem;">
@@ -1202,6 +1209,7 @@ function switchDeliveryStyle(cat) {
         if (dz) { dz.innerHTML = ''; dz.style.display = 'none'; }
         colorSwatches.querySelectorAll('div').forEach(sw => sw.style.border = '2px solid transparent');
         s.style.border = '2px solid #1A3A6A';
+        scrollToDelCard();
       };
       colorSwatches.appendChild(s);
     });
@@ -1242,7 +1250,7 @@ function switchDeliveryStyle(cat) {
     // Auto-select first classic if nothing selected
     if (!activeHeaderId) {
       const first = thumbs.querySelector('.header-thumb');
-      if (first) first.click();
+      if (first) { _autoPickingHeader = true; first.click(); _autoPickingHeader = false; }
     }
 
   } else if (cat === 'browseall') {
@@ -1283,6 +1291,25 @@ function switchDeliveryStyle(cat) {
   }
 }
 
+let _autoPickingHeader = false;
+
+// Scroll the design preview card into view, only if it isn't already fully visible
+function scrollToDelCard() {
+  const card = document.querySelector('#screen-style .card-surface');
+  if (!card) return;
+  setTimeout(() => {
+    const r = card.getBoundingClientRect();
+    if (r.top >= 0 && r.bottom <= window.innerHeight) return;
+    window.scrollTo({ top: window.scrollY + r.top - 12, behavior: 'smooth' });
+  }, 50);
+}
+
+function scrollToDesignOptions() {
+  const t = document.getElementById('del-design-top');
+  if (!t) return;
+  window.scrollTo({ top: window.scrollY + t.getBoundingClientRect().top - 12, behavior: 'smooth' });
+}
+
 function selectDeliveryHeader(h, wrap, fromCat) {
   activeHeaderId = h.id;
   activeDigitalHeaderId = h.id;
@@ -1294,15 +1321,13 @@ function selectDeliveryHeader(h, wrap, fromCat) {
   applyTheme(h.theme, [document.querySelector('#screen-style .card-surface')]);
   document.querySelector('#screen-style .card-surface').style.background = bodyBg;
 
-  if (fromCat === 'browseall') {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    setTimeout(() => switchDeliveryStyle('suggested'), 300);
-  }
+  if (!_autoPickingHeader) scrollToDelCard();
 }
 
 function showDelivery(){
   document.getElementById('del-card-text').textContent = currentCardText;
   showScreen('style');
+  window.scrollTo(0, 0);
   Promise.resolve().then(() => {
     applyDefaultHeader(A.occasion || '');
     switchDeliveryStyle('suggested');

@@ -119,7 +119,7 @@ function buildPrompt(A, currentCardText, mode, note){
   const feelVal=A.feels.join(', ')||'loved';
   const lengthIsStandard = A.length===LENGTHS[1];
   const leansShort = tonesList.length>0 && tonesList.every(t=>SHORT_LEANING.includes(t));
-  const lengthRule = lengthIsStandard
+  let lengthRule = lengthIsStandard
     ? '50 to 80 words.'
     : (leansShort && !isLoss
         ? '85 to 115 words. Stay in this range. Fill it with substance from the inputs, not padding or repetition.'
@@ -137,7 +137,17 @@ function buildPrompt(A, currentCardText, mode, note){
   const angleLine = (hasSpecifics || isLoss || isApology) ? '' : '\n- FOCUS FOR THIS CARD (no memories or details were given): ' + pick(ANGLES) + ' Keep the card centered on this one focus rather than touching on everything.';
   // The sender skipped every detail question and chose "Keep it classic".
   const isClassic = !!A.classic && !hasSpecifics;
-  const classicLine = isClassic ? '\n- CLASSIC CARD: The sender shared no personal details and chose a classic card. Write a warm, traditional greeting card message, the kind a thoughtful store-bought card would say: gracious, universal sentiments about the occasion and the relationship. Do not describe their personality, habits, or what they are like to be around, and do not imply any knowledge of their life or of moments you share. Nothing should need to be true about this specific person for the card to ring true. This overrides the instruction above to describe what this person is like or what they bring to the sender\'s life. Still follow TONE, LENGTH, NAME, OPENING, and SIGN-OFF exactly.' : '';
+  if (isClassic && !lengthIsStandard) lengthRule = '75 to 100 words. Stay in this range.';
+  const classicLine = isClassic ? '\n- CLASSIC CARD: no personal details were given, by choice. Say nothing specific about this person or this relationship, including anything from the relationship context.' : '';
+  const roleText = isClassic
+    ? 'You are a senior greeting card writer with 20 years of experience. The sender chose a CLASSIC card and shared no personal details. Write the kind of message found in a beautifully written store-bought card: warm, gracious, traditional greeting-card language that would ring true for anyone in this relationship on this occasion. It should feel lovely and sincere, never generic filler, never cheesy, no rhymes.'
+    : 'You are a senior greeting card writer with 20 years of experience. Your job is to write a card message that sounds like the sender wrote it themselves, on a good day, to this specific person. Not a card company, not AI. It should sound like this relationship actually sounds: sometimes tender, sometimes funny, sometimes plain. Real cards vary in tone and shape.';
+  const openText = isClassic
+    ? 'Open warmly and simply. It may open with a wish or a warm line about the occasion.'
+    : pick(OPENING_MOVES) + ' Never name the occasion in the opening.';
+  const middleText = isClassic
+    ? 'Middle: sentiments that fit the occasion. For a birthday, holiday, anniversary, graduation, or milestone: heartfelt wishes (for the day, the year ahead, what you hope for them). For sympathy: comfort and presence, never wishes about the future or silver linings. For thank you: sincere gratitude. For get well: wishes for healing, rest, and comfort. For thinking of you: warmth and a reminder that they are on the sender\'s mind. For an apology: a sincere, simple acknowledgment and the hope to make things right, never celebration. If it fits, add one meaningful universal reflection on the occasion or on this kind of relationship (for example, what another year means, or what a good friend is). Do not describe this person: no personality traits, habits, what they are like, how they make the sender feel, or what they bring to the sender\'s life. No first-person musing ("I think," "I don\'t always know the right words"). Speak to them warmly in second person.'
+    : 'Middle: amplify what was expressed and give it room, in the card\'s tone. This is where most of the length lives. Build it from everything provided: who they are to the sender, the relationship context, the occasion, their ages and stage of life, what the sender wants them to feel, and any memories or details. If no memories were given, develop the feeling and the relationship more fully instead: what this person is like, what they bring to the sender\'s life, what the sender wishes for them. Never invent events or facts.';
 
   const faithText=(A.faithTradition||'');
 const isChristianFaith=/christ|catholic|protestant|baptist|methodist|lutheran|presbyterian|episcopal|evangelical|pentecostal|anglican|denominational|latter.day|\blds\b|mormon/i.test(faithText)||(/orthodox/i.test(faithText)&&!/jew/i.test(faithText));
@@ -156,7 +166,11 @@ const spiritualRule=A.spirituality==='None'||!A.spirituality?'No spiritual langu
 
   const privateCtx = `RELATIONSHIP CONTEXT — CONFIDENTIAL WRITER BRIEFING ONLY:
 "${A.relationshipCtx||''}"
-This field is private context for the writer, never the card. Use it to understand emotional distance, what to avoid, and how measured the tone should be. If it contains something genuinely positive about the recipient, that quality may be reflected. Complicated or ambivalent feelings must never surface in the card. The card always builds from what is true and good.`;
+This field is private context for the writer, never the card. Nothing from it may appear in the card in any form: not quoted, not paraphrased, not hinted at, not even a positive quality mentioned here. It only tells you where the relationship stands today, so you can set how warm, how close, and how measured the card should be, and what to avoid.
+- The recipient's role (parent, partner, friend, and so on) still sets the register and the warmth. A card to a parent still sounds like it is to a parent.
+- Where things stand today limits what the card claims. If it is complicated, rebuilding, or up and down, or the sender says what to avoid: stay warm, but no superlatives, no "best ever," no declarations of closeness or gratitude bigger than what is real. Never mention the difficulty itself.
+- Friendly or casual acquaintance: keep it light and kind, still warm, and never overstate how close they are.
+The card always builds from what is true and good.`;
 
   const coreRules = `- No greeting
 - Always write in second person, speaking directly to the recipient. Never slip into third person (e.g. never "the person who..." or "someone who..."). Use "you" and "your" throughout. When referring to shared experiences between sender and recipient, use "we," "us," and "our," never "both of you," "the two of you," or any phrasing that positions the writer as an outside observer.
@@ -169,7 +183,7 @@ This field is private context for the writer, never the card. Use it to understa
 - Use the "Not X, but Y" or "Not loud or complicated. Just..." construction at most once per card.
 - Do not use "light" as a metaphor for the person unless the user used it.
 - Use contractions the way people naturally talk (you're, I'm, don't, it's, here's). Avoid stiff phrasing like "I do not" or "Here is to you" unless the tone is formal.
-- CRITICAL: Never invent specific moments, events, or details not provided by the user. If no memory or specific moment was shared, write around feeling and relationship. Never fabricate a story, proposal, or event.
+- CRITICAL: Never invent specific moments, events, or details not provided by the user. ${isClassic ? 'In this classic card, do not describe the person or the relationship at all.' : 'If no memory or specific moment was shared, write around feeling and relationship.'} Never fabricate a story, proposal, or event.
 - CRITICAL: Treat every user input as a fact to reflect, not a story to expand. If someone says "two kittens," say two kittens. Do not add drama or narrative color. Embellish the feeling, never the facts.
 - CRITICAL: When building on a memory or detail, expand its meaning, not its contents. Do not add concrete specifics that were not given: no objects, habits, quirks, scenes, or jokes about things that may not have happened (if they shared a room, do not mention bunk beds, blankets, bedhead, or who snored). Humor must come from what the user actually said, not from invented details.
 - Never use the word "honestly" anywhere in the card, in any position or capitalization, and never "to be honest."
@@ -209,7 +223,7 @@ Fix ONLY what was flagged. Keep everything else. Write ONLY the revised card mes
   }
 
   return`ROLE AND STANDARD:
-You are a senior greeting card writer with 20 years of experience. Your job is to write a card message that sounds like the sender wrote it themselves, on a good day, to this specific person. Not a card company, not AI. It should sound like this relationship actually sounds: sometimes tender, sometimes funny, sometimes plain. Real cards vary in tone and shape.
+${roleText}
 
 INPUTS:
 ${name?'RECIPIENT NAME: '+name:''}
@@ -243,8 +257,8 @@ EMOTIONAL INTENSITY: ${intensityRule}
 FEELINGS: ${feelingsRule}
 
 SHAPE:
-- ${pick(OPENING_MOVES)} Never name the occasion in the opening.
-- Middle: amplify what was expressed and give it room, in the card's tone. This is where most of the length lives. Build it from everything provided: who they are to the sender, the relationship context, the occasion, their ages and stage of life, what the sender wants them to feel, and any memories or details. If no memories were given, develop the feeling and the relationship more fully instead: what this person is like, what they bring to the sender's life, what the sender wishes for them. Never invent events or facts.
+- ${openText}
+- ${middleText}
 - Ending: as the TONE section says for this tone.${isClassic ? classicLine : angleLine}
 - Paragraphs: two or three short paragraphs. Never one long unbroken block.
 
@@ -269,7 +283,7 @@ ${coreRules}
 - People before pets when listing names
 - Never quote inputs verbatim. Put them in your own words, in the card's tone.
 
-BEFORE YOU FINISH: count the words. If the card is under the LENGTH range, develop the middle further until it is within range.`;
+BEFORE YOU FINISH: count the words. If the card is under the LENGTH range, develop the middle further until it is within range${isClassic ? ' (with more warm wishes or a universal reflection, never details about the person)' : ''}.`;
 }
 
 function anotherSuffix(currentCardText){

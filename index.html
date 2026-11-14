@@ -66,6 +66,8 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
 .btn-next{background:#1A3A6A !important;color:#FFFFFF !important;border:none !important;font-weight:700;padding:10px 28px;border-radius:8px;font-size:14px;cursor:pointer;font-family:'Inter',sans-serif;}
 .btn-next:disabled{opacity:0.35;cursor:not-allowed;}
 .skip-link{font-size:13px;color:#888;cursor:pointer;text-decoration:underline;text-underline-offset:2px;}
+.honest-private{display:inline-block;margin-top:4px;font-size:13.5px;white-space:nowrap;font-weight:600;font-style:normal;color:#1A3060;}
+@media (max-width:350px){.honest-private{white-space:normal;}}
 .honest-note{font-size:13px;color:#3A4A5A;font-style:italic;margin-bottom:1rem;line-height:1.6;padding:10px 14px;background:#F4F6FA;border-radius:8px;border-left:2px solid #2A4A80;}
 .opt-tag{font-size:11px;color:#888;font-weight:400;margin-left:6px;}
 .child-row{display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap;}
@@ -111,6 +113,8 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
 .gq-btns{display:flex;align-items:center;gap:14px;}
 .gq-next{padding:8px 18px !important;font-size:13px !important;}
 .gq-add{font-size:13px;color:#2A4A80;cursor:pointer;}
+.gq-last .gq-btns{display:none;}
+.gq-last .gq-row{display:none;}
 .gq-note{font-size:12px;color:#888;margin:-4px 0 8px;}
 .m-only{display:none;}
 @media (max-width:600px){.m-only{display:block;}}
@@ -383,8 +387,9 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
     </div>
 
     <div class="qstep" id="q8">
-      <div class="question" id="q9-text">Tell us about your relationship</div>
-      <div class="honest-note">Be honest. This is where your heart meets the words.<br><em>It's for our eyes only, not the card.</em></div>
+      <div class="question" id="q9-text">How are things between you?</div>
+      <div style="margin-bottom:0.6rem;"><span class="honest-private" style="margin-top:0;">🔒 For our eyes only. Never written into card.</span></div>
+      <div class="honest-note">Cards ring false when they don't match where things really stand. This keeps yours honest.</div>
       <div class="cgl" style="margin-top:1rem;"><span style="font-weight:400;color:#AAB4C0;text-transform:none;letter-spacing:0;">Pick 1 or 2 that feel most true</span></div>
       <div class="chips" id="rel-chips">
         <div class="chip" data-val="loving" onclick="toggleRelChip(this)">Loving</div>
@@ -393,9 +398,11 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
         <div class="chip" data-val="rebuilding" onclick="toggleRelChip(this)">Rebuilding</div>
         <div class="chip" data-val="we've been through a lot" onclick="toggleRelChip(this)">We've been through a lot</div>
         <div class="chip" data-val="long distance" onclick="toggleRelChip(this)">Long distance</div>
+        <div class="chip" data-val="friendly" onclick="toggleRelChip(this)">Friendly</div>
+        <div class="chip" data-val="casual acquaintance" onclick="toggleRelChip(this)">Casual acquaintance</div>
       </div>
-      <div class="cgl" style="margin-top:1rem;">Anything else to add? <span class="opt-tag">optional</span></div>
-      <textarea class="text-input" id="t9" rows="3" placeholder="e.g. She has always inspired me to be the best I could be. Or — it's complicated, but she showed up when it mattered." oninput="updateRelCtx()"></textarea>
+      <div class="cgl" style="margin-top:1rem;">Anything we should know or steer clear of? <span class="opt-tag">optional</span></div>
+      <textarea class="text-input" id="t9" rows="3" placeholder="e.g. We're rebuilding and it's been up and down. Keep it warm, not gushy." oninput="updateRelCtx()"></textarea>
       <div class="qnav"><button class="btn-back" onclick="qGo(7)">← Back</button><button class="btn-next" id="qn9" disabled onclick="qGo(9)">Next →</button></div>
     </div>
 
@@ -426,9 +433,9 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
           <div class="gq-row"><div></div><div class="gq-btns"><span class="skip-link" onclick="gqAdvance(3)">Skip</span><button class="btn-next gq-next" onclick="gqAdvance(3)">Next</button></div></div>
         </div>
       </div>
-      <div class="gq todo" id="gq4">
+      <div class="gq todo gq-last" id="gq4">
         <div class="gq-sum" onclick="gqOpen(4)"><div><div class="gq-sum-q">4. Anything going on in their life right now to include?</div><div class="gq-sum-a" id="gq4-a"></div></div><div class="gq-edit">Edit</div></div>
-        <div class="gq-title" onclick="gqOpen(4)">4. Anything going on in their life right now to include?</div>
+        <div class="gq-title" onclick="gqOpen(4)">4. Anything going on in their life right now to include? <span class="opt-tag">optional</span></div>
         <div class="gq-body">
           <textarea class="text-input" id="t-news" rows="2" placeholder="e.g. They just started a new job." oninput="updateDetails()"></textarea>
           <div class="gq-row"><div></div><div class="gq-btns"><span class="skip-link" onclick="gqAdvance(4)">Skip</span><button class="btn-next gq-next" onclick="gqAdvance(4)">Next</button></div></div>
@@ -772,7 +779,7 @@ function qShowStep(n){
   document.getElementById('q-counter').textContent=occLabel;
 }
 function qGo(n){qShowStep(n);}
-function qSkip(n){if(n===1){A.name='';document.getElementById('q9-text').textContent='Tell us about your relationship';document.getElementById('q10-text').textContent='Tell us about them';qGo(2);}}
+function qSkip(n){if(n===1){A.name='';document.getElementById('q9-text').textContent='How are things between you?';document.getElementById('q10-text').textContent='Tell us about them';qGo(2);}}
 
 function resetEmailSection(){
   const btn = document.getElementById('btn-send-email');
@@ -791,7 +798,7 @@ function handleName(){
   const v=document.getElementById('t-name').value.trim();
   A.name=v;
   document.getElementById('qn1').disabled=v.length<1;
-  document.getElementById('q9-text').textContent=v?'Tell us about your relationship with '+v:'Tell us about your relationship';
+  document.getElementById('q9-text').textContent=v?'How are things with '+v+'?':'How are things between you?';
   document.getElementById('q10-text').textContent=v?'Tell us about '+v:'Tell us about them';
 }
 function handleNoName(){
@@ -803,7 +810,7 @@ function handleNoName(){
     inp.disabled=true;
     inp.style.opacity='0.4';
     document.getElementById('qn1').disabled=false;
-    document.getElementById('q9-text').textContent='Tell us about your relationship';
+    document.getElementById('q9-text').textContent='How are things between you?';
     document.getElementById('q10-text').textContent='Tell us about them';
   } else {
     inp.disabled=false;
@@ -811,7 +818,7 @@ function handleNoName(){
     const v=inp.value.trim();
     A.name=v;
     document.getElementById('qn1').disabled=v.length<1;
-    document.getElementById('q9-text').textContent=v?'Tell us about your relationship with '+v:'Tell us about your relationship';
+    document.getElementById('q9-text').textContent=v?'How are things with '+v+'?':'How are things between you?';
     document.getElementById('q10-text').textContent=v?'Tell us about '+v:'Tell us about them';
   }
 }
@@ -1046,23 +1053,25 @@ function gqSummary(i){
   el.textContent=txt||'Skipped';
   el.classList.toggle('skipped',!txt);
 }
+const gqCompleted=new Set(); // questions finished with Next or Skip
 function gqSet(i,state){const el=document.getElementById('gq'+i);el.classList.remove('open','done','todo');el.classList.add(state);}
 function gqOpen(i){
   for(let k=1;k<=GQ_N;k++){
     if(k===i) continue;
-    if(document.getElementById('gq'+k).classList.contains('open')){gqSummary(k);gqSet(k,'done');}
+    if(document.getElementById('gq'+k).classList.contains('open')){
+      if(gqCompleted.has(k)||_vals(k).length){gqCompleted.add(k);gqSummary(k);gqSet(k,'done');} else gqSet(k,'todo');
+    }
   }
   gqSet(i,'open');
+  if(i===GQ_N){gqCompleted.add(i);document.getElementById('qn10').disabled=false;}
   const ta=document.querySelector('#gq'+i+' textarea');
   if(ta) setTimeout(()=>{try{ta.focus({preventScroll:true});}catch(e){}},50);
 }
 function gqAdvance(i){
   updateDetails();
+  gqCompleted.add(i);
   gqSummary(i);gqSet(i,'done');
-  let next=null;
-  for(let k=i+1;k<=GQ_N;k++){if(!document.getElementById('gq'+k).classList.contains('done')){next=k;break;}}
-  if(next) gqOpen(next);
-  if(i===GQ_N||!next) document.getElementById('qn10').disabled=false;
+  if(i<GQ_N) gqOpen(i+1);
 }
 function addMore(i){
   const hidden=GQ_IDS[i].map(id=>document.getElementById(id)).filter(el=>el.style.display==='none');
@@ -1072,10 +1081,11 @@ function addMore(i){
 }
 function resetDetailsPage(){
   [1,2].forEach(i=>{GQ_IDS[i].slice(1).forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});const a=document.getElementById('gq-add-'+i);if(a)a.style.display='';});
+  gqCompleted.clear();
   gqSet(1,'open');for(let k=2;k<=GQ_N;k++)gqSet(k,'todo');
   const nb=document.getElementById('qn10');if(nb)nb.disabled=true;
   const t=document.getElementById('q10-text');if(t)t.textContent='Tell us about them';
-  const r=document.getElementById('q9-text');if(r)r.textContent='Tell us about your relationship';
+  const r=document.getElementById('q9-text');if(r)r.textContent='How are things between you?';
 }
 function detailsNext(){
   updateDetails();

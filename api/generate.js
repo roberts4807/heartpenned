@@ -90,6 +90,26 @@ const OPENING_MOVES = [
   'Open with something about where they are in life right now, using only what the inputs say.',
   'Open with a short, simple sentence. Let the next sentence do the work.',
 ];
+// Used for every thin-detail card, and as one of the random choices for rich cards.
+const OCCASION_OPENING = 'Open with the occasion: a fresh line about what this day or moment means for them, not a stock greeting. Find your own way in rather than reaching for the most familiar phrase for this occasion.';
+// Thin-detail cards pick one of these, so they do not all open the same way.
+const THIN_OPENINGS = [
+  'Open warmly and simply. It may open with a wish or a warm line about the occasion. Find your own way in rather than reaching for the most familiar phrase for this occasion.',
+  'Open with what the sender shared, in your own words.',
+];
+
+// Details are "rich" when 2+ of the four detail questions were answered, or when
+// one was answered with at least RICH_DETAIL_CHARS characters (labels not counted).
+// Otherwise they are "thin": the card blends in occasion warmth and wishes
+// instead of describing the person.
+const RICH_DETAIL_CHARS = 100;
+const DETAIL_LABELS = ['Qualities the sender appreciates in them: ', 'What they mean to the sender: ', 'What is going on in their life right now: '];
+function hasRichDetails(A){
+  const misc = A.misc || '';
+  const answered = (A.memory ? 1 : 0) + DETAIL_LABELS.filter(l => misc.includes(l)).length;
+  const chars = ((A.memory||'').split(' / ').join('') + DETAIL_LABELS.reduce((s, l) => s.split(l).join(''), misc)).trim().length;
+  return answered >= 2 || chars >= RICH_DETAIL_CHARS;
+}
 
 // When the sender gave no memories or details, give each card a different focus
 // so cards differ in content, not just in their first line.
@@ -139,15 +159,28 @@ function buildPrompt(A, currentCardText, mode, note){
   const isClassic = !!A.classic && !hasSpecifics;
   if (isClassic && !lengthIsStandard) lengthRule = '75 to 100 words. Stay in this range.';
   const classicLine = isClassic ? '\n- CLASSIC CARD: no personal details were given, by choice. Say nothing specific about this person or this relationship, including anything from the relationship context.' : '';
-  const roleText = isClassic
+  // Regular cards: thin details lean on the occasion; rich details stay fully personal.
+  const isThin = !isClassic && !isApology && !hasRichDetails(A);
+  if (isThin && !lengthIsStandard) lengthRule = '75 to 100 words. Stay in this range.';
+  const roleText = isThin
+    ? 'You are a senior greeting card writer with 20 years of experience. The sender shared only a little. Write a card that reads mostly like a beautifully written store-bought card for this occasion: warm, gracious, greeting-card language that rings true for this relationship, never generic filler, never cheesy, no rhymes. Then weave in the one thing the sender shared, so it is unmistakably from them to this person.'
+    : isClassic
     ? 'You are a senior greeting card writer with 20 years of experience. The sender chose a CLASSIC card and shared no personal details. Write the kind of message found in a beautifully written store-bought card: warm, gracious, traditional greeting-card language that would ring true for anyone in this relationship on this occasion. It should feel lovely and sincere, never generic filler, never cheesy, no rhymes.'
     : 'You are a senior greeting card writer with 20 years of experience. Your job is to write a card message that sounds like the sender wrote it themselves, on a good day, to this specific person. Not a card company, not AI. It should sound like this relationship actually sounds: sometimes tender, sometimes funny, sometimes plain. Real cards vary in tone and shape.';
   const openText = isClassic
     ? 'Open warmly and simply. It may open with a wish or a warm line about the occasion.'
-    : pick(OPENING_MOVES) + ' Never name the occasion in the opening.';
+    : (isThin ? pick(THIN_OPENINGS) : pick([...OPENING_MOVES, OCCASION_OPENING])) + ' Don\'t open with the occasion greeting itself (no "Happy Birthday!" as the first line; that belongs at the end).';
   const middleText = isClassic
     ? 'Middle: sentiments that fit the occasion. For a birthday, holiday, anniversary, graduation, or milestone: heartfelt wishes (for the day, the year ahead, what you hope for them). For sympathy: comfort and presence, never wishes about the future or silver linings. For thank you: sincere gratitude. For get well: wishes for healing, rest, and comfort. For thinking of you: warmth and a reminder that they are on the sender\'s mind. For an apology: a sincere, simple acknowledgment and the hope to make things right, never celebration. If it fits, add one meaningful universal reflection on the occasion or on this kind of relationship (for example, what another year means, or what a good friend is). Do not describe this person: no personality traits, habits, what they are like, how they make the sender feel, or what they bring to the sender\'s life. No first-person musing ("I think," "I don\'t always know the right words"). Speak to them warmly in second person.'
-    : 'Middle: amplify what was expressed and give it room, in the card\'s tone. This is where most of the length lives. Build it from everything provided: who they are to the sender, the relationship context, the occasion, their ages and stage of life, what the sender wants them to feel, and any memories or details. If no memories were given, develop the feeling and the relationship more fully instead: what this person is like, what they bring to the sender\'s life, what the sender wishes for them. Never invent events or facts.';
+    : isThin
+    ? 'Middle: sentiments that fit the occasion. For a birthday, holiday, anniversary, graduation, or milestone: a heartfelt wish (for the day or the year ahead). For sympathy: comfort and presence, never wishes about the future or silver linings. For thank you: sincere gratitude. For get well: a wish for healing, rest, and comfort. For thinking of you: warmth and a reminder that they are on the sender\'s mind. If it fits, add one meaningful universal reflection on the occasion or on this kind of relationship (for example, what another year means, or what a good friend is). Keep it addressed to them in second person, never about "a person" or "someone." Weave in what the sender shared as one thread, one or two sentences, in your own words and exactly as given. Do not add scene or sensory details that were not given (time of day, weather, sounds, what it looked or felt like). Do not extend it into new facts (a hobby does not become a career; enjoying something does not make them an expert at it). Beyond that thread, do not describe this person: no traits, habits, what they are like, how they make the sender feel, or what they bring to the sender\'s life. Speak to them warmly in second person. Never invent events or facts.'
+    : 'Middle: amplify what was expressed and give it room, in the card\'s tone. This is where most of the length lives. Build it from everything provided: who they are to the sender, the relationship context, the occasion, their ages and stage of life, what the sender wants them to feel, and any memories or details. If no memories were given, develop the feeling and the relationship more fully instead: what this person is like, what they bring to the sender\'s life, what the sender wishes for them. Never invent events or facts.'
+      + (isApology ? '' : ' Required: somewhere in the body, before the closing line, include at least one line about what this day, season, or milestone means and what it marks for them, connected to them where possible. The closing occasion line does not count. For sympathy, this means acknowledging the loss simply, without explaining or interpreting it.');
+  const wishLine = (isClassic || isApology) ? ''
+    : '\n- Include one genuine wish for them in the body of the card (two at most, and not back to back). The closing occasion line already counts as a wish, so do not pile wishes up just before it. A short one-line wish just before the closing occasion line counts as a second wish. Shape it to the occasion: for a celebration, what you hope this day or year holds for them; for sympathy, comfort, rest, or company in the days ahead, never a silver lining; for get well, healing and rest; for thank you or thinking of you, something good for them. In a funny or light tone, the wish can be playful.';
+  const musingLine = isClassic ? ''
+    : isThin ? '\n- No first-person musing, where the sender reflects on their own thoughts or on writing the card ("I think...", "I don\'t always know the right words"), including asides like ", I think," in the middle of a sentence. Plain feeling toward them ("I\'m so proud of you") is fine. Keep the attention on them and the occasion.'
+    : '\n- At most one sentence of first-person musing, where the sender reflects on their own thoughts or on writing the card ("I think...", "I don\'t always know the right words"). This includes asides like ", I think," in the middle of a sentence. Plain feeling toward them ("I\'m so proud of you") is fine. Keep the attention on them and the occasion.';
 
   const faithText=(A.faithTradition||'');
 const isChristianFaith=/christ|catholic|protestant|baptist|methodist|lutheran|presbyterian|episcopal|evangelical|pentecostal|anglican|denominational|latter.day|\blds\b|mormon/i.test(faithText)||(/orthodox/i.test(faithText)&&!/jew/i.test(faithText));
@@ -177,9 +210,10 @@ The card always builds from what is true and good.`;
 - Never use em dashes (—) anywhere in the card. They are a clear AI writing signal. Use periods, commas, or line breaks instead.
 - Never use "journey," "words cannot express," or end with "always"
 - Never open with "There is something about," "There's something about," "Something about," or any variation. Start somewhere else entirely.
-- Avoid stock greeting-card moves, including: "That's not nothing," "That is everything," "That's actually everything," "not a small thing," "exactly as you are," "right here, right now," "more than you know," "more than words can say," "the world is a better place with you in it," "you deserve the world," and "gives back even a fraction of what you give," "ordinary days," "doesn't announce itself," "I don't take that lightly," "hard to name" or "can't quite name," "reflected back to you," "everything you give," "more than I say," "I don't take (it/you) for granted," "you deserve a beautiful day," "a birthday as good as you are," "you've arrived at another birthday," and "I find myself thinking." Say the specific thing instead.
+- Never start any sentence with "There's something" or "There is something."
+- Avoid stock greeting-card moves, including: "That's not nothing," "That is everything," "That's actually everything," "not a small thing," "exactly as you are," "right here, right now," "more than you know," "more than words can say," "the world is a better place with you in it," "you deserve the world," and "gives back even a fraction of what you give," "ordinary days," "doesn't announce itself," "I don't take that lightly," "hard to name" or "can't quite name," "reflected back to you," "everything you give," "more than I say," "I don't take (it/you) for granted," "you deserve a beautiful day," "you deserve a (day/year/Christmas/season) that...," "I keep coming back to," "I keep thinking about," "to say that plainly," "it's worth saying," "more than you may know," "more than you might know," "wherever you are," "you deserve" in any form, "good people deserve," "hard to put into words," "out loud" (as in "more than I say out loud"), "belonged to us" in any form, "not something I take lightly" or any "take (it/that/you) lightly," "a birthday as good as you are," "you've arrived at another birthday," and "I find myself thinking." Say the specific thing instead.
 - Do not use "held" or "feel held" as a metaphor.
-- Do not close with a wish that something good comes back to them, finds its way back, or returns to them, in any wording. Find a different kind of wish.
+- Nowhere in the card, including the close, wish that something good comes back to them, finds its way back, is given back to them, or returns to them, in any wording. Find a different kind of wish.
 - Use the "Not X, but Y" or "Not loud or complicated. Just..." construction at most once per card.
 - Do not use "light" as a metaphor for the person unless the user used it.
 - Use contractions the way people naturally talk (you're, I'm, don't, it's, here's). Avoid stiff phrasing like "I do not" or "Here is to you" unless the tone is formal.
@@ -258,7 +292,7 @@ FEELINGS: ${feelingsRule}
 
 SHAPE:
 - ${openText}
-- ${middleText}
+- ${middleText}${wishLine}
 - Ending: as the TONE section says for this tone.${isClassic ? classicLine : angleLine}
 - Paragraphs: two or three short paragraphs. Never one long unbroken block.
 
@@ -281,7 +315,7 @@ ${coreRules}
 - Never assume anything about people not described in the inputs
 - Card stays entirely about the recipient
 - People before pets when listing names
-- Never quote inputs verbatim. Put them in your own words, in the card's tone.
+- Never quote inputs verbatim. Put them in your own words, in the card's tone.${musingLine}
 
 BEFORE YOU FINISH: count the words. If the card is under the LENGTH range, develop the middle further until it is within range${isClassic ? ' (with more warm wishes or a universal reflection, never details about the person)' : ''}.`;
 }

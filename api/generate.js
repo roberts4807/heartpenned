@@ -156,7 +156,11 @@ const spiritualRule=A.spirituality==='None'||!A.spirituality?'No spiritual langu
 
   const privateCtx = `RELATIONSHIP CONTEXT — CONFIDENTIAL WRITER BRIEFING ONLY:
 "${A.relationshipCtx||''}"
-This field is private context for the writer, never the card. Use it to understand emotional distance, what to avoid, and how measured the tone should be. If it contains something genuinely positive about the recipient, that quality may be reflected. Complicated or ambivalent feelings must never surface in the card. The card always builds from what is true and good.`;
+This field is private context for the writer, never the card. Nothing from it may appear in the card in any form: not quoted, not paraphrased, not hinted at, not even a positive quality mentioned here. It only tells you where the relationship stands today, so you can set how warm, how close, and how measured the card should be, and what to avoid.
+- The recipient's role (parent, partner, friend, and so on) still sets the register and the warmth. A card to a parent still sounds like it is to a parent.
+- Where things stand today limits what the card claims. If it is complicated, rebuilding, or up and down, or the sender says what to avoid: stay warm, but no superlatives, no "best ever," no declarations of closeness or gratitude bigger than what is real. Never mention the difficulty itself.
+- Friendly or casual acquaintance: keep it light and kind, still warm, and never overstate how close they are.
+The card always builds from what is true and good.`;
 
   const coreRules = `- No greeting
 - Always write in second person, speaking directly to the recipient. Never slip into third person (e.g. never "the person who..." or "someone who..."). Use "you" and "your" throughout. When referring to shared experiences between sender and recipient, use "we," "us," and "our," never "both of you," "the two of you," or any phrasing that positions the writer as an outside observer.

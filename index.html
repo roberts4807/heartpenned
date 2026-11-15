@@ -2308,7 +2308,7 @@ const CARD_HEADERS = [
   {
     id: 'abstract-img-emerald2',
     label: 'Emerald 2',
-    occasions: ['Abstract'],
+    occasions: ['Abstract', 'Thank you'],
     category: 'classic',
     theme: 'sage',
     image: 'abstract-emerald2.png',
@@ -2320,7 +2320,7 @@ const CARD_HEADERS = [
   {
     id: 'abstract-img-brightcobaltblue',
     label: 'Cobalt Blue',
-    occasions: ['Abstract'],
+    occasions: ['Abstract', 'Thank you'],
     category: 'classic',
     theme: 'twilight',
     image: 'abstract-brightcobaltblue.png',
@@ -2344,7 +2344,7 @@ const CARD_HEADERS = [
   {
     id: 'abstract-img-rosesage',
     label: 'Rose & Sage',
-    occasions: ['Abstract'],
+    occasions: ['Abstract', 'Thinking of you'],
     category: 'classic',
     theme: 'blush',
     image: 'abstract-rosesage.png',
@@ -2356,7 +2356,7 @@ const CARD_HEADERS = [
   {
     id: 'abstract-img-lavender',
     label: 'Lavender',
-    occasions: ['Abstract'],
+    occasions: ['Abstract', 'Thank you', 'Thinking of you'],
     category: 'classic',
     theme: 'dusk',
     image: 'abstract-lavender.png',
@@ -2464,7 +2464,7 @@ const CARD_HEADERS = [
   {
     id: 'hanukkah-img-wave',
     label: 'Blue Wave',
-    occasions: ['Hanukkah'],
+    occasions: ['Hanukkah', 'Thank you'],
     category: 'classic',
     theme: 'twilight',
     image: 'hanukkah-wave.png',
@@ -2701,7 +2701,7 @@ const CARD_HEADERS = [
   {
     id: 'grad-img-fun',
     label: 'Garden Stars',
-    occasions: ['Graduation', 'New milestone'],
+    occasions: ['Graduation', 'New milestone', 'Thank you'],
     category: 'fun',
     theme: 'sage',
     image: 'graduation-fun.png',
@@ -2725,25 +2725,25 @@ const CARD_HEADERS = [
   // ── THINKING OF YOU IMAGE HEADERS ────────────────────────────────────────
   {
     id: 'toy-img-classic',
-    label: 'Wildflowers',
+    label: 'Envelope',
     occasions: ["Thinking of you", "Other"],
     category: 'classic',
     theme: 'sage',
     image: 'thinkingofyou-classic.png',
     render(w, h) {
-      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/thinkingofyou-classic.png" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;" alt="Thinking of you wildflowers header"/></div>`;
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/thinkingofyou-classic.png" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;" alt="Thinking of you envelope header"/></div>`;
     }
   },
 
   {
     id: 'toy-img-minimal',
-    label: 'Envelope',
+    label: 'Meadow',
     occasions: ["Thinking of you", "Other"],
     category: 'classic',
     theme: 'warm',
     image: 'thinkingofyou-minimal.png',
     render(w, h) {
-      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/thinkingofyou-minimal.png" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;" alt="Thinking of you envelope header"/></div>`;
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/thinkingofyou-minimal.png" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;" alt="Thinking of you meadow wildflowers header"/></div>`;
     }
   },
 
@@ -2862,7 +2862,7 @@ const CARD_HEADERS = [
   {
     id: 'getwell-img-flowers',
     label: 'Wildflowers',
-    occasions: ['Get well', 'Easter'],
+    occasions: ['Get well', 'Easter', 'Thinking of you'],
     category: 'classic',
     theme: 'blush',
     image: 'getwell-flowers.png',
@@ -3654,7 +3654,7 @@ const CARD_HEADERS = [
   {
     id: 'nursesday-img-hearts',
     label: 'Hearts & Stars',
-    occasions: ['National Nurses Day', 'Get well'],
+    occasions: ['National Nurses Day', 'Get well', 'Thank you'],
     category: 'fun',
     theme: 'blush',
     image: 'nursesday-hearts.png',

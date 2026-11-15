@@ -1718,77 +1718,11 @@ async function setReminder(){
 const CARD_HEADERS = [
 
   // ── BIRTHDAY ──────────────────────────────────────────────────────────────
-  {
-    id: 'bday-classic-1',
-    label: 'Garden Classic',
-    occasions: ['Birthday'],
-    category: 'classic',
-    theme: 'warm',
-    render(w, h) {
-      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
-        <defs>
-          <linearGradient id="bg1" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#FFF8F0"/>
-            <stop offset="100%" stop-color="#FDE8D0"/>
-          </linearGradient>
-        </defs>
-        <rect width="${w}" height="${h}" fill="url(#bg1)"/>
-        <!-- Corner botanical left -->
-        <g opacity="0.55" transform="translate(${w*0.04},${h*0.08})">
-          <ellipse cx="0" cy="0" rx="${w*0.06}" ry="${h*0.18}" fill="#C8A97A" transform="rotate(-30)"/>
-          <ellipse cx="${w*0.05}" cy="${-h*0.05}" rx="${w*0.04}" ry="${h*0.12}" fill="#B8945A" transform="rotate(10)"/>
-          <line x1="0" y1="0" x2="${-w*0.04}" y2="${h*0.22}" stroke="#A07840" stroke-width="${w*0.004}" opacity="0.6"/>
-          <ellipse cx="${-w*0.035}" cy="${h*0.22}" rx="${w*0.035}" ry="${h*0.1}" fill="#C8A97A" transform="rotate(20)"/>
-        </g>
-        <!-- Corner botanical right -->
-        <g opacity="0.55" transform="translate(${w*0.96},${h*0.08}) scale(-1,1)">
-          <ellipse cx="0" cy="0" rx="${w*0.06}" ry="${h*0.18}" fill="#C8A97A" transform="rotate(-30)"/>
-          <ellipse cx="${w*0.05}" cy="${-h*0.05}" rx="${w*0.04}" ry="${h*0.12}" fill="#B8945A" transform="rotate(10)"/>
-          <line x1="0" y1="0" x2="${-w*0.04}" y2="${h*0.22}" stroke="#A07840" stroke-width="${w*0.004}" opacity="0.6"/>
-          <ellipse cx="${-w*0.035}" cy="${h*0.22}" rx="${w*0.035}" ry="${h*0.1}" fill="#C8A97A" transform="rotate(20)"/>
-        </g>
-        <!-- Divider line -->
-        <line x1="${w*0.12}" y1="${h*0.78}" x2="${w*0.88}" y2="${h*0.78}" stroke="#C8A97A" stroke-width="0.8" opacity="0.6"/>
-        <!-- Small diamond ornament -->
-        <rect x="${w*0.5-6}" y="${h*0.78-6}" width="12" height="12" fill="#D4AF37" transform="rotate(45,${w*0.5},${h*0.78})" opacity="0.7"/>
-        <!-- Occasion text -->
-        <text x="${w*0.5}" y="${h*0.52}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.11}" font-style="italic" fill="#7A5020" letter-spacing="1">Happy Birthday</text>
-      </svg>`;
-    }
-  },
-
-  {
-    id: 'bday-fun-1',
-    label: 'Celebration',
-    occasions: ['Birthday'],
-    category: 'fun',
-    theme: 'blush',
-    render(w, h) {
-      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
-        <defs>
-          <linearGradient id="bg2" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stop-color="#FFF0F4"/>
-            <stop offset="100%" stop-color="#FAD7E0"/>
-          </linearGradient>
-        </defs>
-        <rect width="${w}" height="${h}" fill="url(#bg2)"/>
-        <!-- Confetti dots -->
-        ${[[0.1,0.15,'#F4A7B9'],[0.22,0.25,'#D4AF37'],[0.35,0.1,'#96C896'],[0.55,0.18,'#8890E0'],[0.7,0.28,'#F4A7B9'],[0.82,0.12,'#D4AF37'],[0.9,0.3,'#F9C89A'],[0.15,0.55,'#96C896'],[0.78,0.55,'#8890E0'],[0.45,0.35,'#F4A7B9']].map(([cx,cy,c])=>`<circle cx="${w*cx}" cy="${h*cy}" r="${w*0.018}" fill="${c}" opacity="0.7"/>`).join('')}
-        <!-- Stars -->
-        ${[[0.08,0.4,'#D4AF37'],[0.92,0.4,'#D4AF37'],[0.5,0.12,'#F4A7B9']].map(([cx,cy,c])=>`<text x="${w*cx}" y="${h*cy}" text-anchor="middle" font-size="${w*0.05}" fill="${c}" opacity="0.8">✦</text>`).join('')}
-        <!-- Divider wavy line approximation -->
-        <path d="M${w*0.08} ${h*0.8} Q${w*0.25} ${h*0.75} ${w*0.42} ${h*0.8} Q${w*0.58} ${h*0.85} ${w*0.75} ${h*0.8} Q${w*0.88} ${h*0.76} ${w*0.92} ${h*0.8}" stroke="#F4A7B9" stroke-width="1.5" fill="none" opacity="0.7"/>
-        <!-- Text -->
-        <text x="${w*0.5}" y="${h*0.53}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.12}" font-weight="400" fill="#C0446A" letter-spacing="0.5">Happy Birthday!</text>
-      </svg>`;
-    }
-  },
-
   // ── BIRTHDAY IMAGE HEADERS ────────────────────────────────────────────────
   {
     id: 'bday-img-floral',
     label: 'Floral',
-    occasions: ['Birthday'],
+    occasions: ['Birthday', "Mother's Day"],
     category: 'classic',
     theme: 'blush',
     image: 'birthday-floral.png',
@@ -1812,7 +1746,7 @@ const CARD_HEADERS = [
   {
     id: 'bday-img-confetti',
     label: 'Gold Confetti',
-    occasions: ['Birthday'],
+    occasions: ['Birthday', 'Congratulations'],
     category: 'classic',
     theme: 'gold',
     image: 'birthday-confetti.png',
@@ -1953,74 +1887,7 @@ const CARD_HEADERS = [
   },
 
   // ── ANNIVERSARY ───────────────────────────────────────────────────────────
-  {
-    id: 'anniversary-classic-1',
-    label: 'Floral Arch',
-    occasions: ['Anniversary'],
-    category: 'classic',
-    theme: 'gold',
-    render(w, h) {
-      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
-        <defs>
-          <linearGradient id="bg3a" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#FFFFF0"/>
-            <stop offset="100%" stop-color="#F5E8C0"/>
-          </linearGradient>
-        </defs>
-        <rect width="${w}" height="${h}" fill="url(#bg3a)"/>
-        <g opacity="0.5" transform="translate(${w*0.05},${h*0.85})">
-          <path d="M0,0 Q${-w*0.02},${-h*0.5} ${w*0.12},${-h*0.7}" stroke="#B8860B" stroke-width="${w*0.003}" fill="none"/>
-          <ellipse cx="${w*0.04}" cy="${-h*0.35}" rx="${w*0.055}" ry="${h*0.14}" fill="#D4AF37" transform="rotate(-40,${w*0.04},${-h*0.35})" opacity="0.7"/>
-          <ellipse cx="${w*0.09}" cy="${-h*0.55}" rx="${w*0.04}" ry="${h*0.1}" fill="#C8A97A" transform="rotate(-20,${w*0.09},${-h*0.55})" opacity="0.7"/>
-          <circle cx="${w*0.13}" cy="${-h*0.68}" r="${w*0.025}" fill="#F5E8C0" stroke="#B8860B" stroke-width="${w*0.003}" opacity="0.9"/>
-        </g>
-        <g opacity="0.5" transform="translate(${w*0.95},${h*0.85}) scale(-1,1)">
-          <path d="M0,0 Q${-w*0.02},${-h*0.5} ${w*0.12},${-h*0.7}" stroke="#B8860B" stroke-width="${w*0.003}" fill="none"/>
-          <ellipse cx="${w*0.04}" cy="${-h*0.35}" rx="${w*0.055}" ry="${h*0.14}" fill="#D4AF37" transform="rotate(-40,${w*0.04},${-h*0.35})" opacity="0.7"/>
-          <ellipse cx="${w*0.09}" cy="${-h*0.55}" rx="${w*0.04}" ry="${h*0.1}" fill="#C8A97A" transform="rotate(-20,${w*0.09},${-h*0.55})" opacity="0.7"/>
-          <circle cx="${w*0.13}" cy="${-h*0.68}" r="${w*0.025}" fill="#F5E8C0" stroke="#B8860B" stroke-width="${w*0.003}" opacity="0.9"/>
-        </g>
-        <line x1="${w*0.15}" y1="${h*0.82}" x2="${w*0.85}" y2="${h*0.82}" stroke="#D4AF37" stroke-width="0.8" opacity="0.8"/>
-        <circle cx="${w*0.5}" cy="${h*0.82}" r="4" fill="#D4AF37" opacity="0.8"/>
-        <text x="${w*0.5}" y="${h*0.5}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.09}" font-style="italic" fill="#7A6010" letter-spacing="1">Happy Anniversary</text>
-      </svg>`;
-    }
-  },
-
   // ── SYMPATHY ──────────────────────────────────────────────────────────────
-  {
-    id: 'sympathy-classic-1',
-    label: 'Quiet Garden',
-    occasions: ['Sympathy'],
-    category: 'classic',
-    theme: 'slate',
-    render(w, h) {
-      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
-        <defs>
-          <linearGradient id="bg4" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#F4F6F8"/>
-            <stop offset="100%" stop-color="#D8DFE8"/>
-          </linearGradient>
-        </defs>
-        <rect width="${w}" height="${h}" fill="url(#bg4)"/>
-        <!-- Simple botanical sprig centered -->
-        <g transform="translate(${w*0.5},${h*0.18})" opacity="0.45">
-          <!-- stem -->
-          <line x1="0" y1="0" x2="0" y2="${h*0.5}" stroke="#6A8098" stroke-width="${w*0.003}"/>
-          <!-- leaves -->
-          <ellipse cx="${-w*0.06}" cy="${h*0.1}" rx="${w*0.06}" ry="${h*0.08}" fill="#8A9BB0" transform="rotate(-30,${-w*0.06},${h*0.1})"/>
-          <ellipse cx="${w*0.06}" cy="${h*0.2}" rx="${w*0.06}" ry="${h*0.08}" fill="#8A9BB0" transform="rotate(30,${w*0.06},${h*0.2})"/>
-          <ellipse cx="${-w*0.055}" cy="${h*0.32}" rx="${w*0.055}" ry="${h*0.07}" fill="#7A8EA0" transform="rotate(-25,${-w*0.055},${h*0.32})"/>
-          <ellipse cx="${w*0.055}" cy="${h*0.4}" rx="${w*0.055}" ry="${h*0.07}" fill="#7A8EA0" transform="rotate(25,${w*0.055},${h*0.4})"/>
-        </g>
-        <!-- Thin divider -->
-        <line x1="${w*0.25}" y1="${h*0.8}" x2="${w*0.75}" y2="${h*0.8}" stroke="#8A9BB0" stroke-width="0.6" opacity="0.5"/>
-        <!-- Text -->
-        <text x="${w*0.5}" y="${h*0.92}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.075}" font-style="italic" fill="#4A6070" letter-spacing="1.5">Thinking of You</text>
-      </svg>`;
-    }
-  },
-
   // ── CONGRATULATIONS ───────────────────────────────────────────────────────
   {
     id: 'congrats-classic-1',
@@ -2089,109 +1956,7 @@ const CARD_HEADERS = [
   },
 
   // ── THANK YOU ─────────────────────────────────────────────────────────────
-  {
-    id: 'thankyou-classic-1',
-    label: 'Sage Sprig',
-    occasions: ['Thank you', 'Thank You'],
-    category: 'classic',
-    theme: 'sage',
-    render(w, h) {
-      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
-        <defs>
-          <linearGradient id="bgty1" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#F2F9F2"/>
-            <stop offset="100%" stop-color="#D8EDD8"/>
-          </linearGradient>
-        </defs>
-        <rect width="${w}" height="${h}" fill="url(#bgty1)"/>
-        <!-- Horizontal botanical branch -->
-        <g opacity="0.5" transform="translate(${w*0.5},${h*0.38})">
-          <line x1="${-w*0.38}" y1="0" x2="${w*0.38}" y2="0" stroke="#5A8A5A" stroke-width="${w*0.003}"/>
-          <!-- Leaves along branch -->
-          ${[[-0.32,-0.18,-30],[-0.22,0.15,25],[-0.1,-0.2,-35],[0.1,0.18,30],[0.22,-0.16,-25],[0.32,0.14,20]].map(([lx,ly,rot])=>`
-          <ellipse cx="${w*lx}" cy="${h*ly}" rx="${w*0.055}" ry="${h*0.09}" fill="#6AAA6A" transform="rotate(${rot},${w*lx},${h*ly})" opacity="0.8"/>
-          `).join('')}
-          <!-- Small flower -->
-          <circle cx="0" cy="0" r="${w*0.022}" fill="#A8D8A8" stroke="#5A8A5A" stroke-width="${w*0.002}"/>
-          <circle cx="0" cy="0" r="${w*0.01}" fill="#4A7A4A"/>
-        </g>
-        <!-- Divider -->
-        <line x1="${w*0.2}" y1="${h*0.78}" x2="${w*0.8}" y2="${h*0.78}" stroke="#6AAA6A" stroke-width="0.6" opacity="0.5"/>
-        <!-- Text -->
-        <text x="${w*0.5}" y="${h*0.92}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.09}" font-style="italic" fill="#3A6A3A" letter-spacing="1.5">Thank You</text>
-      </svg>`;
-    }
-  },
-
   // ── VALENTINE'S DAY ───────────────────────────────────────────────────────
-  {
-    id: 'valentine-classic-1',
-    label: 'Romantic Rose',
-    occasions: ["Valentine's Day", 'Valentines Day', 'Valentine'],
-    category: 'classic',
-    theme: 'blush',
-    render(w, h) {
-      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
-        <defs>
-          <linearGradient id="bgvl1" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#FFF0F4"/>
-            <stop offset="100%" stop-color="#F8D0DA"/>
-          </linearGradient>
-        </defs>
-        <rect width="${w}" height="${h}" fill="url(#bgvl1)"/>
-        <!-- Rose left -->
-        <g opacity="0.55" transform="translate(${w*0.1},${h*0.55})">
-          <circle cx="0" cy="0" r="${w*0.06}" fill="#C0446A" opacity="0.7"/>
-          <circle cx="${w*0.025}" cy="${-h*0.06}" r="${w*0.05}" fill="#D0506A" opacity="0.8"/>
-          <circle cx="${-w*0.025}" cy="${-h*0.06}" r="${w*0.045}" fill="#B83A60" opacity="0.7"/>
-          <circle cx="0" cy="${-h*0.12}" r="${w*0.04}" fill="#C84060" opacity="0.9"/>
-          <line x1="0" y1="${h*0.06}" x2="${-w*0.02}" y2="${h*0.25}" stroke="#5A8A5A" stroke-width="${w*0.003}"/>
-          <ellipse cx="${-w*0.04}" cy="${h*0.18}" rx="${w*0.04}" ry="${h*0.07}" fill="#6AAA6A" transform="rotate(-30,${-w*0.04},${h*0.18})" opacity="0.7"/>
-        </g>
-        <!-- Rose right -->
-        <g opacity="0.55" transform="translate(${w*0.9},${h*0.55}) scale(-1,1)">
-          <circle cx="0" cy="0" r="${w*0.06}" fill="#C0446A" opacity="0.7"/>
-          <circle cx="${w*0.025}" cy="${-h*0.06}" r="${w*0.05}" fill="#D0506A" opacity="0.8"/>
-          <circle cx="${-w*0.025}" cy="${-h*0.06}" r="${w*0.045}" fill="#B83A60" opacity="0.7"/>
-          <circle cx="0" cy="${-h*0.12}" r="${w*0.04}" fill="#C84060" opacity="0.9"/>
-          <line x1="0" y1="${h*0.06}" x2="${-w*0.02}" y2="${h*0.25}" stroke="#5A8A5A" stroke-width="${w*0.003}"/>
-          <ellipse cx="${-w*0.04}" cy="${h*0.18}" rx="${w*0.04}" ry="${h*0.07}" fill="#6AAA6A" transform="rotate(-30,${-w*0.04},${h*0.18})" opacity="0.7"/>
-        </g>
-        <!-- Small heart center -->
-        <text x="${w*0.5}" y="${h*0.3}" text-anchor="middle" font-size="${w*0.07}" fill="#C0446A" opacity="0.6">♥</text>
-        <!-- Divider -->
-        <line x1="${w*0.2}" y1="${h*0.78}" x2="${w*0.8}" y2="${h*0.78}" stroke="#C0446A" stroke-width="0.6" opacity="0.5"/>
-        <!-- Text -->
-        <text x="${w*0.5}" y="${h*0.56}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.09}" font-style="italic" fill="#8A2040" letter-spacing="1">With All My Love</text>
-      </svg>`;
-    }
-  },
-
-  {
-    id: 'valentine-fun-1',
-    label: 'Bold Hearts',
-    occasions: ["Valentine's Day", 'Valentines Day', 'Valentine'],
-    category: 'fun',
-    theme: 'blush',
-    render(w, h) {
-      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
-        <defs>
-          <linearGradient id="bgvf1" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stop-color="#FFE0E8"/>
-            <stop offset="100%" stop-color="#FFB8C8"/>
-          </linearGradient>
-        </defs>
-        <rect width="${w}" height="${h}" fill="url(#bgvf1)"/>
-        <!-- Scattered hearts -->
-        ${[[0.08,0.25,'#FF6688','0.7'],[0.18,0.65,'#FF4466','0.5'],[0.28,0.2,'#FF88AA','0.6'],[0.72,0.22,'#FF88AA','0.6'],[0.82,0.65,'#FF4466','0.5'],[0.92,0.28,'#FF6688','0.7'],[0.5,0.12,'#FF4466','0.5'],[0.38,0.7,'#FF88AA','0.4'],[0.62,0.72,'#FF88AA','0.4']].map(([cx,cy,c,op])=>`<text x="${w*cx}" y="${h*cy}" text-anchor="middle" font-size="${w*0.06}" fill="${c}" opacity="${op}">♥</text>`).join('')}
-        <!-- Large center heart -->
-        <text x="${w*0.5}" y="${h*0.42}" text-anchor="middle" font-size="${w*0.14}" fill="#CC2244" opacity="0.85">♥</text>
-        <!-- Text -->
-        <text x="${w*0.5}" y="${h*0.75}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.1}" font-weight="700" fill="#CC2244" letter-spacing="0.5">Happy Valentine's!</text>
-      </svg>`;
-    }
-  },
-
   // ── WEDDING / ANNIVERSARY FUN ─────────────────────────────────────────────
   {
     id: 'wedding-fun-1',
@@ -2216,34 +1981,11 @@ const CARD_HEADERS = [
     }
   },
 
-  {
-    id: 'anniversary-fun-1',
-    label: 'Champagne',
-    occasions: ['Anniversary'],
-    category: 'fun',
-    theme: 'gold',
-    render(w, h) {
-      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
-        <defs>
-          <linearGradient id="bgaf1" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stop-color="#FFFBEA"/>
-            <stop offset="100%" stop-color="#FFF0B0"/>
-          </linearGradient>
-        </defs>
-        <rect width="${w}" height="${h}" fill="url(#bgaf1)"/>
-        ${[[0.1,0.7,'#D4AF37'],[0.15,0.45,'#E8C84A'],[0.08,0.25,'#D4AF37'],[0.22,0.6,'#C8A020'],[0.18,0.3,'#E8C84A'],[0.82,0.65,'#D4AF37'],[0.88,0.4,'#E8C84A'],[0.92,0.22,'#D4AF37'],[0.78,0.55,'#C8A020'],[0.85,0.28,'#E8C84A'],[0.5,0.15,'#D4AF37'],[0.45,0.6,'#E8C84A'],[0.55,0.65,'#C8A020']].map(([cx,cy,c])=>`<circle cx="${w*cx}" cy="${h*cy}" r="${w*0.018}" fill="${c}" opacity="0.6"/>`).join('')}
-        ${[[0.12,0.15],[0.88,0.18],[0.5,0.08]].map(([cx,cy])=>`<text x="${w*cx}" y="${h*cy}" text-anchor="middle" font-size="${w*0.05}" fill="#D4AF37" opacity="0.8">✦</text>`).join('')}
-        <line x1="${w*0.15}" y1="${h*0.82}" x2="${w*0.85}" y2="${h*0.82}" stroke="#D4AF37" stroke-width="1" opacity="0.6"/>
-        <text x="${w*0.5}" y="${h*0.6}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.1}" fill="#8A6A10" letter-spacing="0.5">Happy Anniversary!</text>
-      </svg>`;
-    }
-  },
-
   // ── ANNIVERSARY IMAGE HEADERS ─────────────────────────────────────────────
   {
     id: 'anniversary-img-sunset',
     label: 'Sunset',
-    occasions: ['Anniversary'],
+    occasions: ['Anniversary', 'Wedding'],
     category: 'classic',
     theme: 'warm',
     image: 'anniversary-sunset.png',
@@ -2255,7 +1997,7 @@ const CARD_HEADERS = [
   {
     id: 'anniversary-img-candles',
     label: 'Candles',
-    occasions: ['Anniversary'],
+    occasions: ['Anniversary', 'Wedding', 'Diwali'],
     category: 'classic',
     theme: 'warm',
     image: 'anniversary-candles.png',
@@ -2267,7 +2009,7 @@ const CARD_HEADERS = [
   {
     id: 'anniversary-img-letter',
     label: 'Love Letter',
-    occasions: ['Anniversary'],
+    occasions: ['Anniversary', 'Wedding'],
     category: 'classic',
     theme: 'gold',
     image: 'anniversary-letter.png',
@@ -2279,7 +2021,7 @@ const CARD_HEADERS = [
   {
     id: 'anniversary-img-hearts',
     label: 'Hearts',
-    occasions: ['Anniversary'],
+    occasions: ['Anniversary', 'Wedding'],
     category: 'fun',
     theme: 'blush',
     image: 'anniversary-hearts.png',
@@ -2321,42 +2063,11 @@ const CARD_HEADERS = [
   },
 
   // ── THANK YOU FUN ─────────────────────────────────────────────────────────
-  {
-    id: 'thankyou-fun-1',
-    label: 'Sunny Thanks',
-    occasions: ['Thank you', 'Thank You'],
-    category: 'fun',
-    theme: 'warm',
-    render(w, h) {
-      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
-        <defs>
-          <linearGradient id="bgtf1" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stop-color="#FFF8EC"/>
-            <stop offset="100%" stop-color="#FFE8C0"/>
-          </linearGradient>
-        </defs>
-        <rect width="${w}" height="${h}" fill="url(#bgtf1)"/>
-        <!-- Sunburst rays -->
-        <g transform="translate(${w*0.5},${h*0.4})" opacity="0.25">
-          ${[0,30,60,90,120,150,180,210,240,270,300,330].map(a=>`<line x1="0" y1="0" x2="${Math.cos(a*Math.PI/180)*w*0.45}" y2="${Math.sin(a*Math.PI/180)*h*0.45}" stroke="#E8A020" stroke-width="${w*0.004}"/>`).join('')}
-        </g>
-        <!-- Sun circle -->
-        <circle cx="${w*0.5}" cy="${h*0.38}" r="${w*0.1}" fill="#F5C030" opacity="0.35"/>
-        <!-- Warm dots -->
-        ${[[0.08,0.25,'#F4A040'],[0.15,0.65,'#E8C030'],[0.85,0.28,'#F4A040'],[0.92,0.62,'#E8C030'],[0.3,0.12,'#F4A040'],[0.7,0.15,'#E8C030']].map(([cx,cy,c])=>`<circle cx="${w*cx}" cy="${h*cy}" r="${w*0.016}" fill="${c}" opacity="0.6"/>`).join('')}
-        <!-- Divider -->
-        <line x1="${w*0.18}" y1="${h*0.82}" x2="${w*0.82}" y2="${h*0.82}" stroke="#E8A020" stroke-width="0.8" opacity="0.5"/>
-        <!-- Text -->
-        <text x="${w*0.5}" y="${h*0.62}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.1}" font-weight="700" fill="#B87010" letter-spacing="0.5">Thank You!</text>
-      </svg>`;
-    }
-  },
-
   // ── THANK YOU IMAGE HEADERS ───────────────────────────────────────────────
   {
     id: 'thankyou-img-roses',
     label: 'Blush Roses',
-    occasions: ["Thank you", "Thank You", "Other", 'Thinking of you'],
+    occasions: ["Thank you", "Thank You", "Other", 'Thinking of you', "Mother's Day", 'Wedding'],
     category: 'classic',
     theme: 'blush',
     image: 'thankyou-roses.png',
@@ -2392,7 +2103,7 @@ const CARD_HEADERS = [
   {
     id: 'thankyou-img-sunflowers',
     label: 'Sunflowers',
-    occasions: ["Thank you", "Thank You", "Other", 'Get well'],
+    occasions: ["Thank you", "Thank You", "Other", 'Get well', "Mother's Day"],
     category: 'fun',
     theme: 'warm',
     image: 'thankyou-sunflowers.png',
@@ -2402,68 +2113,6 @@ const CARD_HEADERS = [
   },
 
   // ── CHRISTMAS ─────────────────────────────────────────────────────────────
-  {
-    id: 'christmas-classic-1',
-    label: 'Holly & Pine',
-    occasions: ['Christmas'],
-    category: 'classic',
-    theme: 'sage',
-    render(w, h) {
-      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
-        <defs>
-          <linearGradient id="bgcc1" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#F0F8F0"/>
-            <stop offset="100%" stop-color="#D0E8D0"/>
-          </linearGradient>
-        </defs>
-        <rect width="${w}" height="${h}" fill="url(#bgcc1)"/>
-        <!-- Pine branches left -->
-        <g opacity="0.55" transform="translate(${w*0.08},${h*0.5})">
-          <line x1="0" y1="${-h*0.4}" x2="0" y2="${h*0.4}" stroke="#2D5A2D" stroke-width="${w*0.003}"/>
-          ${[[-0.3,-0.08,-25],[-0.28,0.08,20],[-0.25,-0.22,-30],[-0.22,0.22,25],[-0.18,-0.35,-20],[-0.15,0.35,18]].map(([lx,ly,rot])=>`<ellipse cx="${w*lx}" cy="${h*ly}" rx="${w*0.065}" ry="${h*0.075}" fill="#3A7A3A" transform="rotate(${rot},${w*lx},${h*ly})" opacity="0.8"/>`).join('')}
-        </g>
-        <!-- Pine branches right -->
-        <g opacity="0.55" transform="translate(${w*0.92},${h*0.5}) scale(-1,1)">
-          <line x1="0" y1="${-h*0.4}" x2="0" y2="${h*0.4}" stroke="#2D5A2D" stroke-width="${w*0.003}"/>
-          ${[[-0.3,-0.08,-25],[-0.28,0.08,20],[-0.25,-0.22,-30],[-0.22,0.22,25],[-0.18,-0.35,-20],[-0.15,0.35,18]].map(([lx,ly,rot])=>`<ellipse cx="${w*lx}" cy="${h*ly}" rx="${w*0.065}" ry="${h*0.075}" fill="#3A7A3A" transform="rotate(${rot},${w*lx},${h*ly})" opacity="0.8"/>`).join('')}
-        </g>
-        <!-- Holly berries -->
-        ${[[0.08,0.12,'#CC2222'],[0.12,0.08,'#CC2222'],[0.92,0.12,'#CC2222'],[0.88,0.08,'#CC2222']].map(([cx,cy,c])=>`<circle cx="${w*cx}" cy="${h*cy}" r="${w*0.022}" fill="${c}" opacity="0.8"/>`).join('')}
-        <!-- Divider -->
-        <line x1="${w*0.18}" y1="${h*0.82}" x2="${w*0.82}" y2="${h*0.82}" stroke="#2D5A2D" stroke-width="0.6" opacity="0.5"/>
-        <!-- Text -->
-        <text x="${w*0.5}" y="${h*0.56}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.085}" font-style="italic" fill="#1A3A1A" letter-spacing="1">Merry Christmas</text>
-      </svg>`;
-    }
-  },
-
-  {
-    id: 'christmas-fun-1',
-    label: 'Festive',
-    occasions: ['Christmas'],
-    category: 'fun',
-    theme: 'sage',
-    render(w, h) {
-      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
-        <defs>
-          <linearGradient id="bgcf1x" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stop-color="#F0FBF0"/>
-            <stop offset="100%" stop-color="#D8F0D8"/>
-          </linearGradient>
-        </defs>
-        <rect width="${w}" height="${h}" fill="url(#bgcf1x)"/>
-        <!-- Ornament balls -->
-        ${[[0.1,0.25,'#CC2222'],[0.2,0.6,'#D4AF37'],[0.32,0.18,'#2D5A2D'],[0.5,0.7,'#CC2222'],[0.68,0.2,'#D4AF37'],[0.8,0.62,'#2D5A2D'],[0.9,0.28,'#CC2222'],[0.42,0.45,'#D4AF37'],[0.62,0.5,'#CC2222']].map(([cx,cy,c])=>`<circle cx="${w*cx}" cy="${h*cy}" r="${w*0.022}" fill="${c}" opacity="0.75"/>`).join('')}
-        <!-- Stars -->
-        ${[[0.15,0.12],[0.85,0.15],[0.5,0.08]].map(([cx,cy])=>`<text x="${w*cx}" y="${h*cy}" text-anchor="middle" font-size="${w*0.055}" fill="#D4AF37" opacity="0.85">★</text>`).join('')}
-        <!-- Divider -->
-        <line x1="${w*0.15}" y1="${h*0.82}" x2="${w*0.85}" y2="${h*0.82}" stroke="#2D5A2D" stroke-width="0.8" opacity="0.5"/>
-        <!-- Text -->
-        <text x="${w*0.5}" y="${h*0.62}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.095}" font-weight="700" fill="#CC2222" letter-spacing="0.5">Merry Christmas!</text>
-      </svg>`;
-    }
-  },
-
   // ── CHRISTMAS IMAGE HEADERS ───────────────────────────────────────────────
   {
     id: 'christmas-img-gifts',
@@ -2683,7 +2332,7 @@ const CARD_HEADERS = [
   {
     id: 'abstract-img-navyblue',
     label: 'Navy Blue',
-    occasions: ['Abstract'],
+    occasions: ['Abstract', 'Graduation'],
     category: 'classic',
     theme: 'twilight',
     image: 'abstract-navyblue.png',
@@ -2695,7 +2344,7 @@ const CARD_HEADERS = [
   {
     id: 'abstract-img-rosesage',
     label: 'Rose & Sage',
-    occasions: ['Abstract', 'Thinking of you'],
+    occasions: ['Abstract'],
     category: 'classic',
     theme: 'blush',
     image: 'abstract-rosesage.png',
@@ -2707,7 +2356,7 @@ const CARD_HEADERS = [
   {
     id: 'abstract-img-lavender',
     label: 'Lavender',
-    occasions: ['Abstract', 'Thinking of you'],
+    occasions: ['Abstract'],
     category: 'classic',
     theme: 'dusk',
     image: 'abstract-lavender.png',
@@ -2791,7 +2440,7 @@ const CARD_HEADERS = [
   {
     id: 'abstract-img-bluesoft',
     label: 'Soft Blue',
-    occasions: ['Abstract', 'Sympathy'],
+    occasions: ['Abstract', 'Sympathy', 'New milestone'],
     category: 'classic',
     theme: 'twilight',
     image: 'abstract-bluesoft.png',
@@ -2803,7 +2452,7 @@ const CARD_HEADERS = [
   {
     id: 'abstract-img-goldandsilver',
     label: 'Gold & Silver',
-    occasions: ['Abstract'],
+    occasions: ['Abstract', 'Congratulations', 'Graduation'],
     category: 'classic',
     theme: 'gold',
     image: 'abstract-goldandsilver.png',
@@ -2839,7 +2488,7 @@ const CARD_HEADERS = [
   {
     id: 'toy-img-stars',
     label: 'Stars',
-    occasions: ['Thinking of you'],
+    occasions: ['Thinking of you', 'New milestone'],
     category: 'classic',
     theme: 'twilight',
     image: 'thinkingofyou-stars.png',
@@ -2851,7 +2500,7 @@ const CARD_HEADERS = [
   {
     id: 'toy-img-flowerspressed',
     label: 'Pressed Flowers',
-    occasions: ['Thinking of you'],
+    occasions: ['Thinking of you', "Mother's Day", 'Easter'],
     category: 'classic',
     theme: 'blush',
     image: 'thinkingofyou-flowerspressed.png',
@@ -2899,7 +2548,7 @@ const CARD_HEADERS = [
   {
     id: 'toy-img-lovebirds2',
     label: 'Lovebirds',
-    occasions: ['Thinking of you'],
+    occasions: ['Thinking of you', "Mother's Day", 'Wedding', 'Easter', 'Anniversary'],
     category: 'fun',
     theme: 'blush',
     image: 'thinkingofyou-lovebirds2.png',
@@ -2975,65 +2624,6 @@ const CARD_HEADERS = [
   },
 
   // ── FATHER'S DAY ──────────────────────────────────────────────────────────
-  {
-    id: 'fathersday-classic-1',
-    label: 'Classic Navy',
-    occasions: ["Father's Day"],
-    category: 'classic',
-    theme: 'twilight',
-    render(w, h) {
-      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
-        <defs>
-          <linearGradient id="bgfd1" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#F0F2F8"/>
-            <stop offset="100%" stop-color="#D8DCF0"/>
-          </linearGradient>
-        </defs>
-        <rect width="${w}" height="${h}" fill="url(#bgfd1)"/>
-        <!-- Strong geometric border lines -->
-        <line x1="${w*0.06}" y1="${h*0.08}" x2="${w*0.06}" y2="${h*0.92}" stroke="#2A3A6A" stroke-width="${w*0.006}" opacity="0.4"/>
-        <line x1="${w*0.94}" y1="${h*0.08}" x2="${w*0.94}" y2="${h*0.92}" stroke="#2A3A6A" stroke-width="${w*0.006}" opacity="0.4"/>
-        <line x1="${w*0.06}" y1="${h*0.08}" x2="${w*0.94}" y2="${h*0.08}" stroke="#2A3A6A" stroke-width="${w*0.004}" opacity="0.3"/>
-        <!-- Corner dots -->
-        ${[[0.06,0.08],[0.94,0.08],[0.06,0.92],[0.94,0.92]].map(([cx,cy])=>`<circle cx="${w*cx}" cy="${h*cy}" r="${w*0.015}" fill="#2A3A6A" opacity="0.5"/>`).join('')}
-        <!-- Subtle oak leaf motif -->
-        <g opacity="0.2" transform="translate(${w*0.5},${h*0.35})">
-          <ellipse cx="0" cy="${-h*0.15}" rx="${w*0.07}" ry="${h*0.12}" fill="#2A3A6A"/>
-          <ellipse cx="${-w*0.07}" cy="0" rx="${w*0.065}" ry="${h*0.11}" fill="#2A3A6A" transform="rotate(-40,${-w*0.07},0)"/>
-          <ellipse cx="${w*0.07}" cy="0" rx="${w*0.065}" ry="${h*0.11}" fill="#2A3A6A" transform="rotate(40,${w*0.07},0)"/>
-        </g>
-        <!-- Divider -->
-        <line x1="${w*0.2}" y1="${h*0.78}" x2="${w*0.8}" y2="${h*0.78}" stroke="#2A3A6A" stroke-width="0.8" opacity="0.4"/>
-        <text x="${w*0.5}" y="${h*0.56}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.085}" font-style="italic" fill="#1A2A5A" letter-spacing="1">Happy Father's Day</text>
-      </svg>`;
-    }
-  },
-
-  {
-    id: 'fathersday-fun-1',
-    label: 'Bold & Bright',
-    occasions: ["Father's Day"],
-    category: 'fun',
-    theme: 'twilight',
-    render(w, h) {
-      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
-        <defs>
-          <linearGradient id="bgff1" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stop-color="#EEF0FF"/>
-            <stop offset="100%" stop-color="#D8DCFF"/>
-          </linearGradient>
-        </defs>
-        <rect width="${w}" height="${h}" fill="url(#bgff1)"/>
-        <!-- Bold stripes top -->
-        <rect x="0" y="0" width="${w}" height="${h*0.12}" fill="#2A3A6A" opacity="0.15"/>
-        <!-- Stars scattered -->
-        ${[[0.1,0.3,'#D4AF37'],[0.25,0.65,'#2A3A6A'],[0.5,0.18,'#D4AF37'],[0.75,0.62,'#2A3A6A'],[0.9,0.28,'#D4AF37'],[0.38,0.45,'#2A3A6A'],[0.65,0.4,'#D4AF37']].map(([cx,cy,c])=>`<text x="${w*cx}" y="${h*cy}" text-anchor="middle" font-size="${w*0.045}" fill="${c}" opacity="0.6">★</text>`).join('')}
-        <line x1="${w*0.12}" y1="${h*0.82}" x2="${w*0.88}" y2="${h*0.82}" stroke="#2A3A6A" stroke-width="1.5" opacity="0.4"/>
-        <text x="${w*0.5}" y="${h*0.62}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.09}" font-weight="700" fill="#1A2A5A" letter-spacing="0.5">Happy Father's Day!</text>
-      </svg>`;
-    }
-  },
-
   // ── FATHER'S DAY IMAGE HEADERS ────────────────────────────────────────────
   {
     id: 'fday-img-journal',
@@ -3111,7 +2701,7 @@ const CARD_HEADERS = [
   {
     id: 'grad-img-fun',
     label: 'Garden Stars',
-    occasions: ['Graduation'],
+    occasions: ['Graduation', 'New milestone'],
     category: 'fun',
     theme: 'sage',
     image: 'graduation-fun.png',
@@ -3123,7 +2713,7 @@ const CARD_HEADERS = [
   {
     id: 'grad-img-fun2',
     label: 'Confetti',
-    occasions: ['Graduation'],
+    occasions: ['Graduation', 'Congratulations', 'New milestone'],
     category: 'fun',
     theme: 'twilight',
     image: 'graduation-fun2.png',
@@ -3234,7 +2824,7 @@ const CARD_HEADERS = [
   {
     id: 'valentines-img-confetti',
     label: 'Heart Confetti',
-    occasions: ["Valentine's Day", 'Valentines Day', 'Valentine'],
+    occasions: ["Valentine's Day", 'Valentines Day', 'Valentine', 'Wedding', 'Anniversary'],
     category: 'fun',
     theme: 'blush',
     image: 'valentines-confetti.png',
@@ -3256,71 +2846,11 @@ const CARD_HEADERS = [
   },
 
   // ── GET WELL ──────────────────────────────────────────────────────────────
-  {
-    id: 'getwell-classic-1',
-    label: 'Warm Wishes',
-    occasions: ['Get well'],
-    category: 'classic',
-    theme: 'warm',
-    render(w, h) {
-      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
-        <defs>
-          <linearGradient id="bggw1" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#FFF8F0"/>
-            <stop offset="100%" stop-color="#FDE8D0"/>
-          </linearGradient>
-        </defs>
-        <rect width="${w}" height="${h}" fill="url(#bggw1)"/>
-        <!-- Gentle sun top center -->
-        <circle cx="${w*0.5}" cy="${h*0.25}" r="${w*0.08}" fill="#F5C060" opacity="0.35"/>
-        <!-- Sun rays -->
-        <g opacity="0.18" transform="translate(${w*0.5},${h*0.25})">
-          ${[0,45,90,135,180,225,270,315].map(a=>`<line x1="0" y1="0" x2="${Math.cos(a*Math.PI/180)*w*0.18}" y2="${Math.sin(a*Math.PI/180)*h*0.22}" stroke="#E8A020" stroke-width="${w*0.004}"/>`).join('')}
-        </g>
-        <!-- Small flowers bottom corners -->
-        <circle cx="${w*0.12}" cy="${h*0.72}" r="${w*0.035}" fill="#F4A0B0" opacity="0.6"/>
-        <circle cx="${w*0.88}" cy="${h*0.72}" r="${w*0.035}" fill="#F4A0B0" opacity="0.6"/>
-        <circle cx="${w*0.08}" cy="${h*0.62}" r="${w*0.025}" fill="#F4B8C0" opacity="0.5"/>
-        <circle cx="${w*0.92}" cy="${h*0.62}" r="${w*0.025}" fill="#F4B8C0" opacity="0.5"/>
-        <line x1="${w*0.2}" y1="${h*0.82}" x2="${w*0.8}" y2="${h*0.82}" stroke="#E8A060" stroke-width="0.6" opacity="0.5"/>
-        <text x="${w*0.5}" y="${h*0.58}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.085}" font-style="italic" fill="#8A4A20" letter-spacing="1">Get Well Soon</text>
-      </svg>`;
-    }
-  },
-
-  {
-    id: 'getwell-fun-1',
-    label: 'Sunshine',
-    occasions: ['Get well'],
-    category: 'fun',
-    theme: 'warm',
-    render(w, h) {
-      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
-        <defs>
-          <linearGradient id="bggf1" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stop-color="#FFF8E8"/>
-            <stop offset="100%" stop-color="#FFE8C0"/>
-          </linearGradient>
-        </defs>
-        <rect width="${w}" height="${h}" fill="url(#bggf1)"/>
-        <!-- Big cheerful sun -->
-        <g opacity="0.3" transform="translate(${w*0.5},${h*0.35})">
-          ${[0,30,60,90,120,150,180,210,240,270,300,330].map(a=>`<line x1="0" y1="0" x2="${Math.cos(a*Math.PI/180)*w*0.42}" y2="${Math.sin(a*Math.PI/180)*h*0.38}" stroke="#F5A020" stroke-width="${w*0.005}"/>`).join('')}
-        </g>
-        <circle cx="${w*0.5}" cy="${h*0.35}" r="${w*0.12}" fill="#F5C030" opacity="0.5"/>
-        <!-- Colorful dots -->
-        ${[[0.1,0.2,'#F472A0'],[0.15,0.7,'#6AAA6A'],[0.85,0.22,'#F472A0'],[0.9,0.68,'#6AAA6A'],[0.3,0.12,'#8890E0'],[0.7,0.15,'#8890E0']].map(([cx,cy,c])=>`<circle cx="${w*cx}" cy="${h*cy}" r="${w*0.018}" fill="${c}" opacity="0.65"/>`).join('')}
-        <line x1="${w*0.15}" y1="${h*0.82}" x2="${w*0.85}" y2="${h*0.82}" stroke="#F5A020" stroke-width="0.8" opacity="0.5"/>
-        <text x="${w*0.5}" y="${h*0.7}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.09}" font-weight="700" fill="#B86010" letter-spacing="0.5">Feel Better Soon!</text>
-      </svg>`;
-    }
-  },
-
   // ── GET WELL IMAGE HEADERS ────────────────────────────────────────────────
   {
     id: 'getwell-img-sunset',
     label: 'Sunrise Horizon',
-    occasions: ['Get well'],
+    occasions: ['Get well', 'New milestone'],
     category: 'classic',
     theme: 'warm',
     image: 'getwell-sunset.png',
@@ -3332,7 +2862,7 @@ const CARD_HEADERS = [
   {
     id: 'getwell-img-flowers',
     label: 'Wildflowers',
-    occasions: ['Get well', 'Thinking of you'],
+    occasions: ['Get well', 'Easter'],
     category: 'classic',
     theme: 'blush',
     image: 'getwell-flowers.png',
@@ -3354,72 +2884,11 @@ const CARD_HEADERS = [
   },
 
   // ── NEW YEAR ──────────────────────────────────────────────────────────────
-  {
-    id: 'newyear-classic-1',
-    label: 'Midnight Gold',
-    occasions: ['New Year'],
-    category: 'classic',
-    theme: 'gold',
-    render(w, h) {
-      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
-        <defs>
-          <linearGradient id="bgny1" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#1A1A2E"/>
-            <stop offset="100%" stop-color="#2A2A4A"/>
-          </linearGradient>
-        </defs>
-        <rect width="${w}" height="${h}" fill="url(#bgny1)"/>
-        <!-- Stars -->
-        ${[[0.1,0.15],[0.2,0.4],[0.15,0.65],[0.3,0.2],[0.45,0.55],[0.55,0.15],[0.7,0.45],[0.8,0.2],[0.85,0.6],[0.9,0.35],[0.5,0.35]].map(([cx,cy])=>`<circle cx="${w*cx}" cy="${h*cy}" r="${w*0.008}" fill="#D4AF37" opacity="${0.4+Math.random()*0.5}"/>`).join('')}
-        <!-- Large star -->
-        <text x="${w*0.5}" y="${h*0.3}" text-anchor="middle" font-size="${w*0.08}" fill="#D4AF37" opacity="0.8">✦</text>
-        <!-- Firework bursts -->
-        <g opacity="0.4" transform="translate(${w*0.2},${h*0.3})">
-          ${[0,60,120,180,240,300].map(a=>`<line x1="0" y1="0" x2="${Math.cos(a*Math.PI/180)*w*0.06}" y2="${Math.sin(a*Math.PI/180)*h*0.08}" stroke="#D4AF37" stroke-width="${w*0.003}"/>`).join('')}
-        </g>
-        <g opacity="0.4" transform="translate(${w*0.8},${h*0.28})">
-          ${[0,60,120,180,240,300].map(a=>`<line x1="0" y1="0" x2="${Math.cos(a*Math.PI/180)*w*0.06}" y2="${Math.sin(a*Math.PI/180)*h*0.08}" stroke="#D4AF37" stroke-width="${w*0.003}"/>`).join('')}
-        </g>
-        <!-- Divider -->
-        <line x1="${w*0.2}" y1="${h*0.8}" x2="${w*0.8}" y2="${h*0.8}" stroke="#D4AF37" stroke-width="0.6" opacity="0.6"/>
-        <text x="${w*0.5}" y="${h*0.62}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.085}" font-style="italic" fill="#D4AF37" letter-spacing="1">Happy New Year</text>
-      </svg>`;
-    }
-  },
-
-  {
-    id: 'newyear-fun-1',
-    label: 'Countdown',
-    occasions: ['New Year'],
-    category: 'fun',
-    theme: 'gold',
-    render(w, h) {
-      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
-        <defs>
-          <linearGradient id="bgnf1" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stop-color="#1A1A3A"/>
-            <stop offset="100%" stop-color="#2A2060"/>
-          </linearGradient>
-        </defs>
-        <rect width="${w}" height="${h}" fill="url(#bgnf1)"/>
-        <!-- Fireworks -->
-        ${[[0.2,0.3,'#D4AF37'],[0.5,0.2,'#F472A0'],[0.8,0.32,'#8890E0']].map(([cx,cy,c])=>
-          [0,45,90,135,180,225,270,315].map(a=>`<line x1="${w*cx}" y1="${h*cy}" x2="${w*cx+Math.cos(a*Math.PI/180)*w*0.07}" y2="${h*cy+Math.sin(a*Math.PI/180)*h*0.09}" stroke="${c}" stroke-width="${w*0.003}" opacity="0.7"/>`).join('')
-        ).join('')}
-        <!-- Burst centers -->
-        ${[[0.2,0.3,'#D4AF37'],[0.5,0.2,'#F472A0'],[0.8,0.32,'#8890E0']].map(([cx,cy,c])=>`<circle cx="${w*cx}" cy="${h*cy}" r="${w*0.02}" fill="${c}" opacity="0.9"/>`).join('')}
-        <!-- Confetti -->
-        ${[[0.1,0.6,'#D4AF37'],[0.3,0.7,'#F472A0'],[0.7,0.65,'#8890E0'],[0.9,0.58,'#D4AF37'],[0.5,0.72,'#F472A0']].map(([cx,cy,c])=>`<rect x="${w*cx-4}" y="${h*cy-4}" width="8" height="8" fill="${c}" opacity="0.7" transform="rotate(45,${w*cx},${h*cy})"/>`).join('')}
-        <text x="${w*0.5}" y="${h*0.7}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.09}" font-weight="700" fill="#D4AF37" letter-spacing="0.5">Happy New Year!</text>
-      </svg>`;
-    }
-  },
-
   // ── NEW YEAR IMAGE HEADERS ────────────────────────────────────────────────
   {
     id: 'newyear-img-botanical',
     label: 'Gold Botanicals',
-    occasions: ['New Year'],
+    occasions: ['New Year', 'Eid'],
     category: 'classic',
     theme: 'twilight',
     image: 'newyear-botanical.png',
@@ -3443,7 +2912,7 @@ const CARD_HEADERS = [
   {
     id: 'newyear-img-champagne',
     label: 'Champagne Toast',
-    occasions: ['New Year'],
+    occasions: ['New Year', 'Wedding', 'Congratulations'],
     category: 'classic',
     theme: 'twilight',
     image: 'newyear-champagne.png',
@@ -3455,7 +2924,7 @@ const CARD_HEADERS = [
   {
     id: 'newyear-img-fireworks',
     label: 'Fireworks',
-    occasions: ['New Year'],
+    occasions: ['New Year', 'Congratulations'],
     category: 'fun',
     theme: 'twilight',
     image: 'newyear-fireworks.png',
@@ -3467,7 +2936,7 @@ const CARD_HEADERS = [
   {
     id: 'newyear-img-party',
     label: 'Party Time',
-    occasions: ['New Year'],
+    occasions: ['New Year', 'Congratulations'],
     category: 'fun',
     theme: 'twilight',
     image: 'newyear-party.png',
@@ -3477,74 +2946,6 @@ const CARD_HEADERS = [
   },
 
   // ── HANUKKAH ──────────────────────────────────────────────────────────────
-  {
-    id: 'hanukkah-classic-1',
-    label: 'Silver & Blue',
-    occasions: ['Hanukkah'],
-    category: 'classic',
-    theme: 'twilight',
-    render(w, h) {
-      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
-        <defs>
-          <linearGradient id="bghc1" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#F0F4FF"/>
-            <stop offset="100%" stop-color="#D0D8F8"/>
-          </linearGradient>
-        </defs>
-        <rect width="${w}" height="${h}" fill="url(#bghc1)"/>
-        <!-- Menorah simplified -->
-        <g transform="translate(${w*0.5},${h*0.65})" opacity="0.7">
-          <!-- Base -->
-          <rect x="${-w*0.18}" y="0" width="${w*0.36}" height="${h*0.06}" rx="3" fill="#4A6AC0"/>
-          <!-- Center stem -->
-          <rect x="${-w*0.012}" y="${-h*0.38}" width="${w*0.024}" height="${h*0.38}" fill="#4A6AC0"/>
-          <!-- Arms -->
-          ${[-0.15,-0.1,-0.05,0.05,0.1,0.15,0,0,0].slice(0,8).map((x,i)=>{
-            const arms = [-0.15,-0.1,-0.05,0.05,0.1,0.15,-0.18,0.18];
-            const heights = [0.22,0.28,0.32,0.32,0.28,0.22,0.18,0.18];
-            return `<rect x="${w*arms[i]-w*0.01}" y="${-h*heights[i]}" width="${w*0.02}" height="${h*heights[i]}" fill="#4A6AC0"/>`;
-          }).join('')}
-          <!-- Candle flames -->
-          ${[-0.18,-0.15,-0.1,-0.05,0,0.05,0.1,0.15,0.18].map((x,i)=>
-            `<ellipse cx="${w*x}" cy="${-h*(i===4?0.38:[0.18,0.22,0.28,0.32,0,0.32,0.28,0.22,0.18][i])- h*0.06}" rx="${w*0.012}" ry="${h*0.05}" fill="#D4AF37" opacity="0.85"/>`
-          ).join('')}
-        </g>
-        <!-- Star of David subtle -->
-        <text x="${w*0.5}" y="${h*0.22}" text-anchor="middle" font-size="${w*0.06}" fill="#3A5AB0" opacity="0.3">✡</text>
-        <line x1="${w*0.2}" y1="${h*0.82}" x2="${w*0.8}" y2="${h*0.82}" stroke="#4A6AC0" stroke-width="0.6" opacity="0.5"/>
-        <text x="${w*0.5}" y="${h*0.92}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.075}" font-style="italic" fill="#2A3A8A" letter-spacing="1">Happy Hanukkah</text>
-      </svg>`;
-    }
-  },
-
-  {
-    id: 'hanukkah-fun-1',
-    label: 'Festival of Lights',
-    occasions: ['Hanukkah'],
-    category: 'fun',
-    theme: 'twilight',
-    render(w, h) {
-      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
-        <defs>
-          <linearGradient id="bghf1" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stop-color="#E8ECFF"/>
-            <stop offset="100%" stop-color="#C8D0F8"/>
-          </linearGradient>
-        </defs>
-        <rect width="${w}" height="${h}" fill="url(#bghf1)"/>
-        <!-- Light rays from center -->
-        <g opacity="0.2" transform="translate(${w*0.5},${h*0.4})">
-          ${[0,30,60,90,120,150,180,210,240,270,300,330].map(a=>`<line x1="0" y1="0" x2="${Math.cos(a*Math.PI/180)*w*0.45}" y2="${Math.sin(a*Math.PI/180)*h*0.42}" stroke="#D4AF37" stroke-width="${w*0.004}"/>`).join('')}
-        </g>
-        <!-- Blue and silver dots -->
-        ${[[0.1,0.2,'#4A6AC0'],[0.2,0.65,'#C0C8E8'],[0.35,0.15,'#D4AF37'],[0.65,0.18,'#4A6AC0'],[0.8,0.62,'#C0C8E8'],[0.9,0.22,'#D4AF37'],[0.5,0.1,'#4A6AC0'],[0.42,0.7,'#D4AF37'],[0.58,0.68,'#4A6AC0']].map(([cx,cy,c])=>`<circle cx="${w*cx}" cy="${h*cy}" r="${w*0.016}" fill="${c}" opacity="0.7"/>`).join('')}
-        <text x="${w*0.5}" y="${h*0.35}" text-anchor="middle" font-size="${w*0.07}" fill="#D4AF37" opacity="0.8">✡</text>
-        <line x1="${w*0.15}" y1="${h*0.8}" x2="${w*0.85}" y2="${h*0.8}" stroke="#4A6AC0" stroke-width="0.8" opacity="0.5"/>
-        <text x="${w*0.5}" y="${h*0.65}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.085}" font-weight="700" fill="#2A3A8A" letter-spacing="0.5">Happy Hanukkah!</text>
-      </svg>`;
-    }
-  },
-
   // ── HANUKKAH IMAGE HEADERS ───────────────────────────────────────────────
   {
     id: 'hanukkah-img-menorah',
@@ -3561,7 +2962,7 @@ const CARD_HEADERS = [
   {
     id: 'hanukkah-img-botanical',
     label: 'Blue Botanicals',
-    occasions: ['Hanukkah'],
+    occasions: ['Hanukkah', 'Passover'],
     category: 'classic',
     theme: 'twilight',
     image: 'hanukkah-botanical.png',
@@ -3595,63 +2996,6 @@ const CARD_HEADERS = [
   },
 
   // ── THANKSGIVING ──────────────────────────────────────────────────────────
-  {
-    id: 'thanksgiving-classic-1',
-    label: 'Harvest',
-    occasions: ['Thanksgiving'],
-    category: 'classic',
-    theme: 'warm',
-    render(w, h) {
-      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
-        <defs>
-          <linearGradient id="bgtg1" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#FFF5E8"/>
-            <stop offset="100%" stop-color="#F8DDB8"/>
-          </linearGradient>
-        </defs>
-        <rect width="${w}" height="${h}" fill="url(#bgtg1)"/>
-        <!-- Autumn leaves left -->
-        <g opacity="0.6">
-          <ellipse cx="${w*0.08}" cy="${h*0.3}" rx="${w*0.07}" ry="${h*0.1}" fill="#C84820" transform="rotate(-30,${w*0.08},${h*0.3})"/>
-          <ellipse cx="${w*0.12}" cy="${h*0.5}" rx="${w*0.065}" ry="${h*0.09}" fill="#E87020" transform="rotate(20,${w*0.12},${h*0.5})"/>
-          <ellipse cx="${w*0.06}" cy="${h*0.65}" rx="${w*0.06}" ry="${h*0.085}" fill="#D4A020" transform="rotate(-15,${w*0.06},${h*0.65})"/>
-          <!-- Right -->
-          <ellipse cx="${w*0.92}" cy="${h*0.3}" rx="${w*0.07}" ry="${h*0.1}" fill="#C84820" transform="rotate(30,${w*0.92},${h*0.3})"/>
-          <ellipse cx="${w*0.88}" cy="${h*0.5}" rx="${w*0.065}" ry="${h*0.09}" fill="#E87020" transform="rotate(-20,${w*0.88},${h*0.5})"/>
-          <ellipse cx="${w*0.94}" cy="${h*0.65}" rx="${w*0.06}" ry="${h*0.085}" fill="#D4A020" transform="rotate(15,${w*0.94},${h*0.65})"/>
-        </g>
-        <!-- Acorn dots -->
-        <circle cx="${w*0.16}" cy="${h*0.18}" r="${w*0.018}" fill="#8B5A20" opacity="0.5"/>
-        <circle cx="${w*0.84}" cy="${h*0.18}" r="${w*0.018}" fill="#8B5A20" opacity="0.5"/>
-        <line x1="${w*0.2}" y1="${h*0.82}" x2="${w*0.8}" y2="${h*0.82}" stroke="#C84820" stroke-width="0.6" opacity="0.5"/>
-        <text x="${w*0.5}" y="${h*0.56}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.085}" font-style="italic" fill="#6A2A08" letter-spacing="1">Happy Thanksgiving</text>
-      </svg>`;
-    }
-  },
-
-  {
-    id: 'thanksgiving-fun-1',
-    label: 'Autumn Fest',
-    occasions: ['Thanksgiving'],
-    category: 'fun',
-    theme: 'warm',
-    render(w, h) {
-      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
-        <defs>
-          <linearGradient id="bgtf2" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stop-color="#FFF0DC"/>
-            <stop offset="100%" stop-color="#FFD89A"/>
-          </linearGradient>
-        </defs>
-        <rect width="${w}" height="${h}" fill="url(#bgtf2)"/>
-        <!-- Colorful leaf burst -->
-        ${[[0.1,0.25,'#C84820'],[0.2,0.62,'#E87020'],[0.32,0.15,'#D4A020'],[0.5,0.68,'#C84820'],[0.68,0.18,'#E87020'],[0.8,0.60,'#D4A020'],[0.9,0.28,'#C84820'],[0.42,0.42,'#E87020'],[0.62,0.45,'#D4A020']].map(([cx,cy,c])=>`<ellipse cx="${w*cx}" cy="${h*cy}" rx="${w*0.04}" ry="${h*0.065}" fill="${c}" opacity="0.7" transform="rotate(${Math.random()*60-30},${w*cx},${h*cy})"/>`).join('')}
-        <line x1="${w*0.15}" y1="${h*0.82}" x2="${w*0.85}" y2="${h*0.82}" stroke="#C84820" stroke-width="0.8" opacity="0.5"/>
-        <text x="${w*0.5}" y="${h*0.62}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.082}" font-weight="700" fill="#8B2A08" letter-spacing="0.5">Happy Thanksgiving!</text>
-      </svg>`;
-    }
-  },
-
   // ── THANKSGIVING IMAGE HEADERS ────────────────────────────────────────────
   {
     id: 'thanksgiving-img-turkeys',
@@ -3769,84 +3113,6 @@ const CARD_HEADERS = [
   },
 
   // ── HALLOWEEN ─────────────────────────────────────────────────────────────
-  {
-    id: 'halloween-classic-1',
-    label: 'Moonlit',
-    occasions: ['Halloween'],
-    category: 'classic',
-    theme: 'dusk',
-    render(w, h) {
-      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
-        <defs>
-          <linearGradient id="bghw1" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#1A0A2E"/>
-            <stop offset="100%" stop-color="#2A1050"/>
-          </linearGradient>
-        </defs>
-        <rect width="${w}" height="${h}" fill="url(#bghw1)"/>
-        <!-- Moon -->
-        <circle cx="${w*0.75}" cy="${h*0.22}" r="${w*0.1}" fill="#F5E090" opacity="0.8"/>
-        <circle cx="${w*0.8}" cy="${h*0.18}" r="${w*0.09}" fill="#1A0A2E"/>
-        <!-- Stars -->
-        ${[[0.1,0.15],[0.2,0.3],[0.35,0.1],[0.15,0.45],[0.5,0.2],[0.6,0.08],[0.3,0.5]].map(([cx,cy])=>`<circle cx="${w*cx}" cy="${h*cy}" r="${w*0.007}" fill="#F5E090" opacity="0.6"/>`).join('')}
-        <!-- Bare tree silhouette -->
-        <g opacity="0.5" fill="#0A0020">
-          <rect x="${w*0.08}" y="${h*0.4}" width="${w*0.018}" height="${h*0.55}"/>
-          <rect x="${w*0.06}" y="${h*0.42}" width="${w*0.06}" height="${h*0.012}" transform="rotate(-20,${w*0.06},${h*0.42})"/>
-          <rect x="${w*0.08}" y="${h*0.5}" width="${w*0.055}" height="${h*0.01}" transform="rotate(15,${w*0.08},${h*0.5})"/>
-          <rect x="${w*0.07}" y="${h*0.6}" width="${w*0.05}" height="${h*0.01}" transform="rotate(-10,${w*0.07},${h*0.6})"/>
-        </g>
-        <line x1="${w*0.2}" y1="${h*0.8}" x2="${w*0.8}" y2="${h*0.8}" stroke="#C890E8" stroke-width="0.6" opacity="0.5"/>
-        <text x="${w*0.5}" y="${h*0.62}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.085}" font-style="italic" fill="#C890E8" letter-spacing="1">Happy Halloween</text>
-      </svg>`;
-    }
-  },
-
-  {
-    id: 'halloween-fun-1',
-    label: 'Spooky & Fun',
-    occasions: ['Halloween'],
-    category: 'fun',
-    theme: 'dusk',
-    render(w, h) {
-      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
-        <defs>
-          <linearGradient id="bghwf1" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stop-color="#1A0830"/>
-            <stop offset="100%" stop-color="#300850"/>
-          </linearGradient>
-        </defs>
-        <rect width="${w}" height="${h}" fill="url(#bghwf1)"/>
-        <!-- Pumpkins -->
-        <g opacity="0.8" transform="translate(${w*0.15},${h*0.5})">
-          <ellipse cx="0" cy="0" rx="${w*0.07}" ry="${h*0.12}" fill="#E87020"/>
-          <ellipse cx="${-w*0.04}" cy="0" rx="${w*0.04}" ry="${h*0.11}" fill="#D06010" opacity="0.7"/>
-          <ellipse cx="${w*0.04}" cy="0" rx="${w*0.04}" ry="${h*0.11}" fill="#D06010" opacity="0.7"/>
-          <rect x="${-w*0.008}" y="${-h*0.14}" width="${w*0.016}" height="${h*0.04}" fill="#3A6A20"/>
-          <!-- Face -->
-          <polygon points="${-w*0.03},${-h*0.04} ${-w*0.01},${-h*0.02} ${-w*0.05},${-h*0.02}" fill="#1A0830"/>
-          <polygon points="${w*0.03},${-h*0.04} ${w*0.01},${-h*0.02} ${w*0.05},${-h*0.02}" fill="#1A0830"/>
-          <path d="M${-w*0.04} ${h*0.03} Q0 ${h*0.07} ${w*0.04} ${h*0.03}" stroke="#1A0830" stroke-width="${w*0.008}" fill="none"/>
-        </g>
-        <!-- Small pumpkin right -->
-        <g opacity="0.7" transform="translate(${w*0.85},${h*0.55})">
-          <ellipse cx="0" cy="0" rx="${w*0.055}" ry="${h*0.095}" fill="#E87020"/>
-          <rect x="${-w*0.006}" y="${-h*0.11}" width="${w*0.012}" height="${h*0.03}" fill="#3A6A20"/>
-        </g>
-        <!-- Ghost -->
-        <g opacity="0.5" transform="translate(${w*0.5},${h*0.3})">
-          <ellipse cx="0" cy="0" rx="${w*0.06}" ry="${h*0.1}" fill="white"/>
-          <rect x="${-w*0.06}" y="0" width="${w*0.12}" height="${h*0.1}" fill="white"/>
-          <circle cx="${-w*0.02}" cy="${-h*0.02}" r="${w*0.012}" fill="#1A0830"/>
-          <circle cx="${w*0.02}" cy="${-h*0.02}" r="${w*0.012}" fill="#1A0830"/>
-        </g>
-        <!-- Stars -->
-        ${[[0.3,0.12,'#F5E090'],[0.7,0.1,'#F5E090'],[0.85,0.25,'#F5E090']].map(([cx,cy,c])=>`<circle cx="${w*cx}" cy="${h*cy}" r="${w*0.008}" fill="${c}" opacity="0.7"/>`).join('')}
-        <text x="${w*0.5}" y="${h*0.82}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.09}" font-weight="700" fill="#F5A020" letter-spacing="0.5">Happy Halloween!</text>
-      </svg>`;
-    }
-  },
-
   // ── HALLOWEEN IMAGE HEADERS ───────────────────────────────────────────────
   {
     id: 'halloween-img-classic',
@@ -3959,64 +3225,11 @@ const CARD_HEADERS = [
   },
 
   // ── APOLOGY ───────────────────────────────────────────────────────────────
-  {
-    id: 'apology-classic-1',
-    label: 'Sincere',
-    occasions: ['Apology'],
-    category: 'classic',
-    theme: 'slate',
-    render(w, h) {
-      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
-        <defs>
-          <linearGradient id="bgac1" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#F5F7FA"/>
-            <stop offset="100%" stop-color="#E0E6F0"/>
-          </linearGradient>
-        </defs>
-        <rect width="${w}" height="${h}" fill="url(#bgac1)"/>
-        <!-- Single olive branch — universal peace symbol, understated -->
-        <g opacity="0.4" transform="translate(${w*0.5},${h*0.4})">
-          <path d="M${-w*0.3} ${h*0.2} Q0 ${-h*0.1} ${w*0.3} ${h*0.2}" stroke="#7A9070" stroke-width="${w*0.003}" fill="none"/>
-          ${[[-0.22,0.05,-25],[-0.12,-0.05,20],[0,0.08,-15],[0.12,-0.03,25],[0.22,0.06,-20]].map(([lx,ly,rot])=>`<ellipse cx="${w*lx}" cy="${h*ly}" rx="${w*0.045}" ry="${h*0.07}" fill="#8AAA80" transform="rotate(${rot},${w*lx},${h*ly})"/>`).join('')}
-        </g>
-        <!-- Very soft single line border -->
-        <rect x="${w*0.06}" y="${h*0.06}" width="${w*0.88}" height="${h*0.88}" rx="6" fill="none" stroke="#8A9AB0" stroke-width="0.5" opacity="0.25"/>
-        <line x1="${w*0.25}" y1="${h*0.8}" x2="${w*0.75}" y2="${h*0.8}" stroke="#8A9AB0" stroke-width="0.5" opacity="0.4"/>
-        <text x="${w*0.5}" y="${h*0.65}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.082}" font-style="italic" fill="#3A4A5A" letter-spacing="1">I'm Sorry</text>
-      </svg>`;
-    }
-  },
-
-  {
-    id: 'apology-fun-1',
-    label: 'Gentle',
-    occasions: ['Apology'],
-    category: 'fun',
-    theme: 'slate',
-    render(w, h) {
-      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
-        <defs>
-          <linearGradient id="bgaf2" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stop-color="#F0F4F8"/>
-            <stop offset="100%" stop-color="#D8E4F0"/>
-          </linearGradient>
-        </defs>
-        <rect width="${w}" height="${h}" fill="url(#bgaf2)"/>
-        <!-- Soft floating dots — gentle energy, not festive -->
-        ${[[0.1,0.2,'#A0B8D0'],[0.2,0.6,'#B8CCD8'],[0.35,0.15,'#90A8C0'],[0.5,0.65,'#A0B8D0'],[0.65,0.18,'#B8CCD8'],[0.8,0.6,'#90A8C0'],[0.9,0.25,'#A0B8D0'],[0.42,0.45,'#B8CCD8'],[0.62,0.42,'#90A8C0']].map(([cx,cy,c])=>`<circle cx="${w*cx}" cy="${h*cy}" r="${w*0.015}" fill="${c}" opacity="0.55"/>`).join('')}
-        <!-- Small heart — warmth without being cutesy -->
-        <text x="${w*0.5}" y="${h*0.35}" text-anchor="middle" font-size="${w*0.07}" fill="#8090A8" opacity="0.5">♥</text>
-        <line x1="${w*0.28}" y1="${h*0.8}" x2="${w*0.72}" y2="${h*0.8}" stroke="#8A9AB0" stroke-width="0.5" opacity="0.4"/>
-        <text x="${w*0.5}" y="${h*0.65}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.082}" font-style="italic" fill="#3A4A5A" letter-spacing="0.5">I'm Truly Sorry</text>
-      </svg>`;
-    }
-  },
-
   // ── APOLOGY IMAGE HEADERS ─────────────────────────────────────────────────
   {
     id: 'apology-img-roses',
     label: 'Blush Roses',
-    occasions: ['Apology'],
+    occasions: ['Apology', "Mother's Day"],
     category: 'classic',
     theme: 'blush',
     image: 'apology-roses.png',
@@ -4028,7 +3241,7 @@ const CARD_HEADERS = [
   {
     id: 'apology-img-botanical',
     label: 'Olive Branches',
-    occasions: ['Apology', 'Sympathy'],
+    occasions: ['Apology', 'Sympathy', 'Easter'],
     category: 'classic',
     theme: 'sage',
     image: 'apology-botanical.png',
@@ -4064,7 +3277,7 @@ const CARD_HEADERS = [
   {
     id: 'apology-img-bear3',
     label: 'Gentle Bear',
-    occasions: ['Apology', 'Get well'],
+    occasions: ['Apology', 'Get well', 'Easter'],
     category: 'fun',
     theme: 'warm',
     image: 'apology-bear3.png',
@@ -4076,7 +3289,7 @@ const CARD_HEADERS = [
   {
     id: 'apology-img-bear4',
     label: 'Bear Bouquet',
-    occasions: ['Apology', 'Get well', 'Thinking of you'],
+    occasions: ['Apology', 'Get well', 'Thinking of you', "Mother's Day", 'Easter'],
     category: 'fun',
     theme: 'blush',
     image: 'apology-bear4.png',
@@ -4413,62 +3626,6 @@ const CARD_HEADERS = [
   },
 
   // ── NATIONAL NURSES DAY ───────────────────────────────────────────────────
-  {
-    id: 'nursesday-classic-1',
-    label: 'With Gratitude',
-    occasions: ['National Nurses Day'],
-    category: 'classic',
-    theme: 'blush',
-    render(w, h) {
-      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
-        <defs>
-          <linearGradient id="bgndc1" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#FFF5F8"/>
-            <stop offset="100%" stop-color="#F8E0E8"/>
-          </linearGradient>
-        </defs>
-        <rect width="${w}" height="${h}" fill="url(#bgndc1)"/>
-        <!-- Cross symbol — simple, clean, not clinical -->
-        <rect x="${w*0.47}" y="${h*0.18}" width="${w*0.06}" height="${h*0.22}" rx="3" fill="#E87090" opacity="0.35"/>
-        <rect x="${w*0.4}" y="${h*0.25}" width="${w*0.2}" height="${h*0.08}" rx="3" fill="#E87090" opacity="0.35"/>
-        <!-- Small heart at center of cross -->
-        <text x="${w*0.5}" y="${h*0.32}" text-anchor="middle" font-size="${w*0.04}" fill="#C05070" opacity="0.6">♥</text>
-        <!-- Soft floral corners -->
-        <circle cx="${w*0.1}" cy="${h*0.15}" r="${w*0.03}" fill="#F4A0B8" opacity="0.4"/>
-        <circle cx="${w*0.9}" cy="${h*0.15}" r="${w*0.03}" fill="#F4A0B8" opacity="0.4"/>
-        <circle cx="${w*0.1}" cy="${h*0.75}" r="${w*0.025}" fill="#F4A0B8" opacity="0.3"/>
-        <circle cx="${w*0.9}" cy="${h*0.75}" r="${w*0.025}" fill="#F4A0B8" opacity="0.3"/>
-        <line x1="${w*0.2}" y1="${h*0.8}" x2="${w*0.8}" y2="${h*0.8}" stroke="#E87090" stroke-width="0.6" opacity="0.45"/>
-        <text x="${w*0.5}" y="${h*0.64}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.075}" font-style="italic" fill="#8A3050" letter-spacing="1">Thank You, Nurse</text>
-      </svg>`;
-    }
-  },
-
-  {
-    id: 'nursesday-fun-1',
-    label: 'Hero',
-    occasions: ['National Nurses Day'],
-    category: 'fun',
-    theme: 'blush',
-    render(w, h) {
-      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
-        <defs>
-          <linearGradient id="bgndf1" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stop-color="#FFF0F5"/>
-            <stop offset="100%" stop-color="#FFD8E8"/>
-          </linearGradient>
-        </defs>
-        <rect width="${w}" height="${h}" fill="url(#bgndf1)"/>
-        <!-- Hearts scattered — warmth and care -->
-        ${[[0.1,0.25,'#F472A0'],[0.22,0.6,'#E8A0C0'],[0.38,0.15,'#F472A0'],[0.5,0.55,'#E060A0'],[0.65,0.18,'#F472A0'],[0.78,0.62,'#E8A0C0'],[0.9,0.28,'#F472A0'],[0.3,0.45,'#E8A0C0'],[0.7,0.48,'#E060A0']].map(([cx,cy,c])=>`<text x="${w*cx}" y="${h*cy}" text-anchor="middle" font-size="${w*0.04}" fill="${c}" opacity="0.65">♥</text>`).join('')}
-        <!-- Large center heart -->
-        <text x="${w*0.5}" y="${h*0.38}" text-anchor="middle" font-size="${w*0.1}" fill="#E060A0" opacity="0.7">♥</text>
-        <line x1="${w*0.15}" y1="${h*0.8}" x2="${w*0.85}" y2="${h*0.8}" stroke="#F472A0" stroke-width="0.8" opacity="0.5"/>
-        <text x="${w*0.5}" y="${h*0.64}" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-size="${w*0.075}" font-weight="700" fill="#C03060" letter-spacing="0.5">Heroes Wear Scrubs!</text>
-      </svg>`;
-    }
-  },
-
   // ── NATIONAL NURSES DAY IMAGE HEADERS ────────────────────────────────────
   {
     id: 'nursesday-img-daisies',

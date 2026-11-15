@@ -331,7 +331,7 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
       <div class="question">What's the occasion?</div>
       <div class="subtext">This sets the emotional gravity of the message.</div>
       <div class="chips" id="qc5-main">
-        <div class="chip" data-val="Birthday">Birthday</div><div class="chip" data-val="Anniversary">Anniversary</div><div class="chip" data-val="Valentine's Day">Valentine's Day</div><div class="chip" data-val="Christmas">Christmas</div><div class="chip" data-val="Hanukkah">Hanukkah</div><div class="chip" data-val="Thank you">Thank you</div><div class="chip" data-val="Get well">Get well</div><div class="chip" data-val="Thinking of you">Thinking of you</div><div class="chip" data-val="Father's Day">Father's Day</div><div class="chip" data-val="Mother's Day">Mother's Day</div><div class="chip" data-val="Graduation">Graduation</div><div class="chip" data-val="New milestone">New milestone</div><div class="chip" data-val="National Nurses Day">National Nurses Day</div><div class="chip" data-val="Other Holidays">Other Holidays</div><div class="chip" data-val="Other">Other</div>
+        <div class="chip" data-val="Birthday">Birthday</div><div class="chip" data-val="Anniversary">Anniversary</div><div class="chip" data-val="Valentine's Day">Valentine's Day</div><div class="chip" data-val="Christmas">Christmas</div><div class="chip" data-val="Hanukkah">Hanukkah</div><div class="chip" data-val="Thank you">Thank you</div><div class="chip" data-val="Get well">Get well</div><div class="chip" data-val="Thinking of you">Thinking of you</div><div class="chip" data-val="Father's Day">Father's Day</div><div class="chip" data-val="Mother's Day">Mother's Day</div><div class="chip" data-val="Graduation">Graduation</div><div class="chip" data-val="New milestone">New milestone</div><div class="chip" data-val="Congratulations">Congratulations</div><div class="chip" data-val="Wedding">Wedding</div><div class="chip" data-val="National Nurses Day">National Nurses Day</div><div class="chip" data-val="Other Holidays">Other Holidays</div><div class="chip" data-val="Other">Other</div>
       </div>
       <div class="exp" id="qe-hols"><div class="cgl" style="margin-top:0;">Select the holiday</div><div class="chips" id="qc5-hols"><div class="chip" data-val="Thanksgiving">Thanksgiving</div><div class="chip" data-val="Easter">Easter</div><div class="chip" data-val="New Year">New Year</div><div class="chip" data-val="Halloween">Halloween</div><div class="chip" data-val="4th of July">4th of July</div><div class="chip" data-val="Diwali">Diwali</div><div class="chip" data-val="Eid">Eid</div><div class="chip" data-val="Passover">Passover</div></div></div>
       <div class="exp" id="qe-other-occ"><input class="text-input" id="t5-other" type="text" placeholder="e.g. Retirement, New baby, Promotion..." oninput="handleOtherOcc()"></div>
@@ -1722,7 +1722,7 @@ const CARD_HEADERS = [
   {
     id: 'bday-img-floral',
     label: 'Floral',
-    occasions: ['Birthday', "Mother's Day"],
+    occasions: ['Birthday', "Mother's Day", 'Congratulations'],
     category: 'classic',
     theme: 'blush',
     image: 'birthday-floral.png',
@@ -1734,7 +1734,7 @@ const CARD_HEADERS = [
   {
     id: 'bday-img-balloons',
     label: 'Balloons',
-    occasions: ['Birthday'],
+    occasions: ['Birthday', 'Congratulations'],
     category: 'fun',
     theme: 'blush',
     image: 'birthday-balloons.png',
@@ -1842,7 +1842,7 @@ const CARD_HEADERS = [
   {
     id: 'bday-img-sparklers',
     label: 'Sparklers',
-    occasions: ['Birthday'],
+    occasions: ['Birthday', 'Congratulations'],
     category: 'fun',
     theme: 'gold',
     image: 'birthday-sparklers.png',
@@ -2067,7 +2067,7 @@ const CARD_HEADERS = [
   {
     id: 'thankyou-img-roses',
     label: 'Blush Roses',
-    occasions: ["Thank you", "Thank You", "Other", 'Thinking of you', "Mother's Day", 'Wedding'],
+    occasions: ["Thank you", "Thank You", "Other", 'Thinking of you', "Mother's Day", 'Wedding', 'Congratulations'],
     category: 'classic',
     theme: 'blush',
     image: 'thankyou-roses.png',
@@ -2091,7 +2091,7 @@ const CARD_HEADERS = [
   {
     id: 'thankyou-img-confetti',
     label: 'Confetti Stars',
-    occasions: ['Thank you', 'Thank You'],
+    occasions: ['Thank you', 'Thank You', 'Congratulations'],
     category: 'fun',
     theme: 'bright',
     image: 'thankyou-confetti.png',
@@ -2296,7 +2296,7 @@ const CARD_HEADERS = [
   {
     id: 'abstract-img-emerald',
     label: 'Emerald',
-    occasions: ['Abstract'],
+    occasions: ['Abstract', 'Congratulations'],
     category: 'classic',
     theme: 'sage',
     image: 'abstract-emerald.png',
@@ -2332,7 +2332,7 @@ const CARD_HEADERS = [
   {
     id: 'abstract-img-navyblue',
     label: 'Navy Blue',
-    occasions: ['Abstract', 'Graduation'],
+    occasions: ['Abstract', 'Graduation', 'Congratulations'],
     category: 'classic',
     theme: 'twilight',
     image: 'abstract-navyblue.png',
@@ -2428,7 +2428,7 @@ const CARD_HEADERS = [
   {
     id: 'anniversary-img-glassesandcake',
     label: 'Cake & Glasses',
-    occasions: ['Anniversary'],
+    occasions: ['Anniversary', 'Wedding'],
     category: 'classic',
     theme: 'gold',
     image: 'anniversary-glassesandcake.png',
@@ -2701,7 +2701,7 @@ const CARD_HEADERS = [
   {
     id: 'grad-img-fun',
     label: 'Garden Stars',
-    occasions: ['Graduation', 'New milestone', 'Thank you'],
+    occasions: ['Graduation', 'New milestone', 'Thank you', 'Congratulations'],
     category: 'fun',
     theme: 'sage',
     image: 'graduation-fun.png',
@@ -2900,7 +2900,7 @@ const CARD_HEADERS = [
   {
     id: 'newyear-img-floral',
     label: 'Gold Floral',
-    occasions: ['New Year'],
+    occasions: ['New Year', 'Congratulations'],
     category: 'classic',
     theme: 'twilight',
     image: 'newyear-floral.png',
@@ -2936,7 +2936,7 @@ const CARD_HEADERS = [
   {
     id: 'newyear-img-party',
     label: 'Party Time',
-    occasions: ['New Year', 'Congratulations'],
+    occasions: ['New Year'],
     category: 'fun',
     theme: 'twilight',
     image: 'newyear-party.png',

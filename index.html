@@ -467,7 +467,7 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
       <div class="cgl" style="margin-top:0.5rem;">Who did they lose?</div>
       <input class="text-input" id="t-loss-who" type="text" placeholder="e.g. Her sister, His father, Their dog" oninput="updateLoss()">
       <label class="chk-strong" style="margin-top:0.6rem;"><input type="checkbox" id="chk-loss-name" onchange="updateLoss()">Include their name in the card</label>
-      <div id="loss-name-row" style="display:none;margin-top:0.5rem;"><input class="text-input" id="t-loss-name" type="text" placeholder="e.g. Buck" oninput="updateLoss()"></div>
+      <div id="loss-name-row" style="display:none;margin-top:0.5rem;"><div class="subtext" style="margin:0 0 0.4rem;">Use what you called them, so it sounds like you.</div><input class="text-input" id="t-loss-name" type="text" placeholder="e.g. Nana, Uncle Buck, Max" oninput="updateLoss()"></div>
       <div class="cgl" style="margin-top:1.25rem;">Did you know them?</div>
       <div class="chips" id="qc-knew">
         <div class="chip" data-val="yes">Yes</div><div class="chip" data-val="a little">A little</div><div class="chip" data-val="no">No</div>

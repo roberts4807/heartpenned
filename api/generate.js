@@ -215,7 +215,7 @@ const spiritualRule=A.spirituality==='None'||!A.spirituality?'No spiritual langu
   const lossAbout = (lossKnew === 'yes' || lossKnew === 'a little') ? lossStr(L.about) : '';
   const lossBlock = !isLoss ? '' : `THE LOSS (card content; use only what is given):
 - WHO THEY LOST: ${lossWho ? '"' + lossWho + '"' : 'Not given. Refer to the loss only in general terms ("your loss," "this loss"); never guess who died.'}
-- NAME: ${lossName ? '"' + lossName + '" The sender wants this name in the card. Use it once, naturally.' : 'Do not name the person who died, even if a name appears above.'}
+- NAME: ${lossName ? '"' + lossName + '" This is what the sender called them (it may be a family name like "Nana" or "Uncle Buck"). The sender wants it in the card. Use it once, exactly as written, naturally.' : 'Do not name the person who died, even if a name appears above.'}
 - DID THE SENDER KNOW THEM: ${lossKnew === 'yes' ? 'Yes.' : lossKnew === 'a little' ? 'A little. Keep any line about them modest.' : (lossKnew === 'no' ? 'No.' : 'Not given.') + ' Never imply the sender knew them, met them, or knows what they were like. Do not describe them.'}
 ${lossAbout ? '- WHAT THE SENDER WANTS TO SAY ABOUT THEM: "' + lossAbout + '" Include one line honoring them in the spirit of this, in your own words. Add no qualities or stories beyond it.\n' : ''}- OFFER: ${lossOffer ? '"' + lossOffer + '" Include it plainly and specifically.' : 'None given. Do not invent one, and do not write "let me know if you need anything."'}
 - If the loss is a pet, treat it as the loss of a family member, sincerely and in proportion. Never "just a pet," never compare it to losing a person.

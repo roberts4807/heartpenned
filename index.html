@@ -405,7 +405,7 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
     </div>
 
     <div class="qstep" id="q8">
-      <div class="question" id="q9-text">What's your relationship like?</div>
+      <div class="question" id="q9-text">What's your relationship like? <span class="opt-tag" id="rel-opt" style="display:none;">optional</span></div>
       <div class="honest-private" style="margin-top:0;white-space:normal;line-height:1.5;">🔒 Just for us. Never in the card, only used to set the tone.</div>
       <div class="cgl" style="margin-top:1rem;"><span style="font-weight:400;color:#AAB4C0;text-transform:none;letter-spacing:0;">Pick 1 or 2 that feel most true</span></div>
       <div class="chips" id="rel-chips">
@@ -420,7 +420,7 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
       </div>
       <div class="cgl" style="margin-top:1rem;">Anything we should know or steer clear of? <span class="opt-tag">optional</span></div>
       <textarea class="text-input" id="t9" rows="3" placeholder="e.g. We're rebuilding and it's been up and down. Keep it warm, not gushy." oninput="updateRelCtx()"></textarea>
-      <div class="qnav"><button class="btn-back" onclick="qGo(7)">← Back</button><button class="btn-next" id="qn9" disabled onclick="qGo(9)">Next →</button></div>
+      <div class="qnav"><button class="btn-back" onclick="qGo(7)">← Back</button><button class="btn-next" id="qn9" disabled onclick="goDetails()">Next →</button></div>
     </div>
 
     <div class="qstep" id="q9">
@@ -461,11 +461,32 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
       <div class="qnav" style="border-top:0.5px solid #E0E6F0;padding-top:1rem;"><button class="btn-back" onclick="qGo(8)">← Back</button><button class="btn-next" id="qn10" disabled onclick="detailsNext()">Next →</button></div>
     </div>
 
+    <div class="qstep" id="q9s">
+      <div class="question">Tell us about the loss</div>
+      <div class="subtext" style="margin-bottom:0.75rem;">All optional. Skip anything you don't know.</div>
+      <div class="cgl" style="margin-top:0.5rem;">Who did they lose?</div>
+      <input class="text-input" id="t-loss-who" type="text" placeholder="e.g. Her sister, His father, Their dog" oninput="updateLoss()">
+      <label class="chk-strong" style="margin-top:0.6rem;"><input type="checkbox" id="chk-loss-name" onchange="updateLoss()">Include their name in the card</label>
+      <div id="loss-name-row" style="display:none;margin-top:0.5rem;"><input class="text-input" id="t-loss-name" type="text" placeholder="e.g. Buck" oninput="updateLoss()"></div>
+      <div class="cgl" style="margin-top:1.25rem;">Did you know them?</div>
+      <div class="chips" id="qc-knew">
+        <div class="chip" data-val="yes">Yes</div><div class="chip" data-val="a little">A little</div><div class="chip" data-val="no">No</div>
+      </div>
+      <div id="loss-about-row" style="display:none;margin-top:0.6rem;">
+        <div class="cgl" style="margin-top:0.6rem;">Anything you'd like to say about them?</div>
+        <div class="chips" id="qc-say"><div class="chip" data-val="yes">Yes</div><div class="chip" data-val="no">No</div></div>
+        <textarea class="text-input" id="t-loss-about" rows="2" style="display:none;margin-top:0.5rem;" placeholder="e.g. He was a great man, always the first to show up." oninput="updateLoss()"></textarea>
+      </div>
+      <div class="cgl" style="margin-top:1.25rem;">Anything you'd like to offer?</div>
+      <textarea class="text-input" id="t-loss-offer" rows="2" placeholder="e.g. Reach out if you need anything, day or night." oninput="updateLoss()"></textarea>
+      <div class="qnav"><button class="btn-back" onclick="qGo(8)">← Back</button><button class="btn-next" onclick="lossNext()">Next →</button></div>
+    </div>
+
     <div class="qstep" id="q13">
       <div class="question">How would you like to open the card? <span class="opt-tag">optional</span></div>
       <div class="subtext">This goes at the very top of the card, exactly as you write it.</div>
       <textarea class="text-input" id="t-opening" rows="2" placeholder="e.g. Dear Rachel," oninput="A.opening=this.value.trim()"></textarea>
-      <div class="qnav"><button class="btn-back" onclick="qGo(9)">← Back</button><button class="btn-next" onclick="qGo('13b')">Next →</button></div>
+      <div class="qnav"><button class="btn-back" onclick="goDetails(true)">← Back</button><button class="btn-next" onclick="qGo('13b')">Next →</button></div>
     </div>
 
     <div class="qstep" id="q13b">
@@ -687,7 +708,7 @@ const A={kids:[],tones:[],feels:[],relChips:[]};
 let kidCount=1,versionCount=1,currentCardText='',savedVersions=[],activeVersionIdx=0;
 const PARTNER_VALS=['Husband','Wife','Partner'];
 const PARTNER_RE=/\b(husband|wife|partner|spouse|hubby|wifey)\b/i;
-const Q_ORDER=[1,2,'2b',4,'4c',5,6,7,8,9,13,'13b'];
+const Q_ORDER=[1,2,'2b',4,'4c',5,6,7,8,9,'9s',13,'13b'];
 
 // ── Card background themes ──────────────────────────────────────────────
 const CARD_THEMES = [
@@ -786,6 +807,9 @@ function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classL
 function startQ(){showScreen('q');qShowStep(1);}
 
 function qShowStep(n){
+  if(n===5||n==='5')applyOccChips('tone');
+  if(n===6||n==='6')applyOccChips('feel');
+  if(n===8||n==='8')applyRelOptional();
   document.querySelectorAll('.qstep').forEach(s=>{s.classList.remove('active');s.style.display='none';});
   const el=document.getElementById('q'+n);
   if(el){el.classList.add('active');el.style.display='block';}
@@ -796,6 +820,84 @@ function qShowStep(n){
   document.getElementById('q-counter').textContent=occLabel;
 }
 function qGo(n){qShowStep(n);}
+
+// ---- Occasion modes: some occasions get their own tone and feeling choices ----
+const isLossOcc=()=>A.occasion==='Sympathy';
+const OCC_CHIPS={
+  loss:{
+    tone:[['Tender and gentle','Tender and gentle'],['Warm and heartfelt','Warm and heartfelt'],['Reserved but sincere','Reserved but sincere'],['Celebrating their life','Celebrating their life']],
+    feel:[['supported and not alone','Not alone'],['comforted','Comforted'],['cared for','Cared for'],['deeply loved','Loved']]
+  }
+};
+const DEFAULT_CHIPS={};
+const chipMode={tone:'default',feel:'default'};
+function applyOccChips(kind){
+  const box=document.getElementById(kind==='tone'?'qc6':'qc8');
+  if(!DEFAULT_CHIPS[kind])DEFAULT_CHIPS[kind]=box.innerHTML;
+  const mode=isLossOcc()?'loss':'default';
+  if(chipMode[kind]===mode)return;
+  chipMode[kind]=mode;
+  box.innerHTML=mode==='default'?DEFAULT_CHIPS[kind]:OCC_CHIPS[mode][kind].map(([v,l])=>'<div class="chip" data-val="'+v+'">'+l+'</div>').join('');
+  box.querySelectorAll('.chip').forEach(c=>c.classList.remove('selected'));
+  if(kind==='tone'){A.tones=[];document.getElementById('qn6').disabled=!(A.toneOther&&A.toneOther.length);}
+  else{A.feels=[];document.getElementById('qn8').disabled=!(A.feelOther&&A.feelOther.length);}
+}
+const LOSS_REL_CHIPS=['loving','friendly','casual acquaintance','long distance'];
+function applyRelOptional(){
+  const loss=isLossOcc();
+  document.querySelectorAll('#rel-chips .chip').forEach(c=>{
+    const hide=loss&&!LOSS_REL_CHIPS.includes(c.dataset.val);
+    c.style.display=hide?'none':'';
+    c.style.order=loss&&!hide?String(LOSS_REL_CHIPS.indexOf(c.dataset.val)):'';
+    if(hide&&c.classList.contains('selected')){c.classList.remove('selected');A.relChips=A.relChips.filter(v=>v!==c.dataset.val);}
+  });
+  updateRelCtx();
+  document.getElementById('rel-opt').style.display=loss?'inline':'none';
+  if(loss)document.getElementById('qn9').disabled=false;
+}
+function goDetails(){
+  if(isLossOcc()){A.classic=false;qGo('9s');}
+  else qGo(9);
+}
+function updateLoss(){
+  const g=id=>document.getElementById(id);
+  const useName=g('chk-loss-name').checked;
+  g('loss-name-row').style.display=useName?'block':'none';
+  const knew=(g('qc-knew').querySelector('.chip.selected')||{}).dataset?.val||'';
+  const knewThem=(knew==='yes'||knew==='a little');
+  g('loss-about-row').style.display=knewThem?'block':'none';
+  const say=knewThem&&!!g('qc-say').querySelector('.chip.selected[data-val="yes"]');
+  g('t-loss-about').style.display=say?'block':'none';
+  A.loss={
+    who:g('t-loss-who').value.trim(),
+    useName:useName,
+    name:useName?g('t-loss-name').value.trim():'',
+    knew:knew,
+    about:say?g('t-loss-about').value.trim():'',
+    offer:g('t-loss-offer').value.trim()
+  };
+}
+document.getElementById('qc-knew')?.addEventListener('click',e=>{
+  const chip=e.target.closest('.chip');if(!chip)return;
+  const was=chip.classList.contains('selected');
+  document.querySelectorAll('#qc-knew .chip').forEach(c=>c.classList.remove('selected'));
+  if(!was)chip.classList.add('selected');
+  updateLoss();
+});
+document.getElementById('qc-say')?.addEventListener('click',e=>{
+  const chip=e.target.closest('.chip');if(!chip)return;
+  const was=chip.classList.contains('selected');
+  document.querySelectorAll('#qc-say .chip').forEach(c=>c.classList.remove('selected'));
+  if(!was)chip.classList.add('selected');
+  updateLoss();
+  if(!was&&chip.dataset.val==='yes')setTimeout(()=>document.getElementById('t-loss-about').focus(),50);
+});
+function lossNext(){
+  updateLoss();
+  const L=A.loss||{};
+  if(window.gtag)gtag('event','loss_details',{event_category:'details',event_label:[L.who?'who':'',L.knew||'',L.about?'about':'',L.offer?'offer':''].filter(Boolean).join(',')||'none'});
+  qGo(13);
+}
 function qSkip(n){if(n===1){A.name='';document.getElementById('q10-text').textContent='Tell us about them';qGo(2);}}
 
 function resetEmailSection(){
@@ -1057,7 +1159,7 @@ function updateRelCtx(){
   const chipText = A.relChips.length ? A.relChips.join(', ') : '';
   const combined = [chipText, freeText].filter(Boolean).join('. ');
   A.relationshipCtx = combined;
-  document.getElementById('qn9').disabled = (A.relChips.length === 0 && freeText.length < 3);
+  document.getElementById('qn9').disabled = !isLossOcc() && (A.relChips.length === 0 && freeText.length < 3);
 }
 
 // ── "Tell us about them" guided questions ──
@@ -1288,17 +1390,17 @@ function handleMentionAge(){
 }
 buildOccasionChips();
 
-document.getElementById('qc6')?.querySelectorAll('.chip').forEach(chip=>chip.addEventListener('click',()=>{
+document.getElementById('qc6')?.addEventListener('click',e=>{const chip=e.target.closest('.chip');if(!chip)return;(()=>{
   if(chip.classList.contains('selected')){chip.classList.remove('selected');A.tones=A.tones.filter(v=>v!==chip.dataset.val);}
   else{if(A.tones.length>=2)return;chip.classList.add('selected');A.tones.push(chip.dataset.val);}
   document.getElementById('qn6').disabled=(A.tones.length===0&&(!A.toneOther||A.toneOther.length===0));
-}));
+})();});
 
-document.getElementById('qc8')?.querySelectorAll('.chip').forEach(chip=>chip.addEventListener('click',()=>{
+document.getElementById('qc8')?.addEventListener('click',e=>{const chip=e.target.closest('.chip');if(!chip)return;(()=>{
   if(chip.classList.contains('selected')){chip.classList.remove('selected');A.feels=A.feels.filter(v=>v!==chip.dataset.val);}
   else{if(A.feels.length>=3)return;chip.classList.add('selected');A.feels.push(chip.dataset.val);}
   document.getElementById('qn8').disabled=(A.feels.length===0&&(!A.feelOther||A.feelOther.length===0));
-}));
+})();});
 
 document.getElementById('qc7')?.querySelectorAll('.chip').forEach(chip=>chip.addEventListener('click',()=>{
   document.getElementById('qc7').querySelectorAll('.chip').forEach(c=>c.classList.remove('selected'));

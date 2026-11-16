@@ -266,7 +266,7 @@ ${A.senderAge&&!/from family/i.test(A.senderAge)?'SENDER AGE: '+A.senderAge:''}
 THE RECIPIENT IS MY: ${A.relationship||'—'} (this is who the recipient is to the sender)
 ${A.recipientAge?'RECIPIENT AGE: '+A.recipientAge:''}
 OCCASION: ${A.occasion||'—'}
-${birthdayAge?'TURNING: '+birthdayAge:''}
+${birthdayAge?(A.mentionAge?'TURNING: '+birthdayAge+'. The sender wants this age mentioned in the card (name the age naturally, as a person would in a birthday card).':'TURNING: '+birthdayAge+'. For calibration only. The sender did NOT ask for the age to be mentioned: do not state this number or refer to their specific age anywhere in the card.'):''}
 ${kidsText?'CHILDREN: '+kidsText:''}
 TONE: ${toneVal}
 LENGTH: ${lengthRule}
@@ -300,7 +300,7 @@ LENGTH: ${lengthRule}
 FROM GUIDANCE: ${fromGuide}
 RELATIONSHIP GUIDANCE: Use who the recipient is to the sender to shape the register. To a spouse or partner: intimate and knowing. To a parent: respectful, warm, honoring. To a child: nurturing, proud, full of belief in them. To a friend: easy, real, peer-level. To a sibling: familiar, often teasing. To a colleague: professional warmth, never overly personal.
 CHILDREN GUIDANCE: If children are listed, they may be referenced naturally once if it fits, never more. Do not make the card about the children.
-AGE GUIDANCE: Use sender and recipient ages to calibrate vocabulary, references, and register. The ages are broad ranges for calibration only: never state or guess the recipient's age in the card (no "your forties or fifties") unless a specific age was given for the occasion. For teen senders, write naturally and warmly; no slang or trying to sound "young." If the recipient is older, never reference their age in a way that could feel diminishing.
+AGE GUIDANCE: Use sender and recipient ages to calibrate vocabulary, references, and register. The ages are broad ranges for calibration only: never state or guess the recipient's age in the card (no "your forties or fifties") unless the sender asked for the birthday age to be mentioned. For teen senders, write naturally and warmly; no slang or trying to sound "young." If the recipient is older, never reference their age in a way that could feel diminishing.
 SPIRITUALITY: ${spiritualRule}
 OCCASION: ${occasionRules||'—'}
 OPENING: ${A.opening?'Start the card with exactly: "'+A.opening+'". Use this and nothing else as the opening.':'No opening line. Do NOT add "Dear [name]" or any greeting. Start directly with the card message.'}

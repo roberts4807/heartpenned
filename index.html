@@ -340,9 +340,13 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
     </div>
 
     <div class="qstep" id="q4b">
-      <div class="question">How old are they turning? <span class="opt-tag">optional</span></div>
-      <div class="subtext">Milestone birthdays carry a different weight.</div>
+      <div class="question">Is this a milestone birthday? <span class="opt-tag">optional</span></div>
+      <div class="subtext">Add their age if you like. It only appears in the card if you check the box.</div>
       <input class="number-input" id="t5b" type="number" min="1" max="120" placeholder="Age" oninput="A.birthdayAge=this.value">
+      <label style="display:flex;align-items:center;gap:8px;margin-top:0.75rem;cursor:pointer;font-size:0.9rem;color:#3A4A5A;">
+        <input type="checkbox" id="chk-mention-age" onchange="A.mentionAge=this.checked" style="width:15px;height:15px;cursor:pointer;accent-color:#7a9cbf;">
+        Mention their age in the card
+      </label>
       <div class="qnav"><button class="btn-back" onclick="qGo(4)">← Back</button><div style="display:flex;align-items:center;gap:16px;"><span class="skip-link" onclick="qGo(5)">Skip</span><button class="btn-next" onclick="qGo(5)">Next →</button></div></div>
     </div>
 

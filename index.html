@@ -841,11 +841,18 @@ function applyOccChips(kind){
   if(kind==='tone'){A.tones=[];document.getElementById('qn6').disabled=!(A.toneOther&&A.toneOther.length);}
   else{A.feels=[];document.getElementById('qn8').disabled=!(A.feelOther&&A.feelOther.length);}
 }
+const LOSS_REL_CHIPS=['loving','friendly','casual acquaintance','long distance'];
 function applyRelOptional(){
   const loss=isLossOcc();
+  document.querySelectorAll('#rel-chips .chip').forEach(c=>{
+    const hide=loss&&!LOSS_REL_CHIPS.includes(c.dataset.val);
+    c.style.display=hide?'none':'';
+    c.style.order=loss&&!hide?String(LOSS_REL_CHIPS.indexOf(c.dataset.val)):'';
+    if(hide&&c.classList.contains('selected')){c.classList.remove('selected');A.relChips=A.relChips.filter(v=>v!==c.dataset.val);}
+  });
+  updateRelCtx();
   document.getElementById('rel-opt').style.display=loss?'inline':'none';
   if(loss)document.getElementById('qn9').disabled=false;
-  else updateRelCtx();
 }
 function goDetails(){
   if(isLossOcc()){A.classic=false;qGo('9s');}

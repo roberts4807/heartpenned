@@ -405,9 +405,8 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
     </div>
 
     <div class="qstep" id="q8">
-      <div class="question" id="q9-text">How are things between you?</div>
-      <div style="margin-bottom:0.6rem;"><span class="honest-private" style="margin-top:0;">🔒 For our eyes only. Never written into card.</span></div>
-      <div class="honest-note">Cards ring false when they don't match where things really stand. This keeps yours honest.</div>
+      <div class="question" id="q9-text">What's your relationship like?</div>
+      <div class="honest-private" style="margin-top:0;white-space:normal;line-height:1.5;">🔒 Just for us. Never in the card, only used to set the tone.</div>
       <div class="cgl" style="margin-top:1rem;"><span style="font-weight:400;color:#AAB4C0;text-transform:none;letter-spacing:0;">Pick 1 or 2 that feel most true</span></div>
       <div class="chips" id="rel-chips">
         <div class="chip" data-val="loving" onclick="toggleRelChip(this)">Loving</div>
@@ -797,7 +796,7 @@ function qShowStep(n){
   document.getElementById('q-counter').textContent=occLabel;
 }
 function qGo(n){qShowStep(n);}
-function qSkip(n){if(n===1){A.name='';document.getElementById('q9-text').textContent='How are things between you?';document.getElementById('q10-text').textContent='Tell us about them';qGo(2);}}
+function qSkip(n){if(n===1){A.name='';document.getElementById('q10-text').textContent='Tell us about them';qGo(2);}}
 
 function resetEmailSection(){
   const btn = document.getElementById('btn-send-email');
@@ -821,8 +820,7 @@ function handleName(){
   const v=document.getElementById('t-name').value.trim();
   A.name=v;
   updateQ1Next();
-  document.getElementById('q9-text').textContent=v?'How are things with '+v+'?':'How are things between you?';
-  document.getElementById('q10-text').textContent=v?'Tell us about '+v:'Tell us about them';
+    document.getElementById('q10-text').textContent=v?'Tell us about '+v:'Tell us about them';
 }
 function handleNoName(){
   const chk=document.getElementById('chk-noname');
@@ -833,7 +831,6 @@ function handleNoName(){
     inp.disabled=true;
     inp.style.opacity='0.4';
     updateQ1Next();
-    document.getElementById('q9-text').textContent='How are things between you?';
     document.getElementById('q10-text').textContent='Tell us about them';
   } else {
     inp.disabled=false;
@@ -841,8 +838,7 @@ function handleNoName(){
     const v=inp.value.trim();
     A.name=v;
     updateQ1Next();
-    document.getElementById('q9-text').textContent=v?'How are things with '+v+'?':'How are things between you?';
-    document.getElementById('q10-text').textContent=v?'Tell us about '+v:'Tell us about them';
+        document.getElementById('q10-text').textContent=v?'Tell us about '+v:'Tell us about them';
   }
 }
 
@@ -1113,7 +1109,7 @@ function resetDetailsPage(){
   gqSet(1,'open');for(let k=2;k<=GQ_N;k++)gqSet(k,'todo');
   const nb=document.getElementById('qn10');if(nb)nb.disabled=true;
   const t=document.getElementById('q10-text');if(t)t.textContent='Tell us about them';
-  const r=document.getElementById('q9-text');if(r)r.textContent='How are things between you?';
+  
 }
 function detailsNext(){
   updateDetails();

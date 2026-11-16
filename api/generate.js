@@ -222,6 +222,7 @@ ${lossAbout ? '- WHAT THE SENDER WANTS TO SAY ABOUT THEM: "' + lossAbout + '" In
 - One line about the person who died is allowed as described above; otherwise the card stays about the recipient and their loss.
 - Do not write about the sender's own presence, closeness, or distance ("I'm here for you," "how close I am," "even from far away," "I'm right beside you," "you're not alone"). The only exception is an OFFER the sender gave.
 - Let the feelings come through comfort and sympathy, never through the sender describing themselves or the relationship.
+- No advice and no observations about grief itself: nothing about how grief works, how long it takes, what it does, or what they should do or feel ("grief this tender takes time to heal," "grief is love with nowhere to go," "be gentle with yourself," "take all the time you need"). Gentle hopes and wishes are fine ("I hope your memories bring you comfort").
 - No teasing or playfulness, even to a sibling or close friend. Some emotional weight is fitting here; keep it gentle and unforced.`;
 
   const privateCtx = `RELATIONSHIP CONTEXT — CONFIDENTIAL WRITER BRIEFING ONLY:

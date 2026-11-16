@@ -168,7 +168,7 @@ function buildPrompt(A, currentCardText, mode, note){
   const isThin = !isClassic && !isApology && !isLoss && !hasRichDetails(A);
   if (isThin && !lengthIsStandard) lengthRule = '75 to 100 words. Stay in this range.';
   const roleText = isLoss
-    ? 'You are a senior greeting card writer with 20 years of experience. This is a sympathy card to someone who is grieving. Write the kind of message found in a beautifully written sympathy card: simple, gracious and sincere, never flowery or generic. Add personal touches only from what the sender gave.'
+    ? 'You are a senior greeting card writer with 20 years of experience. This is a sympathy card to someone who is grieving. Write it like a beautifully written classic sympathy card: traditional, gracious sympathy-card language that would ring true from anyone who cares about them, never flowery or generic. The card is about their loss and comfort for them, not about the sender or the relationship. Add personal touches only from THE LOSS section.'
     : isThin
     ? 'You are a senior greeting card writer with 20 years of experience. The sender shared only a little. Write a card that reads mostly like a beautifully written store-bought card for this occasion: warm, gracious, greeting-card language that rings true for this relationship, never generic filler, never cheesy, no rhymes. Then weave in the one thing the sender shared, so it is unmistakably from them to this person.'
     : isClassic
@@ -180,7 +180,7 @@ function buildPrompt(A, currentCardText, mode, note){
     ? 'Open warmly and simply. It may open with a wish or a warm line about the occasion.'
     : (isThin ? pick(THIN_OPENINGS) : pick([...OPENING_MOVES, OCCASION_OPENING])) + ' Don\'t open with the occasion greeting itself (no "Happy Birthday!" as the first line; that belongs at the end).';
   const middleText = isLoss
-    ? 'Middle: comfort and presence. Acknowledge the loss simply, without explaining or interpreting it. If the sender knew the person and shared something about them, include one line honoring them in that spirit. If an offer was given, include it plainly.'
+    ? 'Middle: classic sympathy sentiments: sorrow for their loss, comfort, and gentle wishes for peace and strength in the days ahead. Acknowledge the loss simply, without explaining or interpreting it. If the sender knew the person and shared something about them, include one line honoring them in that spirit. If an offer was given, include it plainly.'
     : isClassic
     ? 'Middle: sentiments that fit the occasion. For a birthday, holiday, anniversary, graduation, or milestone: heartfelt wishes (for the day, the year ahead, what you hope for them). For sympathy: comfort and presence, never wishes about the future or silver linings. For thank you: sincere gratitude. For get well: wishes for healing, rest, and comfort. For thinking of you: warmth and a reminder that they are on the sender\'s mind. For an apology: a sincere, simple acknowledgment and the hope to make things right, never celebration. If it fits, add one meaningful universal reflection on the occasion or on this kind of relationship (for example, what another year means, or what a good friend is). Do not describe this person: no personality traits, habits, what they are like, how they make the sender feel, or what they bring to the sender\'s life. No first-person musing ("I think," "I don\'t always know the right words"). Speak to them warmly in second person.'
     : isThin
@@ -219,7 +219,10 @@ const spiritualRule=A.spirituality==='None'||!A.spirituality?'No spiritual langu
 - DID THE SENDER KNOW THEM: ${lossKnew === 'yes' ? 'Yes.' : lossKnew === 'a little' ? 'A little. Keep any line about them modest.' : (lossKnew === 'no' ? 'No.' : 'Not given.') + ' Never imply the sender knew them, met them, or knows what they were like. Do not describe them.'}
 ${lossAbout ? '- WHAT THE SENDER WANTS TO SAY ABOUT THEM: "' + lossAbout + '" Include one line honoring them in the spirit of this, in your own words. Add no qualities or stories beyond it.\n' : ''}- OFFER: ${lossOffer ? '"' + lossOffer + '" Include it plainly and specifically.' : 'None given. Do not invent one, and do not write "let me know if you need anything."'}
 - If the loss is a pet, treat it as the loss of a family member, sincerely and in proportion. Never "just a pet," never compare it to losing a person.
-- One line about the person who died is allowed as described above; otherwise the card stays about the recipient and their loss.`;
+- One line about the person who died is allowed as described above; otherwise the card stays about the recipient and their loss.
+- Do not write about the sender's own presence, closeness, or distance ("I'm here for you," "how close I am," "even from far away," "I'm right beside you," "you're not alone"). The only exception is an OFFER the sender gave.
+- Let the feelings come through comfort and sympathy, never through the sender describing themselves or the relationship.
+- No teasing or playfulness, even to a sibling or close friend. Some emotional weight is fitting here; keep it gentle and unforced.`;
 
   const privateCtx = `RELATIONSHIP CONTEXT — CONFIDENTIAL WRITER BRIEFING ONLY:
 "${A.relationshipCtx||''}"
@@ -227,7 +230,7 @@ This field is private context for the writer, never the card. Nothing from it ma
 - The recipient's role (parent, partner, friend, and so on) still sets the register and the warmth. A card to a parent still sounds like it is to a parent.
 - Where things stand today limits what the card claims. If it is complicated, rebuilding, or up and down, or the sender says what to avoid: stay warm, but no superlatives, no "best ever," no declarations of closeness or gratitude bigger than what is real. Never mention the difficulty itself.
 - Friendly or casual acquaintance: keep it light and kind, still warm, and never overstate how close they are.
-The card always builds from what is true and good.`;
+The card always builds from what is true and good.${isLoss ? '\nFor this sympathy card: use the relationship only to set how warm or formal the card is. Never mention the relationship, closeness, or distance in the card.' : ''}`;
 
   const coreRules = `- No greeting
 - Always write in second person, speaking directly to the recipient. Never slip into third person (e.g. never "the person who..." or "someone who..."). Use "you" and "your" throughout. When referring to shared experiences between sender and recipient, use "we," "us," and "our," never "both of you," "the two of you," or any phrasing that positions the writer as an outside observer.

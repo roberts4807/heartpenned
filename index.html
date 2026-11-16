@@ -349,10 +349,11 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
             </div>
             <span id="more-occ-arrow" style="font-size:16px;color:#2A4A80;transition:transform 0.2s;">▾</span>
           </div>
-          <div id="qe-more" style="display:none;padding:0 14px 14px;"><div class="chips" id="qc5-more"></div></div>
+          <div id="qe-more" style="display:none;padding:0 14px 14px;"><div class="chips" id="qc5-more"></div>
+            <div class="exp" id="qe-other-occ" style="background:transparent;border:none;padding:10px 0 0;margin-top:0;"><input class="text-input" id="t5-other" type="text" placeholder="e.g. Retirement, New baby, Promotion..." oninput="handleOtherOcc()" style="width:100%;box-sizing:border-box;"></div>
+          </div>
         </div>
       </div>
-      <div class="exp" id="qe-other-occ"><input class="text-input" id="t5-other" type="text" placeholder="e.g. Retirement, New baby, Promotion..." oninput="handleOtherOcc()"></div>
       <div class="qnav"><button class="btn-back" onclick="qGo('2b')">← Back</button><button class="btn-next" id="qn5" disabled onclick="routeAfterOcc()">Next →</button></div>
     </div>
 
@@ -1114,6 +1115,7 @@ function classicChoice(addDetail){
 
 function routeAfterOcc(){
   const occ=A.occasion,rel=A.relationship;
+  if(A.isOtherOccasion&&occ&&window.gtag)gtag('event','other_occasion_typed',{event_category:'occasion',occasion_text:occ.slice(0,100)});
   if((occ==="Mother's Day"||occ==="Father's Day")&&PARTNER_RE.test(rel||''))qGo('4c');
   else qGo(5);
 }
@@ -1235,10 +1237,9 @@ function buildOccasionChips(){
   let main=occChip('Birthday');
   main+=inSeason.map(o=>occChip(o.val,o.date&&o.date>=today?fmt(o.date):'')).join('');
   main+=OCC_ALWAYS.filter(v=>v!=='Birthday').map(v=>occChip(v)).join('');
-  main+='<div class="chip" data-val="Other">Other</div>';
   document.getElementById('qc5-main').innerHTML=main;
   const hidden=more.concat(OCC_MORE_ALWAYS);
-  document.getElementById('qc5-more').innerHTML=hidden.map(v=>occChip(v)).join('');
+  document.getElementById('qc5-more').innerHTML=hidden.map(v=>occChip(v)).join('')+'<div class="chip" data-val="Other">Something else? Type it in</div>';
   const EXAMPLE_ORDER=["Valentine's Day","Mother's Day","Father's Day","Graduation","Easter","Christmas","Thanksgiving","Halloween","4th of July","New milestone"];
   const ex=EXAMPLE_ORDER.filter(v=>hidden.includes(v)).slice(0,3);
   document.getElementById('more-occ-ex').textContent=ex.length?ex.join(', ')+' and more':'';

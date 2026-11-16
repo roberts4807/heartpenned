@@ -136,7 +136,8 @@ function buildPrompt(A, currentCardText, mode, note){
   const tonesList=[...A.tones,...(A.toneOther?[A.toneOther]:[])];
   const toneVal=tonesList.join(' + ')||'Warm and heartfelt';
   const toneGuide=(tonesList.length?tonesList:['Warm and heartfelt']).map(t=>TONE_GUIDE[t]?'- '+t+': '+TONE_GUIDE[t]:'- '+t+' (the sender described this tone in their own words): follow it as written, including how light or heavy it should feel.').join('\n');
-  const feelVal=A.feels.join(', ')||'loved';
+  const feelOther=typeof A.feelOther==='string'?A.feelOther.trim().slice(0,200):'';
+  const feelVal=[...A.feels,...(feelOther?[feelOther]:[])].join(', ')||'loved';
   const lengthIsStandard = A.length===LENGTHS[1];
   const leansShort = tonesList.length>0 && tonesList.every(t=>SHORT_LEANING.includes(t));
   let lengthRule = lengthIsStandard

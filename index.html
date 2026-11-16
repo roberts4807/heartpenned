@@ -387,6 +387,10 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
       <div class="chips" id="qc8">
         <div class="chip" data-val="deeply loved">Deeply loved</div><div class="chip" data-val="truly seen and known">Truly seen</div><div class="chip" data-val="proud of themselves">Proud of themselves</div><div class="chip" data-val="celebrated">Celebrated</div><div class="chip" data-val="supported and not alone">Not alone</div><div class="chip" data-val="understood">Understood</div><div class="chip" data-val="grateful to know you">Grateful to know you</div><div class="chip" data-val="joyful">Joyful</div>
       </div>
+      <div style="margin-top:1rem;">
+        <div class="cgl" style="margin-top:0;">Or describe your own</div>
+        <input class="text-input" id="t8-other" type="text" placeholder="e.g. That I've always got their back..." oninput="handleFeelOther()">
+      </div>
       <div class="qnav"><button class="btn-back" onclick="qGo(5)">← Back</button><button class="btn-next" id="qn8" disabled onclick="qGo(7)">Next →</button></div>
     </div>
 
@@ -1027,6 +1031,11 @@ async function shareCardImage() {
     showFeedbackPrompt('share');
   }
 }
+function handleFeelOther(){
+  const v=document.getElementById('t8-other').value.trim();
+  A.feelOther=v;
+  document.getElementById('qn8').disabled=(A.feels.length===0&&v.length===0);
+}
 function handleToneOther(){
   const v=document.getElementById('t6-other').value.trim();
   A.toneOther=v;
@@ -1292,7 +1301,7 @@ document.getElementById('qc6')?.querySelectorAll('.chip').forEach(chip=>chip.add
 document.getElementById('qc8')?.querySelectorAll('.chip').forEach(chip=>chip.addEventListener('click',()=>{
   if(chip.classList.contains('selected')){chip.classList.remove('selected');A.feels=A.feels.filter(v=>v!==chip.dataset.val);}
   else{if(A.feels.length>=3)return;chip.classList.add('selected');A.feels.push(chip.dataset.val);}
-  document.getElementById('qn8').disabled=A.feels.length===0;
+  document.getElementById('qn8').disabled=(A.feels.length===0&&(!A.feelOther||A.feelOther.length===0));
 }));
 
 document.getElementById('qc7')?.querySelectorAll('.chip').forEach(chip=>chip.addEventListener('click',()=>{

@@ -473,8 +473,9 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
         <div class="chip" data-val="yes">Yes</div><div class="chip" data-val="a little">A little</div><div class="chip" data-val="no">No</div>
       </div>
       <div id="loss-about-row" style="display:none;margin-top:0.6rem;">
-        <div class="cgl" style="margin-top:0;">Anything you'd like to say about them?</div>
-        <textarea class="text-input" id="t-loss-about" rows="2" placeholder="e.g. He was a great man, always the first to show up." oninput="updateLoss()"></textarea>
+        <div class="cgl" style="margin-top:0.6rem;">Anything you'd like to say about them?</div>
+        <div class="chips" id="qc-say"><div class="chip" data-val="yes">Yes</div><div class="chip" data-val="no">No</div></div>
+        <textarea class="text-input" id="t-loss-about" rows="2" style="display:none;margin-top:0.5rem;" placeholder="e.g. He was a great man, always the first to show up." oninput="updateLoss()"></textarea>
       </div>
       <div class="cgl" style="margin-top:1.25rem;">Anything you'd like to offer?</div>
       <textarea class="text-input" id="t-loss-offer" rows="2" placeholder="e.g. Reach out if you need anything, day or night." oninput="updateLoss()"></textarea>
@@ -863,13 +864,16 @@ function updateLoss(){
   const useName=g('chk-loss-name').checked;
   g('loss-name-row').style.display=useName?'block':'none';
   const knew=(g('qc-knew').querySelector('.chip.selected')||{}).dataset?.val||'';
-  g('loss-about-row').style.display=(knew==='yes'||knew==='a little')?'block':'none';
+  const knewThem=(knew==='yes'||knew==='a little');
+  g('loss-about-row').style.display=knewThem?'block':'none';
+  const say=knewThem&&!!g('qc-say').querySelector('.chip.selected[data-val="yes"]');
+  g('t-loss-about').style.display=say?'block':'none';
   A.loss={
     who:g('t-loss-who').value.trim(),
     useName:useName,
     name:useName?g('t-loss-name').value.trim():'',
     knew:knew,
-    about:(knew==='yes'||knew==='a little')?g('t-loss-about').value.trim():'',
+    about:say?g('t-loss-about').value.trim():'',
     offer:g('t-loss-offer').value.trim()
   };
 }
@@ -879,7 +883,14 @@ document.getElementById('qc-knew')?.addEventListener('click',e=>{
   document.querySelectorAll('#qc-knew .chip').forEach(c=>c.classList.remove('selected'));
   if(!was)chip.classList.add('selected');
   updateLoss();
-  if(!was&&chip.dataset.val!=='no')setTimeout(()=>document.getElementById('t-loss-about').focus(),50);
+});
+document.getElementById('qc-say')?.addEventListener('click',e=>{
+  const chip=e.target.closest('.chip');if(!chip)return;
+  const was=chip.classList.contains('selected');
+  document.querySelectorAll('#qc-say .chip').forEach(c=>c.classList.remove('selected'));
+  if(!was)chip.classList.add('selected');
+  updateLoss();
+  if(!was&&chip.dataset.val==='yes')setTimeout(()=>document.getElementById('t-loss-about').focus(),50);
 });
 function lossNext(){
   updateLoss();

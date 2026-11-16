@@ -340,7 +340,10 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
           Turning <input class="number-input" id="t5b" type="number" min="1" max="120" placeholder="Age" oninput="A.birthdayAge=this.value">
         </div>
       </div>
-      <div class="exp" id="qe-more"><div class="cgl" style="margin-top:0;">More occasions</div><div class="chips" id="qc5-more"></div></div>
+      <div class="harder">
+        <div id="more-occ-link" onclick="toggleMoreOcc()" style="font-size:14px;font-weight:600;color:#2A4A80;cursor:pointer;line-height:1.4;"></div>
+        <div class="exp" id="qe-more"><div class="chips" id="qc5-more"></div></div>
+      </div>
       <div class="exp" id="qe-other-occ"><input class="text-input" id="t5-other" type="text" placeholder="e.g. Retirement, New baby, Promotion..." oninput="handleOtherOcc()"></div>
       <div class="qnav"><button class="btn-back" onclick="qGo('2b')">← Back</button><button class="btn-next" id="qn5" disabled onclick="routeAfterOcc()">Next →</button></div>
     </div>
@@ -1221,25 +1224,32 @@ function buildOccasionChips(){
   const inSeason=[],more=[];
   OCC_SEASONAL.forEach(o=>{const r=occInSeason(o,today);if(r)inSeason.push({val:o.val,date:r===true?null:r});else more.push(o.val);});
   inSeason.sort((a,b)=>(a.date||today)-(b.date||today));
-  let main=inSeason.map(o=>occChip(o.val,o.date&&o.date>=today?fmt(o.date):'')).join('');
-  main+=OCC_ALWAYS.map(v=>occChip(v)).join('');
-  main+='<div class="chip" data-val="__more">More occasions</div><div class="chip" data-val="Other">Other</div>';
+  let main=occChip('Birthday');
+  main+=inSeason.map(o=>occChip(o.val,o.date&&o.date>=today?fmt(o.date):'')).join('');
+  main+=OCC_ALWAYS.filter(v=>v!=='Birthday').map(v=>occChip(v)).join('');
+  main+='<div class="chip" data-val="Other">Other</div>';
   document.getElementById('qc5-main').innerHTML=main;
-  document.getElementById('qc5-more').innerHTML=more.concat(OCC_MORE_ALWAYS).map(v=>occChip(v)).join('');
+  const hidden=more.concat(OCC_MORE_ALWAYS);
+  document.getElementById('qc5-more').innerHTML=hidden.map(v=>occChip(v)).join('');
+  const EXAMPLE_ORDER=["Valentine's Day","Mother's Day","Father's Day","Graduation","Easter","Christmas","Thanksgiving","Halloween","4th of July","New milestone"];
+  const ex=EXAMPLE_ORDER.filter(v=>hidden.includes(v)).slice(0,3);
+  MORE_OCC_LABEL='+ More occasions'+(ex.length?': '+ex.join(', ')+' and more':'');
+  document.getElementById('more-occ-link').textContent=MORE_OCC_LABEL;
   document.querySelectorAll('#qc5-main .chip, #qc5-more .chip').forEach(chip=>chip.addEventListener('click',()=>pickOccasion(chip)));
+}
+let MORE_OCC_LABEL='+ More occasions';
+function toggleMoreOcc(){
+  const open=!document.getElementById('qe-more').classList.contains('open');
+  openPanel('qe-more',open);
+  document.getElementById('more-occ-link').textContent=open?'− Hide more occasions':MORE_OCC_LABEL;
 }
 function openPanel(id,open){const el=document.getElementById(id);el.classList.toggle('open',open);if(open)setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'nearest'}),50);}
 function pickOccasion(chip){
   const val=chip.dataset.val,inMore=chip.parentElement.id==='qc5-more';
   const btn=document.getElementById('qn5');
-  if(val==='__more'){
-    const open=!document.getElementById('qe-more').classList.contains('open');
-    openPanel('qe-more',open);chip.classList.toggle('selected',open);
-    return;
-  }
-  document.querySelectorAll('#qc5-main .chip, #qc5-more .chip').forEach(c=>{if(c.dataset.val!=='__more')c.classList.remove('selected');});
+  document.querySelectorAll('#qc5-main .chip, #qc5-more .chip').forEach(c=>c.classList.remove('selected'));
   chip.classList.add('selected');
-  if(!inMore){openPanel('qe-more',false);document.querySelector('#qc5-main .chip[data-val="__more"]').classList.remove('selected');}
+  if(!inMore&&document.getElementById('qe-more').classList.contains('open'))toggleMoreOcc();
   openPanel('qe-other-occ',val==='Other');
   openPanel('qe-bday',val==='Birthday');
   if(val!=='Birthday'){A.birthdayAge='';A.mentionAge=false;document.getElementById('chk-mention-age').checked=false;document.getElementById('t5b').value='';document.getElementById('bday-age-row').style.display='none';}

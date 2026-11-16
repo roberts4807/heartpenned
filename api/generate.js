@@ -225,7 +225,7 @@ ${lossAbout ? '- WHAT THE SENDER WANTS TO SAY ABOUT THEM: "' + lossAbout + '" In
 - No advice and no observations about grief itself: nothing about how grief works, how long it takes, what it does, or what they should do or feel ("grief this tender takes time to heal," "grief is love with nowhere to go," "be gentle with yourself," "take all the time you need"). Gentle hopes and wishes are fine ("I hope your memories bring you comfort").
 - No lines about them not being alone or not having to carry this alone, in any wording ("you don't have to carry this alone," "you're not alone in this").
 - Do not use "hold," "holding," or "held" in any form ("holding you in my thoughts").
-- No sweeping statements about the loss ("a loss like no other," "leaves a space nothing can fill," "no comfort equal to this kind of loss"). Say you're sorry plainly instead.
+- No sweeping statements about the loss or about words failing ("a loss like no other," "leaves a space nothing can fill," "no comfort equal to this kind of loss," "there are no words that can reach that," "takes its own time"). Say you're sorry plainly instead.
 - Never describe or assume how they feel right now ("when everything feels heavy," "I know how hard this is").
 - If a PREVIOUS VERSION is shown below, use different comfort wishes and images from it, not just different wording (for example, if it said "surrounded by kindness" or "memories bring you peace," choose something else).
 - No teasing or playfulness, even to a sibling or close friend. Some emotional weight is fitting here; keep it gentle and unforced.`;
@@ -287,7 +287,7 @@ ${privateCtx}
 ALWAYS:
 ${coreRules}
 
-Fix ONLY what was flagged. Keep everything else. Write ONLY the revised card message, with no commentary or explanation.`;
+Fix ONLY what was flagged. Keep everything else. Write ONLY the revised card message, with no commentary or explanation. Do all checking silently: no notes, word counts, drafts, or separator lines such as ---.`;
   }
 
   return`ROLE AND STANDARD:
@@ -352,7 +352,8 @@ ${coreRules}
 - People before pets when listing names
 - Never quote inputs verbatim. Put them in your own words, in the card's tone.${musingLine}
 
-BEFORE YOU FINISH: count the words. If the card is under the LENGTH range, develop the middle further until it is within range${isClassic ? ' (with more warm wishes or a universal reflection, never details about the person)' : ''}.`;
+BEFORE YOU FINISH: count the words. If the card is under the LENGTH range, develop the middle further until it is within range${isClassic ? ' (with more warm wishes or a universal reflection, never details about the person)' : ''}.
+Do all checking silently. Your reply must contain only the final card message: no notes, word counts, drafts, explanations, or separator lines such as ---.`;
 }
 
 function anotherSuffix(currentCardText){
@@ -392,6 +393,21 @@ const GLOBAL_PER_DAY = 500;     // emergency brake for the whole site
 const MAX_PROMPT_CHARS = 25000;
 
 const BUSY_MSG = "HeartPenned is getting a lot of love right now. Please try again in a little while.";
+
+// Safety net: if the model ever adds a self-check or a second draft, keep only the final card.
+const META_RE = /word count|let me revise|let me fix|violat|the (name|length) rule|revised version|here(?:'s| is) the (?:revised|final|updated) (?:card|version)|i see i used/i;
+function extractCard(text) {
+  let t = (text || '').trim();
+  if (!t) return t;
+  const parts = t.split(/\n\s*(?:-{3,}|\*{3,}|_{3,})\s*\n/).map(p => p.trim()).filter(Boolean);
+  if (parts.length > 1) {
+    const cards = parts.filter(p => !META_RE.test(p));
+    t = (cards.length ? cards[cards.length - 1] : parts[parts.length - 1]);
+  }
+  // Drop any leftover note lines (e.g. "*Word count check:* ...").
+  t = t.split('\n').filter(line => !META_RE.test(line)).join('\n').replace(/\n{3,}/g, '\n\n').trim();
+  return t;
+}
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end();
@@ -452,7 +468,7 @@ export default async function handler(req, res) {
       return res.status(503).json({ error: BUSY_MSG });
     }
 
-    const text = data.content?.find(b => b.type === 'text')?.text || '';
+    const text = extractCard(data.content?.find(b => b.type === 'text')?.text || '');
     res.status(200).json({ text });
   } catch (e) {
     console.error('Generate error:', e);

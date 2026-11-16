@@ -341,8 +341,16 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
         </div>
       </div>
       <div class="harder">
-        <div id="more-occ-link" onclick="toggleMoreOcc()" style="font-size:14px;font-weight:600;color:#2A4A80;cursor:pointer;line-height:1.4;"></div>
-        <div class="exp" id="qe-more"><div class="chips" id="qc5-more"></div></div>
+        <div id="more-occ-box" style="background:#F4F6FA;border:0.5px solid #D0D8E8;border-radius:8px;">
+          <div onclick="toggleMoreOcc()" style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;cursor:pointer;">
+            <div>
+              <div style="font-size:14px;font-weight:600;color:#2A4A80;">More occasions</div>
+              <div id="more-occ-ex" style="font-size:12px;color:#888;margin-top:2px;line-height:1.4;"></div>
+            </div>
+            <span id="more-occ-arrow" style="font-size:16px;color:#2A4A80;transition:transform 0.2s;">▾</span>
+          </div>
+          <div id="qe-more" style="display:none;padding:0 14px 14px;"><div class="chips" id="qc5-more"></div></div>
+        </div>
       </div>
       <div class="exp" id="qe-other-occ"><input class="text-input" id="t5-other" type="text" placeholder="e.g. Retirement, New baby, Promotion..." oninput="handleOtherOcc()"></div>
       <div class="qnav"><button class="btn-back" onclick="qGo('2b')">← Back</button><button class="btn-next" id="qn5" disabled onclick="routeAfterOcc()">Next →</button></div>
@@ -1233,15 +1241,16 @@ function buildOccasionChips(){
   document.getElementById('qc5-more').innerHTML=hidden.map(v=>occChip(v)).join('');
   const EXAMPLE_ORDER=["Valentine's Day","Mother's Day","Father's Day","Graduation","Easter","Christmas","Thanksgiving","Halloween","4th of July","New milestone"];
   const ex=EXAMPLE_ORDER.filter(v=>hidden.includes(v)).slice(0,3);
-  MORE_OCC_LABEL='+ More occasions'+(ex.length?': '+ex.join(', ')+' and more':'');
-  document.getElementById('more-occ-link').textContent=MORE_OCC_LABEL;
+  document.getElementById('more-occ-ex').textContent=ex.length?ex.join(', ')+' and more':'';
   document.querySelectorAll('#qc5-main .chip, #qc5-more .chip').forEach(chip=>chip.addEventListener('click',()=>pickOccasion(chip)));
 }
-let MORE_OCC_LABEL='+ More occasions';
+let moreOccOpen=false;
 function toggleMoreOcc(){
-  const open=!document.getElementById('qe-more').classList.contains('open');
-  openPanel('qe-more',open);
-  document.getElementById('more-occ-link').textContent=open?'− Hide more occasions':MORE_OCC_LABEL;
+  moreOccOpen=!moreOccOpen;
+  document.getElementById('qe-more').style.display=moreOccOpen?'block':'none';
+  document.getElementById('more-occ-ex').style.display=moreOccOpen?'none':'block';
+  document.getElementById('more-occ-arrow').style.transform=moreOccOpen?'rotate(180deg)':'none';
+  if(moreOccOpen)setTimeout(()=>document.getElementById('more-occ-box').scrollIntoView({behavior:'smooth',block:'nearest'}),50);
 }
 function openPanel(id,open){const el=document.getElementById(id);el.classList.toggle('open',open);if(open)setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'nearest'}),50);}
 function pickOccasion(chip){
@@ -1249,7 +1258,7 @@ function pickOccasion(chip){
   const btn=document.getElementById('qn5');
   document.querySelectorAll('#qc5-main .chip, #qc5-more .chip').forEach(c=>c.classList.remove('selected'));
   chip.classList.add('selected');
-  if(!inMore&&document.getElementById('qe-more').classList.contains('open'))toggleMoreOcc();
+  if(!inMore&&moreOccOpen)toggleMoreOcc();
   openPanel('qe-other-occ',val==='Other');
   openPanel('qe-bday',val==='Birthday');
   if(val!=='Birthday'){A.birthdayAge='';A.mentionAge=false;document.getElementById('chk-mention-age').checked=false;document.getElementById('t5b').value='';document.getElementById('bday-age-row').style.display='none';}

@@ -330,24 +330,19 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
     <div class="qstep" id="q4">
       <div class="question">What's the occasion?</div>
       <div class="subtext">This sets the emotional gravity of the message.</div>
-      <div class="chips" id="qc5-main">
-        <div class="chip" data-val="Birthday">Birthday</div><div class="chip" data-val="Anniversary">Anniversary</div><div class="chip" data-val="Valentine's Day">Valentine's Day</div><div class="chip" data-val="Christmas">Christmas</div><div class="chip" data-val="Hanukkah">Hanukkah</div><div class="chip" data-val="Thank you">Thank you</div><div class="chip" data-val="Get well">Get well</div><div class="chip" data-val="Thinking of you">Thinking of you</div><div class="chip" data-val="Father's Day">Father's Day</div><div class="chip" data-val="Mother's Day">Mother's Day</div><div class="chip" data-val="Graduation">Graduation</div><div class="chip" data-val="New milestone">New milestone</div><div class="chip" data-val="Congratulations">Congratulations</div><div class="chip" data-val="Wedding">Wedding</div><div class="chip" data-val="National Nurses Day">National Nurses Day</div><div class="chip" data-val="Other Holidays">Other Holidays</div><div class="chip" data-val="Other">Other</div>
+      <div class="chips" id="qc5-main"></div>
+      <div class="exp" id="qe-bday">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:0.9rem;color:#3A4A5A;">
+          <input type="checkbox" id="chk-mention-age" onchange="handleMentionAge()" style="width:15px;height:15px;cursor:pointer;accent-color:#7a9cbf;">
+          Mention their age in the card
+        </label>
+        <div id="bday-age-row" style="display:none;align-items:center;gap:8px;margin-top:0.6rem;font-size:0.9rem;color:#3A4A5A;">
+          Turning <input class="number-input" id="t5b" type="number" min="1" max="120" placeholder="Age" oninput="A.birthdayAge=this.value">
+        </div>
       </div>
-      <div class="exp" id="qe-hols"><div class="cgl" style="margin-top:0;">Select the holiday</div><div class="chips" id="qc5-hols"><div class="chip" data-val="Thanksgiving">Thanksgiving</div><div class="chip" data-val="Easter">Easter</div><div class="chip" data-val="New Year">New Year</div><div class="chip" data-val="Halloween">Halloween</div><div class="chip" data-val="4th of July">4th of July</div><div class="chip" data-val="Diwali">Diwali</div><div class="chip" data-val="Eid">Eid</div><div class="chip" data-val="Passover">Passover</div></div></div>
+      <div class="exp" id="qe-more"><div class="cgl" style="margin-top:0;">More occasions</div><div class="chips" id="qc5-more"></div></div>
       <div class="exp" id="qe-other-occ"><input class="text-input" id="t5-other" type="text" placeholder="e.g. Retirement, New baby, Promotion..." oninput="handleOtherOcc()"></div>
-      <div class="harder"><div class="harder-label">For harder moments</div><div class="chips" id="qc5-hard"><div class="chip gentle" data-val="Sympathy">Sympathy</div><div class="chip gentle" data-val="Apology">Apology</div></div></div>
       <div class="qnav"><button class="btn-back" onclick="qGo('2b')">← Back</button><button class="btn-next" id="qn5" disabled onclick="routeAfterOcc()">Next →</button></div>
-    </div>
-
-    <div class="qstep" id="q4b">
-      <div class="question">Is this a milestone birthday? <span class="opt-tag">optional</span></div>
-      <div class="subtext">Add their age if you like. It only appears in the card if you check the box.</div>
-      <input class="number-input" id="t5b" type="number" min="1" max="120" placeholder="Age" oninput="A.birthdayAge=this.value">
-      <label style="display:flex;align-items:center;gap:8px;margin-top:0.75rem;cursor:pointer;font-size:0.9rem;color:#3A4A5A;">
-        <input type="checkbox" id="chk-mention-age" onchange="A.mentionAge=this.checked" style="width:15px;height:15px;cursor:pointer;accent-color:#7a9cbf;">
-        Mention their age in the card
-      </label>
-      <div class="qnav"><button class="btn-back" onclick="qGo(4)">← Back</button><div style="display:flex;align-items:center;gap:16px;"><span class="skip-link" onclick="qGo(5)">Skip</span><button class="btn-next" onclick="qGo(5)">Next →</button></div></div>
     </div>
 
     <div class="qstep" id="q4c">
@@ -674,7 +669,7 @@ const A={kids:[],tones:[],feels:[],relChips:[]};
 let kidCount=1,versionCount=1,currentCardText='',savedVersions=[],activeVersionIdx=0;
 const PARTNER_VALS=['Husband','Wife','Partner'];
 const PARTNER_RE=/\b(husband|wife|partner|spouse|hubby|wifey)\b/i;
-const Q_ORDER=[1,2,'2b',4,'4b','4c',5,6,7,8,9,13,'13b'];
+const Q_ORDER=[1,2,'2b',4,'4c',5,6,7,8,9,13,'13b'];
 
 // ── Card background themes ──────────────────────────────────────────────
 const CARD_THEMES = [
@@ -1108,15 +1103,13 @@ function classicChoice(addDetail){
 
 function routeAfterOcc(){
   const occ=A.occasion,rel=A.relationship;
-  if(occ==='Birthday')qGo('4b');
-  else if((occ==="Mother's Day"||occ==="Father's Day")&&PARTNER_RE.test(rel||''))qGo('4c');
+  if((occ==="Mother's Day"||occ==="Father's Day")&&PARTNER_RE.test(rel||''))qGo('4c');
   else qGo(5);
 }
 
 function backFromTone(){
   const occ=A.occasion,rel=A.relationship;
-  if(occ==='Birthday')qGo('4b');
-  else if((occ==="Mother's Day"||occ==="Father's Day")&&PARTNER_RE.test(rel||''))qGo('4c');
+  if((occ==="Mother's Day"||occ==="Father's Day")&&PARTNER_RE.test(rel||''))qGo('4c');
   else qGo(4);
 }
 
@@ -1174,27 +1167,93 @@ document.getElementById('qc-rage')?.querySelectorAll('.chip').forEach(chip=>chip
   }));
 });
 
-document.getElementById('qc5-main')?.querySelectorAll('.chip').forEach(chip=>chip.addEventListener('click',()=>{
-  document.getElementById('qc5-main').querySelectorAll('.chip').forEach(c=>c.classList.remove('selected'));
-  document.getElementById('qc5-hard').querySelectorAll('.chip').forEach(c=>c.classList.remove('selected'));
+// ---- Occasion picker ----
+// Year-round occasions are always shown. Seasonal ones show from SEASON_BEFORE days
+// before their date until SEASON_AFTER days after; otherwise they sit under "More occasions".
+const SEASON_BEFORE=60, SEASON_AFTER=7;
+const OCC_ALWAYS=['Birthday','Anniversary','Congratulations','Wedding','Thank you','Get well','Thinking of you','Sympathy','Apology'];
+const OCC_MORE_ALWAYS=['New milestone'];
+function nthWeekday(y,m,wd,n){const d=new Date(y,m,1);d.setDate(1+((wd-d.getDay()+7)%7)+(n-1)*7);return d;}
+function easterDate(y){const a=y%19,b=Math.floor(y/100),c=y%100,d=Math.floor(b/4),e=b%4,f=Math.floor((b+8)/25),g=Math.floor((b-f+1)/3),h=(19*a+b-d-g+15)%30,i=Math.floor(c/4),k=c%4,l=(32+2*e+2*i-h-k)%7,m=Math.floor((a+11*h+22*l)/451),mo=Math.floor((h+l-7*m+114)/31),da=((h+l-7*m+114)%31)+1;return new Date(y,mo-1,da);}
+// Holidays on other calendars: [month(1-12), day] by year. Extend this table before 2031.
+const OCC_TABLE={
+  'Hanukkah':{2026:[[12,4]],2027:[[12,24]],2028:[[12,12]],2029:[[12,1]],2030:[[12,20]]},
+  'Passover':{2026:[[4,1]],2027:[[4,21]],2028:[[4,10]],2029:[[3,30]],2030:[[4,17]]},
+  'Diwali':{2026:[[11,8]],2027:[[10,29]],2028:[[10,17]],2029:[[11,5]],2030:[[10,26]]},
+  'Eid':{2026:[[3,20],[5,27]],2027:[[3,10],[5,16]],2028:[[2,27],[5,5]],2029:[[2,14],[4,24]],2030:[[2,5],[4,13]]}
+};
+const OCC_SEASONAL=[
+  {val:"Valentine's Day",dates:y=>[new Date(y,1,14)]},
+  {val:'Easter',dates:y=>[easterDate(y)]},
+  {val:'Passover'},
+  {val:'Eid'},
+  {val:'National Nurses Day',dates:y=>[new Date(y,4,6)]},
+  {val:"Mother's Day",dates:y=>[nthWeekday(y,4,0,2)]},
+  {val:'Graduation',window:[[4,1],[6,30]]},
+  {val:"Father's Day",dates:y=>[nthWeekday(y,5,0,3)]},
+  {val:'4th of July',dates:y=>[new Date(y,6,4)]},
+  {val:'Halloween',dates:y=>[new Date(y,9,31)]},
+  {val:'Diwali'},
+  {val:'Thanksgiving',dates:y=>[nthWeekday(y,10,4,4)]},
+  {val:'Hanukkah'},
+  {val:'Christmas',dates:y=>[new Date(y,11,25)]},
+  {val:'New Year',dates:y=>[new Date(y+1,0,1)]}
+];
+function occDates(o,y){
+  if(o.dates)return o.dates(y);
+  const t=(OCC_TABLE[o.val]||{})[y];return t?t.map(([m,d])=>new Date(y,m-1,d)):[];
+}
+// Returns the upcoming date if in season, true for window-type seasons, or null.
+function occInSeason(o,today){
+  const DAY=86400000;
+  if(o.window){const y=today.getFullYear(),a=new Date(y,o.window[0][0]-1,o.window[0][1]),b=new Date(y,o.window[1][0]-1,o.window[1][1]);return(today>=a&&today<=b)?true:null;}
+  for(const y of [today.getFullYear()-1,today.getFullYear(),today.getFullYear()+1]){
+    for(const d of occDates(o,y)){const diff=(d-today)/DAY;if(diff<=SEASON_BEFORE&&diff>=-SEASON_AFTER)return d;}
+  }
+  return null;
+}
+function occChip(val,note){
+  return '<div class="chip" data-val="'+val.replace(/"/g,'&quot;')+'">'+val+(note?' <span style="font-size:11px;color:#8A96A8;font-weight:400;">· '+note+'</span>':'')+'</div>';
+}
+function buildOccasionChips(){
+  const today=new Date();today.setHours(0,0,0,0);
+  const fmt=d=>d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+  const inSeason=[],more=[];
+  OCC_SEASONAL.forEach(o=>{const r=occInSeason(o,today);if(r)inSeason.push({val:o.val,date:r===true?null:r});else more.push(o.val);});
+  inSeason.sort((a,b)=>(a.date||today)-(b.date||today));
+  let main=inSeason.map(o=>occChip(o.val,o.date&&o.date>=today?fmt(o.date):'')).join('');
+  main+=OCC_ALWAYS.map(v=>occChip(v)).join('');
+  main+='<div class="chip" data-val="__more">More occasions</div><div class="chip" data-val="Other">Other</div>';
+  document.getElementById('qc5-main').innerHTML=main;
+  document.getElementById('qc5-more').innerHTML=more.concat(OCC_MORE_ALWAYS).map(v=>occChip(v)).join('');
+  document.querySelectorAll('#qc5-main .chip, #qc5-more .chip').forEach(chip=>chip.addEventListener('click',()=>pickOccasion(chip)));
+}
+function openPanel(id,open){const el=document.getElementById(id);el.classList.toggle('open',open);if(open)setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'nearest'}),50);}
+function pickOccasion(chip){
+  const val=chip.dataset.val,inMore=chip.parentElement.id==='qc5-more';
+  const btn=document.getElementById('qn5');
+  if(val==='__more'){
+    const open=!document.getElementById('qe-more').classList.contains('open');
+    openPanel('qe-more',open);chip.classList.toggle('selected',open);
+    return;
+  }
+  document.querySelectorAll('#qc5-main .chip, #qc5-more .chip').forEach(c=>{if(c.dataset.val!=='__more')c.classList.remove('selected');});
   chip.classList.add('selected');
-  if(chip.dataset.val==='Other Holidays'){document.getElementById('qe-hols').classList.add('open');document.getElementById('qe-other-occ').classList.remove('open');A.occasion='';document.getElementById('qn5').disabled=true;}
-  else if(chip.dataset.val==='Other'){document.getElementById('qe-other-occ').classList.add('open');document.getElementById('qe-hols').classList.remove('open');A.occasion='';document.getElementById('qn5').disabled=true;}
-  else{document.getElementById('qe-hols').classList.remove('open');document.getElementById('qe-other-occ').classList.remove('open');A.occasion=chip.dataset.val;A.isOtherOccasion=false;document.getElementById('qn5').disabled=false;
-    document.getElementById('q-counter').textContent=A.occasion+' Card';}
-}));
-document.getElementById('qc5-hols')?.querySelectorAll('.chip').forEach(chip=>chip.addEventListener('click',()=>{
-  document.getElementById('qc5-hols').querySelectorAll('.chip').forEach(c=>c.classList.remove('selected'));
-  chip.classList.add('selected');A.occasion=chip.dataset.val;document.getElementById('qn5').disabled=false;
+  if(!inMore){openPanel('qe-more',false);document.querySelector('#qc5-main .chip[data-val="__more"]').classList.remove('selected');}
+  openPanel('qe-other-occ',val==='Other');
+  openPanel('qe-bday',val==='Birthday');
+  if(val!=='Birthday'){A.birthdayAge='';A.mentionAge=false;document.getElementById('chk-mention-age').checked=false;document.getElementById('t5b').value='';document.getElementById('bday-age-row').style.display='none';}
+  if(val==='Other'){A.occasion='';btn.disabled=true;document.getElementById('t5-other').focus();return;}
+  A.occasion=val;A.isOtherOccasion=false;btn.disabled=false;
   document.getElementById('q-counter').textContent=A.occasion+' Card';
-}));
-document.getElementById('qc5-hard')?.querySelectorAll('.chip').forEach(chip=>chip.addEventListener('click',()=>{
-  document.getElementById('qc5-hard').querySelectorAll('.chip').forEach(c=>c.classList.remove('selected'));
-  document.getElementById('qc5-main').querySelectorAll('.chip').forEach(c=>c.classList.remove('selected'));
-  document.getElementById('qe-hols').classList.remove('open');document.getElementById('qe-other-occ').classList.remove('open');
-  chip.classList.add('selected');A.occasion=chip.dataset.val;document.getElementById('qn5').disabled=false;
-  document.getElementById('q-counter').textContent=A.occasion+' Card';
-}));
+}
+function handleMentionAge(){
+  const on=document.getElementById('chk-mention-age').checked;
+  A.mentionAge=on;
+  document.getElementById('bday-age-row').style.display=on?'flex':'none';
+  if(on)document.getElementById('t5b').focus();else{A.birthdayAge='';document.getElementById('t5b').value='';}
+}
+buildOccasionChips();
 
 document.getElementById('qc6')?.querySelectorAll('.chip').forEach(chip=>chip.addEventListener('click',()=>{
   if(chip.classList.contains('selected')){chip.classList.remove('selected');A.tones=A.tones.filter(v=>v!==chip.dataset.val);}

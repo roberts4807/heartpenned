@@ -67,6 +67,8 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
 .btn-next:disabled{opacity:0.35;cursor:not-allowed;}
 .skip-link{display:inline-block;background:#FFFFFF;border:0.5px solid #C0CCE0;color:#3A4A5A;padding:10px 20px;border-radius:8px;font-size:14px;line-height:normal;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.15s;user-select:none;}
 .skip-link:hover{border-color:#2A4A80;}
+.chk-strong{display:inline-flex;align-items:center;gap:9px;cursor:pointer;font-size:0.95rem;font-weight:600;color:#1A3060;}
+.chk-strong input{width:18px;height:18px;cursor:pointer;accent-color:#2A4A80;margin:0;}
 .honest-private{display:inline-block;margin-top:4px;font-size:13.5px;white-space:nowrap;font-weight:600;font-style:normal;color:#1A3060;}
 @media (max-width:350px){.honest-private{white-space:normal;}}
 .honest-note{font-size:13px;color:#3A4A5A;font-style:italic;margin-bottom:1rem;line-height:1.6;padding:10px 14px;background:#F4F6FA;border-radius:8px;border-left:2px solid #2A4A80;}
@@ -291,15 +293,15 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
       <div class="question">Who are you writing to?</div>
       <div class="subtext">A name helps personalize — but it's optional.</div>
       <input class="text-input" id="t-name" type="text" placeholder="Their name..." oninput="handleName()" autocomplete="off" style="width:100%;box-sizing:border-box;">
-      <label style="display:inline-flex;align-items:center;gap:8px;margin-top:0.6rem;cursor:pointer;font-size:0.85rem;color:#888;">
-        <input type="checkbox" id="chk-noname" onchange="handleNoName()" style="width:15px;height:15px;cursor:pointer;accent-color:#7a9cbf;">
+      <label class="chk-strong" style="margin-top:0.75rem;">
+        <input type="checkbox" id="chk-noname" onchange="handleNoName()">
         No name needed
       </label>
       <div style="margin-top:1.75rem;">
-        <div class="question" style="margin-bottom:0.5rem;margin-top:0;">They are my... <span class="opt-tag">optional</span></div>
-        <input class="text-input" id="t-relationship-free" type="text" placeholder="e.g. Mom, best friend, college roommate..." oninput="A.relationship=this.value.trim()" autocomplete="off" style="width:100%;box-sizing:border-box;">
+        <div class="question" style="margin-bottom:0.5rem;margin-top:0;">They are my...</div>
+        <input class="text-input" id="t-relationship-free" type="text" placeholder="e.g. Mom, best friend, college roommate..." oninput="A.relationship=this.value.trim();updateQ1Next()" autocomplete="off" style="width:100%;box-sizing:border-box;">
       </div>
-      <div class="qnav"><div></div><div style="display:flex;align-items:center;gap:16px;"><span class="skip-link" onclick="qSkip(1)">Skip</span><button class="btn-next" id="qn1" disabled onclick="qGo(2)">Next →</button></div></div>
+      <div class="qnav"><div></div><button class="btn-next" id="qn1" disabled onclick="qGo(2)">Next →</button></div>
     </div>
 
     <div class="qstep" id="q2">
@@ -333,8 +335,8 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
       <div class="subtext">This sets the emotional gravity of the message.</div>
       <div class="chips" id="qc5-main"></div>
       <div class="exp" id="qe-bday">
-        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:0.9rem;color:#3A4A5A;">
-          <input type="checkbox" id="chk-mention-age" onchange="handleMentionAge()" style="width:15px;height:15px;cursor:pointer;accent-color:#7a9cbf;">
+        <label class="chk-strong">
+          <input type="checkbox" id="chk-mention-age" onchange="handleMentionAge()">
           Mention their age in the card
         </label>
         <div id="bday-age-row" style="display:none;align-items:center;gap:8px;margin-top:0.6rem;font-size:0.9rem;color:#3A4A5A;">
@@ -804,12 +806,17 @@ function resetEmailSection(){
   if(editBar) editBar.style.display='block';
 }
 
+function updateQ1Next(){
+  const hasName=document.getElementById('chk-noname').checked||document.getElementById('t-name').value.trim().length>0;
+  const hasRel=document.getElementById('t-relationship-free').value.trim().length>=2;
+  document.getElementById('qn1').disabled=!(hasName&&hasRel);
+}
 function handleName(){
   const chk=document.getElementById('chk-noname');
   if(chk&&chk.checked) return;
   const v=document.getElementById('t-name').value.trim();
   A.name=v;
-  document.getElementById('qn1').disabled=v.length<1;
+  updateQ1Next();
   document.getElementById('q9-text').textContent=v?'How are things with '+v+'?':'How are things between you?';
   document.getElementById('q10-text').textContent=v?'Tell us about '+v:'Tell us about them';
 }
@@ -821,7 +828,7 @@ function handleNoName(){
     inp.value='';
     inp.disabled=true;
     inp.style.opacity='0.4';
-    document.getElementById('qn1').disabled=false;
+    updateQ1Next();
     document.getElementById('q9-text').textContent='How are things between you?';
     document.getElementById('q10-text').textContent='Tell us about them';
   } else {
@@ -829,7 +836,7 @@ function handleNoName(){
     inp.style.opacity='1';
     const v=inp.value.trim();
     A.name=v;
-    document.getElementById('qn1').disabled=v.length<1;
+    updateQ1Next();
     document.getElementById('q9-text').textContent=v?'How are things with '+v+'?':'How are things between you?';
     document.getElementById('q10-text').textContent=v?'Tell us about '+v:'Tell us about them';
   }

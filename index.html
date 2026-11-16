@@ -2746,6 +2746,30 @@ const CARD_HEADERS = [
       return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/thinkingofyou-minimal.png" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;" alt="Thinking of you meadow wildflowers header"/></div>`;
     }
   },
+  {
+    id: 'toy-img-bicycle',
+    label: 'Flower Bicycle',
+    occasions: ['Thinking of you'],
+    category: 'classic',
+    theme: 'sage',
+    image: 'thinkingofyou-bicycle.png',
+    render(w, h) {
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/thinkingofyou-bicycle.png" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;" alt="Thinking of you bicycle header"/></div>`;
+    }
+  },
+
+  {
+    id: 'toy-img-flowerpen',
+    label: 'Flower & Pen',
+    occasions: ['Thinking of you'],
+    category: 'classic',
+    theme: 'blush',
+    image: 'thinkingofyou-flowerpen.png',
+    render(w, h) {
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/thinkingofyou-flowerpen.png" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;" alt="Thinking of you flower and pen header"/></div>`;
+    }
+  },
+
 
   // ── SYMPATHY IMAGE HEADERS ────────────────────────────────────────────────
   {
@@ -2771,6 +2795,42 @@ const CARD_HEADERS = [
       return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/sympathy-classic2.png" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block;" alt="Sympathy botanicals header"/></div>`;
     }
   },
+  {
+    id: 'sympathy-img-dove',
+    label: 'White Dove',
+    occasions: ['Sympathy'],
+    category: 'classic',
+    theme: 'classic',
+    image: 'sympathy-dove.png',
+    render(w, h) {
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/sympathy-dove.png" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;" alt="Sympathy dove header"/></div>`;
+    }
+  },
+
+  {
+    id: 'sympathy-img-feather',
+    label: 'Gold Feather',
+    occasions: ['Sympathy'],
+    category: 'classic',
+    theme: 'gold',
+    image: 'sympathy-feather.png',
+    render(w, h) {
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/sympathy-feather.png" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;" alt="Sympathy feather header"/></div>`;
+    }
+  },
+
+  {
+    id: 'sympathy-img-lilies',
+    label: 'Calla Lilies',
+    occasions: ['Sympathy'],
+    category: 'classic',
+    theme: 'sage',
+    image: 'sympathy-lilies.png',
+    render(w, h) {
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/sympathy-lilies.png" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;" alt="Sympathy lilies header"/></div>`;
+    }
+  },
+
 
   {
     id: 'valentine-img-classic',
@@ -2882,6 +2942,66 @@ const CARD_HEADERS = [
       return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/getwell-tea.png" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;" alt="Get well cozy tea header"/></div>`;
     }
   },
+  {
+    id: 'getwell-img-rainbow',
+    label: 'Rainbow',
+    occasions: ['Get well'],
+    category: 'fun',
+    theme: 'warm',
+    image: 'getwell-rainbow.png',
+    render(w, h) {
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/getwell-rainbow.png" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;" alt="Get well rainbow header"/></div>`;
+    }
+  },
+
+  {
+    id: 'getwell-img-teddy1',
+    label: 'Snuggle Bear',
+    occasions: ['Get well'],
+    category: 'fun',
+    theme: 'warm',
+    image: 'getwell-teddy1.png',
+    render(w, h) {
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/getwell-teddy1.png" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;" alt="Get well teddy bear header"/></div>`;
+    }
+  },
+
+  {
+    id: 'getwell-img-teddy2',
+    label: 'Blanket Bear',
+    occasions: ['Get well'],
+    category: 'fun',
+    theme: 'blush',
+    image: 'getwell-teddy2.png',
+    render(w, h) {
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/getwell-teddy2.png" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;" alt="Get well teddy bear header"/></div>`;
+    }
+  },
+
+  {
+    id: 'getwell-img-teddy3',
+    label: 'Bear in Blue',
+    occasions: ['Get well'],
+    category: 'fun',
+    theme: 'classic',
+    image: 'getwell-teddy3.png',
+    render(w, h) {
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/getwell-teddy3.png" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;" alt="Get well teddy bear header"/></div>`;
+    }
+  },
+
+  {
+    id: 'getwell-img-teddy4',
+    label: 'Bear in Pink',
+    occasions: ['Get well'],
+    category: 'fun',
+    theme: 'blush',
+    image: 'getwell-teddy4.png',
+    render(w, h) {
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/getwell-teddy4.png" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;" alt="Get well teddy bear header"/></div>`;
+    }
+  },
+
 
   // ── NEW YEAR ──────────────────────────────────────────────────────────────
   // ── NEW YEAR IMAGE HEADERS ────────────────────────────────────────────────
@@ -3111,6 +3231,18 @@ const CARD_HEADERS = [
       </svg>`;
     }
   },
+  {
+    id: 'easter-img-wildflowers',
+    label: 'Spring Blooms',
+    occasions: ['Easter', 'Passover', "Mother's Day", 'Get well', 'Thinking of you'],
+    category: 'fun',
+    theme: 'sage',
+    image: 'easter-wildflowers.png',
+    render(w, h) {
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/easter-wildflowers.png" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;" alt="Spring wildflowers header"/></div>`;
+    }
+  },
+
 
   // ── HALLOWEEN ─────────────────────────────────────────────────────────────
   // ── HALLOWEEN IMAGE HEADERS ───────────────────────────────────────────────
@@ -3492,6 +3624,18 @@ const CARD_HEADERS = [
       </svg>`;
     }
   },
+  {
+    id: 'passover-img-seder',
+    label: 'Matzah & Cup',
+    occasions: ['Passover'],
+    category: 'classic',
+    theme: 'classic',
+    image: 'passover-seder.png',
+    render(w, h) {
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/passover-seder.png" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;" alt="Passover header"/></div>`;
+    }
+  },
+
 
   // ── 4TH OF JULY IMAGE HEADERS ─────────────────────────────────────────────
   {

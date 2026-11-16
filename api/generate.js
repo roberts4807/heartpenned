@@ -223,6 +223,11 @@ ${lossAbout ? '- WHAT THE SENDER WANTS TO SAY ABOUT THEM: "' + lossAbout + '" In
 - Do not write about the sender's own presence, closeness, or distance ("I'm here for you," "how close I am," "even from far away," "I'm right beside you," "you're not alone"). The only exception is an OFFER the sender gave.
 - Let the feelings come through comfort and sympathy, never through the sender describing themselves or the relationship.
 - No advice and no observations about grief itself: nothing about how grief works, how long it takes, what it does, or what they should do or feel ("grief this tender takes time to heal," "grief is love with nowhere to go," "be gentle with yourself," "take all the time you need"). Gentle hopes and wishes are fine ("I hope your memories bring you comfort").
+- No lines about them not being alone or not having to carry this alone, in any wording ("you don't have to carry this alone," "you're not alone in this").
+- Do not use "hold," "holding," or "held" in any form ("holding you in my thoughts").
+- No sweeping statements about the loss ("a loss like no other," "leaves a space nothing can fill," "no comfort equal to this kind of loss"). Say you're sorry plainly instead.
+- Never describe or assume how they feel right now ("when everything feels heavy," "I know how hard this is").
+- If a PREVIOUS VERSION is shown below, use different comfort wishes and images from it, not just different wording (for example, if it said "surrounded by kindness" or "memories bring you peace," choose something else).
 - No teasing or playfulness, even to a sibling or close friend. Some emotional weight is fitting here; keep it gentle and unforced.`;
 
   const privateCtx = `RELATIONSHIP CONTEXT — CONFIDENTIAL WRITER BRIEFING ONLY:

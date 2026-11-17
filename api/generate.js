@@ -156,6 +156,7 @@ function buildPrompt(A, currentCardText, mode, note){
     : gwSerious === 'ongoing' ? 'Ongoing illness. Steady and warm, close to a classic card. Never mention getting better, recovery or getting back to normal; wish them comfort, good days and strength.'
     : 'Not given. Warm and steady.'}
 ${gwSerious === 'minor' ? '' : '- If the TONE is Lighthearted or Playful, keep it to one warm, light touch about everyday life or about them; the card stays steady underneath. Treat Playful as Lighthearted here.\n'}- LOOK FORWARD TO OR OFFER: ${gwOffer ? '"' + gwOffer + '" Include it plainly and specifically.' : 'None given. Do not invent one, and do not write "let me know if you need anything."'}
+- Never describe who they are, what they're like, or how they're handling this ("taking it in stride," "you're so strong," "the way you always do"). Say only what the sender gave.
 - Do not write about the sender's own presence, closeness or distance ("I'm here for you," "even from far away"). The only exception is an offer the sender gave.
 ${SHARED_MODE_RULES}`;
   // Only use birthday age and children when they belong to the current occasion

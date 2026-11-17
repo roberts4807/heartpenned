@@ -413,7 +413,6 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
         <div class="chip" data-val="easy and comfortable" onclick="toggleRelChip(this)">Easy and comfortable</div>
         <div class="chip" data-val="complicated" onclick="toggleRelChip(this)">Complicated</div>
         <div class="chip" data-val="rebuilding" onclick="toggleRelChip(this)">Rebuilding</div>
-        <div class="chip" data-val="we've been through a lot" onclick="toggleRelChip(this)">We've been through a lot</div>
         <div class="chip" data-val="long distance" onclick="toggleRelChip(this)">Long distance</div>
         <div class="chip" data-val="friendly" onclick="toggleRelChip(this)">Friendly</div>
         <div class="chip" data-val="casual acquaintance" onclick="toggleRelChip(this)">Casual acquaintance</div>
@@ -859,7 +858,7 @@ const OCC_MODES={
   'Sympathy':{key:'loss',toneMax:1,page:'9s',relOptional:true,rel:LOSS_REL_CHIPS,
     tone:[['Warm and heartfelt','Warm and heartfelt'],['Simple and classic','Simple and classic'],['Respectful','Respectful'],['Gently hopeful','Gently hopeful']],
     feel:[['supported and not alone','Not alone'],['comforted','Comforted'],['cared for','Cared for'],['deeply loved','Loved']]},
-  'Get well':{key:'getwell',toneMax:1,page:'9g',relOptional:true,rel:['loving','easy and comfortable','friendly','casual acquaintance','long distance'],
+  'Get well':{key:'getwell',toneMax:1,page:'9g',relOptional:true,rel:LOSS_REL_CHIPS,
     tone:[['Warm and heartfelt','Warm and heartfelt'],['Lighthearted','Lighthearted'],['Playful','Playful']],
     feel:[['cared for','Cared for'],['encouraged','Encouraged'],['deeply loved','Loved'],['supported and not alone','Not alone'],['cheered up','Cheered up']]},
   'Apology':{key:'apology',toneMax:1,page:'9a',relOptional:false,rel:null,

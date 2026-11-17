@@ -498,6 +498,20 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
       <div class="qnav"><button class="btn-back" onclick="qGo(8)">← Back</button><button class="btn-next" onclick="getwellNext()">Next →</button></div>
     </div>
 
+    <div class="qstep" id="q9a">
+      <div class="question">Tell us about the apology</div>
+      <div class="subtext" style="margin-bottom:0.75rem;">All optional. The more you share, the more it sounds like you.</div>
+      <div class="cgl" style="margin-top:0.5rem;">What happened?</div>
+      <div class="honest-private" style="margin-top:0;white-space:normal;line-height:1.5;">🔒 Just for us. The card stays general unless you tick the box.</div>
+      <textarea class="text-input" id="t-ap-what" rows="2" style="margin-top:0.5rem;" placeholder="e.g. I missed her birthday dinner and didn't call." oninput="updateApology()"></textarea>
+      <label class="chk-strong" style="margin-top:0.6rem;"><input type="checkbox" id="chk-ap-mention" onchange="updateApology()">Mention it in the card</label>
+      <div class="cgl" style="margin-top:1.25rem;">What do you most want them to know?</div>
+      <textarea class="text-input" id="t-ap-know" rows="2" placeholder="e.g. I was wrong, and I miss talking to you." oninput="updateApology()"></textarea>
+      <div class="cgl" style="margin-top:1.25rem;">Anything you'll do differently?</div>
+      <textarea class="text-input" id="t-ap-change" rows="2" placeholder="e.g. I'll put our plans in my calendar and keep them." oninput="updateApology()"></textarea>
+      <div class="qnav"><button class="btn-back" onclick="qGo(8)">← Back</button><button class="btn-next" onclick="apologyNext()">Next →</button></div>
+    </div>
+
     <div class="qstep" id="q13">
       <div class="question">How would you like to open the card? <span class="opt-tag">optional</span></div>
       <div class="subtext">This goes at the very top of the card, exactly as you write it.</div>
@@ -724,7 +738,7 @@ const A={kids:[],tones:[],feels:[],relChips:[]};
 let kidCount=1,versionCount=1,currentCardText='',savedVersions=[],activeVersionIdx=0;
 const PARTNER_VALS=['Husband','Wife','Partner'];
 const PARTNER_RE=/\b(husband|wife|partner|spouse|hubby|wifey)\b/i;
-const Q_ORDER=[1,2,'2b',4,'4c',5,6,7,8,9,'9s','9g',13,'13b'];
+const Q_ORDER=[1,2,'2b',4,'4c',5,6,7,8,9,'9s','9g','9a',13,'13b'];
 
 // ── Card background themes ──────────────────────────────────────────────
 const CARD_THEMES = [
@@ -846,7 +860,10 @@ const OCC_MODES={
     feel:[['supported and not alone','Not alone'],['comforted','Comforted'],['cared for','Cared for'],['deeply loved','Loved']]},
   'Get well':{key:'getwell',toneMax:1,page:'9g',relOptional:true,rel:['loving','easy and comfortable','friendly','casual acquaintance','long distance'],
     tone:[['Warm and heartfelt','Warm and heartfelt'],['Lighthearted','Lighthearted'],['Playful','Playful']],
-    feel:[['cared for','Cared for'],['encouraged','Encouraged'],['deeply loved','Loved'],['supported and not alone','Not alone'],['cheered up','Cheered up']]}
+    feel:[['cared for','Cared for'],['encouraged','Encouraged'],['deeply loved','Loved'],['supported and not alone','Not alone'],['cheered up','Cheered up']]},
+  'Apology':{key:'apology',toneMax:1,page:'9a',relOptional:false,rel:['rebuilding','complicated',"we've been through a lot",'loving','easy and comfortable','long distance','friendly','casual acquaintance'],
+    tone:[['Warm and heartfelt','Warm and heartfelt'],['Honest and direct','Honest and direct'],['Lighthearted','Lighthearted']],
+    feel:[['heard','Heard'],['respected','Respected'],['valued','Valued'],["that I'm truly sorry","That I'm sorry"]]}
 };
 const occMode=()=>OCC_MODES[A.occasion]||null;
 const DEFAULT_CHIPS={};
@@ -941,6 +958,21 @@ function getwellNext(){
   updateGetwell();
   const G=A.getwell||{};
   if(window.gtag)gtag('event','getwell_details',{event_category:'details',event_label:[G.what?(G.mention?'what_named':'what_private'):'',G.serious||'',G.offer?'offer':''].filter(Boolean).join(',')||'none'});
+  qGo(13);
+}
+function updateApology(){
+  const g=id=>document.getElementById(id);
+  A.apology={
+    what:g('t-ap-what').value.trim(),
+    mention:g('chk-ap-mention').checked,
+    know:g('t-ap-know').value.trim(),
+    change:g('t-ap-change').value.trim()
+  };
+}
+function apologyNext(){
+  updateApology();
+  const P=A.apology||{};
+  if(window.gtag)gtag('event','apology_details',{event_category:'details',event_label:[P.what?(P.mention?'what_named':'what_private'):'',P.know?'know':'',P.change?'change':''].filter(Boolean).join(',')||'none'});
   qGo(13);
 }
 function qSkip(n){if(n===1){A.name='';document.getElementById('q10-text').textContent='Tell us about them';qGo(2);}}
@@ -1827,6 +1859,7 @@ function startOver(){
   document.querySelectorAll('textarea,input[type=text],input[type=number]').forEach(t=>t.value='');
   resetDetailsPage();
   const gwChk=document.getElementById('chk-gw-mention');if(gwChk)gwChk.checked=false;
+  const apChk=document.getElementById('chk-ap-mention');if(apChk)apChk.checked=false;
   const noNameChk=document.getElementById('chk-noname');
   if(noNameChk){noNameChk.checked=false;const ni=document.getElementById('t-name');if(ni){ni.disabled=false;ni.style.opacity='1';}}
   document.querySelectorAll('.btn-next').forEach(b=>b.disabled=true);

@@ -79,7 +79,9 @@ const TONE_GUIDE = {
   'Reserved but sincere': 'Understated. Plain, unshowy sentences. Restraint in feeling, not in length. No big closing line; a plain, sincere sentence is enough.',
   'Celebratory and upbeat': 'Energetic, warm, joy-forward. Ends on celebration and good wishes, not reflection.',
   'Tender and gentle': 'Soft, careful, quietly loving. Ends gently.',
-  'Celebrating their life': 'Warm remembrance that honors the life lived. A gentle smile is allowed; never cheerful about the loss itself. If the sender did not know them, honor the life in general terms only.',
+  'Simple and classic': 'Short and traditional, like a beautifully chosen store-bought sympathy card. Plain, familiar sympathy language; nothing elaborate.',
+  'Respectful': 'Polite, sincere, and a little more formal, right for a coworker, client, neighbor, or acquaintance. Warm but not intimate; no endearments.',
+  'Gently hopeful': 'Still sorry, but looks gently toward lighter days ahead: peace, strength, brighter days. Never a silver lining, never a reason for the loss, never "it will get better."',
 };
 const SHORT_LEANING = ['Funny and playful', 'Honest and direct', 'Reserved but sincere', 'Celebratory and upbeat', 'Lighthearted but real'];
 

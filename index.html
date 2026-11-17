@@ -482,6 +482,22 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
       <div class="qnav"><button class="btn-back" onclick="qGo(8)">← Back</button><button class="btn-next" onclick="lossNext()">Next →</button></div>
     </div>
 
+    <div class="qstep" id="q9g">
+      <div class="question">Tell us what's going on</div>
+      <div class="subtext" style="margin-bottom:0.75rem;">All optional. Skip anything you'd rather not share.</div>
+      <div class="cgl" style="margin-top:0.5rem;">What are they dealing with?</div>
+      <div class="honest-private" style="margin-top:0;white-space:normal;line-height:1.5;">🔒 Just for us. It stays out of the card unless you tick the box.</div>
+      <input class="text-input" id="t-gw-what" type="text" style="margin-top:0.5rem;" placeholder="e.g. Knee surgery, A bad flu, Starting chemo" oninput="updateGetwell()">
+      <label class="chk-strong" style="margin-top:0.6rem;"><input type="checkbox" id="chk-gw-mention" onchange="updateGetwell()">Mention it in the card</label>
+      <div class="cgl" style="margin-top:1.25rem;">How serious is it?</div>
+      <div class="chips" id="qc-gw-serious">
+        <div class="chip" data-val="serious">Serious</div><div class="chip" data-val="minor">Minor</div><div class="chip" data-val="ongoing">Ongoing illness</div>
+      </div>
+      <div class="cgl" style="margin-top:1.25rem;">Anything to look forward to or offer?</div>
+      <textarea class="text-input" id="t-gw-offer" rows="2" placeholder="e.g. Golf as soon as you're up. I'll walk the dog this week." oninput="updateGetwell()"></textarea>
+      <div class="qnav"><button class="btn-back" onclick="qGo(8)">← Back</button><button class="btn-next" onclick="getwellNext()">Next →</button></div>
+    </div>
+
     <div class="qstep" id="q13">
       <div class="question">How would you like to open the card? <span class="opt-tag">optional</span></div>
       <div class="subtext">This goes at the very top of the card, exactly as you write it.</div>
@@ -708,7 +724,7 @@ const A={kids:[],tones:[],feels:[],relChips:[]};
 let kidCount=1,versionCount=1,currentCardText='',savedVersions=[],activeVersionIdx=0;
 const PARTNER_VALS=['Husband','Wife','Partner'];
 const PARTNER_RE=/\b(husband|wife|partner|spouse|hubby|wifey)\b/i;
-const Q_ORDER=[1,2,'2b',4,'4c',5,6,7,8,9,'9s',13,'13b'];
+const Q_ORDER=[1,2,'2b',4,'4c',5,6,7,8,9,'9s','9g',13,'13b'];
 
 // ── Card background themes ──────────────────────────────────────────────
 const CARD_THEMES = [
@@ -821,42 +837,49 @@ function qShowStep(n){
 }
 function qGo(n){qShowStep(n);}
 
-// ---- Occasion modes: some occasions get their own tone and feeling choices ----
-const isLossOcc=()=>A.occasion==='Sympathy';
-const OCC_CHIPS={
-  loss:{
+// ---- Occasion modes: some occasions get their own tone and feeling choices,
+// relationship chips, and details page. Occasions not listed use the regular flow.
+const LOSS_REL_CHIPS=['loving','friendly','casual acquaintance','long distance'];
+const OCC_MODES={
+  'Sympathy':{key:'loss',toneMax:1,page:'9s',relOptional:true,rel:LOSS_REL_CHIPS,
     tone:[['Warm and heartfelt','Warm and heartfelt'],['Simple and classic','Simple and classic'],['Respectful','Respectful'],['Gently hopeful','Gently hopeful']],
-    feel:[['supported and not alone','Not alone'],['comforted','Comforted'],['cared for','Cared for'],['deeply loved','Loved']]
-  }
+    feel:[['supported and not alone','Not alone'],['comforted','Comforted'],['cared for','Cared for'],['deeply loved','Loved']]},
+  'Get well':{key:'getwell',toneMax:1,page:'9g',relOptional:true,rel:['loving','easy and comfortable','friendly','casual acquaintance','long distance'],
+    tone:[['Warm and heartfelt','Warm and heartfelt'],['Lighthearted','Lighthearted'],['Playful','Playful']],
+    feel:[['cared for','Cared for'],['encouraged','Encouraged'],['deeply loved','Loved'],['supported and not alone','Not alone'],['cheered up','Cheered up']]}
 };
+const occMode=()=>OCC_MODES[A.occasion]||null;
 const DEFAULT_CHIPS={};
 const chipMode={tone:'default',feel:'default'};
 function applyOccChips(kind){
   const box=document.getElementById(kind==='tone'?'qc6':'qc8');
   if(!DEFAULT_CHIPS[kind])DEFAULT_CHIPS[kind]=box.innerHTML;
-  const mode=isLossOcc()?'loss':'default';
+  const m=occMode();
+  const mode=m?m.key:'default';
   if(chipMode[kind]===mode)return;
   chipMode[kind]=mode;
-  box.innerHTML=mode==='default'?DEFAULT_CHIPS[kind]:OCC_CHIPS[mode][kind].map(([v,l])=>'<div class="chip" data-val="'+v+'">'+l+'</div>').join('');
+  box.innerHTML=m?m[kind].map(([v,l])=>'<div class="chip" data-val="'+v+'">'+l+'</div>').join(''):DEFAULT_CHIPS[kind];
   box.querySelectorAll('.chip').forEach(c=>c.classList.remove('selected'));
-  if(kind==='tone'){A.tones=[];document.getElementById('q5-title').textContent=mode==='loss'?'Tone of card (choose one)':'Tone of card (choose up to two)';document.getElementById('qn6').disabled=!(A.toneOther&&A.toneOther.length);}
+  if(kind==='tone'){A.tones=[];document.getElementById('q5-title').textContent=(m&&m.toneMax===1)?'Tone of card (choose one)':'Tone of card (choose up to two)';document.getElementById('qn6').disabled=!(A.toneOther&&A.toneOther.length);}
   else{A.feels=[];document.getElementById('qn8').disabled=!(A.feelOther&&A.feelOther.length);}
 }
-const LOSS_REL_CHIPS=['loving','friendly','casual acquaintance','long distance'];
 function applyRelOptional(){
-  const loss=isLossOcc();
+  const m=occMode();
+  const list=m&&m.rel;
   document.querySelectorAll('#rel-chips .chip').forEach(c=>{
-    const hide=loss&&!LOSS_REL_CHIPS.includes(c.dataset.val);
+    const hide=!!list&&!list.includes(c.dataset.val);
     c.style.display=hide?'none':'';
-    c.style.order=loss&&!hide?String(LOSS_REL_CHIPS.indexOf(c.dataset.val)):'';
+    c.style.order=list&&!hide?String(list.indexOf(c.dataset.val)):'';
     if(hide&&c.classList.contains('selected')){c.classList.remove('selected');A.relChips=A.relChips.filter(v=>v!==c.dataset.val);}
   });
   updateRelCtx();
-  document.getElementById('rel-opt').style.display=loss?'inline':'none';
-  if(loss)document.getElementById('qn9').disabled=false;
+  const opt=!!(m&&m.relOptional);
+  document.getElementById('rel-opt').style.display=opt?'inline':'none';
+  if(opt)document.getElementById('qn9').disabled=false;
 }
 function goDetails(){
-  if(isLossOcc()){A.classic=false;qGo('9s');}
+  const m=occMode();
+  if(m&&m.page){A.classic=false;qGo(m.page);}
   else qGo(9);
 }
 function updateLoss(){
@@ -896,6 +919,28 @@ function lossNext(){
   updateLoss();
   const L=A.loss||{};
   if(window.gtag)gtag('event','loss_details',{event_category:'details',event_label:[L.who?'who':'',L.knew||'',L.about?'about':'',L.offer?'offer':''].filter(Boolean).join(',')||'none'});
+  qGo(13);
+}
+function updateGetwell(){
+  const g=id=>document.getElementById(id);
+  A.getwell={
+    what:g('t-gw-what').value.trim(),
+    mention:g('chk-gw-mention').checked,
+    serious:(g('qc-gw-serious').querySelector('.chip.selected')||{}).dataset?.val||'',
+    offer:g('t-gw-offer').value.trim()
+  };
+}
+document.getElementById('qc-gw-serious')?.addEventListener('click',e=>{
+  const chip=e.target.closest('.chip');if(!chip)return;
+  const was=chip.classList.contains('selected');
+  document.querySelectorAll('#qc-gw-serious .chip').forEach(c=>c.classList.remove('selected'));
+  if(!was)chip.classList.add('selected');
+  updateGetwell();
+});
+function getwellNext(){
+  updateGetwell();
+  const G=A.getwell||{};
+  if(window.gtag)gtag('event','getwell_details',{event_category:'details',event_label:[G.what?(G.mention?'what_named':'what_private'):'',G.serious||'',G.offer?'offer':''].filter(Boolean).join(',')||'none'});
   qGo(13);
 }
 function qSkip(n){if(n===1){A.name='';document.getElementById('q10-text').textContent='Tell us about them';qGo(2);}}
@@ -1159,7 +1204,7 @@ function updateRelCtx(){
   const chipText = A.relChips.length ? A.relChips.join(', ') : '';
   const combined = [chipText, freeText].filter(Boolean).join('. ');
   A.relationshipCtx = combined;
-  document.getElementById('qn9').disabled = !isLossOcc() && (A.relChips.length === 0 && freeText.length < 3);
+  document.getElementById('qn9').disabled = !(occMode()&&occMode().relOptional) && (A.relChips.length === 0 && freeText.length < 3);
 }
 
 // ── "Tell us about them" guided questions ──
@@ -1392,7 +1437,7 @@ buildOccasionChips();
 
 document.getElementById('qc6')?.addEventListener('click',e=>{const chip=e.target.closest('.chip');if(!chip)return;(()=>{
   if(chip.classList.contains('selected')){chip.classList.remove('selected');A.tones=A.tones.filter(v=>v!==chip.dataset.val);}
-  else if(isLossOcc()){document.querySelectorAll('#qc6 .chip').forEach(c=>c.classList.remove('selected'));chip.classList.add('selected');A.tones=[chip.dataset.val];}
+  else if(occMode()&&occMode().toneMax===1){document.querySelectorAll('#qc6 .chip').forEach(c=>c.classList.remove('selected'));chip.classList.add('selected');A.tones=[chip.dataset.val];}
   else{if(A.tones.length>=2)return;chip.classList.add('selected');A.tones.push(chip.dataset.val);}
   document.getElementById('qn6').disabled=(A.tones.length===0&&(!A.toneOther||A.toneOther.length===0));
 })();});
@@ -1781,6 +1826,7 @@ function startOver(){
   document.querySelectorAll('.chip').forEach(c=>c.classList.remove('selected'));
   document.querySelectorAll('textarea,input[type=text],input[type=number]').forEach(t=>t.value='');
   resetDetailsPage();
+  const gwChk=document.getElementById('chk-gw-mention');if(gwChk)gwChk.checked=false;
   const noNameChk=document.getElementById('chk-noname');
   if(noNameChk){noNameChk.checked=false;const ni=document.getElementById('t-name');if(ni){ni.disabled=false;ni.style.opacity='1';}}
   document.querySelectorAll('.btn-next').forEach(b=>b.disabled=true);

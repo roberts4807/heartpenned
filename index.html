@@ -853,6 +853,7 @@ function qGo(n){qShowStep(n);}
 
 // ---- Occasion modes: some occasions get their own tone and feeling choices,
 // relationship chips, and details page. Occasions not listed use the regular flow.
+// Relationship chips always keep the page's order; a mode's rel list only hides chips.
 const LOSS_REL_CHIPS=['loving','friendly','casual acquaintance','long distance'];
 const OCC_MODES={
   'Sympathy':{key:'loss',toneMax:1,page:'9s',relOptional:true,rel:LOSS_REL_CHIPS,
@@ -861,7 +862,7 @@ const OCC_MODES={
   'Get well':{key:'getwell',toneMax:1,page:'9g',relOptional:true,rel:['loving','easy and comfortable','friendly','casual acquaintance','long distance'],
     tone:[['Warm and heartfelt','Warm and heartfelt'],['Lighthearted','Lighthearted'],['Playful','Playful']],
     feel:[['cared for','Cared for'],['encouraged','Encouraged'],['deeply loved','Loved'],['supported and not alone','Not alone'],['cheered up','Cheered up']]},
-  'Apology':{key:'apology',toneMax:1,page:'9a',relOptional:false,rel:['rebuilding','complicated',"we've been through a lot",'loving','easy and comfortable','long distance','friendly','casual acquaintance'],
+  'Apology':{key:'apology',toneMax:1,page:'9a',relOptional:false,rel:null,
     tone:[['Warm and heartfelt','Warm and heartfelt'],['Honest and direct','Honest and direct'],['Lighthearted','Lighthearted']],
     feel:[['heard','Heard'],['respected','Respected'],['valued','Valued'],["that I'm truly sorry","That I'm sorry"]]}
 };
@@ -886,7 +887,6 @@ function applyRelOptional(){
   document.querySelectorAll('#rel-chips .chip').forEach(c=>{
     const hide=!!list&&!list.includes(c.dataset.val);
     c.style.display=hide?'none':'';
-    c.style.order=list&&!hide?String(list.indexOf(c.dataset.val)):'';
     if(hide&&c.classList.contains('selected')){c.classList.remove('selected');A.relChips=A.relChips.filter(v=>v!==c.dataset.val);}
   });
   updateRelCtx();

@@ -123,6 +123,11 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
 @media (max-width:600px){.m-only{display:block;}}
 .rev-box{display:none;background:#F4F6FA;border-radius:12px;padding:1.25rem;margin-bottom:1.25rem;border:0.5px solid #D0D8E8;}
 .rev-box.open{display:block;}
+.rate-row{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:0.75rem;font-size:13px;color:#5A6A7A;}
+.rate-btn{background:white;border:0.5px solid #C0CCE0;border-radius:20px;padding:4px 12px;font-size:16px;line-height:1.4;cursor:pointer;}
+.rate-btn.on{background:#E8EEF8;border-color:#1A3A6A;}
+.rate-thanks{font-size:12px;color:#4A7A5A;min-width:90px;}
+.ex-chip.on{background:#1A3A6A;color:white;border-color:#1A3A6A;}
 .rev-label{font-size:13px;font-weight:500;color:#0A1A2A;margin-bottom:0.4rem;}
 .rev-sub{font-size:13px;color:#3A4A5A;margin-bottom:0.75rem;line-height:1.5;}
 .ex-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:0.75rem;}
@@ -546,6 +551,20 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
       <div class="card-mark">Heartpenned</div>
     </div>
     <div id="version-tabs" style="display:none;justify-content:center;gap:6px;margin-bottom:0.75rem;flex-wrap:wrap;"></div>
+    <div id="rate-row" class="rate-row" style="display:none;">
+      <span>How did this one land?</span>
+      <button class="rate-btn" id="rate-up" onclick="rateCard('up')" aria-label="Thumbs up">👍</button>
+      <button class="rate-btn" id="rate-down" onclick="rateCard('down')" aria-label="Thumbs down">👎</button>
+      <span class="rate-thanks" id="rate-thanks"></span>
+    </div>
+    <div class="rev-box" id="rate-box">
+      <div class="rev-label">What felt off? (optional)</div>
+      <div class="ex-chips" id="rate-chips">
+        <div class="ex-chip" data-val="Assumed something" onclick="toggleRateChip(this)">Assumed something</div><div class="ex-chip" data-val="Doesn't sound like me" onclick="toggleRateChip(this)">Doesn't sound like me</div><div class="ex-chip" data-val="Too generic" onclick="toggleRateChip(this)">Too generic</div><div class="ex-chip" data-val="Wrong tone" onclick="toggleRateChip(this)">Wrong tone</div><div class="ex-chip" data-val="Sounds like AI" onclick="toggleRateChip(this)">Sounds like AI</div>
+      </div>
+      <textarea class="text-input" id="rate-note" rows="2" placeholder="Anything else? e.g. The last line praises her, but she's upset with us."></textarea>
+      <button class="rev-btn" onclick="sendRateDetail()">Send feedback</button>
+    </div>
     <div id="edit-mode" style="display:none;margin-bottom:0.75rem;">
       <textarea class="card-text-edit" id="card-text-edit"></textarea>
       <div class="edit-done-row">
@@ -1493,6 +1512,7 @@ function cleanText(text) {
 }
 
 async function callAPI(action,note){
+  lastCardAction=action;
   let response;
   try{
     response=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action,answers:A,currentCardText,note:note||''})});
@@ -1741,6 +1761,75 @@ const IS_TESTER = (function(){
     return sessionStorage.getItem('hp_tester') === '1';
   } catch (e) { return false; }
 })();
+// ── Card ratings: thumbs up/down under each version, for testers and Prolific only ──
+// Prolific passes PROLIFIC_PID, STUDY_ID and SESSION_ID in the study link. Remembered for the tab.
+const PROLIFIC = (function(){
+  try {
+    const q = new URLSearchParams(window.location.search);
+    if (q.get('PROLIFIC_PID')) sessionStorage.setItem('hp_prolific', JSON.stringify({ pid: q.get('PROLIFIC_PID'), study: q.get('STUDY_ID') || '', session: q.get('SESSION_ID') || '' }));
+    const saved = sessionStorage.getItem('hp_prolific');
+    return saved ? JSON.parse(saved) : null;
+  } catch (e) { return null; }
+})();
+const RATINGS_ON = IS_TESTER || !!PROLIFIC;
+const rateState = {};    // card text -> { id, rating, reasons, note, open }
+const versionKind = {};  // card text -> new / another / shorten / revise / edit
+var lastCardAction = 'new';
+function rateChoices(){
+  let detail = '';
+  if (A.occasion === 'Get well' && A.getwell) detail = 'serious: ' + (A.getwell.serious || 'not given') + ', mention: ' + (A.getwell.mention ? 'yes' : 'no');
+  else if (A.occasion === 'Apology' && A.apology) detail = ['mention: ' + (A.apology.mention ? 'yes' : 'no'), A.apology.know ? 'what to know: given' : '', A.apology.change ? 'do differently: given' : ''].filter(Boolean).join(', ');
+  else if (A.occasion === 'Sympathy' && A.loss) detail = 'knew them: ' + (A.loss.knew || 'not given');
+  else if (A.classic) detail = 'classic';
+  return { occasion: A.occasion || '', relationship: A.relationship || '', relationshipChips: A.relChips || [], tones: A.tones || [], toneOther: A.toneOther || '', feels: A.feels || [], spirituality: A.spirituality || '', detail };
+}
+function postRating(text, st){
+  fetch('/api/feedback', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
+    id: st.id, rating: st.rating, reasons: st.reasons, note: st.note, cardText: text,
+    version: activeVersionIdx + 1, kind: versionKind[text] || '', choices: rateChoices(),
+    source: PROLIFIC ? 'prolific' : 'tester', prolific: PROLIFIC
+  }) }).catch(function(){});
+}
+function refreshRating(){
+  const row = document.getElementById('rate-row'), box = document.getElementById('rate-box');
+  if (!row || !box) return;
+  if (!RATINGS_ON) { row.style.display = 'none'; box.classList.remove('open'); return; }
+  row.style.display = 'flex';
+  const st = rateState[currentCardText] || {};
+  document.getElementById('rate-up').classList.toggle('on', st.rating === 'up');
+  document.getElementById('rate-down').classList.toggle('on', st.rating === 'down');
+  document.getElementById('rate-thanks').textContent = st.rating ? 'Thanks, noted.' : '';
+  box.classList.toggle('open', st.rating === 'down' && !!st.open);
+  document.querySelectorAll('#rate-chips .ex-chip').forEach(function(c){ c.classList.toggle('on', !!st.reasons && st.reasons.includes(c.dataset.val)); });
+  document.getElementById('rate-note').value = st.note || '';
+}
+function rateCard(rating){
+  const text = currentCardText;
+  if (!text) return;
+  const st = rateState[text] || (rateState[text] = { id: Math.random().toString(36).slice(2, 10) + Date.now().toString(36), reasons: [], note: '' });
+  st.rating = rating;
+  st.open = rating === 'down';
+  if (rating === 'up') { st.reasons = []; st.note = ''; }
+  postRating(text, st);
+  refreshRating();
+  if (window.gtag) gtag('event', 'card_rating', { event_category: 'feedback', event_label: rating, occasion: A.occasion || '' });
+}
+function toggleRateChip(el){
+  const st = rateState[currentCardText];
+  if (!st) return;
+  const v = el.dataset.val;
+  st.reasons = st.reasons.includes(v) ? st.reasons.filter(function(x){ return x !== v; }) : st.reasons.concat(v);
+  el.classList.toggle('on');
+}
+function sendRateDetail(){
+  const st = rateState[currentCardText];
+  if (!st) return;
+  st.note = document.getElementById('rate-note').value.trim();
+  st.open = false;
+  postRating(currentCardText, st);
+  refreshRating();
+  document.getElementById('rate-thanks').textContent = 'Thanks, that helps.';
+}
 function showFeedbackPrompt(source){
   const fb = document.getElementById('feedback-prompt');
   if (!fb || fb.style.display === 'block') return;
@@ -1877,6 +1966,8 @@ function startOver(){
 document.querySelectorAll('.qstep').forEach((s,i)=>{if(i>0)s.style.display='none';});
 
 function saveVersion(text, isRevision){
+  if(!(text in versionKind)) versionKind[text]=lastCardAction;
+  lastCardAction='edit';
   if(isRevision && savedVersions.length > 0){
     savedVersions[activeVersionIdx] = text;
   } else {
@@ -1897,7 +1988,7 @@ function saveVersion(text, isRevision){
 function updateVersionTabs(){
   const container = document.getElementById('version-tabs');
   if(!container) return;
-  if(savedVersions.length < 2 && versionCount < 2){ container.style.display='none'; return; }
+  if(savedVersions.length < 2 && versionCount < 2){ container.style.display='none'; refreshRating(); return; }
   container.style.display='flex';
   container.innerHTML = '';
   savedVersions.forEach(function(txt, i){
@@ -1907,6 +1998,7 @@ function updateVersionTabs(){
     tab.onclick = function(){ switchVersion(i); };
     container.appendChild(tab);
   });
+  refreshRating();
 }
 
 function switchVersion(idx){

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>HeartPenned card ratings</title>
+<style>
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#F7F8FB;color:#0A1A2A;margin:0;padding:1.5rem;font-size:14px;}
+.wrap{max-width:980px;margin:0 auto;}
+h1{font-size:20px;font-weight:600;margin:0 0 1rem;}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:1rem;}
+select,input,button{font:inherit;font-size:13px;padding:6px 10px;border:0.5px solid #C0CCE0;border-radius:8px;background:white;color:#0A1A2A;}
+button{cursor:pointer;}
+.stats{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:1rem;}
+.stat{background:white;border:0.5px solid #D0D8E8;border-radius:10px;padding:8px 14px;font-size:13px;color:#3A4A5A;}
+.stat b{font-size:17px;color:#0A1A2A;display:block;}
+table{width:100%;border-collapse:collapse;background:white;border:0.5px solid #D0D8E8;border-radius:10px;overflow:hidden;font-size:13px;}
+th,td{text-align:left;padding:8px 10px;border-bottom:0.5px solid #E4E8F0;vertical-align:top;}
+th{font-weight:500;color:#5A6A7A;background:#F4F6FA;}
+tr.item{cursor:pointer;}
+tr.item:hover td{background:#F8FAFD;}
+.up{color:#2F7A4A;font-size:15px;}.down{color:#B04040;font-size:15px;}
+.detail td{background:#FBFCFE;}
+.card{font-family:Georgia,serif;white-space:pre-wrap;line-height:1.6;background:white;border:0.5px solid #D0D8E8;border-radius:8px;padding:12px 14px;margin-bottom:8px;}
+.meta{color:#5A6A7A;font-size:12px;line-height:1.7;}
+.muted{color:#8A9AAA;}
+#msg{margin:1rem 0;color:#5A6A7A;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Card ratings</h1>
+  <div class="bar" id="keybar">
+    <input type="password" id="key" placeholder="Review key">
+    <button onclick="saveKey()">Show ratings</button>
+  </div>
+  <div class="bar" id="filters" style="display:none;">
+    <select id="f-occ" onchange="render()"><option value="">All occasions</option></select>
+    <select id="f-rating" onchange="render()"><option value="">Up and down</option><option value="up">Thumbs up</option><option value="down">Thumbs down</option></select>
+    <select id="f-source" onchange="render()"><option value="">All testers</option><option value="tester">Tester link</option><option value="prolific">Prolific</option></select>
+    <select id="f-reason" onchange="render()"><option value="">Any reason</option></select>
+    <button onclick="load()">Refresh</button>
+  </div>
+  <div class="stats" id="stats"></div>
+  <div id="msg"></div>
+  <table id="tbl" style="display:none;">
+    <thead><tr><th style="width:110px;">When</th><th style="width:110px;">Occasion</th><th style="width:130px;">Tone</th><th style="width:30px;"></th><th>Feedback</th><th style="width:120px;">Tester</th></tr></thead>
+    <tbody id="rows"></tbody>
+  </table>
+</div>
+<script>
+const REASONS=['Assumed something',"Doesn't sound like me",'Too generic','Wrong tone','Sounds like AI'];
+let items=[],openId=null;
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function getKey(){try{return localStorage.getItem('hp_fb_key')||'';}catch(e){return '';}}
+function saveKey(){const k=document.getElementById('key').value.trim();if(!k)return;try{localStorage.setItem('hp_fb_key',k);}catch(e){}load();}
+async function load(){
+  const key=getKey();const msg=document.getElementById('msg');
+  if(!key){msg.textContent='Enter the review key to see ratings.';return;}
+  msg.textContent='Loading...';
+  try{
+    const r=await fetch('/api/feedback?key='+encodeURIComponent(key));
+    const d=await r.json();
+    if(!r.ok){msg.textContent=d.error||'Could not load ratings.';if(r.status===401){try{localStorage.removeItem('hp_fb_key');}catch(e){}document.getElementById('keybar').style.display='flex';}return;}
+    items=d.items||[];
+    document.getElementById('keybar').style.display='none';
+    document.getElementById('filters').style.display='flex';
+    const occSel=document.getElementById('f-occ'),cur=occSel.value;
+    const occs=[...new Set(items.map(i=>i.choices&&i.choices.occasion).filter(Boolean))].sort();
+    occSel.innerHTML='<option value="">All occasions</option>'+occs.map(o=>'<option'+(o===cur?' selected':'')+'>'+esc(o)+'</option>').join('');
+    const rs=document.getElementById('f-reason');if(rs.options.length===1)rs.innerHTML+=REASONS.map(r=>'<option>'+esc(r)+'</option>').join('');
+    render();
+  }catch(e){msg.textContent='Could not load ratings.';}
+}
+function render(){
+  const fo=document.getElementById('f-occ').value,fr=document.getElementById('f-rating').value,fs=document.getElementById('f-source').value,fx=document.getElementById('f-reason').value;
+  const list=items.filter(i=>(!fo||(i.choices&&i.choices.occasion)===fo)&&(!fr||i.rating===fr)&&(!fs||i.source===fs)&&(!fx||(i.reasons||[]).includes(fx)));
+  const up=list.filter(i=>i.rating==='up').length,down=list.length-up;
+  const counts={};list.forEach(i=>(i.reasons||[]).forEach(r=>counts[r]=(counts[r]||0)+1));
+  const top=Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([r,n])=>esc(r)+' ('+n+')').join(', ');
+  document.getElementById('stats').innerHTML='<div class="stat"><b>'+list.length+'</b>ratings</div><div class="stat"><b>'+up+'</b>thumbs up</div><div class="stat"><b>'+down+'</b>thumbs down</div>'+(top?'<div class="stat"><b>Top reasons</b>'+top+'</div>':'');
+  document.getElementById('msg').textContent=list.length?'':'No ratings match.';
+  document.getElementById('tbl').style.display=list.length?'table':'none';
+  document.getElementById('rows').innerHTML=list.map(i=>{
+    const c=i.choices||{};const when=new Date(i.ts).toLocaleString([], {month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});
+    const tone=(c.tones||[]).join(', ')||c.toneOther||'';
+    const fb=[(i.reasons||[]).join(' · '),i.note?'"'+i.note+'"':''].filter(Boolean).join(' — ')||'<span class="muted">—</span>';
+    const who=i.source==='prolific'?'Prolific '+esc(((i.prolific||{}).pid||'').slice(0,6)):'Tester link';
+    let row='<tr class="item" onclick="toggle(\''+esc(i.id)+'\')"><td>'+esc(when)+'</td><td>'+esc(c.occasion)+'</td><td>'+esc(tone)+'</td><td class="'+i.rating+'">'+(i.rating==='up'?'👍':'👎')+'</td><td>'+(fb.startsWith('<span')?fb:esc(fb))+'</td><td>'+who+'</td></tr>';
+    if(openId===i.id){
+      row+='<tr class="detail"><td colspan="6"><div class="card">'+esc(i.cardText)+'</div><div class="meta">'+
+        'Version '+esc(i.version)+(i.kind?' ('+esc(i.kind)+')':'')+' · Relationship: '+esc([c.relationship].concat(c.relationshipChips||[]).filter(Boolean).join(', ')||'not given')+
+        ' · Feel: '+esc((c.feels||[]).join(', ')||'not given')+(c.spirituality?' · Faith: '+esc(c.spirituality):'')+(c.detail?' · '+esc(c.detail):'')+
+        '<br>Code '+esc(i.code||'?')+(i.branch?' on '+esc(i.branch):'')+(i.prolific?' · Prolific '+esc(i.prolific.pid)+' · study '+esc(i.prolific.study):'')+'</div></td></tr>';
+    }
+    return row;
+  }).join('');
+}
+function toggle(id){openId=openId===id?null:id;render();}
+if(getKey())load();else document.getElementById('msg').textContent='Enter the review key to see ratings.';
+</script>
+</body>
+</html>

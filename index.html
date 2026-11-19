@@ -373,6 +373,14 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
       <div class="qnav"><button class="btn-back" onclick="qGo(4)">← Back</button><div style="display:flex;align-items:center;gap:16px;"><span class="skip-link" onclick="qGo(5)">Skip</span><button class="btn-next" onclick="qGo(5)">Next →</button></div></div>
     </div>
 
+    <div class="qstep" id="q4t">
+      <div class="question">What's behind it? <span class="opt-tag">optional</span></div>
+      <div class="chips" id="qc-ty-reason" style="margin-top:1rem;">
+        <div class="chip" data-val="hard time">Going through a hard time</div><div class="chip" data-val="just because">Just because</div><div class="chip" data-val="missing them">Missing them</div><div class="chip" data-val="big change">A big change</div>
+      </div>
+      <div class="qnav"><button class="btn-back" onclick="qGo(4)">← Back</button><button class="btn-next" onclick="tyReasonNext()">Next →</button></div>
+    </div>
+
     <div class="qstep" id="q5">
       <div class="question" id="q5-title">Tone of card (choose up to two)</div>
       <div class="subtext">How it will feel to read.</div>
@@ -514,6 +522,18 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
       <div class="cgl" style="margin-top:1.25rem;">Anything you'll do differently?</div>
       <textarea class="text-input" id="t-ap-change" rows="2" placeholder="e.g. I'll put our plans in my calendar and keep them." oninput="updateApology()"></textarea>
       <div class="qnav"><button class="btn-back" onclick="qGo(8)">← Back</button><button class="btn-next" onclick="apologyNext()">Next →</button></div>
+    </div>
+
+    <div class="qstep" id="q9t">
+      <div class="question">Tell us what's going on</div>
+      <div class="subtext" style="margin-bottom:0.75rem;">All optional. Skip anything you'd rather not share.</div>
+      <div class="cgl" style="margin-top:0.5rem;">What are they going through?</div>
+      <div class="honest-private" style="margin-top:0;white-space:normal;line-height:1.5;">🔒 Just for us. It stays out of the card unless you tick the box.</div>
+      <input class="text-input" id="t-ht-what" type="text" style="margin-top:0.5rem;" placeholder="e.g. A breakup, Lost their job, Caring for a parent" oninput="updateHardtime()">
+      <label class="chk-strong" style="margin-top:0.6rem;"><input type="checkbox" id="chk-ht-mention" onchange="updateHardtime()">Mention it in the card</label>
+      <div class="cgl" style="margin-top:1.25rem;">Anything you'd like to offer?</div>
+      <textarea class="text-input" id="t-ht-offer" rows="2" placeholder="e.g. Coffee Saturday? I'm around all weekend." oninput="updateHardtime()"></textarea>
+      <div class="qnav"><button class="btn-back" onclick="qGo(8)">← Back</button><button class="btn-next" onclick="hardtimeNext()">Next →</button></div>
     </div>
 
     <div class="qstep" id="q13">
@@ -756,7 +776,7 @@ const A={kids:[],tones:[],feels:[],relChips:[]};
 let kidCount=1,versionCount=1,currentCardText='',savedVersions=[],activeVersionIdx=0;
 const PARTNER_VALS=['Husband','Wife','Partner'];
 const PARTNER_RE=/\b(husband|wife|partner|spouse|hubby|wifey)\b/i;
-const Q_ORDER=[1,2,'2b',4,'4c',5,6,7,8,9,'9s','9g','9a',13,'13b'];
+const Q_ORDER=[1,2,'2b',4,'4c','4t',5,6,7,8,9,'9s','9g','9a','9t',13,'13b'];
 
 // ── Card background themes ──────────────────────────────────────────────
 const CARD_THEMES = [
@@ -872,19 +892,23 @@ function qGo(n){qShowStep(n);}
 // ---- Occasion modes: some occasions get their own tone and feeling choices,
 // relationship chips, and details page. Occasions not listed use the regular flow.
 // Relationship chips always keep the page's order; a mode's rel list only hides chips.
-const LOSS_REL_CHIPS=['loving','friendly','casual acquaintance','long distance'];
+// Thinking of you with "Going through a hard time" uses the 'Thinking of you: hard time' mode.
+const MODE_REL_CHIPS=['loving','complicated','long distance','friendly','casual acquaintance'];
 const OCC_MODES={
-  'Sympathy':{key:'loss',toneMax:1,page:'9s',relOptional:true,rel:LOSS_REL_CHIPS,
+  'Sympathy':{key:'loss',toneMax:1,page:'9s',relOptional:true,rel:MODE_REL_CHIPS,
     tone:[['Warm and heartfelt','Warm and heartfelt'],['Simple and classic','Simple and classic'],['Respectful','Respectful'],['Gently hopeful','Gently hopeful']],
     feel:[['supported and not alone','Not alone'],['comforted','Comforted'],['cared for','Cared for'],['deeply loved','Loved']]},
-  'Get well':{key:'getwell',toneMax:1,page:'9g',relOptional:true,rel:LOSS_REL_CHIPS,
+  'Get well':{key:'getwell',toneMax:1,page:'9g',relOptional:true,rel:MODE_REL_CHIPS,
     tone:[['Warm and heartfelt','Warm and heartfelt'],['Lighthearted','Lighthearted'],['Playful','Playful']],
     feel:[['cared for','Cared for'],['encouraged','Encouraged'],['deeply loved','Loved'],['supported and not alone','Not alone'],['cheered up','Cheered up']]},
   'Apology':{key:'apology',toneMax:1,page:'9a',relOptional:false,rel:null,
     tone:[['Warm and heartfelt','Warm and heartfelt'],['Honest and direct','Honest and direct'],['Lighthearted','Lighthearted']],
-    feel:[['heard','Heard'],['respected','Respected'],['valued','Valued'],["that I'm truly sorry","That I'm sorry"]]}
+    feel:[['heard','Heard'],['respected','Respected'],['valued','Valued'],["that I'm truly sorry","That I'm sorry"]]},
+  'Thinking of you: hard time':{key:'hardtime',toneMax:1,page:'9t',relOptional:true,rel:MODE_REL_CHIPS,
+    tone:[['Warm and heartfelt','Warm and heartfelt'],['Tender and gentle','Tender and gentle'],['Lighthearted but real','Lighthearted but real']],
+    feel:[['supported and not alone','Not alone'],['cared for','Cared for'],['deeply loved','Loved'],['encouraged','Encouraged']]}
 };
-const occMode=()=>OCC_MODES[A.occasion]||null;
+const occMode=()=>(A.occasion==='Thinking of you'&&A.tyReason==='hard time')?OCC_MODES['Thinking of you: hard time']:(OCC_MODES[A.occasion]||null);
 const DEFAULT_CHIPS={};
 const chipMode={tone:'default',feel:'default'};
 function applyOccChips(kind){
@@ -915,7 +939,26 @@ function applyRelOptional(){
 function goDetails(){
   const m=occMode();
   if(m&&m.page){A.classic=false;qGo(m.page);}
-  else qGo(9);
+  else{setDetailQuestions();updateDetails();qGo(9);}
+}
+// Thank you swaps the first two "Tell us about them" questions; other occasions use the regular ones.
+const GQ_TEXT={
+  regular:{1:["1. What's a memory with them that stuck with you?",'e.g. The night they drove four hours to help me move.'],2:["2. What's a quality you appreciate in them?",'e.g. Their patience. Nothing ever seems to rattle them.']},
+  thanks:{1:['1. What are you thanking them for?','e.g. Watching the kids all weekend while we moved.'],2:['2. What difference did it make?','e.g. We finally got unpacked, and I got some sleep.']}
+};
+function setDetailQuestions(){
+  const ty=A.occasion==='Thank you';
+  const t=GQ_TEXT[ty?'thanks':'regular'];
+  [1,2].forEach(i=>{
+    const box=document.getElementById('gq'+i);if(!box)return;
+    box.querySelector('.gq-sum-q').textContent=t[i][0];
+    box.querySelector('.gq-title').textContent=t[i][0];
+    const ids=GQ_IDS[i];
+    document.getElementById(ids[0]).placeholder=t[i][1];
+    ids.slice(1).forEach(id=>{const el=document.getElementById(id);if(ty)el.style.display='none';else if(el.value.trim())el.style.display='block';});
+    const add=document.getElementById('gq-add-'+i);
+    if(add)add.style.display=(ty||ids.slice(1).every(id=>document.getElementById(id).style.display!=='none'))?'none':'';
+  });
 }
 function updateLoss(){
   const g=id=>document.getElementById(id);
@@ -991,6 +1034,31 @@ function apologyNext(){
   updateApology();
   const P=A.apology||{};
   if(window.gtag)gtag('event','apology_details',{event_category:'details',event_label:[P.what?(P.mention?'what_named':'what_private'):'',P.know?'know':'',P.change?'change':''].filter(Boolean).join(',')||'none'});
+  qGo(13);
+}
+document.getElementById('qc-ty-reason')?.addEventListener('click',e=>{
+  const chip=e.target.closest('.chip');if(!chip)return;
+  const was=chip.classList.contains('selected');
+  document.querySelectorAll('#qc-ty-reason .chip').forEach(c=>c.classList.remove('selected'));
+  if(!was)chip.classList.add('selected');
+  A.tyReason=was?'':chip.dataset.val;
+});
+function tyReasonNext(){
+  if(window.gtag)gtag('event','thinking_reason',{event_category:'occasion',event_label:A.tyReason||'none'});
+  qGo(5);
+}
+function updateHardtime(){
+  const g=id=>document.getElementById(id);
+  A.hardtime={
+    what:g('t-ht-what').value.trim(),
+    mention:g('chk-ht-mention').checked,
+    offer:g('t-ht-offer').value.trim()
+  };
+}
+function hardtimeNext(){
+  updateHardtime();
+  const H=A.hardtime||{};
+  if(window.gtag)gtag('event','hardtime_details',{event_category:'details',event_label:[H.what?(H.mention?'what_named':'what_private'):'',H.offer?'offer':''].filter(Boolean).join(',')||'none'});
   qGo(13);
 }
 function qSkip(n){if(n===1){A.name='';document.getElementById('q10-text').textContent='Tell us about them';qGo(2);}}
@@ -1261,8 +1329,15 @@ function updateRelCtx(){
 const GQ_IDS={1:['t10a','t10b','t10c'],2:['t-quality','t-quality2','t-quality3'],3:['t-meaning'],4:['t-news']};
 const GQ_N=4;
 function _val(id){const el=document.getElementById(id);return el?el.value.trim():'';}
-function _vals(i){return GQ_IDS[i].map(_val).filter(Boolean);}
+function _vals(i){return GQ_IDS[i].filter(id=>{const el=document.getElementById(id);return el&&el.style.display!=='none';}).map(_val).filter(Boolean);}
 function updateDetails(){
+  if(A.occasion==='Thank you'){
+    const t=_val('t10a'),d=_val('t-quality'),m=_val('t-meaning'),n=_val('t-news');
+    A.memory='';
+    A.misc=[t?'What the sender is thanking them for: '+t:'',d?'What difference it made: '+d:'',m?'What they mean to the sender: '+m:'',n?'What is going on in their life right now: '+n:''].filter(Boolean).join('. ');
+    if(A.misc)A.classic=false;
+    return;
+  }
   A.memory=_vals(1).join(' / ');
   const q=_vals(2).join('; '), m=_val('t-meaning'), n=_val('t-news');
   A.misc=[q?'Qualities the sender appreciates in them: '+q:'', m?'What they mean to the sender: '+m:'', n?'What is going on in their life right now: '+n:''].filter(Boolean).join('. ');
@@ -1327,12 +1402,14 @@ function routeAfterOcc(){
   const occ=A.occasion,rel=A.relationship;
   if(A.isOtherOccasion&&occ&&window.gtag)gtag('event','other_occasion_typed',{event_category:'occasion',occasion_text:occ.slice(0,100)});
   if((occ==="Mother's Day"||occ==="Father's Day")&&PARTNER_RE.test(rel||''))qGo('4c');
+  else if(occ==='Thinking of you')qGo('4t');
   else qGo(5);
 }
 
 function backFromTone(){
   const occ=A.occasion,rel=A.relationship;
   if((occ==="Mother's Day"||occ==="Father's Day")&&PARTNER_RE.test(rel||''))qGo('4c');
+  else if(occ==='Thinking of you')qGo('4t');
   else qGo(4);
 }
 
@@ -1780,6 +1857,7 @@ function rateChoices(){
   if (A.occasion === 'Get well' && A.getwell) detail = 'serious: ' + (A.getwell.serious || 'not given') + ', mention: ' + (A.getwell.mention ? 'yes' : 'no');
   else if (A.occasion === 'Apology' && A.apology) detail = ['mention: ' + (A.apology.mention ? 'yes' : 'no'), A.apology.know ? 'what to know: given' : '', A.apology.change ? 'do differently: given' : ''].filter(Boolean).join(', ');
   else if (A.occasion === 'Sympathy' && A.loss) detail = 'knew them: ' + (A.loss.knew || 'not given');
+  else if (A.occasion === 'Thinking of you') detail = 'behind it: ' + (A.tyReason || 'not given') + (A.tyReason === 'hard time' && A.hardtime ? ', mention: ' + (A.hardtime.mention ? 'yes' : 'no') : '');
   else if (A.classic) detail = 'classic';
   return { occasion: A.occasion || '', relationship: A.relationship || '', relationshipChips: A.relChips || [], tones: A.tones || [], toneOther: A.toneOther || '', feels: A.feels || [], spirituality: A.spirituality || '', detail };
 }
@@ -1948,6 +2026,7 @@ function startOver(){
   resetDetailsPage();
   const gwChk=document.getElementById('chk-gw-mention');if(gwChk)gwChk.checked=false;
   const apChk=document.getElementById('chk-ap-mention');if(apChk)apChk.checked=false;
+  const htChk=document.getElementById('chk-ht-mention');if(htChk)htChk.checked=false;
   const noNameChk=document.getElementById('chk-noname');
   if(noNameChk){noNameChk.checked=false;const ni=document.getElementById('t-name');if(ni){ni.disabled=false;ni.style.opacity='1';}}
   document.querySelectorAll('.btn-next').forEach(b=>b.disabled=true);

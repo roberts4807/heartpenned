@@ -120,7 +120,7 @@ const THIN_OPENINGS = [
 // Otherwise they are "thin": the card blends in occasion warmth and wishes
 // instead of describing the person.
 const RICH_DETAIL_CHARS = 100;
-const DETAIL_LABELS = ['Qualities the sender appreciates in them: ', 'What they mean to the sender: ', 'What is going on in their life right now: '];
+const DETAIL_LABELS = ['Qualities the sender appreciates in them: ', 'What they mean to the sender: ', 'What is going on in their life right now: ', 'What the sender is thanking them for: ', 'What difference it made: '];
 function hasRichDetails(A){
   const misc = A.misc || '';
   const answered = (A.memory ? 1 : 0) + DETAIL_LABELS.filter(l => misc.includes(l)).length;
@@ -146,8 +146,12 @@ function buildPrompt(A, currentCardText, mode, note){
   const isRev = mode === 'revise';
   const name=A.name||'';
   const isMD=A.occasion==="Mother's Day",isFD=A.occasion==="Father's Day",isNND=A.occasion==="National Nurses Day",isLoss=A.occasion==="Sympathy",isApology=A.occasion==="Apology",isBirthday=A.occasion==="Birthday",isGetwell=A.occasion==="Get well";
-  // Sympathy, Get well and Apology use their own questions; ignore any leftover answers from the regular detail questions.
-  if (isLoss || isGetwell || isApology) A = { ...A, memory: '', misc: '' };
+  // Thinking of you asks "What's behind it?"; "hard time" is its own mode, like Get well.
+  const isThinking=A.occasion==="Thinking of you",isThankYou=A.occasion==="Thank you";
+  const tyReason=isThinking&&['hard time','just because','missing them','big change'].includes(A.tyReason)?A.tyReason:'';
+  const isHardtime=tyReason==='hard time';
+  // Sympathy, Get well, Apology and hard time use their own questions; ignore any leftover answers from the regular detail questions.
+  if (isLoss || isGetwell || isApology || isHardtime) A = { ...A, memory: '', misc: '' };
   const G = (isGetwell && A.getwell && typeof A.getwell === 'object') ? A.getwell : {};
   const gwStr = v => typeof v === 'string' ? v.trim().slice(0, 300) : '';
   const gwSerious = ['serious', 'minor', 'ongoing'].includes(G.serious) ? G.serious : '';
@@ -172,6 +176,15 @@ ${SHARED_MODE_RULES}`;
     : 'Private context only: "' + apWhat + '". Never name or describe it in the card; refer to it only in general terms ("what I did," "how I handled things"). Use it to judge what the apology is for and how serious it is.'}
 ${apKnow ? '- WHAT THE SENDER MOST WANTS THEM TO KNOW: "' + apKnow + '" Make this the heart of the card, in your own words.\n' : ''}- WHAT THE SENDER WILL DO DIFFERENTLY: ${apChange ? '"' + apChange + '" Include it plainly as something the sender will do. Don\'t make it bigger than they wrote.' : 'None given. Do not invent a promise or a change.'}
 - Never describe who they are or what they're like ("you've always been so patient," "you're the most forgiving person I know"). Say only what the sender gave.
+${SHARED_MODE_RULES}`;
+  const H = (isHardtime && A.hardtime && typeof A.hardtime === 'object') ? A.hardtime : {};
+  const htWhat = gwStr(H.what), htOffer = gwStr(H.offer);
+  const hardtimeBlock = !isHardtime ? '' : `THE HARD TIME (use only what is given):
+- WHAT THEY ARE GOING THROUGH: ${!htWhat ? 'Not given. Refer to it only in general terms ("what you\'re going through," "this stretch"); never guess what it is.'
+    : H.mention === true ? '"' + htWhat + '" The sender wants this mentioned. Refer to it plainly at most once. Don\'t describe or explain it.'
+    : 'Private context only: "' + htWhat + '". Never name or describe it in the card; refer to it only in general terms ("what you\'re going through," "this stretch"). Use it to judge how gentle to be.'}
+- OFFER: ${htOffer ? '"' + htOffer + '" Include it plainly and specifically.' : 'None given. Do not invent one, and do not write "let me know if you need anything."'}
+- Never describe who they are or how they're handling it ("you're so strong," "you always land on your feet"). Say only what the sender gave.
 ${SHARED_MODE_RULES}`;
   // Only use birthday age and children when they belong to the current occasion
   // (they can be left over if the person changed the occasion after answering).
@@ -199,15 +212,15 @@ ${SHARED_MODE_RULES}`;
   const nameRule = !name ? 'No name.'
     : openingHasName ? 'The opening already uses "'+name+'". Do not use the name anywhere else in the card, including the final occasion wish (for example, "Happy Birthday!" rather than "Happy Birthday, '+name+'").'
     : 'You may use "'+name+'" once only if it fits naturally mid-card. Never in the closing or final line. Never more than once.';
-  if ((isLoss || isGetwell || isApology) && !lengthIsStandard) lengthRule = '75 to 100 words. Stay in this range.';
+  if ((isLoss || isGetwell || isApology || isHardtime) && !lengthIsStandard) lengthRule = '75 to 100 words. Stay in this range.';
   const hasSpecifics = !!((A.memory||'').trim() || (A.misc||'').trim());
-  const angleLine = (hasSpecifics || isLoss || isApology || isGetwell) ? '' : '\n- FOCUS FOR THIS CARD (no memories or details were given): ' + pick(ANGLES) + ' Keep the card centered on this one focus rather than touching on everything.';
+  const angleLine = (hasSpecifics || isLoss || isApology || isGetwell || isHardtime) ? '' : '\n- FOCUS FOR THIS CARD (no memories or details were given): ' + pick(ANGLES) + ' Keep the card centered on this one focus rather than touching on everything.';
   // The sender skipped every detail question and chose "Keep it classic".
-  const isClassic = !!A.classic && !hasSpecifics && !isLoss && !isGetwell && !isApology;
+  const isClassic = !!A.classic && !hasSpecifics && !isLoss && !isGetwell && !isApology && !isHardtime;
   if (isClassic && !lengthIsStandard) lengthRule = '75 to 100 words. Stay in this range.';
   const classicLine = isClassic ? '\n- CLASSIC CARD: no personal details were given, by choice. Say nothing specific about this person or this relationship, including anything from the relationship context.' : '';
   // Regular cards: thin details lean on the occasion; rich details stay fully personal.
-  const isThin = !isClassic && !isApology && !isLoss && !isGetwell && !hasRichDetails(A);
+  const isThin = !isClassic && !isApology && !isLoss && !isGetwell && !isHardtime && !hasRichDetails(A);
   if (isThin && !lengthIsStandard) lengthRule = '75 to 100 words. Stay in this range.';
   const roleText = isLoss
     ? 'You are a senior greeting card writer with 20 years of experience. This is a sympathy card to someone who is grieving. Write it like a beautifully written classic sympathy card: traditional, gracious sympathy-card language that would ring true from anyone who cares about them, never flowery or generic. The card is about their loss and comfort for them, not about the sender or the relationship. Add personal touches only from THE LOSS section.'
@@ -215,6 +228,8 @@ ${SHARED_MODE_RULES}`;
     ? 'You are a senior greeting card writer with 20 years of experience. This is a get well card. Write it like a beautifully written classic get well card: warm, gracious and sincere, never flowery or generic. The card is about them and good wishes for them, not about the sender or the relationship. Add personal touches only from THE SITUATION section.'
     : isApology
     ? 'You are a senior greeting card writer with 20 years of experience. This is an apology card. Write it the way a thoughtful person apologizes when they mean it: plain, sincere and direct, never flowery, defensive or generic. The card is about owning what happened and about the recipient, not the sender\'s feelings. Add personal touches only from THE APOLOGY section.'
+    : isHardtime
+    ? 'You are a senior greeting card writer with 20 years of experience. This is a thinking-of-you card to someone going through a hard time. Write it like a beautifully written classic thinking-of-you card: warm, steady and sincere, never flowery or generic. The card is about them and letting them know they are on the sender\'s mind, not about the sender or the relationship. Add personal touches only from THE HARD TIME section.'
     : isThin
     ? 'You are a senior greeting card writer with 20 years of experience. The sender shared only a little. Write a card that reads mostly like a beautifully written store-bought card for this occasion: warm, gracious, greeting-card language that rings true for this relationship, never generic filler, never cheesy, no rhymes. Then weave in the one thing the sender shared, so it is unmistakably from them to this person.'
     : isClassic
@@ -226,25 +241,29 @@ ${SHARED_MODE_RULES}`;
     ? (gwSerious === 'minor' ? 'Open warmly. A light touch is fine if the TONE is Lighthearted or Playful. No quotes or sayings.' : 'Open simply and warmly. No quotes or sayings.')
     : isApology
     ? 'Open plainly. The apology itself can come first. No quotes or sayings.'
+    : isHardtime
+    ? 'Open simply and warmly. No quotes or sayings.'
     : isClassic
     ? 'Open warmly and simply. It may open with a wish or a warm line about the occasion.'
-    : (isThin ? pick(THIN_OPENINGS) : pick([...OPENING_MOVES, OCCASION_OPENING])) + ' Don\'t open with the occasion greeting itself (no "Happy Birthday!" as the first line; that belongs at the end).';
+    : (isThin ? pick(THIN_OPENINGS) : (isThankYou && (A.misc||'').includes('What the sender is thanking them for: ')) ? 'Open with what the sender is thanking them for, in your own words.' : pick([...OPENING_MOVES, OCCASION_OPENING])) + ' Don\'t open with the occasion greeting itself (no "Happy Birthday!" as the first line; that belongs at the end).';
   const middleText = isLoss
     ? 'Middle: classic sympathy sentiments: sorrow for their loss, comfort, and gentle wishes for peace and strength in the days ahead. Acknowledge the loss simply, without explaining or interpreting it. If the sender knew the person and shared something about them, include one line honoring them in that spirit. If an offer was given, include it plainly.'
     : isGetwell
     ? 'Middle: classic get well sentiments: thinking of them, and wishes for comfort, rest and good days ahead, shaped by HOW SERIOUS below. If the sender wants what they are dealing with mentioned, acknowledge it simply, without explaining it. If something to look forward to or an offer was given, include it plainly.'
     : isApology
     ? 'Middle: say sorry plainly and own it in a sentence or two. If the sender said what they most want the recipient to know, make it the heart of the card. If they said what they will do differently, include it plainly. Close with a simple hope to make things right, without asking for anything.'
+    : isHardtime
+    ? 'Middle: classic thinking-of-you sentiments for a hard stretch: they are on the sender\'s mind, and wishes for comfort, strength and better days. If the sender wants what they are going through mentioned, acknowledge it simply, without explaining it. If an offer was given, include it plainly.'
     : isClassic
     ? 'Middle: sentiments that fit the occasion. For a birthday, holiday, anniversary, graduation, or milestone: heartfelt wishes (for the day, the year ahead, what you hope for them). For sympathy: comfort and presence, never wishes about the future or silver linings. For thank you: sincere gratitude. For get well: wishes for healing, rest, and comfort. For thinking of you: warmth and a reminder that they are on the sender\'s mind. For an apology: a sincere, simple acknowledgment and the hope to make things right, never celebration. If it fits, add one meaningful universal reflection on the occasion or on this kind of relationship (for example, what another year means, or what a good friend is). Do not describe this person: no personality traits, habits, what they are like, how they make the sender feel, or what they bring to the sender\'s life. No first-person musing ("I think," "I don\'t always know the right words"). Speak to them warmly in second person.'
     : isThin
     ? 'Middle: sentiments that fit the occasion. For a birthday, holiday, anniversary, graduation, or milestone: a heartfelt wish (for the day or the year ahead). For sympathy: comfort and presence, never wishes about the future or silver linings. For thank you: sincere gratitude. For get well: a wish for healing, rest, and comfort. For thinking of you: warmth and a reminder that they are on the sender\'s mind. If it fits, add one meaningful universal reflection on the occasion or on this kind of relationship (for example, what another year means, or what a good friend is). Keep it addressed to them in second person, never about "a person" or "someone." Weave in what the sender shared as one thread, one or two sentences, in your own words and exactly as given. Do not add scene or sensory details that were not given (time of day, weather, sounds, what it looked or felt like). Do not extend it into new facts (a hobby does not become a career; enjoying something does not make them an expert at it). Beyond that thread, do not describe this person: no traits, habits, what they are like, how they make the sender feel, or what they bring to the sender\'s life. Speak to them warmly in second person. Never invent events or facts.'
-    : 'Middle: amplify what was expressed and give it room, in the card\'s tone. This is where most of the length lives. Build it from everything provided: who they are to the sender, the relationship context, the occasion, their ages and stage of life, what the sender wants them to feel, and any memories or details. If no memories were given, develop the feeling and the relationship more fully instead: what this person is like, what they bring to the sender\'s life, what the sender wishes for them. Never invent events or facts.'
-      + (isApology ? '' : ' Required: somewhere in the body, before the closing line, include at least one line about what this day, season, or milestone means and what it marks for them, connected to them where possible. The closing occasion line does not count. For sympathy, this means acknowledging the loss simply, without explaining or interpreting it.');
-  const wishLine = (isClassic || isApology || isGetwell) ? ''
+    : 'Middle: amplify what was expressed and give it room, in the card\'s tone. This is where most of the length lives. Build it from everything provided: who they are to the sender, the relationship context, the occasion, their ages and stage of life, what the sender wants them to feel, and any memories or details. ' + (isThankYou ? 'If no memories were given, develop the gratitude more fully instead: what their help meant to the sender and what the sender wishes for them. Do not describe what they are like beyond what the sender gave.' : 'If no memories were given, develop the feeling and the relationship more fully instead: what this person is like, what they bring to the sender\'s life, what the sender wishes for them.') + ' Never invent events or facts.'
+      + ((isApology || isThinking || isThankYou) ? '' : ' Required: somewhere in the body, before the closing line, include at least one line about what this day, season, or milestone means and what it marks for them, connected to them where possible. The closing occasion line does not count. For sympathy, this means acknowledging the loss simply, without explaining or interpreting it.');
+  const wishLine = (isClassic || isApology || isGetwell || isHardtime) ? ''
     : '\n- Include one genuine wish for them in the body of the card (two at most, and not back to back). The closing occasion line already counts as a wish, so do not pile wishes up just before it. A short one-line wish just before the closing occasion line counts as a second wish. Shape it to the occasion: for a celebration, what you hope this day or year holds for them; for sympathy, comfort, rest, or company in the days ahead, never a silver lining; for get well, healing and rest; for thank you or thinking of you, something good for them. In a funny or light tone, the wish can be playful.';
   const musingLine = isClassic ? ''
-    : (isThin || isLoss || isGetwell || isApology) ? '\n- No first-person musing, where the sender reflects on their own thoughts or on writing the card ("I think...", "I don\'t always know the right words"), including asides like ", I think," in the middle of a sentence. Plain feeling toward them ("I\'m so proud of you") is fine. Keep the attention on them and the occasion.'
+    : (isThin || isLoss || isGetwell || isApology || isHardtime) ? '\n- No first-person musing, where the sender reflects on their own thoughts or on writing the card ("I think...", "I don\'t always know the right words"), including asides like ", I think," in the middle of a sentence. Plain feeling toward them ("I\'m so proud of you") is fine. Keep the attention on them and the occasion.'
     : '\n- At most one sentence of first-person musing, where the sender reflects on their own thoughts or on writing the card ("I think...", "I don\'t always know the right words"). This includes asides like ", I think," in the middle of a sentence. Plain feeling toward them ("I\'m so proud of you") is fine. Keep the attention on them and the occasion.';
 
   const faithText=(A.faithTradition||'');
@@ -253,7 +272,7 @@ const isGodOptional=/jew|juda|muslim|islam|sikh|bah[aá]|hindu/i.test(faithText)
 const isNoGod=/buddh/i.test(faithText);
 const spiritualRule=A.spirituality==='None'||!A.spirituality?'No spiritual language of any kind.':A.spirituality==='Gently spiritual'?'Use gently universal spiritual language, such as light, presence, purpose, blessing, or being held in kindness. Do not use the word "grace" unless the user used it. Vary the wording from card to card rather than reaching for the same word. Do not mention God, prayer, scripture, or any religion by name. Keep it to one or two light touches; the card should still read as warm and personal first.':'Use openly faith-based language. You may mention God, prayer, and blessings directly, and one short faith-centered line is welcome. Let faith feel woven in, not preached.'+(A.faithTradition?' PRIVATE CONTEXT, the sender faith tradition is: '+A.faithTradition+'. Write the faith language the way someone from within that tradition would naturally say it: the phrasing, blessings, and warmth that feel at home there, and the customs of that tradition for how God is referred to. NEVER name the religion, denomination, or tradition anywhere in the card. Do not mention specific rituals, saints, holy days, or practices unless the user included them elsewhere. Do not quote scripture or prayers. One or two natural touches is enough. It should sound like it came from someone who shares the faith, not someone describing it. If the tradition entered is unclear or is not a religion, use broadly shared faith language instead.'+(isChristianFaith?'  For this tradition, refer to God directly by name at least once, in a way that grows out of what the card is saying about this person, such as a blessing on their year ahead, gratitude for who they are, or a prayer for them. Write the God reference fresh for this specific card rather than using a stock phrase. Do not mention God more than twice.':isGodOptional?' Referring to God by name is welcome here if it fits naturally, but not required; blessing language alone is also fine. Do not mention God more than twice. Write "God" spelled out in full unless the user wrote it another way (such as "G-d") in their inputs, in which case match their spelling.':isNoGod?' This tradition generally does not center a creator God, so do not mention God. Express the faith through wishes for peace, ease, compassion, and well-being instead.':''):' Use broadly shared faith language (God, prayer, blessing) without naming a specific tradition.');
 
-  const occasionRules=isLoss?'Sympathy. Gentleness and presence only. No silver linings, no "at least," no "everything happens for a reason," no "in a better place" or "gained an angel" unless SPIRITUALITY is openly faith-based, and then gently. No fixing, no advice, no telling them how to feel or how long grief takes. Let them feel less alone.':isGetwell?'Get well. Never promise recovery or predict how it will go ("you\'ll beat this," "back on your feet in no time"). No medical advice. Never joke or make light of the illness, injury, treatment or recovery, however minor it is and whatever the TONE; any humor is about everyday life or about them.':isApology?'Apology. Own it plainly. No "if you were hurt" or "sorry you felt," no excuses or explanations of why it happened, no shifting blame, no over-explaining. Do not ask for forgiveness or push to move on ("please forgive me," "let\'s put this behind us"). No flattery or compliments to smooth it over.':isMD?'Mother\'s Day. No clichés: no unconditional love, no SuperMom. Honor the day through specificity. End the card with Happy Mother\'s Day as the final line.'+(kidsText?' Children: '+kidsText+'. Adult children reflect on what was already built. Young children tenderness about now.':''):isFD?'Father\'s Day. No clichés. End the card with Happy Father\'s Day as the final line.'+(kidsText?' Children: '+kidsText+'.':''):isNND?'National Nurses Day. Specific and respectful. No generic heroism.':isBirthday&&birthdayAge?'Birthday. Turning '+birthdayAge+'.'+(([30,40,50,60,70,80,90,100].includes(Number(birthdayAge)))?' Milestone.':''):'';
+  const occasionRules=isLoss?'Sympathy. Gentleness and presence only. No silver linings, no "at least," no "everything happens for a reason," no "in a better place" or "gained an angel" unless SPIRITUALITY is openly faith-based, and then gently. No fixing, no advice, no telling them how to feel or how long grief takes. Let them feel less alone.':isGetwell?'Get well. Never promise recovery or predict how it will go ("you\'ll beat this," "back on your feet in no time"). No medical advice. Never joke or make light of the illness, injury, treatment or recovery, however minor it is and whatever the TONE; any humor is about everyday life or about them.':isApology?'Apology. Own it plainly. No "if you were hurt" or "sorry you felt," no excuses or explanations of why it happened, no shifting blame, no over-explaining. Do not ask for forgiveness or push to move on ("please forgive me," "let\'s put this behind us"). No flattery or compliments to smooth it over.':isHardtime?'Thinking of you, during a hard time. Steady and warm. No silver linings, no "everything happens for a reason," no fixing or advice, no predicting how it will turn out. Never joke or make light of what they are going through; any light touch is about everyday life only.':tyReason==='just because'?'Thinking of you, just because. There is no special reason or event; never invent one. Warm and easy.':tyReason==='missing them'?'Thinking of you, because the sender misses them. Let missing them come through plainly once; never heavy or guilt-laden.':tyReason==='big change'?'Thinking of you, as they go through a big change (a move, a new job). Warm wishes for what\'s ahead. Never assume how they feel about the change.':isThankYou?'Thank you. Thank them plainly and specifically for what the sender gave, in your own words, without making it bigger than they wrote. Say what difference it made only as the sender described it. No praise of their character beyond what the sender said ("you\'re the most generous person I know").':isMD?'Mother\'s Day. No clichés: no unconditional love, no SuperMom. Honor the day through specificity. End the card with Happy Mother\'s Day as the final line.'+(kidsText?' Children: '+kidsText+'. Adult children reflect on what was already built. Young children tenderness about now.':''):isFD?'Father\'s Day. No clichés. End the card with Happy Father\'s Day as the final line.'+(kidsText?' Children: '+kidsText+'.':''):isNND?'National Nurses Day. Specific and respectful. No generic heroism.':isBirthday&&birthdayAge?'Birthday. Turning '+birthdayAge+'.'+(([30,40,50,60,70,80,90,100].includes(Number(birthdayAge)))?' Milestone.':''):'';
 
   const closingRule = celebratory
     ? 'End with a short, warm wish for the occasion as the final line (e.g. "Happy Birthday!"). It can be light or playful if the tone is; it does not need to be solemn.'
@@ -290,7 +309,7 @@ This field is private context for the writer, never the card. Nothing from it ma
 - The recipient's role (parent, partner, friend, and so on) still sets the register and the warmth. A card to a parent still sounds like it is to a parent.
 - Where things stand today limits what the card claims. If it is complicated, rebuilding, or up and down, or the sender says what to avoid: stay warm, but no superlatives, no "best ever," no declarations of closeness or gratitude bigger than what is real. Never mention the difficulty itself.
 - Friendly or casual acquaintance: keep it light and kind, still warm, and never overstate how close they are.
-The card always builds from what is true and good.${isLoss ? '\nFor this sympathy card: use the relationship only to set how warm or formal the card is. Never mention the relationship, closeness, or distance in the card.' : isGetwell ? '\nFor this get well card: use the relationship only to set how warm or formal the card is. Never mention the relationship, closeness, or distance in the card.' : ''}`;
+The card always builds from what is true and good.${isLoss ? '\nFor this sympathy card: use the relationship only to set how warm or formal the card is. Never mention the relationship, closeness, or distance in the card.' : isGetwell ? '\nFor this get well card: use the relationship only to set how warm or formal the card is. Never mention the relationship, closeness, or distance in the card.' : isHardtime ? '\nFor this thinking-of-you card: use the relationship only to set how warm or formal the card is. Never mention the relationship, closeness, or distance in the card.' : ''}`;
 
   const coreRules = `- No greeting
 - Always write in second person, speaking directly to the recipient. Never slip into third person (e.g. never "the person who..." or "someone who..."). Use "you" and "your" throughout. When referring to shared experiences between sender and recipient, use "we," "us," and "our," never "both of you," "the two of you," or any phrasing that positions the writer as an outside observer.
@@ -334,7 +353,7 @@ ORIGINAL CONTEXT (keep consistent unless the fix above says otherwise):
 - SIGN-OFF: ${A.signoff?'End with exactly: "'+A.signoff+'"':'No sign-off.'}
 ${A.misc?'- INCLUDE IN CARD: "'+A.misc+'". Keep this in the card.':''}
 ${A.memory?'- SHARED MEMORY: "'+A.memory+'". Keep this woven in.':''}
-${lossBlock}${getwellBlock}${apologyBlock}
+${lossBlock}${getwellBlock}${apologyBlock}${hardtimeBlock}
 
 ${privateCtx}
 
@@ -362,7 +381,7 @@ SPIRITUALITY: ${A.spirituality||'None'}
 WANT THEM TO FEEL: ${feelVal}
 ${A.memory?'SHARED MEMORY (card content): "'+A.memory+'"':''}
 ${A.misc?'INCLUDE IN CARD (fair game): "'+A.misc+'"':''}
-${lossBlock}${getwellBlock}${apologyBlock}
+${lossBlock}${getwellBlock}${apologyBlock}${hardtimeBlock}
 
 ${privateCtx}
 

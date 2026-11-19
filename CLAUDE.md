@@ -21,6 +21,31 @@ HeartPenned (heartpenned.com) is an AI greeting-card web app owned by Robert. Th
 - GitHub GraphQL is blocked, so `gh pr create` fails. Use REST: `gh api repos/roberts4807/heartpenned/pulls -f title=... -f head=BRANCH -f base=main -F body=@file`.
 - End PR descriptions with the Claude Code attribution line.
 
+## Card-writing rules Robert cares about
+
+- Never assume anything about anyone's personality or character unless the sender typed it.
+- No jokes about an illness, injury or treatment, at any seriousness level.
+- When the sender gives little, lean classic (store-card style), not invented detail.
+- Any prompt change for one occasion must leave every other occasion's prompt unchanged. Check by building the prompt with old and new `api/generate.js` for the same inputs and diffing.
+- Show Robert new screen wording and prompt text before building.
+
+## Occasion modes
+
+- `OCC_MODES` in `index.html` gives some occasions their own flow: Sympathy (`key: 'loss'`, details page `q9s`), Get well (`'getwell'`, `q9g`), Apology (`'apology'`, `q9a`). Each sets its own tone chips (choose one), feel chips, a details page in place of "Tell us about them" (no "Keep it classic" pop-up), whether "What's your relationship like?" is optional, and which relationship chips show. Occasions not listed use the regular flow.
+- Mode tone and feel chips are built from those lists; the regular ones are the HTML in `#qc6` and `#qc8`.
+- Details-page answers go to the server as `A.loss`, `A.getwell` or `A.apology`.
+- In `api/generate.js`, `isLoss`, `isGetwell` and `isApology` switch in each mode's role, opening, middle, occasion rule, tone guides and its block (THE LOSS, THE SITUATION, THE APOLOGY); length is 75–100 words (Shorten still gives 50–80); no random focus angle and no thin or classic switching. Revisions carry the same rules.
+- Relationship chips are the 7 in `#rel-chips`, always in this order: Loving, Easy and comfortable, Complicated, Rebuilding, Long distance, Friendly, Casual acquaintance. A mode's `rel` list may only hide chips, never reorder them. Sympathy and Get well show Loving, Long distance, Friendly, Casual acquaintance; Apology shows all 7.
+- The plan and exact prompt text are in Robert's Claude Doc "HeartPenned: Harder Occasions Strategy".
+
+## Card ratings (testers and Prolific)
+
+- Thumbs up/down show under each card version only for testers (`?tester=1`, remembered for the browser tab) and Prolific participants (`PROLIFIC_PID`, `STUDY_ID`, `SESSION_ID` in the link). Thumbs down opens reason chips and a note.
+- `api/feedback.js`: POST saves one rating in the Redis hash `fb:all`; GET lists them and needs `?key=` matching the `FEEDBACK_KEY` environment variable. The reason chips in `index.html` must match `REASONS` in `feedback.js`.
+- A rating saves the card text and the sender's choices only. Private free-text answers are never saved. Keep it that way.
+- Robert reviews ratings at `/feedback.html` (asks for the key once per site).
+- On a Vercel preview, the Vercel sign-in drops `?tester=1`. Add it to the address after the page loads.
+
 ## Header images
 
 ### How headers work
@@ -29,7 +54,7 @@ HeartPenned (heartpenned.com) is an AI greeting-card web app owned by Robert. Th
 - `image: 'NAME.png'` is required; without it the PDF silently skips the image.
 - A header shows on the Classic or Fun tab of every occasion in its `occasions` list. Each header has exactly one `category`.
 - Browse All groups headers by their **first** occasion only, so cross-listed headers don't appear under later occasions there. Robert decided to leave this as is.
-- Occasion chips are hard-coded in the HTML (`data-val="..."`). An occasion with no chip can't be selected in the card flow. Typed "Other" occasions only get headers tagged `'Other'`. Occasion spelling must match the chip exactly (e.g. `'Get well'`, `'Thinking of you'`).
+- Occasion chips are built in JavaScript from `OCC_ALWAYS`, `OCC_MORE_ALWAYS` and `OCC_SEASONAL` in `index.html` (seasonal ones show from 60 days before their date to 7 days after, otherwise under "More occasions"). An occasion missing from those lists can't be selected in the card flow. Typed "Other" occasions only get headers tagged `'Other'`. Occasion spelling must match the chip exactly (e.g. `'Get well'`, `'Thinking of you'`).
 - `theme` sets the card background and must be one of the `CARD_THEMES` ids: `classic`, `warm`, `blush`, `sage`, `twilight`, `gold`, `slate`, `dusk`. Pick the one closest to the image's colors.
 - Place new entries right after the last existing header for their first occasion. Position within an occasion = display order in the picker.
 

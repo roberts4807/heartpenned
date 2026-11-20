@@ -31,11 +31,13 @@ HeartPenned (heartpenned.com) is an AI greeting-card web app owned by Robert. Th
 
 ## Occasion modes
 
-- `OCC_MODES` in `index.html` gives some occasions their own flow: Sympathy (`key: 'loss'`, details page `q9s`), Get well (`'getwell'`, `q9g`), Apology (`'apology'`, `q9a`). Each sets its own tone chips (choose one), feel chips, a details page in place of "Tell us about them" (no "Keep it classic" pop-up), whether "What's your relationship like?" is optional, and which relationship chips show. Occasions not listed use the regular flow.
+- `OCC_MODES` in `index.html` gives some occasions their own flow: Sympathy (`key: 'loss'`, details page `q9s`), Get well (`'getwell'`, `q9g`), Apology (`'apology'`, `q9a`), and Thinking of you when "What's behind it?" is "Going through a hard time" (`'Thinking of you: hard time'`, `'hardtime'`, `q9t`; `occMode()` picks it from `A.tyReason`). Each sets its own tone chips (choose one), feel chips, a details page in place of "Tell us about them" (no "Keep it classic" pop-up), whether "What's your relationship like?" is optional, and which relationship chips show. Occasions not listed use the regular flow.
 - Mode tone and feel chips are built from those lists; the regular ones are the HTML in `#qc6` and `#qc8`.
-- Details-page answers go to the server as `A.loss`, `A.getwell` or `A.apology`.
-- In `api/generate.js`, `isLoss`, `isGetwell` and `isApology` switch in each mode's role, opening, middle, occasion rule, tone guides and its block (THE LOSS, THE SITUATION, THE APOLOGY); length is 75–100 words (Shorten still gives 50–80); no random focus angle and no thin or classic switching. Revisions carry the same rules.
-- Relationship chips are the 7 in `#rel-chips`, always in this order: Loving, Easy and comfortable, Complicated, Rebuilding, Long distance, Friendly, Casual acquaintance. A mode's `rel` list may only hide chips, never reorder them. Sympathy and Get well show Loving, Long distance, Friendly, Casual acquaintance; Apology shows all 7.
+- Details-page answers go to the server as `A.loss`, `A.getwell`, `A.apology` or `A.hardtime`.
+- Thinking of you always asks "What's behind it?" (page `q4t`, before the tone page; optional). `A.tyReason` is `hard time`, `just because`, `missing them` or `big change`. Only hard time is a mode; the other three keep the regular flow and get a one-line occasion rule in the prompt.
+- Thank you keeps the regular flow, but its first two detail questions are "What are you thanking them for?" and "What difference did it make?" (`setDetailQuestions()`); they go to the server in `A.misc` with their own labels, which are in `DETAIL_LABELS`.
+- In `api/generate.js`, `isLoss`, `isGetwell`, `isApology` and `isHardtime` switch in each mode's role, opening, middle, occasion rule, tone guides and its block (THE LOSS, THE SITUATION, THE APOLOGY, THE HARD TIME); length is 75–100 words (Shorten still gives 50–80); no random focus angle and no thin or classic switching. Revisions carry the same rules.
+- Relationship chips are the 7 in `#rel-chips`, always in this order: Loving, Easy and comfortable, Complicated, Rebuilding, Long distance, Friendly, Casual acquaintance. A mode's `rel` list may only hide chips, never reorder them. Sympathy, Get well and hard time show Loving, Complicated, Long distance, Friendly, Casual acquaintance (`MODE_REL_CHIPS`); Apology shows all 7. Complicated shows on every occasion.
 - The plan and exact prompt text are in Robert's Claude Doc "HeartPenned: Harder Occasions Strategy".
 
 ## Card ratings (testers and Prolific)

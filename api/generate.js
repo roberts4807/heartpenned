@@ -109,7 +109,7 @@ const OPENING_MOVES = [
   'Open with a short, simple sentence. Let the next sentence do the work.',
 ];
 // Rich-detail regular cards (not Thank you): a familiar classic start, then the personal part.
-const CLASSIC_FIRST_OPENING = 'Open with one or two sentences that could appear in a beautifully written store-bought card for this occasion and relationship: a warm wish, or a warm line about the occasion and what this relationship is. Fresh wording, not a stock phrase. No memory, no details from the sender and nothing about what they are like in these sentences; the personal part starts after. In a new version, keep this classic start but write a different classic line.';
+const CLASSIC_FIRST_OPENING = 'Open with one or two sentences in the warm, familiar style of a beautifully written classic card for this occasion and relationship: fresh wording, not a stock phrase, and nothing about what they are like. Then move into what the sender shared.';
 // Used for every thin-detail card, and as one of the random choices for rich cards.
 const OCCASION_OPENING = 'Open with the occasion: a fresh line about what this day or moment means for them, not a stock greeting. Find your own way in rather than reaching for the most familiar phrase for this occasion.';
 // Thin-detail cards pick one of these, so they do not all open the same way.
@@ -237,7 +237,7 @@ ${SHARED_MODE_RULES}`;
     ? 'You are a senior greeting card writer with 20 years of experience. The sender shared only a little. Write a card that reads mostly like a beautifully written store-bought card for this occasion: warm, gracious, greeting-card language that rings true for this relationship, never generic filler, never cheesy, no rhymes. Then weave in the one thing the sender shared, so it is unmistakably from them to this person.'
     : isClassic
     ? 'You are a senior greeting card writer with 20 years of experience. The sender chose a CLASSIC card and shared no personal details. Write the kind of message found in a beautifully written store-bought card: warm, gracious, traditional greeting-card language that would ring true for anyone in this relationship on this occasion. It should feel lovely and sincere, never generic filler, never cheesy, no rhymes.'
-    : 'You are a senior greeting card writer with 20 years of experience. Your job is to write a card message that sounds like the sender wrote it themselves, on a good day, to this specific person. Not a card company, not AI. It should sound like this relationship actually sounds: sometimes tender, sometimes funny, sometimes plain. Real cards vary in tone and shape.' + (isThankYou ? '' : ' Start it the way a beautifully written store-bought card would, then make it personal.');
+    : 'You are a senior greeting card writer with 20 years of experience. Your job is to write a card message that sounds like the sender wrote it themselves, on a good day, to this specific person. Not a card company, not AI. It should sound like this relationship actually sounds: sometimes tender, sometimes funny, sometimes plain. Real cards vary in tone and shape.';
   const openText = isLoss
     ? 'Open simply and gently. A plain expression of sorrow is fine. No quotes or sayings.'
     : isGetwell
@@ -404,7 +404,7 @@ FEELINGS: ${feelingsRule}
 SHAPE:
 - ${openText}
 - ${middleText}${wishLine}
-- Ending: as the TONE section says for this tone.${isClassic ? classicLine : angleLine}
+- ${(isThin || isClassic || isLoss || isGetwell || isApology || isHardtime || isThankYou) ? 'Ending: as the TONE section says for this tone.' : 'Ending: close with one or two sentences in the warm, familiar style of a beautifully written store-bought card for this occasion and relationship: a heartfelt wish for them, in the card\'s tone, fresh wording, not a stock phrase, and nothing about what they are like. Then the final line as FINAL LINE says.'}${isClassic ? classicLine : angleLine}
 - Paragraphs: two or three short paragraphs. Never one long unbroken block.
 
 LENGTH: ${lengthRule}

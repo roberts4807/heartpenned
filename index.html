@@ -547,7 +547,7 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
       <div class="question">How would you like to sign it? <span class="opt-tag">optional</span></div>
       <div class="subtext">e.g. Love, Mom — or just your name.</div>
       <textarea class="text-input" id="t-signoff" rows="2" placeholder="e.g. Love, Mom" oninput="A.signoff=this.value.trim()"></textarea>
-      <div class="qnav"><button class="btn-back" onclick="qGo(13)">← Back</button><button class="btn-next" id="qn14" onclick="submitCard()">Generate my card →</button></div>
+      <div class="qnav"><button class="btn-back" onclick="qGo(13)">← Back</button><button class="btn-next" id="qn14" onclick="finishCheck()">Generate my card →</button></div>
     </div>
 
   </div>
@@ -1388,6 +1388,30 @@ function detailsNext(){
   if(!A.memory&&!A.misc){document.getElementById('classic-modal').style.display='flex';if(window.gtag)gtag('event','details_empty_prompt_shown',{event_category:'details'});return;}
   if(window.gtag) gtag('event','details_given',{event_category:'details'});
   qGo(13);
+}
+// Before writing: if the greeting at the top or the sign-off is empty, offer to add them (never blocks).
+function finishCheck(){
+  const name=(A.name||'').trim();
+  const needGreet=!A.opening, needSign=!A.signoff;
+  if(!needGreet&&!needSign){submitCard();return;}
+  const g=document.getElementById('fm-greet'), s=document.getElementById('fm-sign');
+  g.style.display=needGreet?'block':'none'; s.style.display=needSign?'block':'none';
+  const ex=document.getElementById('fm-greet-ex'), btn=document.getElementById('fm-greet-btn');
+  ex.textContent='"Dear '+(name||'Sam')+',"';
+  btn.style.display=name?'inline-block':'none'; btn.textContent='Add "Dear '+name+',"'; btn.disabled=false;
+  document.getElementById('fm-sign-input').value='';
+  document.getElementById('finish-modal').style.display='flex';
+  if(window.gtag)gtag('event','finish_check_shown',{event_category:'details',greeting:needGreet,signoff:needSign});
+}
+function finishAddGreeting(){
+  const v='Dear '+(A.name||'').trim()+',';
+  A.opening=v; document.getElementById('t-opening').value=v;
+  const btn=document.getElementById('fm-greet-btn'); btn.textContent='Added ✓'; btn.disabled=true;
+}
+function finishSignInput(el){A.signoff=el.value.trim();document.getElementById('t-signoff').value=el.value;}
+function finishChoice(write){
+  document.getElementById('finish-modal').style.display='none';
+  if(write)submitCard();
 }
 function classicChoice(addDetail){
   document.getElementById('classic-modal').style.display='none';
@@ -4778,6 +4802,21 @@ async function downloadPDF() {
     <div style="font-size:14px;color:#3A4A5A;line-height:1.6;margin-bottom:22px;">The details are what make a card feel like it could only be from you. Without them, we'll write a warm, classic card instead.</div>
     <button class="action-btn primary" onclick="classicChoice(true)" style="width:100%;padding:13px;font-size:14px;margin-bottom:10px;border-radius:8px;">Add a detail</button>
     <button class="action-btn" onclick="classicChoice(false)" style="width:100%;padding:12px;font-size:14px;border-radius:8px;">Keep it classic</button>
+  </div>
+</div>
+<div id="finish-modal" style="display:none;position:fixed;inset:0;background:rgba(10,26,42,0.45);z-index:9999;align-items:center;justify-content:center;padding:20px;">
+  <div style="background:white;border-radius:14px;max-width:400px;width:100%;padding:28px 26px 22px;box-shadow:0 10px 40px rgba(0,0,0,0.2);font-family:'Inter',sans-serif;">
+    <div style="font-size:19px;font-weight:600;color:#0A1A2A;margin-bottom:14px;">Before we write your card</div>
+    <div id="fm-greet" style="font-size:14px;color:#3A4A5A;line-height:1.6;margin-bottom:16px;">
+      <strong>No greeting at the top.</strong> Most cards start with the person's name, like <span id="fm-greet-ex"></span>.
+      <div style="margin-top:8px;"><button class="action-btn" id="fm-greet-btn" onclick="finishAddGreeting()" style="padding:9px 14px;font-size:13px;border-radius:8px;"></button></div>
+    </div>
+    <div id="fm-sign" style="font-size:14px;color:#3A4A5A;line-height:1.6;margin-bottom:20px;">
+      <strong>It isn't signed.</strong> Add how you'd like to sign it:
+      <input class="text-input" id="fm-sign-input" type="text" placeholder="e.g. Love, Bob" oninput="finishSignInput(this)" style="width:100%;box-sizing:border-box;margin-top:8px;">
+    </div>
+    <button class="action-btn primary" onclick="finishChoice(true)" style="width:100%;padding:13px;font-size:14px;margin-bottom:10px;border-radius:8px;">Write my card</button>
+    <button class="action-btn" onclick="finishChoice(false)" style="width:100%;padding:12px;font-size:14px;border-radius:8px;">Go back</button>
   </div>
 </div>
 </body>

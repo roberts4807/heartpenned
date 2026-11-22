@@ -212,7 +212,7 @@ ${SHARED_MODE_RULES}`;
     : 'Singular voice throughout. Never use "we" to mean the sender.';
   const celebratory = CELEBRATORY.test(A.occasion||'') && !isLoss && !isApology;
   const openingHasName = !!(name && A.opening && A.opening.toLowerCase().includes(name.toLowerCase()));
-  const nameRule = !name ? 'No name.'
+  let nameRule = !name ? 'No name.'
     : openingHasName ? 'The opening already uses "'+name+'". Do not use the name anywhere else in the card, including the final occasion wish (for example, "Happy Birthday!" rather than "Happy Birthday, '+name+'").'
     : 'You may use "'+name+'" once only if it fits naturally mid-card. Never in the closing or final line. Never more than once.';
   if ((isLoss || isGetwell || isApology || isHardtime) && !lengthIsStandard) lengthRule = '75 to 100 words. Stay in this range.';
@@ -220,6 +220,8 @@ ${SHARED_MODE_RULES}`;
   const angleLine = (hasSpecifics || isLoss || isApology || isGetwell || isHardtime) ? '' : '\n- FOCUS FOR THIS CARD (no memories or details were given): ' + pick(ANGLES) + ' Keep the card centered on this one focus rather than touching on everything.';
   // The sender skipped every detail question and chose "Keep it classic".
   const isClassic = !!A.classic && !hasSpecifics && !isLoss && !isGetwell && !isApology && !isHardtime;
+  // Classic cards: the name goes only in the opening at the top, never in the message.
+  if (isClassic && name) nameRule = 'Classic card: do not use the name anywhere in the message; the opening at the top carries it.';
   if (isClassic && !lengthIsStandard) lengthRule = '75 to 100 words. Stay in this range.';
   const classicLine = isClassic ? '\n- CLASSIC CARD: no personal details were given, by choice. Say nothing specific about this person or this relationship, including anything from the relationship context.' : '';
   // Regular cards: thin details lean on the occasion; rich details stay fully personal.

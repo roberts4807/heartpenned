@@ -123,7 +123,7 @@ const THIN_OPENINGS = [
 // Otherwise they are "thin": the card blends in occasion warmth and wishes
 // instead of describing the person.
 const RICH_DETAIL_CHARS = 100;
-const DETAIL_LABELS = ['Qualities the sender appreciates in them: ', 'What they mean to the sender: ', 'What is going on in their life right now: ', 'What the sender is thanking them for: ', 'What difference it made: '];
+const DETAIL_LABELS = ['Qualities the sender appreciates in them: ', 'What they mean to the sender: ', 'What is going on in their life right now: ', 'What the sender is thanking them for: ', 'What difference it made: ', 'What the sender is thankful for about them: ', 'What difference they have made in the sender\'s life: '];
 function hasRichDetails(A){
   const misc = A.misc || '';
   const answered = (A.memory ? 1 : 0) + DETAIL_LABELS.filter(l => misc.includes(l)).length;

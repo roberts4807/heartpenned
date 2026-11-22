@@ -437,7 +437,7 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
 
     <div class="qstep" id="q9">
       <div class="question" id="q10-text">Tell us about them</div>
-      <div class="subtext" style="margin-bottom:0.75rem;">A few quick questions to get the message right.</div>
+      <div class="subtext" id="q10-sub" style="margin-bottom:0.75rem;">A few quick questions to get the message right.</div>
       <div class="gq open" id="gq1">
         <div class="gq-sum" onclick="gqOpen(1)"><div><div class="gq-sum-q">1. What's a memory with them that stuck with you?</div><div class="gq-sum-a" id="gq1-a"></div></div><div class="gq-edit">Edit</div></div>
         <div class="gq-title" onclick="gqOpen(1)">1. What's a memory with them that stuck with you?</div>
@@ -937,21 +937,27 @@ function goDetails(){
 // Thank you swaps the first two "Tell us about them" questions; other occasions use the regular ones.
 const GQ_TEXT={
   regular:{1:["1. What's a memory with them that stuck with you?",'e.g. The night they drove four hours to help me move.'],2:["2. What's a quality you appreciate in them?",'e.g. Their patience. Nothing ever seems to rattle them.']},
-  thanks:{1:['1. What are you thanking them for?','e.g. Watching the kids all weekend while we moved.'],2:['2. What difference did it make?','e.g. We finally got unpacked, and I got some sleep.']}
+  thanks:{1:['1. What are you thanking them for?','e.g. Watching the kids all weekend while we moved.'],2:['2. What difference did it make?','e.g. We finally got unpacked, and I got some sleep.']},
+  thanksgiving:{1:['1. What are you thankful for about them?','e.g. How they always make room at the table for everyone.'],2:['2. What difference have they made in your life?','e.g. They made this town feel like home.']}
 };
+const GQ_SUB={regular:'A few quick questions to get the message right.',thanksgiving:'Share as much or as little as you like. Skip them all and we\'ll write a warm, general Thanksgiving card.'};
 function setDetailQuestions(){
-  const ty=A.occasion==='Thank you';
-  const t=GQ_TEXT[ty?'thanks':'regular'];
+  const ty=A.occasion==='Thank you', tg=A.occasion==='Thanksgiving';
+  const t=GQ_TEXT[ty?'thanks':(tg?'thanksgiving':'regular')];
+  const sub=document.getElementById('q10-sub');if(sub)sub.textContent=GQ_SUB[tg?'thanksgiving':'regular'];
   [1,2].forEach(i=>{
     const box=document.getElementById('gq'+i);if(!box)return;
     box.querySelector('.gq-sum-q').textContent=t[i][0];
     box.querySelector('.gq-title').textContent=t[i][0];
     const ids=GQ_IDS[i];
+    // Thank you takes one answer for each question; Thanksgiving takes up to three things it is thankful for, then one answer.
+    const single=ty||(tg&&i===2);
     document.getElementById(ids[0]).placeholder=t[i][1];
-    ids.slice(1).forEach(id=>{const el=document.getElementById(id);if(ty)el.style.display='none';else if(el.value.trim())el.style.display='block';});
+    ids.slice(1).forEach(id=>{const el=document.getElementById(id);if(single)el.style.display='none';else if(el.value.trim())el.style.display='block';});
     const add=document.getElementById('gq-add-'+i);
-    if(add)add.style.display=(ty||ids.slice(1).every(id=>document.getElementById(id).style.display!=='none'))?'none':'';
+    if(add)add.style.display=(single||ids.slice(1).every(id=>document.getElementById(id).style.display!=='none'))?'none':'';
   });
+  const add1=document.getElementById('gq-add-1');if(add1)add1.textContent=tg?'+ Add another thing':'+ Add another memory';
 }
 function updateLoss(){
   const g=id=>document.getElementById(id);
@@ -1359,6 +1365,13 @@ function updateDetails(){
     if(A.misc)A.classic=false;
     return;
   }
+  if(A.occasion==='Thanksgiving'){
+    const th=_vals(1).join(' / '),d=_val('t-quality'),m=_val('t-meaning'),n=_val('t-news');
+    A.memory='';
+    A.misc=[th?'What the sender is thankful for about them: '+th:'',d?'What difference they have made in the sender\'s life: '+d:'',m?'What they mean to the sender: '+m:'',n?'What is going on in their life right now: '+n:''].filter(Boolean).join('. ');
+    if(A.misc)A.classic=false;
+    return;
+  }
   A.memory=_vals(1).join(' / ');
   const q=_vals(2).join('; '), m=_val('t-meaning'), n=_val('t-news');
   A.misc=[q?'Qualities the sender appreciates in them: '+q:'', m?'What they mean to the sender: '+m:'', n?'What is going on in their life right now: '+n:''].filter(Boolean).join('. ');
@@ -1406,7 +1419,13 @@ function resetDetailsPage(){
 }
 function detailsNext(){
   updateDetails();
-  if(!A.memory&&!A.misc){document.getElementById('classic-modal').style.display='flex';if(window.gtag)gtag('event','details_empty_prompt_shown',{event_category:'details'});return;}
+  if(!A.memory&&!A.misc){
+    const tg=A.occasion==='Thanksgiving',set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+    set('classic-modal-title',tg?'Want to add one thing you\'re thankful for?':'Want to add one small detail?');
+    set('classic-modal-body',tg?'Naming one thing makes the card feel like it could only be from you. Without it, we\'ll write a warm, general Thanksgiving card instead.':'The details are what make a card feel like it could only be from you. Without them, we\'ll write a warm, classic card instead.');
+    set('classic-modal-add',tg?'Add something':'Add a detail');
+    set('classic-modal-keep',tg?'Keep it general':'Keep it classic');
+    document.getElementById('classic-modal').style.display='flex';if(window.gtag)gtag('event','details_empty_prompt_shown',{event_category:'details'});return;}
   if(window.gtag) gtag('event','details_given',{event_category:'details'});
   qGo(13);
 }
@@ -4825,10 +4844,10 @@ async function downloadPDF() {
 </script>
 <div id="classic-modal" style="display:none;position:fixed;inset:0;background:rgba(10,26,42,0.45);z-index:9999;align-items:center;justify-content:center;padding:20px;">
   <div style="background:white;border-radius:14px;max-width:400px;width:100%;padding:28px 26px 22px;box-shadow:0 10px 40px rgba(0,0,0,0.2);font-family:'Inter',sans-serif;">
-    <div style="font-size:19px;font-weight:600;color:#0A1A2A;margin-bottom:10px;">Want to add one small detail?</div>
-    <div style="font-size:14px;color:#3A4A5A;line-height:1.6;margin-bottom:22px;">The details are what make a card feel like it could only be from you. Without them, we'll write a warm, classic card instead.</div>
-    <button class="action-btn primary" onclick="classicChoice(true)" style="width:100%;padding:13px;font-size:14px;margin-bottom:10px;border-radius:8px;">Add a detail</button>
-    <button class="action-btn" onclick="classicChoice(false)" style="width:100%;padding:12px;font-size:14px;border-radius:8px;">Keep it classic</button>
+    <div id="classic-modal-title" style="font-size:19px;font-weight:600;color:#0A1A2A;margin-bottom:10px;">Want to add one small detail?</div>
+    <div id="classic-modal-body" style="font-size:14px;color:#3A4A5A;line-height:1.6;margin-bottom:22px;">The details are what make a card feel like it could only be from you. Without them, we'll write a warm, classic card instead.</div>
+    <button class="action-btn primary" id="classic-modal-add" onclick="classicChoice(true)" style="width:100%;padding:13px;font-size:14px;margin-bottom:10px;border-radius:8px;">Add a detail</button>
+    <button class="action-btn" id="classic-modal-keep" onclick="classicChoice(false)" style="width:100%;padding:12px;font-size:14px;border-radius:8px;">Keep it classic</button>
   </div>
 </div>
 <div id="finish-modal" style="display:none;position:fixed;inset:0;background:rgba(10,26,42,0.45);z-index:9999;align-items:center;justify-content:center;padding:20px;">

@@ -537,17 +537,14 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
     </div>
 
     <div class="qstep" id="q13">
-      <div class="question">How would you like to open the card? <span class="opt-tag">optional</span></div>
-      <div class="subtext">This goes at the very top of the card, exactly as you write it.</div>
+      <div class="question">How would you like to open and sign it? <span class="opt-tag">optional</span></div>
+      <div class="cgl" style="margin-top:0.75rem;">At the top</div>
+      <div class="subtext" style="margin:0 0 0.4rem;">Goes at the very top of the card, exactly as you write it.</div>
       <textarea class="text-input" id="t-opening" rows="2" placeholder="e.g. Dear Rachel," oninput="A.opening=this.value.trim()"></textarea>
-      <div class="qnav"><button class="btn-back" onclick="goDetails(true)">← Back</button><button class="btn-next" onclick="qGo('13b')">Next →</button></div>
-    </div>
-
-    <div class="qstep" id="q13b">
-      <div class="question">How would you like to sign it? <span class="opt-tag">optional</span></div>
-      <div class="subtext">e.g. Love, Mom — or just your name.</div>
+      <div class="cgl" style="margin-top:1.25rem;">Sign it</div>
+      <div class="subtext" style="margin:0 0 0.4rem;">e.g. Love, Mom, or just your name.</div>
       <textarea class="text-input" id="t-signoff" rows="2" placeholder="e.g. Love, Mom" oninput="A.signoff=this.value.trim()"></textarea>
-      <div class="qnav"><button class="btn-back" onclick="qGo(13)">← Back</button><button class="btn-next" id="qn14" onclick="finishCheck()">Generate my card →</button></div>
+      <div class="qnav"><button class="btn-back" onclick="goDetails(true)">← Back</button><button class="btn-next" id="qn14" onclick="finishCheck()">Generate my card →</button></div>
     </div>
 
   </div>
@@ -600,7 +597,7 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
     </div>
     <div style="margin-top:0.75rem;margin-bottom:0.25rem;display:flex;align-items:center;justify-content:center;gap:1.5rem;">
       <button class="action-btn primary" onclick="showDelivery()" style="font-size:14px;line-height:1.35;">Love it!<span class="m-br"></span> Pick a design →</button>
-      <button class="btn-back" onclick="showScreen('q');qGo('13b')" style="font-size:13px;">← Back to questions</button>
+      <button class="btn-back" onclick="showScreen('q');qGo(13)" style="font-size:13px;">← Back to questions</button>
     </div>
     <div class="edit-bar" id="edit-bar">
       <button class="btn-edit-myself" onclick="startEditing()">✏ Edit myself</button>
@@ -776,7 +773,7 @@ const A={kids:[],tones:[],feels:[],relChips:[]};
 let kidCount=1,versionCount=1,currentCardText='',savedVersions=[],activeVersionIdx=0;
 const PARTNER_VALS=['Husband','Wife','Partner'];
 const PARTNER_RE=/\b(husband|wife|partner|spouse|hubby|wifey)\b/i;
-const Q_ORDER=[1,2,'2b',4,'4c','4t',5,6,7,8,9,'9s','9g','9a','9t',13,'13b'];
+const Q_ORDER=[1,2,'2b',4,'4c','4t',5,6,7,8,9,'9s','9g','9a','9t',13];
 
 // ── Card background themes ──────────────────────────────────────────────
 const CARD_THEMES = [
@@ -1389,7 +1386,7 @@ function detailsNext(){
   if(window.gtag) gtag('event','details_given',{event_category:'details'});
   qGo(13);
 }
-// Before writing: if the greeting at the top or the sign-off is empty, offer to add them (never blocks).
+// Before writing: if the greeting at the top or the sign-off is empty, offer to add them (never blocks). Go back returns to the open-and-sign page.
 function finishCheck(){
   const name=(A.name||'').trim();
   const needGreet=!A.opening, needSign=!A.signoff;

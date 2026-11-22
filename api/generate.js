@@ -368,7 +368,7 @@ ORIGINAL CONTEXT (keep consistent unless the fix above says otherwise):
 - SIGN-OFF: ${A.signoff?'End with exactly: "'+A.signoff+'"':'No sign-off.'}
 ${A.misc?'- INCLUDE IN CARD: "'+A.misc+'". Keep this in the card.':''}
 ${A.memory?'- SHARED MEMORY: "'+A.memory+'". Keep this woven in.':''}
-${(isLoss || isGetwell || isApology || isHardtime || isThankYou) ? '' : '- DESCRIBING THEM: Say what they are like only as the sender described it (a quality they named); never add traits of your own. Use a quality as the sender gave it. No claims that a quality is rare or unusual, and no comparisons to other people ("rarer than you\'d think," "most people," "not everyone"). Don\'t say when a memory happened or how old anyone was then (this year, last summer, at 13) unless the sender did. Don\'t say how other people see or react to them (no one was surprised, everyone noticed, people love working with you) unless the sender said it.\n'}${classicClose ? '- CLASSIC CLOSE (keep it): ' + CLASSIC_CLOSE + '\n' : ''}${lossBlock}${getwellBlock}${apologyBlock}${hardtimeBlock}
+${(isLoss || isGetwell || isApology || isHardtime || isThankYou) ? '' : '- DESCRIBING THEM: Say what they are like only as the sender described it (a quality they named); never add traits of your own. Use a quality as the sender gave it. No claims that a quality is rare or unusual, and no comparisons to other people ("rarer than you\'d think," "most people," "not everyone"). Don\'t say when a memory happened or how old anyone was then (this year, last summer, at 13) unless the sender did. Don\'t say how other people see or react to them (no one was surprised, everyone noticed, people love working with you) unless the sender said it.\n'}${classicClose ? '- CLASSIC CLOSE (keep it): ' + CLASSIC_CLOSE + '\n- PARAGRAPHS (follow exactly): At most three paragraphs before the final line, and every paragraph has at least two sentences; no one-line paragraphs. The CLASSIC CLOSE is the last paragraph.\n' : ''}${lossBlock}${getwellBlock}${apologyBlock}${hardtimeBlock}
 
 ${privateCtx}
 
@@ -417,7 +417,7 @@ SHAPE:
 - ${openText}
 - ${middleText}${wishLine}
 - Ending: ${classicClose ? 'the CLASSIC CLOSE below.' : 'as the TONE section says for this tone.'}${isClassic ? classicLine : angleLine}
-- Paragraphs: two or three short paragraphs. Never one long unbroken block.
+- ${classicClose ? 'Paragraphs (follow exactly): At most three paragraphs before the final line, and every paragraph has at least two sentences; no one-line paragraphs. The CLASSIC CLOSE is the last paragraph. Put the line about what this day means at the end of the paragraph before it, never on its own. Never one long unbroken block.' : 'Paragraphs: two or three short paragraphs. Never one long unbroken block.'}
 
 LENGTH: ${lengthRule}
 FROM GUIDANCE: ${fromGuide}

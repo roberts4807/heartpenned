@@ -212,7 +212,7 @@ ${SHARED_MODE_RULES}`;
     : 'Singular voice throughout. Never use "we" to mean the sender.';
   const celebratory = CELEBRATORY.test(A.occasion||'') && !isLoss && !isApology;
   const openingHasName = !!(name && A.opening && A.opening.toLowerCase().includes(name.toLowerCase()));
-  const nameRule = !name ? 'No name.'
+  let nameRule = !name ? 'No name.'
     : openingHasName ? 'The opening already uses "'+name+'". Do not use the name anywhere else in the card, including the final occasion wish (for example, "Happy Birthday!" rather than "Happy Birthday, '+name+'").'
     : 'You may use "'+name+'" once only if it fits naturally mid-card. Never in the closing or final line. Never more than once.';
   if ((isLoss || isGetwell || isApology || isHardtime) && !lengthIsStandard) lengthRule = '75 to 100 words. Stay in this range.';
@@ -220,6 +220,8 @@ ${SHARED_MODE_RULES}`;
   const angleLine = (hasSpecifics || isLoss || isApology || isGetwell || isHardtime) ? '' : '\n- FOCUS FOR THIS CARD (no memories or details were given): ' + pick(ANGLES) + ' Keep the card centered on this one focus rather than touching on everything.';
   // The sender skipped every detail question and chose "Keep it classic".
   const isClassic = !!A.classic && !hasSpecifics && !isLoss && !isGetwell && !isApology && !isHardtime;
+  // Classic cards: the name goes only in the opening at the top, never in the message.
+  if (isClassic && name) nameRule = 'Classic card: do not use the name anywhere in the message; the opening at the top carries it.';
   if (isClassic && !lengthIsStandard) lengthRule = '75 to 100 words. Stay in this range.';
   const classicLine = isClassic ? '\n- CLASSIC CARD: no personal details were given, by choice. Say nothing specific about this person or this relationship, including anything from the relationship context.' : '';
   // Regular cards: thin details lean on the occasion; rich details stay fully personal.
@@ -366,7 +368,7 @@ ORIGINAL CONTEXT (keep consistent unless the fix above says otherwise):
 - SIGN-OFF: ${A.signoff?'End with exactly: "'+A.signoff+'"':'No sign-off.'}
 ${A.misc?'- INCLUDE IN CARD: "'+A.misc+'". Keep this in the card.':''}
 ${A.memory?'- SHARED MEMORY: "'+A.memory+'". Keep this woven in.':''}
-${(isLoss || isGetwell || isApology || isHardtime || isThankYou) ? '' : '- DESCRIBING THEM: Say what they are like only as the sender described it (a quality they named); never add traits of your own. Use a quality as the sender gave it. No claims that a quality is rare or unusual, and no comparisons to other people ("rarer than you\'d think," "most people," "not everyone").\n'}${classicClose ? '- CLASSIC CLOSE (keep it): ' + CLASSIC_CLOSE + '\n' : ''}${lossBlock}${getwellBlock}${apologyBlock}${hardtimeBlock}
+${(isLoss || isGetwell || isApology || isHardtime || isThankYou) ? '' : '- DESCRIBING THEM: Say what they are like only as the sender described it (a quality they named); never add traits of your own. Use a quality as the sender gave it. No claims that a quality is rare or unusual, and no comparisons to other people ("rarer than you\'d think," "most people," "not everyone"). Don\'t say when a memory happened or how old anyone was then (this year, last summer, at 13) unless the sender did. Don\'t say how other people see or react to them (no one was surprised, everyone noticed, people love working with you) unless the sender said it.\n'}${classicClose ? '- CLASSIC CLOSE (keep it): ' + CLASSIC_CLOSE + '\n- PARAGRAPHS (follow exactly): Three paragraphs before the final line, each two to four sentences and no more than about 45 words. The CLASSIC CLOSE is the last paragraph. The whole card stays within the word range.\n' : ''}${lossBlock}${getwellBlock}${apologyBlock}${hardtimeBlock}
 
 ${privateCtx}
 
@@ -415,7 +417,7 @@ SHAPE:
 - ${openText}
 - ${middleText}${wishLine}
 - Ending: ${classicClose ? 'the CLASSIC CLOSE below.' : 'as the TONE section says for this tone.'}${isClassic ? classicLine : angleLine}
-- Paragraphs: two or three short paragraphs. Never one long unbroken block.
+- ${classicClose ? 'Paragraphs (follow exactly): Three paragraphs before the final line, each two to four sentences and no more than about 45 words. 1) The opening leads straight into the memory or what the sender shared, in the same paragraph. 2) What it means to the sender, ending with the line about what this day means if the card has one. 3) The CLASSIC CLOSE. The whole card stays within the word range.' : 'Paragraphs: two or three short paragraphs. Never one long unbroken block.'}
 
 LENGTH: ${lengthRule}
 FROM GUIDANCE: ${fromGuide}
@@ -436,7 +438,7 @@ ${coreRules}
 - Never assume anything about people not described in the inputs
 - Card stays entirely about the recipient
 - People before pets when listing names
-- Never quote inputs verbatim. Put them in your own words, in the card's tone.${musingLine}${(isLoss || isGetwell || isApology || isHardtime || isThankYou) ? '' : '\n- No claims that a quality is rare or unusual, and no comparisons to other people ("rarer than you\'d think," "most people," "not everyone").'}
+- Never quote inputs verbatim. Put them in your own words, in the card's tone.${musingLine}${(isLoss || isGetwell || isApology || isHardtime || isThankYou) ? '' : '\n- No claims that a quality is rare or unusual, and no comparisons to other people ("rarer than you\'d think," "most people," "not everyone").\n- Don\'t say when a memory happened or how old anyone was then (this year, last summer, at 13) unless the sender did.\n- Don\'t say how other people see or react to them (no one was surprised, everyone noticed, people love working with you) unless the sender said it.'}
 
 BEFORE YOU FINISH: count the words. If the card is under the LENGTH range, develop the middle further until it is within range${isClassic ? ' (with more warm wishes or a universal reflection, never details about the person)' : ''}.
 Do all checking silently. Your reply must contain only the final card message: no notes, word counts, drafts, explanations, or separator lines such as ---.`;

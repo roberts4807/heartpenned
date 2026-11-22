@@ -322,10 +322,11 @@ ${lossAbout ? '- WHAT THE SENDER WANTS TO SAY ABOUT THEM: "' + lossAbout + '" In
   const rc = Array.isArray(A.relChips) ? A.relChips.map(v => String(v).toLowerCase()) : [];
   const relLines = [
     rc.includes('friendly')
-      ? '- Friendly: they are friends who get along. Warm and easy, not intimate; no declarations of deep closeness.'
+      ? (rc.includes('casual acquaintance')
+          ? '- Friendly, casual acquaintance: they know each other a little and get along. Keep it light and kind, still warm, and never overstate how close they are.'
+          : '- Friendly: they get along. Warm and easy, not intimate; no declarations of deep closeness.')
       : '- Friendly or casual acquaintance: keep it light and kind, still warm, and never overstate how close they are.',
-    rc.includes('barely know each other') ? '- Barely know each other: keep it brief and general.' : '',
-    (rc.includes("don't see each other much") || rc.includes("haven't been in touch lately")) ? '- They don\'t see each other much or haven\'t been in touch lately: never mention how long it has been; no guilt and no promises to keep in touch.' : '',
+    (rc.includes("don't see each other much") || rc.includes("haven't been in touch recently")) ? '- They don\'t see each other much or haven\'t been in touch recently: never mention how long it has been; no guilt and no promises to keep in touch.' : '',
     rc.includes('rebuilding') ? '- Rebuilding: warm and hopeful but measured; never mention the past.' : '',
     rc.includes('i keep my distance') ? '- The sender keeps some distance: kind and courteous, with measured warmth; no claims of closeness or missing them; no push to reconnect.' : '',
     rc.includes('unsure where we stand') ? '- The sender is unsure where they stand: kind and low-pressure; no assumptions about how the recipient feels toward the sender; nothing gushing.' : '',

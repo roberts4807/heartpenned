@@ -419,18 +419,19 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
 
     <div class="qstep" id="q8">
       <div class="question" id="q9-text">What's your relationship like? <span class="opt-tag" id="rel-opt" style="display:none;">optional</span></div>
-      <div class="honest-private" style="margin-top:0;white-space:normal;line-height:1.5;">🔒 Just for us. Never in the card, only used to set the tone.</div>
-      <div class="cgl" style="margin-top:1rem;"><span style="font-weight:400;color:#AAB4C0;text-transform:none;letter-spacing:0;">Pick 1 or 2 that feel most true</span></div>
-      <div class="chips" id="rel-chips">
-        <div class="chip" data-val="loving" onclick="toggleRelChip(this)">Loving</div>
-        <div class="chip" data-val="easy and comfortable" onclick="toggleRelChip(this)">Easy and comfortable</div>
-        <div class="chip" data-val="complicated" onclick="toggleRelChip(this)">Complicated</div>
-        <div class="chip" data-val="rebuilding" onclick="toggleRelChip(this)">Rebuilding</div>
-        <div class="chip" data-val="long distance" onclick="toggleRelChip(this)">Long distance</div>
-        <div class="chip" data-val="friendly" onclick="toggleRelChip(this)">Friendly</div>
-        <div class="chip" data-val="casual acquaintance" onclick="toggleRelChip(this)">Casual acquaintance</div>
+      <div class="honest-private" style="margin-top:2px;white-space:normal;line-height:1.5;font-size:16px;">🔒 Just for us. Never in the card.<br>Only used to set the right tone.</div>
+      <div class="chips" id="rel-chips" style="margin-top:1rem;">
+        <div class="chip" data-val="loving" onclick="pickRelTop(this)">Loving</div>
+        <div class="chip" data-val="friendly" onclick="pickRelTop(this)">Friendly</div>
+        <div class="chip" data-val="casual acquaintance" onclick="pickRelTop(this)">Casual acquaintance</div>
+        <div class="chip" data-val="complicated" onclick="pickRelTop(this)">It's complicated</div>
       </div>
-      <div class="cgl" style="margin-top:1rem;">Anything we should know or steer clear of? <span class="opt-tag">optional</span></div>
+      <div id="rel-more" style="display:none;">
+        <div class="cgl" style="margin-top:1rem;">Anything else that's true? <span class="opt-tag">optional</span></div>
+        <div class="chips" id="rel-sub"></div>
+      </div>
+      <div class="cgl" style="margin-top:1rem;"><span id="rel-box-label">Anything we should know or steer clear of?</span> <span class="opt-tag">optional</span></div>
+      <div class="honest-private" id="rel-box-note" style="display:none;margin:0 0 0.4rem;white-space:normal;line-height:1.5;">🔒 None of this will appear in the card. It only helps us get the tone right.</div>
       <textarea class="text-input" id="t9" rows="3" placeholder="e.g. We're rebuilding and it's been up and down. Keep it warm, not gushy." oninput="updateRelCtx()"></textarea>
       <div class="qnav"><button class="btn-back" onclick="qGo(7)">← Back</button><button class="btn-next" id="qn9" disabled onclick="goDetails()">Next →</button></div>
     </div>
@@ -890,7 +891,8 @@ function qGo(n){qShowStep(n);}
 // relationship chips, and details page. Occasions not listed use the regular flow.
 // Relationship chips always keep the page's order; a mode's rel list only hides chips.
 // Thinking of you with "Going through a hard time" uses the 'Thinking of you: hard time' mode.
-const MODE_REL_CHIPS=['loving','complicated','long distance','friendly','casual acquaintance'];
+// Follow-up relationship chips the quieter modes show (all four top chips always show).
+const MODE_REL_CHIPS=['long distance'];
 const OCC_MODES={
   'Sympathy':{key:'loss',toneMax:1,page:'9s',relOptional:true,rel:MODE_REL_CHIPS,
     tone:[['Warm and heartfelt','Warm and heartfelt'],['Simple and classic','Simple and classic'],['Respectful','Respectful'],['Gently hopeful','Gently hopeful']],
@@ -922,12 +924,7 @@ function applyOccChips(kind){
 }
 function applyRelOptional(){
   const m=occMode();
-  const list=m&&m.rel;
-  document.querySelectorAll('#rel-chips .chip').forEach(c=>{
-    const hide=!!list&&!list.includes(c.dataset.val);
-    c.style.display=hide?'none':'';
-    if(hide&&c.classList.contains('selected')){c.classList.remove('selected');A.relChips=A.relChips.filter(v=>v!==c.dataset.val);}
-  });
+  buildRelSub();
   updateRelCtx();
   const opt=!!(m&&m.relOptional);
   document.getElementById('rel-opt').style.display=opt?'inline':'none';
@@ -1305,21 +1302,50 @@ function checkReq(n){
   if(n===9){A.relationshipCtx=v;document.getElementById('qn9').disabled=v.length<3;}
 }
 
-// Relationship chips — multi-select
-function toggleRelChip(el){
-  const val = el.dataset.val;
-  const idx = A.relChips.indexOf(val);
-  if(idx === -1){ A.relChips.push(val); el.classList.add('selected'); }
-  else { A.relChips.splice(idx,1); el.classList.remove('selected'); }
+// Relationship: one top chip (required, except in the modes), then optional follow-ups for it.
+// A.relChips = [top, ...follow-ups]; the words sent to the card writer match the old chips where they exist.
+const REL_SUB={
+  'loving':['easy and comfortable','long distance',"don't see each other much"],
+  'friendly':['easy and comfortable','long distance',"haven't been in touch lately"],
+  'casual acquaintance':['we get along well','barely know each other'],
+  'complicated':['rebuilding','i keep my distance','unsure where we stand','we avoid big topics']
+};
+const REL_LABEL={'i keep my distance':'I keep my distance'};
+function relLabel(v){return REL_LABEL[v]||(v.charAt(0).toUpperCase()+v.slice(1));}
+function buildRelSub(){
+  const top=A.relChips[0]||'', m=occMode(), allow=m&&m.rel;
+  const subs=(REL_SUB[top]||[]).filter(v=>!allow||allow.includes(v));
+  A.relChips=A.relChips.filter((v,i)=>i===0||subs.includes(v));
+  const box=document.getElementById('rel-sub');
+  box.innerHTML='';
+  subs.forEach(v=>{const c=document.createElement('div');c.className='chip'+(A.relChips.includes(v)?' selected':'');c.dataset.val=v;c.textContent=relLabel(v);c.onclick=()=>toggleRelSub(c);box.appendChild(c);});
+  document.getElementById('rel-more').style.display=subs.length?'block':'none';
+  const cx=top==='complicated';
+  document.getElementById('rel-box-label').textContent=cx?'What makes it complicated?':'Anything we should know or steer clear of?';
+  document.getElementById('rel-box-note').style.display=cx?'block':'none';
+}
+function pickRelTop(el){
+  const val=el.dataset.val, was=A.relChips[0];
+  document.querySelectorAll('#rel-chips .chip').forEach(c=>c.classList.remove('selected'));
+  if(was===val){A.relChips=[];}            // tap again to clear
+  else{A.relChips=[val];el.classList.add('selected');}
+  buildRelSub();
   updateRelCtx();
 }
+function toggleRelSub(el){
+  const v=el.dataset.val, i=A.relChips.indexOf(v);
+  if(i===-1){A.relChips.push(v);el.classList.add('selected');}
+  else{A.relChips.splice(i,1);el.classList.remove('selected');}
+  updateRelCtx();
+}
+function resetRelPage(){A.relChips=[];buildRelSub();}
 
 function updateRelCtx(){
   const freeText = document.getElementById('t9').value.trim();
   const chipText = A.relChips.length ? A.relChips.join(', ') : '';
   const combined = [chipText, freeText].filter(Boolean).join('. ');
   A.relationshipCtx = combined;
-  document.getElementById('qn9').disabled = !(occMode()&&occMode().relOptional) && (A.relChips.length === 0 && freeText.length < 3);
+  document.getElementById('qn9').disabled = !(occMode()&&occMode().relOptional) && A.relChips.length === 0;
 }
 
 // ── "Tell us about them" guided questions ──
@@ -2050,6 +2076,7 @@ function startOver(){
   document.querySelectorAll('.chip').forEach(c=>c.classList.remove('selected'));
   document.querySelectorAll('textarea,input[type=text],input[type=number]').forEach(t=>t.value='');
   resetDetailsPage();
+  resetRelPage();
   const gwChk=document.getElementById('chk-gw-mention');if(gwChk)gwChk.checked=false;
   const apChk=document.getElementById('chk-ap-mention');if(apChk)apChk.checked=false;
   const htChk=document.getElementById('chk-ht-mention');if(htChk)htChk.checked=false;

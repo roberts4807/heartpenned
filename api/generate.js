@@ -318,12 +318,25 @@ ${lossAbout ? '- WHAT THE SENDER WANTS TO SAY ABOUT THEM: "' + lossAbout + '" In
 - If a PREVIOUS VERSION is shown below, use different comfort wishes and images from it, not just different wording (for example, if it said "surrounded by kindness" or "memories bring you peace," choose something else).
 - No teasing or playfulness, even to a sibling or close friend. Some emotional weight is fitting here; keep it gentle and unforced.`;
 
+  // Relationship chips: A.relChips = [top, ...follow-ups]. Words that existed before keep their old wording.
+  const rc = Array.isArray(A.relChips) ? A.relChips.map(v => String(v).toLowerCase()) : [];
+  const relLines = [
+    rc.includes('friendly')
+      ? '- Friendly: they are friends who get along. Warm and easy, not intimate; no declarations of deep closeness.'
+      : '- Friendly or casual acquaintance: keep it light and kind, still warm, and never overstate how close they are.',
+    rc.includes('barely know each other') ? '- Barely know each other: keep it brief and general.' : '',
+    (rc.includes("don't see each other much") || rc.includes("haven't been in touch lately")) ? '- They don\'t see each other much or haven\'t been in touch lately: never mention how long it has been; no guilt and no promises to keep in touch.' : '',
+    rc.includes('rebuilding') ? '- Rebuilding: warm and hopeful but measured; never mention the past.' : '',
+    rc.includes('i keep my distance') ? '- The sender keeps some distance: kind and courteous, with measured warmth; no claims of closeness or missing them; no push to reconnect.' : '',
+    rc.includes('unsure where we stand') ? '- The sender is unsure where they stand: kind and low-pressure; no assumptions about how the recipient feels toward the sender; nothing gushing.' : '',
+    rc.includes('we avoid big topics') ? '- They avoid big topics: light and friendly, on safe ground; nothing weighty or personal; no opinions.' : '',
+  ].filter(Boolean).join('\n');
   const privateCtx = `RELATIONSHIP CONTEXT — CONFIDENTIAL WRITER BRIEFING ONLY:
 "${A.relationshipCtx||''}"
 This field is private context for the writer, never the card. Nothing from it may appear in the card in any form: not quoted, not paraphrased, not hinted at, not even a positive quality mentioned here. It only tells you where the relationship stands today, so you can set how warm, how close, and how measured the card should be, and what to avoid.
 - The recipient's role (parent, partner, friend, and so on) still sets the register and the warmth. A card to a parent still sounds like it is to a parent.
 - Where things stand today limits what the card claims. If it is complicated, rebuilding, or up and down, or the sender says what to avoid: stay warm, but no superlatives, no "best ever," no declarations of closeness or gratitude bigger than what is real. Never mention the difficulty itself.
-- Friendly or casual acquaintance: keep it light and kind, still warm, and never overstate how close they are.
+${relLines}
 The card always builds from what is true and good.${isLoss ? '\nFor this sympathy card: use the relationship only to set how warm or formal the card is. Never mention the relationship, closeness, or distance in the card.' : isGetwell ? '\nFor this get well card: use the relationship only to set how warm or formal the card is. Never mention the relationship, closeness, or distance in the card.' : isHardtime ? '\nFor this thinking-of-you card: use the relationship only to set how warm or formal the card is. Never mention the relationship, closeness, or distance in the card.' : ''}`;
 
   const coreRules = `- No greeting

@@ -1395,15 +1395,20 @@ function finishCheck(){
   g.style.display=needGreet?'block':'none'; s.style.display=needSign?'block':'none';
   const ex=document.getElementById('fm-greet-ex'), btn=document.getElementById('fm-greet-btn');
   ex.textContent='"Dear '+(name||'Sam')+',"';
-  btn.style.display=name?'inline-block':'none'; btn.textContent='Add "Dear '+name+',"'; btn.disabled=false;
+  const btn2=document.getElementById('fm-greet-btn2');
+  btn.style.display=btn2.style.display=name?'inline-block':'none';
+  btn.textContent='Add "Dear '+name+',"'; btn2.textContent='Add "'+name+',"'; btn.disabled=btn2.disabled=false;
   document.getElementById('fm-sign-input').value='';
   document.getElementById('finish-modal').style.display='flex';
   if(window.gtag)gtag('event','finish_check_shown',{event_category:'details',greeting:needGreet,signoff:needSign});
 }
-function finishAddGreeting(){
-  const v='Dear '+(A.name||'').trim()+',';
+function finishAddGreeting(dear){
+  const name=(A.name||'').trim(), v=(dear?'Dear ':'')+name+',';
   A.opening=v; document.getElementById('t-opening').value=v;
-  const btn=document.getElementById('fm-greet-btn'); btn.textContent='Added ✓'; btn.disabled=true;
+  // Mark the one tapped; the other stays available so the sender can switch.
+  const on=document.getElementById(dear?'fm-greet-btn':'fm-greet-btn2'), off=document.getElementById(dear?'fm-greet-btn2':'fm-greet-btn');
+  on.textContent='Added ✓'; on.disabled=true;
+  off.textContent=dear?'Add "'+name+',"':'Add "Dear '+name+',"'; off.disabled=false;
 }
 function finishSignInput(el){A.signoff=el.value.trim();document.getElementById('t-signoff').value=el.value;}
 function finishChoice(write){
@@ -4806,11 +4811,11 @@ async function downloadPDF() {
     <div style="font-size:19px;font-weight:600;color:#0A1A2A;margin-bottom:14px;">Before we write your card</div>
     <div id="fm-greet" style="font-size:14px;color:#3A4A5A;line-height:1.6;margin-bottom:16px;">
       <strong>No greeting at the top.</strong> Most cards start with the person's name, like <span id="fm-greet-ex"></span>.
-      <div style="margin-top:8px;"><button class="action-btn" id="fm-greet-btn" onclick="finishAddGreeting()" style="padding:9px 14px;font-size:13px;border-radius:8px;"></button></div>
+      <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;"><button class="action-btn" id="fm-greet-btn" onclick="finishAddGreeting(true)" style="padding:9px 14px;font-size:13px;border-radius:8px;"></button><button class="action-btn" id="fm-greet-btn2" onclick="finishAddGreeting(false)" style="padding:9px 14px;font-size:13px;border-radius:8px;"></button></div>
     </div>
     <div id="fm-sign" style="font-size:14px;color:#3A4A5A;line-height:1.6;margin-bottom:20px;">
       <strong>It isn't signed.</strong> Add how you'd like to sign it:
-      <input class="text-input" id="fm-sign-input" type="text" placeholder="e.g. Love, Bob" oninput="finishSignInput(this)" style="width:100%;box-sizing:border-box;margin-top:8px;">
+      <input class="text-input" id="fm-sign-input" type="text" placeholder="e.g. From, Bob" oninput="finishSignInput(this)" style="width:100%;box-sizing:border-box;margin-top:8px;">
     </div>
     <button class="action-btn primary" onclick="finishChoice(true)" style="width:100%;padding:13px;font-size:14px;margin-bottom:10px;border-radius:8px;">Write my card</button>
     <button class="action-btn" onclick="finishChoice(false)" style="width:100%;padding:12px;font-size:14px;border-radius:8px;">Go back</button>

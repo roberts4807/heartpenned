@@ -366,7 +366,7 @@ ORIGINAL CONTEXT (keep consistent unless the fix above says otherwise):
 - SIGN-OFF: ${A.signoff?'End with exactly: "'+A.signoff+'"':'No sign-off.'}
 ${A.misc?'- INCLUDE IN CARD: "'+A.misc+'". Keep this in the card.':''}
 ${A.memory?'- SHARED MEMORY: "'+A.memory+'". Keep this woven in.':''}
-${(isLoss || isGetwell || isApology || isHardtime || isThankYou) ? '' : '- DESCRIBING THEM: Say what they are like only as the sender described it (a quality they named); never add traits of your own. Use a quality as the sender gave it. No claims that a quality is rare or unusual, and no comparisons to other people ("rarer than you\'d think," "most people," "not everyone").\n'}${classicClose ? '- CLASSIC CLOSE (keep it): ' + CLASSIC_CLOSE + '\n' : ''}${lossBlock}${getwellBlock}${apologyBlock}${hardtimeBlock}
+${(isLoss || isGetwell || isApology || isHardtime || isThankYou) ? '' : '- DESCRIBING THEM: Say what they are like only as the sender described it (a quality they named); never add traits of your own. Use a quality as the sender gave it. No claims that a quality is rare or unusual, and no comparisons to other people ("rarer than you\'d think," "most people," "not everyone"). Don\'t say when a memory happened or how old anyone was then (this year, last summer, at 13) unless the sender did. Don\'t say how other people see or react to them (no one was surprised, everyone noticed, people love working with you) unless the sender said it.\n'}${classicClose ? '- CLASSIC CLOSE (keep it): ' + CLASSIC_CLOSE + '\n' : ''}${lossBlock}${getwellBlock}${apologyBlock}${hardtimeBlock}
 
 ${privateCtx}
 
@@ -436,7 +436,7 @@ ${coreRules}
 - Never assume anything about people not described in the inputs
 - Card stays entirely about the recipient
 - People before pets when listing names
-- Never quote inputs verbatim. Put them in your own words, in the card's tone.${musingLine}${(isLoss || isGetwell || isApology || isHardtime || isThankYou) ? '' : '\n- No claims that a quality is rare or unusual, and no comparisons to other people ("rarer than you\'d think," "most people," "not everyone").'}
+- Never quote inputs verbatim. Put them in your own words, in the card's tone.${musingLine}${(isLoss || isGetwell || isApology || isHardtime || isThankYou) ? '' : '\n- No claims that a quality is rare or unusual, and no comparisons to other people ("rarer than you\'d think," "most people," "not everyone").\n- Don\'t say when a memory happened or how old anyone was then (this year, last summer, at 13) unless the sender did.\n- Don\'t say how other people see or react to them (no one was surprised, everyone noticed, people love working with you) unless the sender said it.'}
 
 BEFORE YOU FINISH: count the words. If the card is under the LENGTH range, develop the middle further until it is within range${isClassic ? ' (with more warm wishes or a universal reflection, never details about the person)' : ''}.
 Do all checking silently. Your reply must contain only the final card message: no notes, word counts, drafts, explanations, or separator lines such as ---.`;

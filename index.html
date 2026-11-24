@@ -394,7 +394,7 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
 
     <div class="qstep" id="q6">
       <div class="question">What do you most want them to feel?</div>
-      <div class="subtext">Choose up to three.</div>
+      <div class="subtext">Choose up to two.</div>
       <div class="chips" id="qc8">
         <div class="chip" data-val="deeply loved">Deeply loved</div><div class="chip" data-val="truly seen and known">Truly seen</div><div class="chip" data-val="proud of themselves">Proud of themselves</div><div class="chip" data-val="celebrated">Celebrated</div><div class="chip" data-val="supported and not alone">Not alone</div><div class="chip" data-val="understood">Understood</div><div class="chip" data-val="grateful to know you">Grateful to know you</div><div class="chip" data-val="joyful">Joyful</div>
       </div>
@@ -1643,7 +1643,7 @@ document.getElementById('qc6')?.addEventListener('click',e=>{const chip=e.target
 
 document.getElementById('qc8')?.addEventListener('click',e=>{const chip=e.target.closest('.chip');if(!chip)return;(()=>{
   if(chip.classList.contains('selected')){chip.classList.remove('selected');A.feels=A.feels.filter(v=>v!==chip.dataset.val);}
-  else{if(A.feels.length>=3)return;chip.classList.add('selected');A.feels.push(chip.dataset.val);}
+  else{if(A.feels.length>=2)return;chip.classList.add('selected');A.feels.push(chip.dataset.val);}
   document.getElementById('qn8').disabled=(A.feels.length===0&&(!A.feelOther||A.feelOther.length===0));
 })();});
 

@@ -380,7 +380,7 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
     </div>
 
     <div class="qstep" id="q5">
-      <div class="question" id="q5-title">Tone of card (choose up to two)</div>
+      <div class="question" id="q5-title">Tone of card (choose one)</div>
       <div class="subtext">How it will feel to read.</div>
       <div class="chips" id="qc6">
         <div class="chip" data-val="Warm and heartfelt">Warm and heartfelt</div><div class="chip" data-val="Funny and playful">Funny and playful</div><div class="chip" data-val="Poetic and sentimental">Sentimental</div><div class="chip" data-val="Lighthearted but real">Lighthearted but real</div><div class="chip" data-val="Reserved but sincere">Reserved but sincere</div><div class="chip" data-val="Celebratory and upbeat">Celebratory and upbeat</div><div class="chip" data-val="Tender and gentle">Tender and gentle</div>
@@ -916,7 +916,7 @@ function applyOccChips(kind){
   chipMode[kind]=mode;
   box.innerHTML=m?m[kind].map(([v,l])=>'<div class="chip" data-val="'+v+'">'+l+'</div>').join(''):DEFAULT_CHIPS[kind];
   box.querySelectorAll('.chip').forEach(c=>c.classList.remove('selected'));
-  if(kind==='tone'){A.tones=[];document.getElementById('q5-title').textContent=(m&&m.toneMax===1)?'Tone of card (choose one)':'Tone of card (choose up to two)';document.getElementById('qn6').disabled=!(A.toneOther&&A.toneOther.length);}
+  if(kind==='tone'){A.tones=[];document.getElementById('q5-title').textContent='Tone of card (choose one)';document.getElementById('qn6').disabled=!(A.toneOther&&A.toneOther.length);}
   else{A.feels=[];document.getElementById('qn8').disabled=!(A.feelOther&&A.feelOther.length);}
 }
 function applyRelOptional(){
@@ -1636,8 +1636,8 @@ buildOccasionChips();
 
 document.getElementById('qc6')?.addEventListener('click',e=>{const chip=e.target.closest('.chip');if(!chip)return;(()=>{
   if(chip.classList.contains('selected')){chip.classList.remove('selected');A.tones=A.tones.filter(v=>v!==chip.dataset.val);}
-  else if(occMode()&&occMode().toneMax===1){document.querySelectorAll('#qc6 .chip').forEach(c=>c.classList.remove('selected'));chip.classList.add('selected');A.tones=[chip.dataset.val];}
-  else{if(A.tones.length>=2)return;chip.classList.add('selected');A.tones.push(chip.dataset.val);}
+  // One tone only, on every occasion: tapping another chip swaps the choice.
+  else{document.querySelectorAll('#qc6 .chip').forEach(c=>c.classList.remove('selected'));chip.classList.add('selected');A.tones=[chip.dataset.val];}
   document.getElementById('qn6').disabled=(A.tones.length===0&&(!A.toneOther||A.toneOther.length===0));
 })();});
 

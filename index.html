@@ -1544,8 +1544,8 @@ document.getElementById('qc-rage')?.querySelectorAll('.chip').forEach(chip=>chip
 
 // ---- Occasion picker ----
 // Year-round occasions are always shown. Seasonal ones show from SEASON_BEFORE days
-// before their date through SEASON_AFTER days after (0 = through the day itself); otherwise they sit under "More occasions".
-const SEASON_BEFORE=60, SEASON_AFTER=0;
+// before their date until SEASON_AFTER days after (for late senders); otherwise they sit under "More occasions".
+const SEASON_BEFORE=60, SEASON_AFTER=7;
 const OCC_ALWAYS=['Birthday','Anniversary','Congratulations','Wedding','Thank you','Get well','Thinking of you','Sympathy','Apology'];
 const OCC_MORE_ALWAYS=['New milestone'];
 function nthWeekday(y,m,wd,n){const d=new Date(y,m,1);d.setDate(1+((wd-d.getDay()+7)%7)+(n-1)*7);return d;}

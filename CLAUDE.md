@@ -56,7 +56,7 @@ HeartPenned (heartpenned.com) is an AI greeting-card web app owned by Robert. Th
 - `image: 'NAME.png'` is required; without it the PDF silently skips the image.
 - A header shows on the Classic or Fun tab of every occasion in its `occasions` list. Each header has exactly one `category`.
 - Browse All groups headers by their **first** occasion only, so cross-listed headers don't appear under later occasions there. Robert decided to leave this as is.
-- Occasion chips are built in JavaScript from `OCC_ALWAYS`, `OCC_MORE_ALWAYS` and `OCC_SEASONAL` in `index.html` (seasonal ones show from 60 days before their date through the day itself, otherwise under the "More occasions" chip, which is the last chip). An occasion missing from those lists can't be selected in the card flow. Typed "Other" occasions only get headers tagged `'Other'`. Occasion spelling must match the chip exactly (e.g. `'Get well'`, `'Thinking of you'`).
+- Occasion chips are built in JavaScript from `OCC_ALWAYS`, `OCC_MORE_ALWAYS` and `OCC_SEASONAL` in `index.html` (seasonal ones show from 60 days before their date to 7 days after, otherwise under the "More occasions" chip, which is the last chip). An occasion missing from those lists can't be selected in the card flow. Typed "Other" occasions only get headers tagged `'Other'`. Occasion spelling must match the chip exactly (e.g. `'Get well'`, `'Thinking of you'`).
 - `theme` sets the card background and must be one of the `CARD_THEMES` ids: `classic`, `warm`, `blush`, `sage`, `twilight`, `gold`, `slate`, `dusk`. Pick the one closest to the image's colors.
 - Place new entries right after the last existing header for their first occasion. Position within an occasion = display order in the picker.
 

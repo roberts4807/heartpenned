@@ -48,6 +48,9 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:0.25rem;}
 .chip{padding:9px 16px;border:0.5px solid #C0CCE0;border-radius:20px;font-size:14px;color:#0A1A2A;cursor:pointer;background:white;transition:all 0.15s;user-select:none;}
 .chip:hover{border-color:#2A4A80;}
+.chip.more-chip{background:#3B5B98;border:1.5px solid #3B5B98;color:#fff;font-weight:600;}
+.chip.more-chip:hover{background:#2F4D86;border-color:#2F4D86;}
+.more-chip-arrow{display:inline-block;margin-left:2px;transition:transform 0.2s;}
 .chip.selected{background:#EEF2FA;border-color:#2A4A80;color:#1A3060;}
 .chip.gentle{border-color:#C0C0B8;color:#5A5A52;background:#F4F4F0;}
 .chip.gentle.selected{background:#D8D8D0;border-color:#888;color:#2A2A22;}
@@ -352,19 +355,10 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
           Turning <input class="number-input" id="t5b" type="number" min="1" max="120" placeholder="Age" oninput="A.birthdayAge=this.value">
         </div>
       </div>
-      <div class="harder">
-        <div id="more-occ-box" style="background:#fff;border:1.5px solid #2A4A80;border-radius:10px;box-shadow:0 1px 4px rgba(26,58,106,0.12);">
-          <div onclick="toggleMoreOcc()" style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;cursor:pointer;">
-            <div>
-              <div style="font-size:15px;font-weight:600;color:#1A3A6A;">＋ More occasions <span id="more-occ-count" style="font-weight:500;color:#5A6A7A;font-size:13px;"></span></div>
-              <div id="more-occ-ex" style="font-size:12px;color:#888;margin-top:2px;line-height:1.4;"></div>
-            </div>
-            <span id="more-occ-arrow" style="flex-shrink:0;font-size:13px;color:#fff;background:#1A3A6A;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;transition:transform 0.2s;">▾</span>
-          </div>
-          <div id="qe-more" style="display:none;padding:0 14px 14px;"><div class="chips" id="qc5-more"></div>
-            <div class="exp" id="qe-other-occ" style="background:transparent;border:none;padding:10px 0 0;margin-top:0;"><input class="text-input" id="t5-other" type="text" placeholder="e.g. Retirement, New baby, Promotion..." oninput="handleOtherOcc()" style="width:100%;box-sizing:border-box;"></div>
-          </div>
-        </div>
+      <!-- "More occasions" is the last chip in #qc5-main (built in buildOccasionChips); it opens this panel. -->
+      <div class="harder" id="more-occ-panel" style="display:none;">
+        <div class="chips" id="qc5-more"></div>
+        <div class="exp" id="qe-other-occ" style="background:transparent;border:none;padding:10px 0 0;margin-top:0;"><input class="text-input" id="t5-other" type="text" placeholder="e.g. Retirement, New baby, Promotion..." oninput="handleOtherOcc()" style="width:100%;box-sizing:border-box;"></div>
       </div>
       <div class="qnav"><button class="btn-back" onclick="qGo('2b')">← Back</button><button class="btn-next" id="qn5" disabled onclick="routeAfterOcc()">Next →</button></div>
     </div>
@@ -1550,8 +1544,8 @@ document.getElementById('qc-rage')?.querySelectorAll('.chip').forEach(chip=>chip
 
 // ---- Occasion picker ----
 // Year-round occasions are always shown. Seasonal ones show from SEASON_BEFORE days
-// before their date until SEASON_AFTER days after; otherwise they sit under "More occasions".
-const SEASON_BEFORE=60, SEASON_AFTER=7;
+// before their date through SEASON_AFTER days after (0 = through the day itself); otherwise they sit under "More occasions".
+const SEASON_BEFORE=60, SEASON_AFTER=0;
 const OCC_ALWAYS=['Birthday','Anniversary','Congratulations','Wedding','Thank you','Get well','Thinking of you','Sympathy','Apology'];
 const OCC_MORE_ALWAYS=['New milestone'];
 function nthWeekday(y,m,wd,n){const d=new Date(y,m,1);d.setDate(1+((wd-d.getDay()+7)%7)+(n-1)*7);return d;}
@@ -1605,28 +1599,24 @@ function buildOccasionChips(){
   let main=occChip('Birthday');
   main+=inSeason.map(o=>occChip(o.val,o.date&&o.date>=today?fmt(o.date):'')).join('');
   main+=OCC_ALWAYS.filter(v=>v!=='Birthday').map(v=>occChip(v)).join('');
-  document.getElementById('qc5-main').innerHTML=main;
   const hidden=more.concat(OCC_MORE_ALWAYS);
+  main+='<div class="chip more-chip" id="more-chip" onclick="toggleMoreOcc()">More occasions ('+hidden.length+') <span class="more-chip-arrow" id="more-occ-arrow"'+(moreOccOpen?' style="transform:rotate(180deg)"':'')+'>▾</span></div>';
+  document.getElementById('qc5-main').innerHTML=main;
   document.getElementById('qc5-more').innerHTML=hidden.map(v=>occChip(v)).join('')+'<div class="chip" data-val="Other">Something else? Type it in</div>';
-  const EXAMPLE_ORDER=["Valentine's Day","Mother's Day","Father's Day","Graduation","Easter","Christmas","Thanksgiving","Halloween","4th of July","New milestone"];
-  const ex=EXAMPLE_ORDER.filter(v=>hidden.includes(v)).slice(0,3);
-  document.getElementById('more-occ-ex').textContent=ex.length?ex.join(', ')+' and more':'';
-  document.getElementById('more-occ-count').textContent=hidden.length?'('+hidden.length+')':'';
-  document.querySelectorAll('#qc5-main .chip, #qc5-more .chip').forEach(chip=>chip.addEventListener('click',()=>pickOccasion(chip)));
+  document.querySelectorAll('#qc5-main .chip:not(.more-chip), #qc5-more .chip').forEach(chip=>chip.addEventListener('click',()=>pickOccasion(chip)));
 }
 let moreOccOpen=false;
 function toggleMoreOcc(){
   moreOccOpen=!moreOccOpen;
-  document.getElementById('qe-more').style.display=moreOccOpen?'block':'none';
-  document.getElementById('more-occ-ex').style.display=moreOccOpen?'none':'block';
+  document.getElementById('more-occ-panel').style.display=moreOccOpen?'block':'none';
   document.getElementById('more-occ-arrow').style.transform=moreOccOpen?'rotate(180deg)':'none';
-  if(moreOccOpen)setTimeout(()=>document.getElementById('more-occ-box').scrollIntoView({behavior:'smooth',block:'nearest'}),50);
+  if(moreOccOpen)setTimeout(()=>document.getElementById('more-occ-panel').scrollIntoView({behavior:'smooth',block:'nearest'}),50);
 }
 function openPanel(id,open){const el=document.getElementById(id);el.classList.toggle('open',open);if(open)setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'nearest'}),50);}
 function pickOccasion(chip){
   const val=chip.dataset.val,inMore=chip.parentElement.id==='qc5-more';
   const btn=document.getElementById('qn5');
-  document.querySelectorAll('#qc5-main .chip, #qc5-more .chip').forEach(c=>c.classList.remove('selected'));
+  document.querySelectorAll('#qc5-main .chip:not(.more-chip), #qc5-more .chip').forEach(c=>c.classList.remove('selected'));
   chip.classList.add('selected');
   if(!inMore&&moreOccOpen)toggleMoreOcc();
   openPanel('qe-other-occ',val==='Other');

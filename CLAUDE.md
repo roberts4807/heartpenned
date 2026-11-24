@@ -31,8 +31,8 @@ HeartPenned (heartpenned.com) is an AI greeting-card web app owned by Robert. Th
 
 ## Occasion modes
 
-- `OCC_MODES` in `index.html` gives some occasions their own flow: Sympathy (`key: 'loss'`, details page `q9s`), Get well (`'getwell'`, `q9g`), Apology (`'apology'`, `q9a`), and Thinking of you when "What's behind it?" is "Going through a hard time" (`'Thinking of you: hard time'`, `'hardtime'`, `q9t`; `occMode()` picks it from `A.tyReason`). Each sets its own tone chips (choose one), feel chips, a details page in place of "Tell us about them" (no "Keep it classic" pop-up), whether "What's your relationship like?" is optional, and which relationship chips show. Occasions not listed use the regular flow.
-- Mode tone and feel chips are built from those lists; the regular ones are the HTML in `#qc6` and `#qc8`.
+- `OCC_MODES` in `index.html` gives some occasions their own flow: Sympathy (`key: 'loss'`, details page `q9s`), Get well (`'getwell'`, `q9g`), Apology (`'apology'`, `q9a`), and Thinking of you when "What's behind it?" is "Going through a hard time" (`'Thinking of you: hard time'`, `'hardtime'`, `q9t`; `occMode()` picks it from `A.tyReason`). Each sets its own tone chips, feel chips, a details page in place of "Tell us about them" (no "Keep it classic" pop-up), whether "What's your relationship like?" is optional, and which relationship chips show. Occasions not listed use the regular flow.
+- Mode tone and feel chips are built from those lists; the regular ones are the HTML in `#qc6` and `#qc8`. Every tone page is choose one (tapping another chip swaps the choice).
 - Details-page answers go to the server as `A.loss`, `A.getwell`, `A.apology` or `A.hardtime`.
 - Thinking of you always asks "What's behind it?" (page `q4t`, before the tone page; optional). `A.tyReason` is `hard time`, `just because`, `missing them` or `big change`. Only hard time is a mode; the other three keep the regular flow and get a one-line occasion rule in the prompt.
 - Thank you keeps the regular flow, but its first two detail questions are "What are you thanking them for?" and "What difference did it make?" (`setDetailQuestions()`); they go to the server in `A.misc` with their own labels, which are in `DETAIL_LABELS`.
@@ -56,7 +56,7 @@ HeartPenned (heartpenned.com) is an AI greeting-card web app owned by Robert. Th
 - `image: 'NAME.png'` is required; without it the PDF silently skips the image.
 - A header shows on the Classic or Fun tab of every occasion in its `occasions` list. Each header has exactly one `category`.
 - Browse All groups headers by their **first** occasion only, so cross-listed headers don't appear under later occasions there. Robert decided to leave this as is.
-- Occasion chips are built in JavaScript from `OCC_ALWAYS`, `OCC_MORE_ALWAYS` and `OCC_SEASONAL` in `index.html` (seasonal ones show from 60 days before their date to 7 days after, otherwise under "More occasions"). An occasion missing from those lists can't be selected in the card flow. Typed "Other" occasions only get headers tagged `'Other'`. Occasion spelling must match the chip exactly (e.g. `'Get well'`, `'Thinking of you'`).
+- Occasion chips are built in JavaScript from `OCC_ALWAYS`, `OCC_MORE_ALWAYS` and `OCC_SEASONAL` in `index.html` (seasonal ones show from 60 days before their date to 7 days after, otherwise under the "More occasions" chip, which is the last chip). An occasion missing from those lists can't be selected in the card flow. Typed "Other" occasions only get headers tagged `'Other'`. Occasion spelling must match the chip exactly (e.g. `'Get well'`, `'Thinking of you'`).
 - `theme` sets the card background and must be one of the `CARD_THEMES` ids: `classic`, `warm`, `blush`, `sage`, `twilight`, `gold`, `slate`, `dusk`. Pick the one closest to the image's colors.
 - Place new entries right after the last existing header for their first occasion. Position within an occasion = display order in the picker.
 

@@ -223,6 +223,8 @@ ${SHARED_MODE_RULES}`;
   // Classic cards: the name goes only in the opening at the top, never in the message.
   if (isClassic && name) nameRule = 'Classic card: do not use the name anywhere in the message; the opening at the top carries it.';
   if (isClassic && !lengthIsStandard) lengthRule = '75 to 100 words. Stay in this range.';
+  // The sender ticked "Not needed" for "They are my...". Only added then, so every other prompt is unchanged.
+  const noRelLine = A.relationship ? '' : " No relationship was given. Don't say or assume who they are to the sender; keep the warmth friendly and general.";
   const classicLine = isClassic ? '\n- CLASSIC CARD: no personal details were given, by choice. Say nothing specific about this person or this relationship, including anything from the relationship context.' : '';
   // Regular cards: thin details lean on the occasion; rich details stay fully personal.
   const isThin = !isClassic && !isApology && !isLoss && !isGetwell && !isHardtime && !hasRichDetails(A);
@@ -371,7 +373,7 @@ CRITICAL: The instruction above is a direct command. If it says to remove a word
 
 ORIGINAL CONTEXT (keep consistent unless the fix above says otherwise):
 - OCCASION: ${A.occasion||'—'}${occasionRules?' ('+occasionRules+')':''}
-- THE RECIPIENT IS MY: ${A.relationship||'—'}
+- THE RECIPIENT IS MY: ${A.relationship||'—'}${noRelLine}
 - CARD FROM: ${A.from||'Just me'}. ${fromGuide}
 - TONE: ${toneVal}
 - WANT THEM TO FEEL: ${feelVal}
@@ -399,7 +401,7 @@ INPUTS:
 ${name?'RECIPIENT NAME: '+name:''}
 CARD FROM: ${A.from||'Just me'}
 ${A.senderAge&&!/from family/i.test(A.senderAge)?'SENDER AGE: '+A.senderAge:''}
-THE RECIPIENT IS MY: ${A.relationship||'—'} (this is who the recipient is to the sender)
+THE RECIPIENT IS MY: ${A.relationship||'—'} (this is who the recipient is to the sender)${noRelLine}
 ${A.recipientAge?'RECIPIENT AGE: '+A.recipientAge:''}
 OCCASION: ${A.occasion||'—'}
 ${birthdayAge?(A.mentionAge?'TURNING: '+birthdayAge+'. The sender wants this age mentioned in the card (name the age naturally, as a person would in a birthday card).':'TURNING: '+birthdayAge+'. For calibration only. The sender did NOT ask for the age to be mentioned: do not state this number or refer to their specific age anywhere in the card.'):''}

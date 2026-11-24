@@ -48,6 +48,9 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:0.25rem;}
 .chip{padding:9px 16px;border:0.5px solid #C0CCE0;border-radius:20px;font-size:14px;color:#0A1A2A;cursor:pointer;background:white;transition:all 0.15s;user-select:none;}
 .chip:hover{border-color:#2A4A80;}
+.chip.more-chip{background:#3B5B98;border:1.5px solid #3B5B98;color:#fff;font-weight:600;}
+.chip.more-chip:hover{background:#2F4D86;border-color:#2F4D86;}
+.more-chip-arrow{display:inline-block;margin-left:2px;transition:transform 0.2s;}
 .chip.selected{background:#EEF2FA;border-color:#2A4A80;color:#1A3060;}
 .chip.gentle{border-color:#C0C0B8;color:#5A5A52;background:#F4F4F0;}
 .chip.gentle.selected{background:#D8D8D0;border-color:#888;color:#2A2A22;}
@@ -300,13 +303,17 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
       <input class="text-input" id="t-name" type="text" placeholder="Their name..." oninput="handleName()" autocomplete="off" style="width:100%;box-sizing:border-box;">
       <label class="chk-strong" style="margin-top:0.75rem;">
         <input type="checkbox" id="chk-noname" onchange="handleNoName()">
-        No name needed
+        Not needed
       </label>
       <div style="margin-top:1.75rem;">
         <div class="question" style="margin-bottom:0.5rem;margin-top:0;">They are my...</div>
         <input class="text-input" id="t-relationship-free" type="text" placeholder="e.g. Mom, best friend, college roommate..." oninput="A.relationship=this.value.trim();updateQ1Next()" autocomplete="off" style="width:100%;box-sizing:border-box;">
+        <label class="chk-strong" style="margin-top:0.75rem;">
+          <input type="checkbox" id="chk-norel" onchange="handleNoRel()">
+          Not needed
+        </label>
       </div>
-      <div class="qnav"><div></div><button class="btn-next" id="qn1" disabled onclick="qGo(2)">Next →</button></div>
+      <div class="qnav"><button class="btn-back" onclick="showScreen('landing')">← Back</button><button class="btn-next" id="qn1" disabled onclick="qGo(2)">Next →</button></div>
     </div>
 
     <div class="qstep" id="q2">
@@ -348,19 +355,10 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
           Turning <input class="number-input" id="t5b" type="number" min="1" max="120" placeholder="Age" oninput="A.birthdayAge=this.value">
         </div>
       </div>
-      <div class="harder">
-        <div id="more-occ-box" style="background:#F4F6FA;border:0.5px solid #D0D8E8;border-radius:8px;">
-          <div onclick="toggleMoreOcc()" style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;cursor:pointer;">
-            <div>
-              <div style="font-size:14px;font-weight:600;color:#2A4A80;">More occasions</div>
-              <div id="more-occ-ex" style="font-size:12px;color:#888;margin-top:2px;line-height:1.4;"></div>
-            </div>
-            <span id="more-occ-arrow" style="font-size:16px;color:#2A4A80;transition:transform 0.2s;">▾</span>
-          </div>
-          <div id="qe-more" style="display:none;padding:0 14px 14px;"><div class="chips" id="qc5-more"></div>
-            <div class="exp" id="qe-other-occ" style="background:transparent;border:none;padding:10px 0 0;margin-top:0;"><input class="text-input" id="t5-other" type="text" placeholder="e.g. Retirement, New baby, Promotion..." oninput="handleOtherOcc()" style="width:100%;box-sizing:border-box;"></div>
-          </div>
-        </div>
+      <!-- "More occasions" is the last chip in #qc5-main (built in buildOccasionChips); it opens this panel. -->
+      <div class="harder" id="more-occ-panel" style="display:none;">
+        <div class="chips" id="qc5-more"></div>
+        <div class="exp" id="qe-other-occ" style="background:transparent;border:none;padding:10px 0 0;margin-top:0;"><input class="text-input" id="t5-other" type="text" placeholder="e.g. Retirement, New baby, Promotion..." oninput="handleOtherOcc()" style="width:100%;box-sizing:border-box;"></div>
       </div>
       <div class="qnav"><button class="btn-back" onclick="qGo('2b')">← Back</button><button class="btn-next" id="qn5" disabled onclick="routeAfterOcc()">Next →</button></div>
     </div>
@@ -382,10 +380,10 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
     </div>
 
     <div class="qstep" id="q5">
-      <div class="question" id="q5-title">Tone of card (choose up to two)</div>
+      <div class="question" id="q5-title">Tone of card (choose one)</div>
       <div class="subtext">How it will feel to read.</div>
       <div class="chips" id="qc6">
-        <div class="chip" data-val="Warm and heartfelt">Warm and heartfelt</div><div class="chip" data-val="Funny and playful">Funny and playful</div><div class="chip" data-val="Honest and direct">Honest and direct</div><div class="chip" data-val="Poetic and sentimental">Poetic and sentimental</div><div class="chip" data-val="Lighthearted but real">Lighthearted but real</div><div class="chip" data-val="Reserved but sincere">Reserved but sincere</div><div class="chip" data-val="Celebratory and upbeat">Celebratory and upbeat</div><div class="chip" data-val="Tender and gentle">Tender and gentle</div>
+        <div class="chip" data-val="Warm and heartfelt">Warm and heartfelt</div><div class="chip" data-val="Funny and playful">Funny and playful</div><div class="chip" data-val="Poetic and sentimental">Sentimental</div><div class="chip" data-val="Lighthearted but real">Lighthearted but real</div><div class="chip" data-val="Reserved but sincere">Reserved but sincere</div><div class="chip" data-val="Celebratory and upbeat">Celebratory and upbeat</div><div class="chip" data-val="Tender and gentle">Tender and gentle</div>
       </div>
       <div style="margin-top:1rem;">
         <div class="cgl" style="margin-top:0;">Or describe your own</div>
@@ -396,9 +394,9 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
 
     <div class="qstep" id="q6">
       <div class="question">What do you most want them to feel?</div>
-      <div class="subtext">Choose up to three.</div>
+      <div class="subtext">Choose up to two.</div>
       <div class="chips" id="qc8">
-        <div class="chip" data-val="deeply loved">Deeply loved</div><div class="chip" data-val="truly seen and known">Truly seen</div><div class="chip" data-val="proud of themselves">Proud of themselves</div><div class="chip" data-val="celebrated">Celebrated</div><div class="chip" data-val="supported and not alone">Not alone</div><div class="chip" data-val="understood">Understood</div><div class="chip" data-val="grateful to know you">Grateful to know you</div><div class="chip" data-val="joyful">Joyful</div>
+        <div class="chip" data-val="deeply loved">Deeply loved</div><div class="chip" data-val="truly seen and known">Truly seen</div><div class="chip" data-val="proud of themselves">Proud of themselves</div><div class="chip" data-val="celebrated">Celebrated</div><div class="chip" data-val="supported and not alone">Not alone</div><div class="chip" data-val="appreciated">Appreciated</div><div class="chip" data-val="joyful">Joyful</div>
       </div>
       <div style="margin-top:1rem;">
         <div class="cgl" style="margin-top:0;">Or describe your own</div>
@@ -918,7 +916,7 @@ function applyOccChips(kind){
   chipMode[kind]=mode;
   box.innerHTML=m?m[kind].map(([v,l])=>'<div class="chip" data-val="'+v+'">'+l+'</div>').join(''):DEFAULT_CHIPS[kind];
   box.querySelectorAll('.chip').forEach(c=>c.classList.remove('selected'));
-  if(kind==='tone'){A.tones=[];document.getElementById('q5-title').textContent=(m&&m.toneMax===1)?'Tone of card (choose one)':'Tone of card (choose up to two)';document.getElementById('qn6').disabled=!(A.toneOther&&A.toneOther.length);}
+  if(kind==='tone'){A.tones=[];document.getElementById('q5-title').textContent='Tone of card (choose one)';document.getElementById('qn6').disabled=!(A.toneOther&&A.toneOther.length);}
   else{A.feels=[];document.getElementById('qn8').disabled=!(A.feelOther&&A.feelOther.length);}
 }
 function applyRelOptional(){
@@ -1075,7 +1073,7 @@ function resetEmailSection(){
 
 function updateQ1Next(){
   const hasName=document.getElementById('chk-noname').checked||document.getElementById('t-name').value.trim().length>0;
-  const hasRel=document.getElementById('t-relationship-free').value.trim().length>=2;
+  const hasRel=document.getElementById('chk-norel').checked||document.getElementById('t-relationship-free').value.trim().length>=2;
   document.getElementById('qn1').disabled=!(hasName&&hasRel);
 }
 function handleName(){
@@ -1085,6 +1083,14 @@ function handleName(){
   A.name=v;
   updateQ1Next();
     document.getElementById('q10-text').textContent=v?'Tell us about '+v:'Tell us about them';
+}
+// "Not needed" under "They are my...": no relationship goes to the writer, and the prompt says not to assume one.
+function handleNoRel(){
+  const chk=document.getElementById('chk-norel');
+  const inp=document.getElementById('t-relationship-free');
+  if(chk.checked){A.relationship='';inp.value='';inp.disabled=true;inp.style.opacity='0.4';}
+  else{inp.disabled=false;inp.style.opacity='1';}
+  updateQ1Next();
 }
 function handleNoName(){
   const chk=document.getElementById('chk-noname');
@@ -1538,7 +1544,7 @@ document.getElementById('qc-rage')?.querySelectorAll('.chip').forEach(chip=>chip
 
 // ---- Occasion picker ----
 // Year-round occasions are always shown. Seasonal ones show from SEASON_BEFORE days
-// before their date until SEASON_AFTER days after; otherwise they sit under "More occasions".
+// before their date until SEASON_AFTER days after (for late senders); otherwise they sit under "More occasions".
 const SEASON_BEFORE=60, SEASON_AFTER=7;
 const OCC_ALWAYS=['Birthday','Anniversary','Congratulations','Wedding','Thank you','Get well','Thinking of you','Sympathy','Apology'];
 const OCC_MORE_ALWAYS=['New milestone'];
@@ -1593,27 +1599,24 @@ function buildOccasionChips(){
   let main=occChip('Birthday');
   main+=inSeason.map(o=>occChip(o.val,o.date&&o.date>=today?fmt(o.date):'')).join('');
   main+=OCC_ALWAYS.filter(v=>v!=='Birthday').map(v=>occChip(v)).join('');
-  document.getElementById('qc5-main').innerHTML=main;
   const hidden=more.concat(OCC_MORE_ALWAYS);
+  main+='<div class="chip more-chip" id="more-chip" onclick="toggleMoreOcc()">More occasions ('+hidden.length+') <span class="more-chip-arrow" id="more-occ-arrow"'+(moreOccOpen?' style="transform:rotate(180deg)"':'')+'>▾</span></div>';
+  document.getElementById('qc5-main').innerHTML=main;
   document.getElementById('qc5-more').innerHTML=hidden.map(v=>occChip(v)).join('')+'<div class="chip" data-val="Other">Something else? Type it in</div>';
-  const EXAMPLE_ORDER=["Valentine's Day","Mother's Day","Father's Day","Graduation","Easter","Christmas","Thanksgiving","Halloween","4th of July","New milestone"];
-  const ex=EXAMPLE_ORDER.filter(v=>hidden.includes(v)).slice(0,3);
-  document.getElementById('more-occ-ex').textContent=ex.length?ex.join(', ')+' and more':'';
-  document.querySelectorAll('#qc5-main .chip, #qc5-more .chip').forEach(chip=>chip.addEventListener('click',()=>pickOccasion(chip)));
+  document.querySelectorAll('#qc5-main .chip:not(.more-chip), #qc5-more .chip').forEach(chip=>chip.addEventListener('click',()=>pickOccasion(chip)));
 }
 let moreOccOpen=false;
 function toggleMoreOcc(){
   moreOccOpen=!moreOccOpen;
-  document.getElementById('qe-more').style.display=moreOccOpen?'block':'none';
-  document.getElementById('more-occ-ex').style.display=moreOccOpen?'none':'block';
+  document.getElementById('more-occ-panel').style.display=moreOccOpen?'block':'none';
   document.getElementById('more-occ-arrow').style.transform=moreOccOpen?'rotate(180deg)':'none';
-  if(moreOccOpen)setTimeout(()=>document.getElementById('more-occ-box').scrollIntoView({behavior:'smooth',block:'nearest'}),50);
+  if(moreOccOpen)setTimeout(()=>document.getElementById('more-occ-panel').scrollIntoView({behavior:'smooth',block:'nearest'}),50);
 }
 function openPanel(id,open){const el=document.getElementById(id);el.classList.toggle('open',open);if(open)setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'nearest'}),50);}
 function pickOccasion(chip){
   const val=chip.dataset.val,inMore=chip.parentElement.id==='qc5-more';
   const btn=document.getElementById('qn5');
-  document.querySelectorAll('#qc5-main .chip, #qc5-more .chip').forEach(c=>c.classList.remove('selected'));
+  document.querySelectorAll('#qc5-main .chip:not(.more-chip), #qc5-more .chip').forEach(c=>c.classList.remove('selected'));
   chip.classList.add('selected');
   if(!inMore&&moreOccOpen)toggleMoreOcc();
   openPanel('qe-other-occ',val==='Other');
@@ -1633,14 +1636,14 @@ buildOccasionChips();
 
 document.getElementById('qc6')?.addEventListener('click',e=>{const chip=e.target.closest('.chip');if(!chip)return;(()=>{
   if(chip.classList.contains('selected')){chip.classList.remove('selected');A.tones=A.tones.filter(v=>v!==chip.dataset.val);}
-  else if(occMode()&&occMode().toneMax===1){document.querySelectorAll('#qc6 .chip').forEach(c=>c.classList.remove('selected'));chip.classList.add('selected');A.tones=[chip.dataset.val];}
-  else{if(A.tones.length>=2)return;chip.classList.add('selected');A.tones.push(chip.dataset.val);}
+  // One tone only, on every occasion: tapping another chip swaps the choice.
+  else{document.querySelectorAll('#qc6 .chip').forEach(c=>c.classList.remove('selected'));chip.classList.add('selected');A.tones=[chip.dataset.val];}
   document.getElementById('qn6').disabled=(A.tones.length===0&&(!A.toneOther||A.toneOther.length===0));
 })();});
 
 document.getElementById('qc8')?.addEventListener('click',e=>{const chip=e.target.closest('.chip');if(!chip)return;(()=>{
   if(chip.classList.contains('selected')){chip.classList.remove('selected');A.feels=A.feels.filter(v=>v!==chip.dataset.val);}
-  else{if(A.feels.length>=3)return;chip.classList.add('selected');A.feels.push(chip.dataset.val);}
+  else{if(A.feels.length>=2)return;chip.classList.add('selected');A.feels.push(chip.dataset.val);}
   document.getElementById('qn8').disabled=(A.feels.length===0&&(!A.feelOther||A.feelOther.length===0));
 })();});
 
@@ -2099,6 +2102,8 @@ function startOver(){
   const htChk=document.getElementById('chk-ht-mention');if(htChk)htChk.checked=false;
   const noNameChk=document.getElementById('chk-noname');
   if(noNameChk){noNameChk.checked=false;const ni=document.getElementById('t-name');if(ni){ni.disabled=false;ni.style.opacity='1';}}
+  const noRelChk=document.getElementById('chk-norel');
+  if(noRelChk){noRelChk.checked=false;const ri=document.getElementById('t-relationship-free');if(ri){ri.disabled=false;ri.style.opacity='1';}}
   document.querySelectorAll('.btn-next').forEach(b=>b.disabled=true);
   document.querySelectorAll('.exp').forEach(e=>e.classList.remove('open'));
   document.getElementById('rev-box').classList.remove('open');

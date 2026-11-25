@@ -47,6 +47,9 @@ HeartPenned (heartpenned.com) is an AI greeting-card web app owned by Robert. Th
 - A rating saves the card text and the sender's choices only. Private free-text answers are never saved. Keep it that way.
 - Robert reviews ratings at `/feedback.html` (asks for the key once per site).
 - On a Vercel preview, the Vercel sign-in drops `?tester=1`. Add it to the address after the page loads.
+- Prolific participants see a consent screen (`#screen-consent`) before the card flow; `startQ()` sends them there until they agree. Consent is saved by `api/feedback.js` (`type: 'consent'`) in the Redis hash `fb:consent`, one entry per Prolific ID.
+- For Prolific links, Google Analytics and the Tally script are not loaded (the consent wording relies on this), and the Tally feedback prompt never shows.
+- The Done screen (`#screen-done`) redirects to Prolific with `PROLIFIC_COMPLETION_CODE` in `index.html`. Set that constant to the study's completion code before publishing the study.
 
 ## Header images
 

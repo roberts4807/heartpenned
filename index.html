@@ -4,13 +4,21 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Heartpenned — Helping you say what you already know</title>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-SFDPGMBSGR"></script>
+<!-- Google tag (gtag.js). Not loaded for Prolific study participants (link has PROLIFIC_PID), as the consent screen promises. -->
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-SFDPGMBSGR');
+  (function(){
+    var isProlific = false;
+    try { isProlific = !!new URLSearchParams(location.search).get('PROLIFIC_PID') || !!sessionStorage.getItem('hp_prolific'); } catch (e) {}
+    if (isProlific) return;
+    var s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=G-SFDPGMBSGR';
+    document.head.appendChild(s);
+    gtag('js', new Date());
+    gtag('config', 'G-SFDPGMBSGR');
+  })();
 </script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Inter:wght@300;400;500;600&display=swap');
@@ -30,6 +38,7 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
 .hero-title em{font-style:italic;color:#2A5A9A;}
 .hero-sub{font-size:16px;color:#1A2A3A;line-height:1.75;margin-bottom:2.5rem;max-width:420px;}
 .hero-btn{background:#1A3A6A !important;color:#FFFFFF !important;border:none !important;padding:14px 40px;border-radius:30px;font-size:16px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;}
+.hero-btn:disabled{opacity:0.45;cursor:default;}
 .hero-link{font-size:13px;color:#1A3A6A;margin-top:1.25rem;cursor:pointer;text-decoration:underline;text-underline-offset:2px;font-weight:500;}
 .about-wrap{max-width:560px;margin:0 auto;padding:3rem 2rem;}
 .about-title{font-family:'Playfair Display',serif;font-size:28px;color:#0A1A2A;margin-bottom:1.5rem;}
@@ -249,7 +258,13 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
 .btn-download-pdf:disabled{opacity:0.4;cursor:not-allowed;}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script async src="https://tally.so/widgets/embed.js"></script>
+<script>
+  // Tally feedback form script: not loaded for Prolific study participants (they rate cards on the site instead).
+  (function(){
+    try { if (new URLSearchParams(location.search).get('PROLIFIC_PID') || sessionStorage.getItem('hp_prolific')) return; } catch (e) {}
+    var s = document.createElement('script'); s.async = true; s.src = 'https://tally.so/widgets/embed.js'; document.head.appendChild(s);
+  })();
+</script>
 </head>
 <body>
 <div class="app">
@@ -286,6 +301,37 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
       <div class="about-tagline">Real relationships deserve the right words.<br>For those the card aisle was not built for.</div>
     </div>
     <div style="margin-top:2rem;"><button class="hero-btn" onclick="startQ()">Write my card →</button></div>
+  </div>
+</div>
+
+<!-- Prolific study: consent before starting (only shown for links with PROLIFIC_PID) -->
+<div class="screen" id="screen-consent">
+  <div class="top-nav"><div class="nav-brand">Heart<em>penned</em></div></div>
+  <div class="about-wrap">
+    <div class="about-title">Before you start</div>
+    <div class="about-body">
+      <p>You'll write two greeting cards for people in your life and rate how they turned out. It takes about 15 minutes.</p>
+      <p><strong>Please use first names or nicknames only.</strong> Don't enter anyone's full name, email, address or phone number. Skip anything you'd rather keep private.</p>
+      <p><strong>What happens to what you type:</strong> It's sent to our AI provider, Anthropic, only to write your cards. We keep the finished card text and your ratings, linked only to your Prolific ID, for up to 12 months to improve HeartPenned. We don't ask for your name or email.</p>
+      <p><strong>You can stop at any time.</strong> To withdraw later, message us through Prolific and we'll delete your data.</p>
+      <p style="font-size:13px;color:#6A7A8A;">HeartPenned is run by Robert Clapp.</p>
+    </div>
+    <label class="chk-strong" style="margin-top:0.5rem;"><input type="checkbox" id="chk-consent" onchange="document.getElementById('btn-consent').disabled=!this.checked">I'm 18 or older, and I agree to take part.</label>
+    <div style="margin-top:1.5rem;"><button class="hero-btn" id="btn-consent" disabled onclick="giveConsent()">Start</button></div>
+    <div id="consent-status" style="margin-top:0.75rem;font-size:13px;color:#9A3A2A;min-height:18px;"></div>
+  </div>
+</div>
+
+<!-- Prolific study: end of study, returns the participant to Prolific -->
+<div class="screen" id="screen-done">
+  <div class="top-nav"><div class="nav-brand">Heart<em>penned</em></div></div>
+  <div class="about-wrap" style="text-align:center;">
+    <div class="about-title">All done, thank you!</div>
+    <div class="about-body">
+      <p>Your ratings are saved. Tap below to return to Prolific and record your completion.</p>
+    </div>
+    <div style="margin-top:1.25rem;"><button class="hero-btn" onclick="returnToProlific()">Return to Prolific</button></div>
+    <div style="margin-top:1.25rem;font-size:13px;color:#5A6A7A;">If the button doesn't work, enter this code on Prolific: <strong id="done-code" style="letter-spacing:0.05em;"></strong></div>
   </div>
 </div>
 
@@ -721,6 +767,12 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
       <div id="feedback-inline" style="display:none;margin-top:0.85rem;text-align:left;"></div>
     </div>
 
+    <!-- Prolific study bar: placeholder until the exit questions are built -->
+    <div id="study-bar" style="display:none;margin-top:1.5rem;padding:1.1rem 1.25rem;background:#FFF8EE;border:1px solid #EBD9B8;border-radius:12px;text-align:center;">
+      <div style="font-size:13px;color:#5A6A7A;margin-bottom:0.85rem;font-family:'Inter',sans-serif;">Finished both cards?</div>
+      <button onclick="finishStudy()" style="padding:0.7rem 1.4rem;background:#1A3A6A;color:white;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;">Finish the study →</button>
+    </div>
+
     <div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.06em;margin-top:1.5rem;margin-bottom:0.75rem;">What's next?</div>
     <div class="reminder-btn" id="reminder-btn-row" onclick="handleDel('reminder')">
       <div><div class="reminder-text">Save and get a reminder next year</div><div class="reminder-sub">We'll remind you when this occasion comes around again</div></div>
@@ -867,7 +919,7 @@ function buildSwatches() {
 }
 
 function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById('screen-'+id).classList.add('active');}
-function startQ(){showScreen('q');qShowStep(1);}
+function startQ(){if(needsConsent()){showScreen('consent');return;}showScreen('q');qShowStep(1);}
 
 function qShowStep(n){
   if(n===5||n==='5')applyOccChips('tone');
@@ -1894,6 +1946,7 @@ function showSendOptions(){
   const fb=document.getElementById('feedback-prompt'); if(fb) fb.style.display='none';
   const fbi=document.getElementById('feedback-inline'); if(fbi) fbi.style.display='none';
   const fbb=document.querySelector('#feedback-prompt button'); if(fbb) fbb.style.display='';
+  showStudyBar();
   showScreen('delivery');
 }
 
@@ -1921,6 +1974,35 @@ const PROLIFIC = (function(){
   } catch (e) { return null; }
 })();
 const RATINGS_ON = IS_TESTER || !!PROLIFIC;
+
+// ── Prolific study: consent at the start, Done step at the end ──
+// Set this to the study's completion code from Prolific before publishing the study.
+const PROLIFIC_COMPLETION_CODE = '';
+function hasConsent(){ try { return sessionStorage.getItem('hp_consent') === '1'; } catch (e) { return false; } }
+function needsConsent(){ return !!PROLIFIC && !hasConsent(); }
+function giveConsent(){
+  const btn = document.getElementById('btn-consent'), status = document.getElementById('consent-status');
+  if (!document.getElementById('chk-consent').checked) return;
+  btn.disabled = true; status.textContent = '';
+  fetch('/api/feedback', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ type: 'consent', prolific: PROLIFIC }) })
+    .then(function(r){ if (!r.ok) throw new Error('save failed'); })
+    .then(function(){ try { sessionStorage.setItem('hp_consent', '1'); } catch (e) {} startQ(); })
+    .catch(function(){ btn.disabled = false; status.textContent = "Something went wrong saving that. Please tap Start again."; });
+}
+function finishStudy(){
+  document.getElementById('done-code').textContent = PROLIFIC_COMPLETION_CODE || '(not set yet)';
+  showScreen('done');
+  window.scrollTo(0, 0);
+}
+function returnToProlific(){
+  if (!PROLIFIC_COMPLETION_CODE) return;
+  window.location.href = 'https://app.prolific.com/submissions/complete?cc=' + encodeURIComponent(PROLIFIC_COMPLETION_CODE);
+}
+function showStudyBar(){
+  const bar = document.getElementById('study-bar');
+  if (bar) bar.style.display = PROLIFIC ? 'block' : 'none';
+}
+if (needsConsent()) showScreen('consent');
 const rateState = {};    // card text -> { id, rating, reasons, note, open }
 const versionKind = {};  // card text -> new / another / shorten / revise / edit
 var lastCardAction = 'new';
@@ -1981,6 +2063,7 @@ function sendRateDetail(){
   document.getElementById('rate-thanks').textContent = 'Thanks, that helps.';
 }
 function showFeedbackPrompt(source){
+  if (PROLIFIC) return; // Prolific participants finish through the study bar instead
   const fb = document.getElementById('feedback-prompt');
   if (!fb || fb.style.display === 'block') return;
   fb.style.display = 'block';

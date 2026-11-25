@@ -2,10 +2,12 @@
 // POST saves or updates one rating. GET lists them for the private review page
 // (feedback.html) and needs ?key= matching the FEEDBACK_KEY environment variable.
 // Stored in one Redis hash, "fb:all": field = rating id, value = JSON.
+// POST with type "consent" saves a Prolific participant's timestamped consent in "fb:consent" (field = Prolific ID).
 
 const REDIS_URL = process.env.HP_KV_REST_API_URL;
 const REDIS_TOKEN = process.env.HP_KV_REST_API_TOKEN;
 const HASH = 'fb:all';
+const CONSENT_HASH = 'fb:consent';
 const REASONS = ['Assumed something', "Doesn't sound like me", 'Too generic', 'Wrong tone', 'Sounds like AI'];
 const KINDS = ['new', 'another', 'shorten', 'revise', 'edit'];
 
@@ -40,6 +42,23 @@ module.exports = async function handler(req, res) {
     if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
     const b = req.body || {};
+
+    // Prolific consent: one timestamped record per Prolific ID, in the hash "fb:consent".
+    if (b.type === 'consent') {
+      const p = (b.prolific && typeof b.prolific === 'object') ? b.prolific : {};
+      const pid = str(p.pid, 40);
+      if (!/^[a-z0-9]{8,40}$/i.test(pid)) return res.status(400).json({ error: 'Bad Prolific ID.' });
+      const record = {
+        pid,
+        study: str(p.study, 40),
+        session: str(p.session, 40),
+        ts: Date.now(),
+        code: (process.env.VERCEL_GIT_COMMIT_SHA || '').slice(0, 7),
+      };
+      await redis(['HSET', CONSENT_HASH, pid, JSON.stringify(record)]);
+      return res.status(200).json({ success: true });
+    }
+
     const id = str(b.id, 40);
     if (!/^[a-z0-9]{8,40}$/i.test(id)) return res.status(400).json({ error: 'Bad id.' });
     if (b.rating !== 'up' && b.rating !== 'down') return res.status(400).json({ error: 'Bad rating.' });

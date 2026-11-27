@@ -90,6 +90,31 @@ module.exports = async function handler(req, res) {
       return res.status(200).json({ success: true });
     }
 
+    // Prolific exit answers: one record per Prolific ID, in the hash "fb:exit".
+    if (b.type === 'exit') {
+      const p = (b.prolific && typeof b.prolific === 'object') ? b.prolific : {};
+      const pid = str(p.pid, 40);
+      if (!/^[a-z0-9]{8,40}$/i.test(pid)) return res.status(400).json({ error: 'Bad Prolific ID.' });
+      const pick = (v, list) => (list.includes(v) ? v : '');
+      const cards = (Array.isArray(b.cards) ? b.cards : []).slice(0, 4).map(c => ({
+        occasion: str(c && c.occasion, 80),
+        send: pick(c && c.send, ['yes', 'maybe', 'no']),
+      }));
+      const record = {
+        pid,
+        study: str(p.study, 40),
+        session: str(p.session, 40),
+        ts: Date.now(),
+        cards,
+        vsStore: pick(b.vsStore, ['better', 'same', 'worse']),
+        device: pick(b.device, ['phone', 'tablet', 'computer']),
+        comment: str(b.comment, 1000),
+        code: (process.env.VERCEL_GIT_COMMIT_SHA || '').slice(0, 7),
+      };
+      await redis(['HSET', EXIT_HASH, pid, JSON.stringify(record)]);
+      return res.status(200).json({ success: true });
+    }
+
     const id = str(b.id, 40);
     if (!/^[a-z0-9]{8,40}$/i.test(id)) return res.status(400).json({ error: 'Bad id.' });
     if (b.rating !== 'up' && b.rating !== 'down') return res.status(400).json({ error: 'Bad rating.' });

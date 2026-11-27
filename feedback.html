@@ -55,10 +55,15 @@ tr.item:hover td{background:#F8FAFD;}
     <thead><tr><th style="width:110px;">When</th><th style="width:110px;">Occasion</th><th style="width:130px;">Tone</th><th style="width:30px;"></th><th>Feedback</th><th style="width:120px;">Tester</th></tr></thead>
     <tbody id="rows"></tbody>
   </table>
+  <div id="exitwrap" style="display:none;margin-top:2rem;">
+    <h1 style="font-size:17px;">Prolific exit answers</h1>
+    <div class="stats" id="exitstats"></div>
+    <table><thead><tr><th style="width:110px;">When</th><th style="width:120px;">Participant</th><th>Would send</th><th style="width:110px;">vs store card</th><th style="width:90px;">Device</th><th>Comment</th></tr></thead><tbody id="exitrows"></tbody></table>
+  </div>
 </div>
 <script>
 const REASONS=['Assumed something',"Doesn't sound like me",'Too generic','Wrong tone','Sounds like AI'];
-let items=[],openId=null;
+let items=[],exits=[],openId=null;
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function getKey(){try{return localStorage.getItem('hp_fb_key')||'';}catch(e){return '';}}
 function saveKey(){const k=document.getElementById('key').value.trim();if(!k)return;try{localStorage.setItem('hp_fb_key',k);}catch(e){}load();}
@@ -70,7 +75,7 @@ async function load(){
     const r=await fetch('/api/feedback?key='+encodeURIComponent(key));
     const d=await r.json();
     if(!r.ok){msg.textContent=d.error||'Could not load ratings.';if(r.status===401){try{localStorage.removeItem('hp_fb_key');}catch(e){}document.getElementById('keybar').style.display='flex';}return;}
-    items=d.items||[];
+    items=d.items||[];exits=(d.exits||[]).sort((a,b)=>(b.ts||0)-(a.ts||0));
     document.getElementById('keybar').style.display='none';
     document.getElementById('filters').style.display='flex';
     document.getElementById('delbar').style.display='flex';
@@ -79,7 +84,7 @@ async function load(){
     const occs=[...new Set(items.map(i=>i.choices&&i.choices.occasion).filter(Boolean))].sort();
     occSel.innerHTML='<option value="">All occasions</option>'+occs.map(o=>'<option'+(o===cur?' selected':'')+'>'+esc(o)+'</option>').join('');
     const rs=document.getElementById('f-reason');if(rs.options.length===1)rs.innerHTML+=REASONS.map(r=>'<option>'+esc(r)+'</option>').join('');
-    render();
+    render();renderExits();
   }catch(e){msg.textContent='Could not load ratings.';}
 }
 function render(){
@@ -119,6 +124,26 @@ async function deleteParticipant(){
     document.getElementById('del-pid').value='';
     load();
   }catch(e){msg.textContent='Could not delete.';}
+}
+function renderExits(){
+  const w=document.getElementById('exitwrap');
+  if(!exits.length){w.style.display='none';return;}
+  w.style.display='block';
+  const cards=exits.flatMap(e=>e.cards||[]);
+  const pct=(n,d)=>d?Math.round(100*n/d)+'%':'—';
+  const yes=cards.filter(c=>c.send==='yes').length, maybe=cards.filter(c=>c.send==='maybe').length;
+  const better=exits.filter(e=>e.vsStore==='better').length, same=exits.filter(e=>e.vsStore==='same').length;
+  document.getElementById('exitstats').innerHTML='<div class="stat"><b>'+exits.length+'</b>participants finished</div>'+
+    '<div class="stat"><b>'+pct(yes,cards.length)+'</b>cards they would send (yes)</div>'+
+    '<div class="stat"><b>'+pct(maybe,cards.length)+'</b>maybe</div>'+
+    '<div class="stat"><b>'+pct(better,exits.length)+'</b>better than a store card</div>'+
+    '<div class="stat"><b>'+pct(same,exits.length)+'</b>about the same</div>';
+  const lbl={yes:'Yes',maybe:'Maybe',no:'No',better:'Better',same:'Same',worse:'Worse'};
+  document.getElementById('exitrows').innerHTML=exits.map(e=>{
+    const when=new Date(e.ts).toLocaleString([], {month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});
+    const sends=(e.cards||[]).map(c=>esc(c.occasion||'?')+': '+esc(lbl[c.send]||'—')).join('<br>');
+    return '<tr><td>'+esc(when)+'</td><td>'+esc(e.pid)+'</td><td>'+sends+'</td><td>'+esc(lbl[e.vsStore]||'')+'</td><td>'+esc(e.device)+'</td><td>'+(e.comment?esc(e.comment):'<span class="muted">—</span>')+'</td></tr>';
+  }).join('');
 }
 function toggle(id){openId=openId===id?null:id;render();}
 if(getKey())load();else document.getElementById('msg').textContent='Enter the review key to see ratings.';

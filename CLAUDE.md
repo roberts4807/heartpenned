@@ -51,6 +51,8 @@ HeartPenned (heartpenned.com) is an AI greeting-card web app owned by Robert. Th
 - For Prolific links, Google Analytics and the Tally script are not loaded (the consent wording relies on this), and the Tally feedback prompt never shows.
 - The Done screen (`#screen-done`) redirects to Prolific with `PROLIFIC_COMPLETION_CODE` in `index.html`. Set that constant to the study's completion code before publishing the study.
 - Prolific participants don't see Email it or the reminder (Prolific doesn't allow asking for names or emails); Text it, Print, Copy and gift cards stay.
+- Study flow for Prolific: after each card the delivery screen shows a study bar ("That's card 1 of 2", "Would you send this card?" Yes/Maybe/No) that leads to the second card, then to the exit screen (`#screen-exit`: vs a store card, device, optional comment), saved as `type: 'exit'` in `fb:exit` (one per Prolific ID), then Done. Progress is kept in sessionStorage `hp_study`. "Love it! Pick a design" is blocked until every version on screen is rated, and a thumbs down with reasons shows a nudge toward the revision buttons. The "Write another card" link is hidden for participants.
+- `/privacy.html` is the privacy page (linked from the home page and the consent screen). Update it when what the site stores or which services it uses changes.
 - Ratings (`fb:all`), consents (`fb:consent`) and exit answers (`fb:exit`) older than 12 months are deleted whenever `/feedback.html` loads. `DELETE /api/feedback?key=...&pid=...` removes everything for one Prolific ID; `/feedback.html` has a box for it.
 
 ## Header images

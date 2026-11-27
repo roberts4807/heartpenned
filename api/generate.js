@@ -329,6 +329,7 @@ ${lossAbout ? '- WHAT THE SENDER WANTS TO SAY ABOUT THEM: "' + lossAbout + '" In
           : '- Friendly: they get along. Warm and easy, not intimate; no declarations of deep closeness.')
       : '- Friendly or casual acquaintance: keep it light and kind, still warm, and never overstate how close they are.',
     (rc.includes("don't see each other much") || rc.includes("haven't been in touch recently")) ? '- They don\'t see each other much or haven\'t been in touch recently: never mention how long it has been; no guilt and no promises to keep in touch.' : '',
+    rc.includes('loving but challenging') ? '- Loving but challenging: the love is real despite the complication. Let the card be openly warm and loving, as fits their role, but keep it grounded: no superlatives about the relationship, no "best ever," and never mention the difficulty.' : '',
     rc.includes('rebuilding') ? '- Rebuilding: warm and hopeful but measured; never mention the past.' : '',
     rc.includes('i keep my distance') ? '- The sender keeps some distance: kind and courteous, with measured warmth; no claims of closeness or missing them; no push to reconnect.' : '',
     rc.includes('unsure where we stand') ? '- The sender is unsure where they stand: kind and low-pressure; no assumptions about how the recipient feels toward the sender; nothing gushing.' : '',

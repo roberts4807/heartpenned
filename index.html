@@ -537,11 +537,9 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
     <div class="qstep" id="q13">
       <div class="question">How would you like to open and sign it? <span class="opt-tag">optional</span></div>
       <div class="cgl" style="margin-top:0.75rem;">At the top</div>
-      <div class="subtext" style="margin:0 0 0.4rem;">Goes at the very top of the card, exactly as you write it.</div>
       <div id="greet-chips" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:0.6rem;"></div>
       <textarea class="text-input" id="t-opening" rows="2" placeholder="e.g. Dear Rachel," oninput="A.opening=this.value.trim();markGreetChips()" style="display:none;"></textarea>
       <div class="cgl" style="margin-top:1.25rem;">Sign it</div>
-      <div class="subtext" style="margin:0 0 0.4rem;">e.g. Love, Mom, or just your name.</div>
       <div id="sign-chips" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:0.6rem;"></div>
       <textarea class="text-input" id="t-signoff" rows="2" placeholder="e.g. Love, Mom" oninput="A.signoff=this.value.trim();markSignChips()" style="display:none;"></textarea>
       <div class="qnav"><button class="btn-back" onclick="goDetails(true)">← Back</button><button class="btn-next" id="qn14" onclick="finishCheck()">Generate my card →</button></div>
@@ -1443,9 +1441,9 @@ function detailsNext(){
 // Sign-off: Love, / From, / Sincerely, / Just my name / None; switching keeps the typed name.
 var greetPick='', signPick='';
 const SIGN_WORDS=['Love,','From,','Sincerely,'];
-function makeChip(label, onTap){
+function makeChip(val, onTap){
   const c=document.createElement('div');
-  c.className='chip'; c.dataset.val=label; c.textContent=label; c.onclick=onTap;
+  c.className='chip'; c.dataset.val=val; c.textContent=val.replace(/,$/,''); c.onclick=onTap;
   return c;
 }
 function showBox(id, focus){
@@ -1473,7 +1471,7 @@ function pickGreet(kind){
   if(kind==='dear') box.value='Dear '+name+',';
   else if(kind==='name') box.value=name+',';
   else box.value='';
-  box.placeholder=kind==='nickname'?'e.g. Dear Billy,':'e.g. Dear Rachel,';
+  box.placeholder=kind==='nickname'?'e.g. Dear Billy,':kind==='none'?'Leave empty, or type your own':'e.g. Dear Rachel,';
   A.opening=box.value.trim();
   showBox('t-opening', kind==='nickname');
   markGreetChips();
@@ -1511,7 +1509,7 @@ function pickSign(kind){
   if(kind==='none') box.value='';
   else if(kind==='name') box.value=name;
   else box.value=kind+' '+name;
-  box.placeholder=kind==='name'?'Your name':'e.g. Love, Mom';
+  box.placeholder=kind==='name'?'Your name':kind==='none'?'Leave empty, or type your own':'e.g. Love, Mom';
   A.signoff=box.value.trim();
   showBox('t-signoff', kind!=='none');
   markSignChips();

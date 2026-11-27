@@ -2074,6 +2074,13 @@ function returnToProlific(){
 function showStudyBar(){
   const bar = document.getElementById('study-bar');
   if (bar) bar.style.display = PROLIFIC ? 'block' : 'none';
+  // Prolific doesn't allow asking participants for names or emails, so hide Email it and reminders.
+  ['dbtn-email', 'reminder-btn-row', 'reminder-form'].forEach(function(id){
+    const el = document.getElementById(id);
+    if (el && PROLIFIC) el.style.display = 'none';
+  });
+  const dsub = document.querySelector('#dbtn-digital .d-btn-sub');
+  if (dsub && PROLIFIC) dsub.textContent = 'Text it';
 }
 if (needsConsent()) showScreen('consent');
 const rateState = {};    // card text -> { id, rating, reasons, note, open }

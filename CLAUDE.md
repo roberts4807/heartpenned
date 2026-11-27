@@ -50,6 +50,8 @@ HeartPenned (heartpenned.com) is an AI greeting-card web app owned by Robert. Th
 - Prolific participants see a consent screen (`#screen-consent`) before the card flow; `startQ()` sends them there until they agree. Consent is saved by `api/feedback.js` (`type: 'consent'`) in the Redis hash `fb:consent`, one entry per Prolific ID.
 - For Prolific links, Google Analytics and the Tally script are not loaded (the consent wording relies on this), and the Tally feedback prompt never shows.
 - The Done screen (`#screen-done`) redirects to Prolific with `PROLIFIC_COMPLETION_CODE` in `index.html`. Set that constant to the study's completion code before publishing the study.
+- Prolific participants don't see Email it or the reminder (Prolific doesn't allow asking for names or emails); Text it, Print, Copy and gift cards stay.
+- Ratings (`fb:all`), consents (`fb:consent`) and exit answers (`fb:exit`) older than 12 months are deleted whenever `/feedback.html` loads. `DELETE /api/feedback?key=...&pid=...` removes everything for one Prolific ID; `/feedback.html` has a box for it.
 
 ## Header images
 

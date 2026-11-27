@@ -42,6 +42,13 @@ tr.item:hover td{background:#F8FAFD;}
     <select id="f-reason" onchange="render()"><option value="">Any reason</option></select>
     <button onclick="load()">Refresh</button>
   </div>
+  <div class="bar" id="delbar" style="display:none;">
+    <span class="muted">Participant withdrew?</span>
+    <input type="text" id="del-pid" placeholder="Prolific ID" style="width:230px;">
+    <button onclick="deleteParticipant()">Delete their data</button>
+    <span id="del-msg" class="muted"></span>
+  </div>
+  <div class="muted" id="keepnote" style="display:none;font-size:12px;margin:-0.25rem 0 1rem;">Ratings, consents and exit answers older than 12 months are deleted automatically when this page loads.</div>
   <div class="stats" id="stats"></div>
   <div id="msg"></div>
   <table id="tbl" style="display:none;">
@@ -66,6 +73,8 @@ async function load(){
     items=d.items||[];
     document.getElementById('keybar').style.display='none';
     document.getElementById('filters').style.display='flex';
+    document.getElementById('delbar').style.display='flex';
+    document.getElementById('keepnote').style.display='block';
     const occSel=document.getElementById('f-occ'),cur=occSel.value;
     const occs=[...new Set(items.map(i=>i.choices&&i.choices.occasion).filter(Boolean))].sort();
     occSel.innerHTML='<option value="">All occasions</option>'+occs.map(o=>'<option'+(o===cur?' selected':'')+'>'+esc(o)+'</option>').join('');
@@ -96,6 +105,20 @@ function render(){
     }
     return row;
   }).join('');
+}
+async function deleteParticipant(){
+  const pid=document.getElementById('del-pid').value.trim(), msg=document.getElementById('del-msg');
+  if(!pid){msg.textContent='Enter a Prolific ID.';return;}
+  if(!confirm('Delete all ratings, consent and exit answers for '+pid+'? This can\'t be undone.'))return;
+  msg.textContent='Deleting...';
+  try{
+    const r=await fetch('/api/feedback?key='+encodeURIComponent(getKey())+'&pid='+encodeURIComponent(pid),{method:'DELETE'});
+    const d=await r.json();
+    if(!r.ok){msg.textContent=d.error||'Could not delete.';return;}
+    msg.textContent='Deleted '+d.ratings+' rating'+(d.ratings===1?'':'s')+(d.consent?', consent':'')+(d.exit?', exit answers':'')+'.';
+    document.getElementById('del-pid').value='';
+    load();
+  }catch(e){msg.textContent='Could not delete.';}
 }
 function toggle(id){openId=openId===id?null:id;render();}
 if(getKey())load();else document.getElementById('msg').textContent='Enter the review key to see ratings.';

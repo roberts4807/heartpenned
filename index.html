@@ -538,11 +538,12 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
       <div class="question">How would you like to open and sign it? <span class="opt-tag">optional</span></div>
       <div class="cgl" style="margin-top:0.75rem;">At the top</div>
       <div class="subtext" style="margin:0 0 0.4rem;">Goes at the very top of the card, exactly as you write it.</div>
-      <div id="greet-chips" style="display:none;gap:8px;flex-wrap:wrap;margin-bottom:0.6rem;"></div>
-      <textarea class="text-input" id="t-opening" rows="2" placeholder="e.g. Dear Rachel," oninput="A.opening=this.value.trim();markGreetChips()"></textarea>
+      <div id="greet-chips" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:0.6rem;"></div>
+      <textarea class="text-input" id="t-opening" rows="2" placeholder="e.g. Dear Rachel," oninput="A.opening=this.value.trim();markGreetChips()" style="display:none;"></textarea>
       <div class="cgl" style="margin-top:1.25rem;">Sign it</div>
       <div class="subtext" style="margin:0 0 0.4rem;">e.g. Love, Mom, or just your name.</div>
-      <textarea class="text-input" id="t-signoff" rows="2" placeholder="e.g. Love, Mom" oninput="A.signoff=this.value.trim()"></textarea>
+      <div id="sign-chips" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:0.6rem;"></div>
+      <textarea class="text-input" id="t-signoff" rows="2" placeholder="e.g. Love, Mom" oninput="A.signoff=this.value.trim();markSignChips()" style="display:none;"></textarea>
       <div class="qnav"><button class="btn-back" onclick="goDetails(true)">← Back</button><button class="btn-next" id="qn14" onclick="finishCheck()">Generate my card →</button></div>
     </div>
 
@@ -874,7 +875,7 @@ function qShowStep(n){
   if(n===5||n==='5')applyOccChips('tone');
   if(n===6||n==='6')applyOccChips('feel');
   if(n===8||n==='8')applyRelOptional();
-  if(n===13||n==='13')buildGreetChips();
+  if(n===13||n==='13'){buildGreetChips();buildSignChips();}
   document.querySelectorAll('.qstep').forEach(s=>{s.classList.remove('active');s.style.display='none';});
   const el=document.getElementById('q'+n);
   if(el){el.classList.add('active');el.style.display='block';el.querySelectorAll('.btn-next:not([id])').forEach(b=>b.disabled=false);}
@@ -1437,34 +1438,97 @@ function detailsNext(){
   if(window.gtag) gtag('event','details_given',{event_category:'details'});
   qGo(13);
 }
-// Greeting chips: when a name was given, offer "Dear NAME," and "NAME," above the "At the top" box.
+// Open-and-sign chips. Tapping any chip shows its box (always editable), so most people never type.
+// Greeting: "Dear NAME," and "NAME," (only when a name was given), Nickname, None.
+// Sign-off: Love, / From, / Sincerely, / Just my name / None; switching keeps the typed name.
+var greetPick='', signPick='';
+const SIGN_WORDS=['Love,','From,','Sincerely,'];
+function makeChip(label, onTap){
+  const c=document.createElement('div');
+  c.className='chip'; c.dataset.val=label; c.textContent=label; c.onclick=onTap;
+  return c;
+}
+function showBox(id, focus){
+  const box=document.getElementById(id);
+  box.style.display='block';
+  if(focus){ try{ box.focus(); const n=box.value.length; box.setSelectionRange(n,n); }catch(e){} }
+}
 function buildGreetChips(){
-  const wrap=document.getElementById('greet-chips');
-  if(!wrap)return;
+  const wrap=document.getElementById('greet-chips'); if(!wrap)return;
   const name=(A.name||'').trim();
   wrap.innerHTML='';
-  if(!name){wrap.style.display='none';return;}
-  ['Dear '+name+',', name+','].forEach(function(v){
-    const c=document.createElement('div');
-    c.className='chip'; c.dataset.val=v; c.textContent=v;
-    c.onclick=function(){pickGreetChip(v);};
-    wrap.appendChild(c);
-  });
-  wrap.style.display='flex';
+  if(name){
+    wrap.appendChild(makeChip('Dear '+name+',',function(){pickGreet('dear');}));
+    wrap.appendChild(makeChip(name+',',function(){pickGreet('name');}));
+  }
+  wrap.appendChild(makeChip('Nickname',function(){pickGreet('nickname');}));
+  wrap.appendChild(makeChip('None',function(){pickGreet('none');}));
+  const box=document.getElementById('t-opening');
+  if(greetPick||box.value.trim()) box.style.display='block'; else box.style.display='none';
   markGreetChips();
 }
-function pickGreetChip(v){
-  const box=document.getElementById('t-opening');
-  box.value=v; A.opening=v;
+function pickGreet(kind){
+  const name=(A.name||'').trim(), box=document.getElementById('t-opening');
+  greetPick=kind;
+  if(kind==='dear') box.value='Dear '+name+',';
+  else if(kind==='name') box.value=name+',';
+  else box.value='';
+  box.placeholder=kind==='nickname'?'e.g. Dear Billy,':'e.g. Dear Rachel,';
+  A.opening=box.value.trim();
+  showBox('t-opening', kind==='nickname');
   markGreetChips();
 }
 function markGreetChips(){
-  const cur=(document.getElementById('t-opening').value||'').trim();
-  document.querySelectorAll('#greet-chips .chip').forEach(function(c){c.classList.toggle('selected',c.dataset.val===cur);});
+  const cur=(document.getElementById('t-opening').value||'').trim(), name=(A.name||'').trim();
+  document.querySelectorAll('#greet-chips .chip').forEach(function(c){
+    let on=false;
+    if(name&&c.dataset.val==='Dear '+name+',') on=cur===c.dataset.val;
+    else if(name&&c.dataset.val===name+',') on=cur===c.dataset.val;
+    else if(c.dataset.val==='Nickname') on=greetPick==='nickname';
+    else if(c.dataset.val==='None') on=greetPick==='none'&&!cur;
+    c.classList.toggle('selected',on);
+  });
+}
+function signNamePart(v){
+  v=(v||'').trim();
+  for(const w of SIGN_WORDS){ if(v.toLowerCase().startsWith(w.toLowerCase())) return v.slice(w.length).trim(); }
+  return v;
+}
+function buildSignChips(){
+  const wrap=document.getElementById('sign-chips'); if(!wrap)return;
+  wrap.innerHTML='';
+  SIGN_WORDS.forEach(function(w){ wrap.appendChild(makeChip(w,function(){pickSign(w);})); });
+  wrap.appendChild(makeChip('Just my name',function(){pickSign('name');}));
+  wrap.appendChild(makeChip('None',function(){pickSign('none');}));
+  const box=document.getElementById('t-signoff');
+  if(signPick||box.value.trim()) box.style.display='block'; else box.style.display='none';
+  markSignChips();
+}
+function pickSign(kind){
+  const box=document.getElementById('t-signoff');
+  const name=kind==='none'?'':signNamePart(box.value);
+  signPick=kind;
+  if(kind==='none') box.value='';
+  else if(kind==='name') box.value=name;
+  else box.value=kind+' '+name;
+  box.placeholder=kind==='name'?'Your name':'e.g. Love, Mom';
+  A.signoff=box.value.trim();
+  showBox('t-signoff', kind!=='none');
+  markSignChips();
+}
+function markSignChips(){
+  const cur=(document.getElementById('t-signoff').value||'').trim().toLowerCase();
+  document.querySelectorAll('#sign-chips .chip').forEach(function(c){
+    const v=c.dataset.val; let on=false;
+    if(SIGN_WORDS.includes(v)) on=!!cur&&cur.startsWith(v.toLowerCase());
+    else if(v==='Just my name') on=signPick==='name'&&!SIGN_WORDS.some(function(w){return cur.startsWith(w.toLowerCase());});
+    else if(v==='None') on=signPick==='none'&&!cur;
+    c.classList.toggle('selected',on);
+  });
 }
 // Before writing: if the greeting or sign-off is blank, ask once whether that's OK.
 function finishCheck(){
-  const needGreet=!A.opening, needSign=!A.signoff;
+  const needGreet=!A.opening&&greetPick!=='none', needSign=!A.signoff&&signPick!=='none';
   if(!needGreet&&!needSign){submitCard();return;}
   document.getElementById('fm-greet').style.display=needGreet?'block':'none';
   document.getElementById('fm-sign').style.display=needSign?'block':'none';
@@ -2103,6 +2167,7 @@ function copyCard(){
 
 function startOver(){
   Object.keys(A).forEach(k=>{if(k==='kids')A.kids=[];else if(k==='tones')A.tones=[];else if(k==='feels')A.feels=[];else if(k==='relChips')A.relChips=[];else delete A[k];});
+  greetPick='';signPick='';
   kidCount=1;versionCount=1;currentCardText='';savedVersions=[];activeVersionIdx=0;isShortened=false;A.opening='';
   document.querySelectorAll('.chip').forEach(c=>c.classList.remove('selected'));
   document.querySelectorAll('textarea,input[type=text],input[type=number]').forEach(t=>t.value='');

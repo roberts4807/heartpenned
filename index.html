@@ -899,7 +899,7 @@ function applyDefaultHeader(occ) {
       // Custom typed occasion — use Other-mapped headers
       header = CARD_HEADERS.find(h => h.category === 'classic' && h.occasions.includes('Other'));
     } else {
-      header = CARD_HEADERS.find(h => h.category === 'classic' && h.occasions.some(o => o.toLowerCase() === (occ||'').toLowerCase()));
+      header = ownFirst(CARD_HEADERS.filter(h => h.category === 'classic' && h.occasions.some(o => o.toLowerCase() === (occ||'').toLowerCase())), occ)[0];
     }
     if (!header) header = CARD_HEADERS.find(h => h.occasions.includes('Other') && h.category === 'classic') || CARD_HEADERS[0];
 
@@ -1397,9 +1397,9 @@ function checkReq(n){
 // Relationship: one top chip (required, except in the modes), then optional follow-ups for it.
 // A.relChips = [top, ...follow-ups]; the words sent to the card writer match the old chips where they exist.
 const REL_SUB={
-  'loving':['easy and comfortable','long distance',"don't see each other much"],
+  'loving':['one of my favorite people','easy and comfortable','long distance',"don't see each other much"],
   'friendly':['easy and comfortable','casual acquaintance','long distance',"haven't been in touch recently"],
-  'complicated':['rebuilding','i keep my distance','unsure where we stand','we avoid big topics']
+  'complicated':['loving but challenging','rebuilding','i keep my distance','unsure where we stand','we avoid big topics']
 };
 const REL_LABEL={'i keep my distance':'I keep my distance'};
 function relLabel(v){return REL_LABEL[v]||(v.charAt(0).toUpperCase()+v.slice(1));}
@@ -3211,7 +3211,7 @@ const CARD_HEADERS = [
   {
     id: 'abstract-img-bluesoft',
     label: 'Soft Blue',
-    occasions: ['Abstract', 'Sympathy', 'New milestone'],
+    occasions: ['Abstract', 'Sympathy', 'New milestone', 'Hanukkah'],
     category: 'classic',
     theme: 'twilight',
     image: 'abstract-bluesoft.png',
@@ -3223,7 +3223,7 @@ const CARD_HEADERS = [
   {
     id: 'abstract-img-goldandsilver',
     label: 'Gold & Silver',
-    occasions: ['Abstract', 'Congratulations', 'Graduation'],
+    occasions: ['Abstract', 'Congratulations', 'Graduation', 'Hanukkah'],
     category: 'classic',
     theme: 'gold',
     image: 'abstract-goldandsilver.png',
@@ -3259,7 +3259,7 @@ const CARD_HEADERS = [
   {
     id: 'toy-img-stars',
     label: 'Stars',
-    occasions: ['Thinking of you', 'New milestone'],
+    occasions: ['Thinking of you', 'New milestone', 'Hanukkah'],
     category: 'classic',
     theme: 'twilight',
     image: 'thinkingofyou-stars.png',
@@ -3779,7 +3779,7 @@ const CARD_HEADERS = [
   {
     id: 'newyear-img-botanical',
     label: 'Gold Botanicals',
-    occasions: ['New Year', 'Eid'],
+    occasions: ['New Year', 'Eid', 'Hanukkah'],
     category: 'classic',
     theme: 'twilight',
     image: 'newyear-botanical.png',
@@ -3883,6 +3883,39 @@ const CARD_HEADERS = [
     image: 'hanukkah-dreidels.png',
     render(w, h) {
       return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/hanukkah-dreidels.png" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block;" alt="Hanukkah header"/></div>`;
+    }
+  },
+  {
+    id: 'hanukkah-img-window',
+    label: 'Window Menorah',
+    occasions: ['Hanukkah'],
+    category: 'classic',
+    theme: 'twilight',
+    image: 'hanukkah-window.png',
+    render(w, h) {
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/hanukkah-window.png" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;" alt="Hanukkah header"/></div>`;
+    }
+  },
+  {
+    id: 'hanukkah-img-eucalyptus',
+    label: 'Stars & Eucalyptus',
+    occasions: ['Hanukkah'],
+    category: 'classic',
+    theme: 'twilight',
+    image: 'hanukkah-eucalyptus.png',
+    render(w, h) {
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/hanukkah-eucalyptus.png" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;" alt="Hanukkah header"/></div>`;
+    }
+  },
+  {
+    id: 'hanukkah-img-garland',
+    label: 'Star Garland',
+    occasions: ['Hanukkah'],
+    category: 'fun',
+    theme: 'twilight',
+    image: 'hanukkah-garland.png',
+    render(w, h) {
+      return `<div style="width:${w}px;height:${h}px;overflow:hidden;"><img src="/public/headers/hanukkah-garland.png" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;" alt="Hanukkah header"/></div>`;
     }
   },
 
@@ -4668,6 +4701,15 @@ const CARD_HEADERS = [
 let activeHeaderId = null;
 let activeHeaderCat = 'classic';
 
+// For these occasions, headers made for the occasion (listed first in their occasions) come before
+// borrowed ones, in the picker and as the starting header. Other occasions keep plain list order.
+const OWN_HEADERS_FIRST = ['hanukkah'];
+function ownFirst(list, occ) {
+  const o = (occ || '').toLowerCase();
+  if (!OWN_HEADERS_FIRST.includes(o)) return list;
+  const own = list.filter(h => (h.occasions[0] || '').toLowerCase() === o);
+  return own.concat(list.filter(h => !own.includes(h)));
+}
 function getHeadersForOccasion(occ, cat) {
   // If user typed a custom occasion, always use Other-mapped headers
   if (A.isOtherOccasion) {
@@ -4680,7 +4722,7 @@ function getHeadersForOccasion(occ, cat) {
   if (!results.length && occ) {
     return CARD_HEADERS.filter(h => h.occasions.includes('Other') && h.category === cat);
   }
-  return results;
+  return ownFirst(results, occ);
 }
 
 function getFallbackHeaders(cat) {

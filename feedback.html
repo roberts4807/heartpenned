@@ -58,7 +58,7 @@ tr.item:hover td{background:#F8FAFD;}
   <div id="exitwrap" style="display:none;margin-top:2rem;">
     <h1 style="font-size:17px;">Prolific exit answers</h1>
     <div class="stats" id="exitstats"></div>
-    <table><thead><tr><th style="width:110px;">When</th><th style="width:120px;">Participant</th><th>Would send</th><th style="width:110px;">vs store card</th><th style="width:90px;">Device</th><th>Comment</th></tr></thead><tbody id="exitrows"></tbody></table>
+    <table><thead><tr><th style="width:110px;">When</th><th style="width:120px;">Participant</th><th>Would send</th><th style="width:110px;">vs store card</th><th style="width:110px;">Use next time</th><th style="width:90px;">Device</th><th>Comment</th></tr></thead><tbody id="exitrows"></tbody></table>
   </div>
 </div>
 <script>
@@ -132,17 +132,21 @@ function renderExits(){
   const cards=exits.flatMap(e=>e.cards||[]);
   const pct=(n,d)=>d?Math.round(100*n/d)+'%':'—';
   const yes=cards.filter(c=>c.send==='yes').length, maybe=cards.filter(c=>c.send==='maybe').length;
+  const definitely=exits.filter(e=>e.useNext==='definitely').length, probably=exits.filter(e=>e.useNext==='probably').length;
   const better=exits.filter(e=>e.vsStore==='better').length, same=exits.filter(e=>e.vsStore==='same').length;
   document.getElementById('exitstats').innerHTML='<div class="stat"><b>'+exits.length+'</b>participants finished</div>'+
     '<div class="stat"><b>'+pct(yes,cards.length)+'</b>cards they would send (yes)</div>'+
     '<div class="stat"><b>'+pct(maybe,cards.length)+'</b>maybe</div>'+
     '<div class="stat"><b>'+pct(better,exits.length)+'</b>better than a store card</div>'+
-    '<div class="stat"><b>'+pct(same,exits.length)+'</b>about the same</div>';
-  const lbl={yes:'Yes',maybe:'Maybe',no:'No',better:'Better',same:'Same',worse:'Worse'};
+    '<div class="stat"><b>'+pct(same,exits.length)+'</b>about the same</div>'+
+    '<div class="stat"><b>'+pct(definitely,exits.length)+'</b>would definitely use it</div>'+
+    '<div class="stat"><b>'+pct(probably,exits.length)+'</b>probably</div>';
+  const lbl={yes:'Yes',maybe:'Maybe',no:'No',better:'Better',same:'Same',worse:'Worse',definitely:'Definitely',probably:'Probably',probablynot:'Probably not',definitelynot:'Definitely not'};
+  const triedLbl={text:'Text it',copy:'Copy',pdf:'PDF',mail:'Mail it'};
   document.getElementById('exitrows').innerHTML=exits.map(e=>{
     const when=new Date(e.ts).toLocaleString([], {month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});
-    const sends=(e.cards||[]).map(c=>esc(c.occasion||'?')+': '+esc(lbl[c.send]||'—')).join('<br>');
-    return '<tr><td>'+esc(when)+'</td><td>'+esc(e.pid)+'</td><td>'+sends+'</td><td>'+esc(lbl[e.vsStore]||'')+'</td><td>'+esc(e.device)+'</td><td>'+(e.comment?esc(e.comment):'<span class="muted">—</span>')+'</td></tr>';
+    const sends=(e.cards||[]).map(c=>esc(c.occasion||'?')+': '+esc(lbl[c.send]||'—')+((c.tried&&c.tried.length)?' <span class="muted">(tried: '+esc(c.tried.map(t=>triedLbl[t]||t).join(', '))+')</span>':'')).join('<br>');
+    return '<tr><td>'+esc(when)+'</td><td>'+esc(e.pid)+'</td><td>'+sends+'</td><td>'+esc(lbl[e.vsStore]||'')+'</td><td>'+esc(lbl[e.useNext]||'')+'</td><td>'+esc(e.device)+'</td><td>'+(e.comment?esc(e.comment):'<span class="muted">—</span>')+'</td></tr>';
   }).join('');
 }
 function toggle(id){openId=openId===id?null:id;render();}

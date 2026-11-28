@@ -314,7 +314,7 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
     <div class="about-body">
       <p>You'll write two greeting cards for people in your life and rate how they turned out. It takes about 15 minutes.</p>
       <p><strong>Please use first names or nicknames only.</strong> Don't enter anyone's full name, email, address or phone number. Skip anything you'd rather keep private.</p>
-      <p><strong>What happens to what you type:</strong> It's sent to our AI provider, Anthropic, only to write your cards. We keep the finished card text and your ratings, linked only to your Prolific ID, for up to 12 months to improve HeartPenned. We don't ask for your name or email.</p>
+      <p><strong>What happens to what you type:</strong> It's sent to our AI provider, Anthropic, only to write your cards. We keep the finished card text and your ratings, and which send options you tried, linked only to your Prolific ID, for up to 12 months to improve HeartPenned. We don't ask for your name or email.</p>
       <p><strong>You can stop at any time.</strong> To withdraw later, message us through Prolific and we'll delete your data.</p>
       <p style="font-size:13px;color:#6A7A8A;">HeartPenned is run by Robert Clapp. <a href="/privacy.html" target="_blank" rel="noopener" style="color:#1A3A6A;">Privacy page</a></p>
     </div>
@@ -328,10 +328,14 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
 <div class="screen" id="screen-exit">
   <div class="top-nav"><div class="nav-brand">Heart<em>penned</em></div></div>
   <div class="about-wrap">
-    <div class="about-title">Two quick questions</div>
+    <div class="about-title">A few quick questions</div>
     <div class="question" style="font-size:16px;margin-bottom:0.6rem;">Compared with a card from a store, yours were…</div>
     <div class="chips" id="exit-store" style="margin-bottom:1.5rem;">
       <div class="chip" data-val="better" onclick="pickStudyChip(this)">Better</div><div class="chip" data-val="same" onclick="pickStudyChip(this)">About the same</div><div class="chip" data-val="worse" onclick="pickStudyChip(this)">Worse</div>
+    </div>
+    <div class="question" style="font-size:16px;margin-bottom:0.6rem;">Would you use HeartPenned the next time you need a card?</div>
+    <div class="chips" id="exit-use" style="margin-bottom:1.5rem;">
+      <div class="chip" data-val="definitely" onclick="pickStudyChip(this)">Definitely</div><div class="chip" data-val="probably" onclick="pickStudyChip(this)">Probably</div><div class="chip" data-val="probablynot" onclick="pickStudyChip(this)">Probably not</div><div class="chip" data-val="definitelynot" onclick="pickStudyChip(this)">Definitely not</div>
     </div>
     <div class="question" style="font-size:16px;margin-bottom:0.6rem;">What did you use today?</div>
     <div class="chips" id="exit-device" style="margin-bottom:1.5rem;">
@@ -1347,6 +1351,7 @@ async function prepareCardImage() {
 }
 
 async function shareCardImage() {
+  noteSendTried('text');
   const status = document.getElementById('text-share-status');
   if (!preparedCardFile) { prepareCardImage(); return; }
   const shareText = 'Made for you with heartpenned.com 💌';
@@ -2110,14 +2115,17 @@ function returnToProlific(){
 }
 // Study progress for this tab: one entry per finished card, { occasion, send }.
 const STUDY_CARDS = 2;
+// Which send options a participant tapped for the current card (button names only, nothing they typed).
+var studyTried = [];
+function noteSendTried(kind){ if (PROLIFIC && !studyTried.includes(kind)) studyTried.push(kind); }
 function studyCards(){ try { return JSON.parse(sessionStorage.getItem('hp_study') || '[]'); } catch (e) { return []; } }
 function saveStudyCards(list){ try { sessionStorage.setItem('hp_study', JSON.stringify(list)); } catch (e) {} }
 function chipVal(id){ const c = document.querySelector('#' + id + ' .chip.selected'); return c ? c.dataset.val : ''; }
 function pickStudyChip(el){
   el.parentNode.querySelectorAll('.chip').forEach(function(c){ c.classList.toggle('selected', c === el); });
   if (el.parentNode.id === 'study-send') document.getElementById('study-next').disabled = false;
-  if (el.parentNode.id === 'exit-store' || el.parentNode.id === 'exit-device')
-    document.getElementById('btn-exit').disabled = !(chipVal('exit-store') && chipVal('exit-device'));
+  if (['exit-store', 'exit-use', 'exit-device'].includes(el.parentNode.id))
+    document.getElementById('btn-exit').disabled = !(chipVal('exit-store') && chipVal('exit-use') && chipVal('exit-device'));
 }
 function showStudyBar(){
   const bar = document.getElementById('study-bar');
@@ -2137,24 +2145,25 @@ function showStudyBar(){
   document.getElementById('study-progress').textContent = last ? "That's both cards." : "That's card " + n + ' of ' + STUDY_CARDS + '.';
   document.getElementById('study-next').textContent = last ? 'Answer 2 quick questions →' : 'Write your second card →';
   document.querySelectorAll('#study-send .chip').forEach(function(c){ c.classList.remove('selected'); });
+  studyTried = [];
   document.getElementById('study-next').disabled = true;
 }
 function studyNext(){
   const send = chipVal('study-send');
   if (!send) return;
   const list = studyCards();
-  list.push({ occasion: A.occasion || '', send: send });
+  list.push({ occasion: A.occasion || '', send: send, tried: studyTried.slice() });
   saveStudyCards(list);
   if (list.length >= STUDY_CARDS) { showScreen('exit'); window.scrollTo(0, 0); }
   else { startOver(); startQ(); window.scrollTo(0, 0); }
 }
 function submitExit(){
   const btn = document.getElementById('btn-exit'), status = document.getElementById('exit-status');
-  const store = chipVal('exit-store'), device = chipVal('exit-device');
-  if (!store || !device) return;
+  const store = chipVal('exit-store'), use = chipVal('exit-use'), device = chipVal('exit-device');
+  if (!store || !use || !device) return;
   btn.disabled = true; status.textContent = '';
   fetch('/api/feedback', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
-    type: 'exit', prolific: PROLIFIC, cards: studyCards(), vsStore: store, device: device,
+    type: 'exit', prolific: PROLIFIC, cards: studyCards(), vsStore: store, useNext: use, device: device,
     comment: document.getElementById('exit-comment').value.trim()
   }) })
     .then(function(r){ if (!r.ok) throw new Error('save failed'); finishStudy(); })
@@ -2282,6 +2291,7 @@ function openFeedback(){
 }
 
 function handleDel(type){
+  if (type === 'mail') noteSendTried('mail');
   // Reset all d-btn active states
   document.querySelectorAll('.d-btn').forEach(b=>b.classList.remove('active'));
 
@@ -2331,6 +2341,7 @@ function handleDel(type){
 }
 
 function copyCard(){
+  noteSendTried('copy');
   const text = currentCardText || '';
   navigator.clipboard.writeText(text).then(()=>{
     document.getElementById('copy-confirm').style.display='block';
@@ -5070,6 +5081,7 @@ async function sendCardEmail() {
 }
 
 async function downloadPDF() {
+  noteSendTried('pdf');
   const btn = document.getElementById('btn-download-pdf');
   btn.disabled = true;
   btn.textContent = 'Generating...';

@@ -99,6 +99,7 @@ module.exports = async function handler(req, res) {
       const cards = (Array.isArray(b.cards) ? b.cards : []).slice(0, 4).map(c => ({
         occasion: str(c && c.occasion, 80),
         send: pick(c && c.send, ['yes', 'maybe', 'no']),
+        tried: [...new Set((c && Array.isArray(c.tried) ? c.tried : []).filter(t => ['text', 'copy', 'pdf', 'mail'].includes(t)))],
       }));
       const record = {
         pid,
@@ -107,6 +108,7 @@ module.exports = async function handler(req, res) {
         ts: Date.now(),
         cards,
         vsStore: pick(b.vsStore, ['better', 'same', 'worse']),
+        useNext: pick(b.useNext, ['definitely', 'probably', 'probablynot', 'definitelynot']),
         device: pick(b.device, ['phone', 'tablet', 'computer']),
         comment: str(b.comment, 1000),
         code: (process.env.VERCEL_GIT_COMMIT_SHA || '').slice(0, 7),

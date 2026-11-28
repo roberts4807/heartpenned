@@ -306,7 +306,7 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
   </div>
 </div>
 
-<!-- Prolific study: consent before starting (only shown for links with PROLIFIC_PID) -->
+<!-- Prolific study: consent after "Write my card", before the questions (only shown for links with PROLIFIC_PID) -->
 <div class="screen" id="screen-consent">
   <div class="top-nav"><div class="nav-brand">Heart<em>penned</em></div></div>
   <div class="about-wrap">
@@ -2163,7 +2163,6 @@ function allVersionsRated(){
   const list = savedVersions.length ? savedVersions : [currentCardText];
   return list.every(function(t){ return !t || (rateState[t] && rateState[t].rating); });
 }
-if (needsConsent()) showScreen('consent');
 const rateState = {};    // card text -> { id, rating, reasons, note, open }
 const versionKind = {};  // card text -> new / another / shorten / revise / edit
 var lastCardAction = 'new';

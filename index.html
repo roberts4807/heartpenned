@@ -647,7 +647,7 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
       <div class="ex-chips" id="rate-chips">
         <div class="ex-chip" data-val="Assumed something" onclick="toggleRateChip(this)">Assumed something</div><div class="ex-chip" data-val="Doesn't sound like me" onclick="toggleRateChip(this)">Doesn't sound like me</div><div class="ex-chip" data-val="Too generic" onclick="toggleRateChip(this)">Too generic</div><div class="ex-chip" data-val="Wrong tone" onclick="toggleRateChip(this)">Wrong tone</div><div class="ex-chip" data-val="Sounds like AI" onclick="toggleRateChip(this)">Sounds like AI</div>
       </div>
-      <textarea class="text-input" id="rate-note" rows="2" placeholder="Anything else? e.g. The last line praises her, but she's upset with us."></textarea>
+      <textarea class="text-input" id="rate-note" rows="2" onchange="saveRateNote()" placeholder="Anything else? e.g. The last line praises her, but she's upset with us."></textarea>
       <button class="rev-btn" onclick="sendRateDetail()">Send feedback</button>
     </div>
     <div id="edit-mode" style="display:none;margin-bottom:0.75rem;">
@@ -1517,10 +1517,10 @@ function detailsNext(){
   qGo(13);
 }
 // Open-and-sign chips. Tapping any chip shows its box (always editable), so most people never type.
-// Greeting: "Dear NAME," and "NAME," (only when a name was given), Nickname, None.
-// Sign-off: Love, / From, / Sincerely, / Just my name / None; switching keeps the typed name.
+// Greeting: "Dear NAME," and "NAME," (only when a name was given), Nickname (called Name when none was given), None.
+// Sign-off: From, / Love, / Sincerely, / Just my name / None; switching keeps the typed name.
 var greetPick='', signPick='';
-const SIGN_WORDS=['Love,','From,','Sincerely,'];
+const SIGN_WORDS=['From,','Love,','Sincerely,'];
 function makeChip(val, onTap){
   const c=document.createElement('div');
   c.className='chip'; c.dataset.val=val; c.textContent=val.replace(/,$/,''); c.onclick=onTap;
@@ -1539,7 +1539,7 @@ function buildGreetChips(){
     wrap.appendChild(makeChip('Dear '+name+',',function(){pickGreet('dear');}));
     wrap.appendChild(makeChip(name+',',function(){pickGreet('name');}));
   }
-  wrap.appendChild(makeChip('Nickname',function(){pickGreet('nickname');}));
+  wrap.appendChild(makeChip(name?'Nickname':'Name',function(){pickGreet('nickname');}));
   wrap.appendChild(makeChip('None',function(){pickGreet('none');}));
   const box=document.getElementById('t-opening');
   if(greetPick||box.value.trim()) box.style.display='block'; else box.style.display='none';
@@ -1551,7 +1551,7 @@ function pickGreet(kind){
   if(kind==='dear') box.value='Dear '+name+',';
   else if(kind==='name') box.value=name+',';
   else box.value='';
-  box.placeholder=kind==='nickname'?'e.g. Dear Billy,':kind==='none'?'Leave empty, or type your own':'e.g. Dear Rachel,';
+  box.placeholder=kind==='nickname'?(name?'e.g. Dear Billy,':'e.g. Dear Rachel,'):kind==='none'?'Leave empty, or type your own':'e.g. Dear Rachel,';
   A.opening=box.value.trim();
   showBox('t-opening', kind==='nickname');
   markGreetChips();
@@ -1562,7 +1562,7 @@ function markGreetChips(){
     let on=false;
     if(name&&c.dataset.val==='Dear '+name+',') on=cur===c.dataset.val;
     else if(name&&c.dataset.val===name+',') on=cur===c.dataset.val;
-    else if(c.dataset.val==='Nickname') on=greetPick==='nickname';
+    else if(c.dataset.val==='Nickname'||c.dataset.val==='Name') on=greetPick==='nickname';
     else if(c.dataset.val==='None') on=greetPick==='none'&&!cur;
     c.classList.toggle('selected',on);
   });
@@ -1845,6 +1845,7 @@ function setEx(t){document.getElementById('rev-input').value=t;document.getEleme
 function checkRev(){document.getElementById('rev-btn').disabled=document.getElementById('rev-input').value.trim().length<3;}
 
 async function submitRev(){
+  saveRateNote();
   const note=document.getElementById('rev-input').value.trim();
   document.getElementById('rev-box').classList.remove('open');
   showScreen('gen');document.getElementById('gen-label').textContent='Revising your card...';
@@ -1856,6 +1857,7 @@ async function submitRev(){
 }
 
 async function tryAnother(){
+  saveRateNote();
   document.getElementById('rev-box').classList.remove('open');
   showScreen('gen');document.getElementById('gen-label').textContent='Writing a fresh version...';
   versionCount++;
@@ -1869,6 +1871,7 @@ async function tryAnother(){
 let isShortened = false;
 
 async function shortenCard(){
+  saveRateNote();
   document.getElementById('rev-box').classList.remove('open');
   const shortenBtn = document.querySelector('.action-btn[onclick="shortenCard()"]');
   const nextLength = isShortened ? 'handwritten note — 90 to 130 words' : 'standard card length — 50 to 80 words';
@@ -2214,6 +2217,16 @@ function toggleRateChip(el){
   const v = el.dataset.val;
   st.reasons = st.reasons.includes(v) ? st.reasons.filter(function(x){ return x !== v; }) : st.reasons.concat(v);
   el.classList.toggle('on');
+  postRating(currentCardText, st); // saved right away, so nothing is lost if they skip Send feedback
+}
+// Saves the thumbs-down note if it changed (box loses focus, or a revision button is tapped).
+function saveRateNote(){
+  const st = rateState[currentCardText], el = document.getElementById('rate-note');
+  if (!st || st.rating !== 'down' || !el) return;
+  const note = el.value.trim();
+  if (note === (st.note || '')) return;
+  st.note = note;
+  postRating(currentCardText, st);
 }
 function sendRateDetail(){
   const st = rateState[currentCardText];

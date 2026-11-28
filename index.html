@@ -4,13 +4,21 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Heartpenned — Helping you say what you want to say</title>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-SFDPGMBSGR"></script>
+<!-- Google tag (gtag.js). Not loaded for Prolific study participants (link has PROLIFIC_PID), as the consent screen promises. -->
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-SFDPGMBSGR');
+  (function(){
+    var isProlific = false;
+    try { isProlific = !!new URLSearchParams(location.search).get('PROLIFIC_PID') || !!sessionStorage.getItem('hp_prolific'); } catch (e) {}
+    if (isProlific) return;
+    var s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=G-SFDPGMBSGR';
+    document.head.appendChild(s);
+    gtag('js', new Date());
+    gtag('config', 'G-SFDPGMBSGR');
+  })();
 </script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Inter:wght@300;400;500;600&display=swap');
@@ -30,6 +38,8 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
 .hero-title em{font-style:italic;color:#2A5A9A;}
 .hero-sub{font-size:16px;color:#1A2A3A;line-height:1.75;margin-bottom:2.5rem;max-width:420px;}
 .hero-btn{background:#1A3A6A !important;color:#FFFFFF !important;border:none !important;padding:14px 40px;border-radius:30px;font-size:16px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;}
+.hero-btn:disabled{opacity:0.45;cursor:default;}
+#study-next:disabled{opacity:0.45;cursor:default;}
 .hero-link{font-size:13px;color:#1A3A6A;margin-top:1.25rem;cursor:pointer;text-decoration:underline;text-underline-offset:2px;font-weight:500;}
 .about-wrap{max-width:560px;margin:0 auto;padding:3rem 2rem;}
 .about-title{font-family:'Playfair Display',serif;font-size:28px;color:#0A1A2A;margin-bottom:1.5rem;}
@@ -249,7 +259,13 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
 .btn-download-pdf:disabled{opacity:0.4;cursor:not-allowed;}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script async src="https://tally.so/widgets/embed.js"></script>
+<script>
+  // Tally feedback form script: not loaded for Prolific study participants (they rate cards on the site instead).
+  (function(){
+    try { if (new URLSearchParams(location.search).get('PROLIFIC_PID') || sessionStorage.getItem('hp_prolific')) return; } catch (e) {}
+    var s = document.createElement('script'); s.async = true; s.src = 'https://tally.so/widgets/embed.js'; document.head.appendChild(s);
+  })();
+</script>
 </head>
 <body>
 <div class="app">
@@ -269,6 +285,7 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
       <div style="font-size:13px;color:#1A2A3A;line-height:1.7;margin-bottom:0.5rem;">You know that feeling, standing in the card aisle...</div>
       <div class="hero-link" onclick="showScreen('about')">Read more →</div>
     </div>
+    <a href="/privacy.html" style="margin-top:2rem;font-size:12px;color:#8A9AAA;text-decoration:none;">Privacy</a>
   </div>
 </div>
 
@@ -286,6 +303,61 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
       <div class="about-tagline">Real relationships deserve the right words.<br>For those the card aisle was not built for.</div>
     </div>
     <div style="margin-top:2rem;"><button class="hero-btn" onclick="startQ()">Write my card →</button></div>
+  </div>
+</div>
+
+<!-- Prolific study: consent after "Write my card", before the questions (only shown for links with PROLIFIC_PID) -->
+<div class="screen" id="screen-consent">
+  <div class="top-nav"><div class="nav-brand">Heart<em>penned</em></div></div>
+  <div class="about-wrap">
+    <div class="about-title">Before you start</div>
+    <div class="about-body">
+      <p>You'll write two greeting cards for people in your life and rate how they turned out. It takes about 15 minutes.</p>
+      <p><strong>Please use first names or nicknames only.</strong> Don't enter anyone's full name, email, address or phone number. Skip anything you'd rather keep private.</p>
+      <p><strong>What happens to what you type:</strong> It's sent to our AI provider, Anthropic, only to write your cards. We keep the finished card text and your ratings, and which send options you tried, linked only to your Prolific ID, for up to 12 months to improve HeartPenned. We don't ask for your name or email.</p>
+      <p><strong>You can stop at any time.</strong> To withdraw later, message us through Prolific and we'll delete your data.</p>
+      <p style="font-size:13px;color:#6A7A8A;">HeartPenned is run by Robert Clapp. <a href="/privacy.html" target="_blank" rel="noopener" style="color:#1A3A6A;">Privacy page</a></p>
+    </div>
+    <label class="chk-strong" style="margin-top:0.5rem;"><input type="checkbox" id="chk-consent" onchange="document.getElementById('btn-consent').disabled=!this.checked">I'm 18 or older, and I agree to take part.</label>
+    <div style="margin-top:1.5rem;"><button class="hero-btn" id="btn-consent" disabled onclick="giveConsent()">Start</button></div>
+    <div id="consent-status" style="margin-top:0.75rem;font-size:13px;color:#9A3A2A;min-height:18px;"></div>
+  </div>
+</div>
+
+<!-- Prolific study: exit questions -->
+<div class="screen" id="screen-exit">
+  <div class="top-nav"><div class="nav-brand">Heart<em>penned</em></div></div>
+  <div class="about-wrap">
+    <div class="about-title">A few quick questions</div>
+    <div class="question" style="font-size:16px;margin-bottom:0.6rem;">Compared with a card from a store, yours were…</div>
+    <div class="chips" id="exit-store" style="margin-bottom:1.5rem;">
+      <div class="chip" data-val="better" onclick="pickStudyChip(this)">Better</div><div class="chip" data-val="same" onclick="pickStudyChip(this)">About the same</div><div class="chip" data-val="worse" onclick="pickStudyChip(this)">Worse</div>
+    </div>
+    <div class="question" style="font-size:16px;margin-bottom:0.6rem;">Would you use HeartPenned the next time you need a card?</div>
+    <div class="chips" id="exit-use" style="margin-bottom:1.5rem;">
+      <div class="chip" data-val="definitely" onclick="pickStudyChip(this)">Definitely</div><div class="chip" data-val="probably" onclick="pickStudyChip(this)">Probably</div><div class="chip" data-val="probablynot" onclick="pickStudyChip(this)">Probably not</div><div class="chip" data-val="definitelynot" onclick="pickStudyChip(this)">Definitely not</div>
+    </div>
+    <div class="question" style="font-size:16px;margin-bottom:0.6rem;">What did you use today?</div>
+    <div class="chips" id="exit-device" style="margin-bottom:1.5rem;">
+      <div class="chip" data-val="phone" onclick="pickStudyChip(this)">Phone</div><div class="chip" data-val="tablet" onclick="pickStudyChip(this)">Tablet</div><div class="chip" data-val="computer" onclick="pickStudyChip(this)">Computer</div>
+    </div>
+    <div class="question" style="font-size:16px;margin-bottom:0.6rem;">Anything else you'd like to tell us? <span class="opt-tag">optional</span></div>
+    <textarea class="text-input" id="exit-comment" rows="3" maxlength="1000"></textarea>
+    <div style="margin-top:1.5rem;"><button class="hero-btn" id="btn-exit" disabled onclick="submitExit()">Finish</button></div>
+    <div id="exit-status" style="margin-top:0.75rem;font-size:13px;color:#9A3A2A;min-height:18px;"></div>
+  </div>
+</div>
+
+<!-- Prolific study: end of study, returns the participant to Prolific -->
+<div class="screen" id="screen-done">
+  <div class="top-nav"><div class="nav-brand">Heart<em>penned</em></div></div>
+  <div class="about-wrap" style="text-align:center;">
+    <div class="about-title">All done, thank you!</div>
+    <div class="about-body">
+      <p>Your ratings are saved. Tap below to return to Prolific and record your completion.</p>
+    </div>
+    <div style="margin-top:1.25rem;"><button class="hero-btn" onclick="returnToProlific()">Return to Prolific</button></div>
+    <div style="margin-top:1.25rem;font-size:13px;color:#5A6A7A;">If the button doesn't work, enter this code on Prolific: <strong id="done-code" style="letter-spacing:0.05em;"></strong></div>
   </div>
 </div>
 
@@ -572,12 +644,14 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
       <button class="rate-btn" id="rate-down" onclick="rateCard('down')" aria-label="Thumbs down">👎</button>
       <span class="rate-thanks" id="rate-thanks"></span>
     </div>
+    <div id="rate-required" style="display:none;text-align:center;font-size:13px;color:#9A3A2A;margin:-0.25rem 0 0.75rem;">Please rate each version with 👍 or 👎 before moving on.</div>
+    <div id="rate-nudge" style="display:none;text-align:center;font-size:13px;color:#3A4A5A;margin:-0.25rem 0 0.75rem;">Want to fix it? Tap <strong>Something doesn't feel right</strong> or <strong>Try a different version</strong> below.</div>
     <div class="rev-box" id="rate-box">
       <div class="rev-label">What felt off? (optional)</div>
       <div class="ex-chips" id="rate-chips">
         <div class="ex-chip" data-val="Assumed something" onclick="toggleRateChip(this)">Assumed something</div><div class="ex-chip" data-val="Doesn't sound like me" onclick="toggleRateChip(this)">Doesn't sound like me</div><div class="ex-chip" data-val="Too generic" onclick="toggleRateChip(this)">Too generic</div><div class="ex-chip" data-val="Wrong tone" onclick="toggleRateChip(this)">Wrong tone</div><div class="ex-chip" data-val="Sounds like AI" onclick="toggleRateChip(this)">Sounds like AI</div>
       </div>
-      <textarea class="text-input" id="rate-note" rows="2" placeholder="Anything else? e.g. The last line praises her, but she's upset with us."></textarea>
+      <textarea class="text-input" id="rate-note" rows="2" onchange="saveRateNote()" placeholder="Anything else? e.g. The last line praises her, but she's upset with us."></textarea>
       <button class="rev-btn" onclick="sendRateDetail()">Send feedback</button>
     </div>
     <div id="edit-mode" style="display:none;margin-bottom:0.75rem;">
@@ -719,6 +793,16 @@ body{font-family:'Inter',sans-serif;background:white;color-scheme:light;}
       <div style="font-size:13px;color:#5A6A7A;margin-bottom:0.85rem;font-family:'Inter',sans-serif;">Tell us what worked and what didn't. Under a minute.</div>
       <button onclick="openFeedback()" style="padding:0.7rem 1.4rem;background:#1A3A6A;color:white;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;">Give feedback</button>
       <div id="feedback-inline" style="display:none;margin-top:0.85rem;text-align:left;"></div>
+    </div>
+
+    <!-- Prolific study bar: card progress, "Would you send this card?", then on to the next card or the exit questions -->
+    <div id="study-bar" style="display:none;margin-top:1.5rem;padding:1.1rem 1.25rem;background:#FFF8EE;border:1px solid #EBD9B8;border-radius:12px;text-align:center;">
+      <div id="study-progress" style="font-size:15px;font-weight:600;color:#0A1A2A;margin-bottom:0.75rem;font-family:'Inter',sans-serif;"></div>
+      <div style="font-size:14px;color:#3A4A5A;margin-bottom:0.6rem;font-family:'Inter',sans-serif;">Would you send this card?</div>
+      <div class="chips" id="study-send" style="justify-content:center;margin-bottom:0.9rem;">
+        <div class="chip" data-val="yes" onclick="pickStudyChip(this)">Yes</div><div class="chip" data-val="maybe" onclick="pickStudyChip(this)">Maybe</div><div class="chip" data-val="no" onclick="pickStudyChip(this)">No</div>
+      </div>
+      <button id="study-next" disabled onclick="studyNext()" style="padding:0.7rem 1.4rem;background:#1A3A6A;color:white;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;"></button>
     </div>
 
     <div style="font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.06em;margin-top:1.5rem;margin-bottom:0.75rem;">What's next?</div>
@@ -867,7 +951,7 @@ function buildSwatches() {
 }
 
 function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById('screen-'+id).classList.add('active');}
-function startQ(){showScreen('q');qShowStep(1);}
+function startQ(){if(needsConsent()){showScreen('consent');return;}showScreen('q');qShowStep(1);}
 
 function qShowStep(n){
   if(n===5||n==='5')applyOccChips('tone');
@@ -1267,6 +1351,7 @@ async function prepareCardImage() {
 }
 
 async function shareCardImage() {
+  noteSendTried('text');
   const status = document.getElementById('text-share-status');
   if (!preparedCardFile) { prepareCardImage(); return; }
   const shareText = 'Made for you with heartpenned.com 💌';
@@ -1437,10 +1522,10 @@ function detailsNext(){
   qGo(13);
 }
 // Open-and-sign chips. Tapping any chip shows its box (always editable), so most people never type.
-// Greeting: "Dear NAME," and "NAME," (only when a name was given), Nickname, None.
-// Sign-off: Love, / From, / Sincerely, / Just my name / None; switching keeps the typed name.
+// Greeting: "Dear NAME," and "NAME," (only when a name was given), Nickname (called Name when none was given), None.
+// Sign-off: From, / Love, / Sincerely, / Just my name / None; switching keeps the typed name.
 var greetPick='', signPick='';
-const SIGN_WORDS=['Love,','From,','Sincerely,'];
+const SIGN_WORDS=['From,','Love,','Sincerely,'];
 function makeChip(val, onTap){
   const c=document.createElement('div');
   c.className='chip'; c.dataset.val=val; c.textContent=val.replace(/,$/,''); c.onclick=onTap;
@@ -1459,7 +1544,7 @@ function buildGreetChips(){
     wrap.appendChild(makeChip('Dear '+name+',',function(){pickGreet('dear');}));
     wrap.appendChild(makeChip(name+',',function(){pickGreet('name');}));
   }
-  wrap.appendChild(makeChip('Nickname',function(){pickGreet('nickname');}));
+  wrap.appendChild(makeChip(name?'Nickname':'Name',function(){pickGreet('nickname');}));
   wrap.appendChild(makeChip('None',function(){pickGreet('none');}));
   const box=document.getElementById('t-opening');
   if(greetPick||box.value.trim()) box.style.display='block'; else box.style.display='none';
@@ -1471,7 +1556,7 @@ function pickGreet(kind){
   if(kind==='dear') box.value='Dear '+name+',';
   else if(kind==='name') box.value=name+',';
   else box.value='';
-  box.placeholder=kind==='nickname'?'e.g. Dear Billy,':kind==='none'?'Leave empty, or type your own':'e.g. Dear Rachel,';
+  box.placeholder=kind==='nickname'?(name?'e.g. Dear Billy,':'e.g. Dear Rachel,'):kind==='none'?'Leave empty, or type your own':'e.g. Dear Rachel,';
   A.opening=box.value.trim();
   showBox('t-opening', kind==='nickname');
   markGreetChips();
@@ -1482,7 +1567,7 @@ function markGreetChips(){
     let on=false;
     if(name&&c.dataset.val==='Dear '+name+',') on=cur===c.dataset.val;
     else if(name&&c.dataset.val===name+',') on=cur===c.dataset.val;
-    else if(c.dataset.val==='Nickname') on=greetPick==='nickname';
+    else if(c.dataset.val==='Nickname'||c.dataset.val==='Name') on=greetPick==='nickname';
     else if(c.dataset.val==='None') on=greetPick==='none'&&!cur;
     c.classList.toggle('selected',on);
   });
@@ -1765,6 +1850,7 @@ function setEx(t){document.getElementById('rev-input').value=t;document.getEleme
 function checkRev(){document.getElementById('rev-btn').disabled=document.getElementById('rev-input').value.trim().length<3;}
 
 async function submitRev(){
+  saveRateNote();
   const note=document.getElementById('rev-input').value.trim();
   document.getElementById('rev-box').classList.remove('open');
   showScreen('gen');document.getElementById('gen-label').textContent='Revising your card...';
@@ -1776,6 +1862,7 @@ async function submitRev(){
 }
 
 async function tryAnother(){
+  saveRateNote();
   document.getElementById('rev-box').classList.remove('open');
   showScreen('gen');document.getElementById('gen-label').textContent='Writing a fresh version...';
   versionCount++;
@@ -1789,6 +1876,7 @@ async function tryAnother(){
 let isShortened = false;
 
 async function shortenCard(){
+  saveRateNote();
   document.getElementById('rev-box').classList.remove('open');
   const shortenBtn = document.querySelector('.action-btn[onclick="shortenCard()"]');
   const nextLength = isShortened ? 'handwritten note — 90 to 130 words' : 'standard card length — 50 to 80 words';
@@ -1946,6 +2034,12 @@ function selectDeliveryHeader(h, wrap, fromCat) {
 }
 
 function showDelivery(){
+  if (!allVersionsRated()) {
+    document.getElementById('rate-required').style.display = 'block';
+    try { document.getElementById('rate-row').scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) {}
+    return;
+  }
+  document.getElementById('rate-required').style.display = 'none';
   document.getElementById('del-card-text').textContent = currentCardText;
   showScreen('style');
   window.scrollTo(0, 0);
@@ -1967,6 +2061,7 @@ function showSendOptions(){
   const fb=document.getElementById('feedback-prompt'); if(fb) fb.style.display='none';
   const fbi=document.getElementById('feedback-inline'); if(fbi) fbi.style.display='none';
   const fbb=document.querySelector('#feedback-prompt button'); if(fbb) fbb.style.display='';
+  showStudyBar();
   showScreen('delivery');
 }
 
@@ -1994,6 +2089,92 @@ const PROLIFIC = (function(){
   } catch (e) { return null; }
 })();
 const RATINGS_ON = IS_TESTER || !!PROLIFIC;
+
+// ── Prolific study: consent at the start, Done step at the end ──
+// Set this to the study's completion code from Prolific before publishing the study.
+const PROLIFIC_COMPLETION_CODE = '';
+function hasConsent(){ try { return sessionStorage.getItem('hp_consent') === '1'; } catch (e) { return false; } }
+function needsConsent(){ return !!PROLIFIC && !hasConsent(); }
+function giveConsent(){
+  const btn = document.getElementById('btn-consent'), status = document.getElementById('consent-status');
+  if (!document.getElementById('chk-consent').checked) return;
+  btn.disabled = true; status.textContent = '';
+  fetch('/api/feedback', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ type: 'consent', prolific: PROLIFIC }) })
+    .then(function(r){ if (!r.ok) throw new Error('save failed'); })
+    .then(function(){ try { sessionStorage.setItem('hp_consent', '1'); } catch (e) {} startQ(); })
+    .catch(function(){ btn.disabled = false; status.textContent = "Something went wrong saving that. Please tap Start again."; });
+}
+function finishStudy(){
+  document.getElementById('done-code').textContent = PROLIFIC_COMPLETION_CODE || '(not set yet)';
+  showScreen('done');
+  window.scrollTo(0, 0);
+}
+function returnToProlific(){
+  if (!PROLIFIC_COMPLETION_CODE) return;
+  window.location.href = 'https://app.prolific.com/submissions/complete?cc=' + encodeURIComponent(PROLIFIC_COMPLETION_CODE);
+}
+// Study progress for this tab: one entry per finished card, { occasion, send }.
+const STUDY_CARDS = 2;
+// Which send options a participant tapped for the current card (button names only, nothing they typed).
+var studyTried = [];
+function noteSendTried(kind){ if (PROLIFIC && !studyTried.includes(kind)) studyTried.push(kind); }
+function studyCards(){ try { return JSON.parse(sessionStorage.getItem('hp_study') || '[]'); } catch (e) { return []; } }
+function saveStudyCards(list){ try { sessionStorage.setItem('hp_study', JSON.stringify(list)); } catch (e) {} }
+function chipVal(id){ const c = document.querySelector('#' + id + ' .chip.selected'); return c ? c.dataset.val : ''; }
+function pickStudyChip(el){
+  el.parentNode.querySelectorAll('.chip').forEach(function(c){ c.classList.toggle('selected', c === el); });
+  if (el.parentNode.id === 'study-send') document.getElementById('study-next').disabled = false;
+  if (['exit-store', 'exit-use', 'exit-device'].includes(el.parentNode.id))
+    document.getElementById('btn-exit').disabled = !(chipVal('exit-store') && chipVal('exit-use') && chipVal('exit-device'));
+}
+function showStudyBar(){
+  const bar = document.getElementById('study-bar');
+  if (bar) bar.style.display = PROLIFIC ? 'block' : 'none';
+  // Prolific doesn't allow asking participants for names or emails, so hide Email it and reminders.
+  ['dbtn-email', 'reminder-btn-row', 'reminder-form'].forEach(function(id){
+    const el = document.getElementById(id);
+    if (el && PROLIFIC) el.style.display = 'none';
+  });
+  const dsub = document.querySelector('#dbtn-digital .d-btn-sub');
+  if (dsub && PROLIFIC) dsub.textContent = 'Text it';
+  const another = document.querySelector('#screen-delivery .back-start');
+  if (another && PROLIFIC) another.style.display = 'none'; // the study bar moves them on instead
+  if (!PROLIFIC || !bar) return;
+  const n = Math.min(studyCards().length + 1, STUDY_CARDS);
+  const last = n >= STUDY_CARDS;
+  document.getElementById('study-progress').textContent = last ? "That's both cards." : "That's card " + n + ' of ' + STUDY_CARDS + '.';
+  document.getElementById('study-next').textContent = last ? 'Answer 2 quick questions →' : 'Write your second card →';
+  document.querySelectorAll('#study-send .chip').forEach(function(c){ c.classList.remove('selected'); });
+  studyTried = [];
+  document.getElementById('study-next').disabled = true;
+}
+function studyNext(){
+  const send = chipVal('study-send');
+  if (!send) return;
+  const list = studyCards();
+  list.push({ occasion: A.occasion || '', send: send, tried: studyTried.slice() });
+  saveStudyCards(list);
+  if (list.length >= STUDY_CARDS) { showScreen('exit'); window.scrollTo(0, 0); }
+  else { startOver(); startQ(); window.scrollTo(0, 0); }
+}
+function submitExit(){
+  const btn = document.getElementById('btn-exit'), status = document.getElementById('exit-status');
+  const store = chipVal('exit-store'), use = chipVal('exit-use'), device = chipVal('exit-device');
+  if (!store || !use || !device) return;
+  btn.disabled = true; status.textContent = '';
+  fetch('/api/feedback', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
+    type: 'exit', prolific: PROLIFIC, cards: studyCards(), vsStore: store, useNext: use, device: device,
+    comment: document.getElementById('exit-comment').value.trim()
+  }) })
+    .then(function(r){ if (!r.ok) throw new Error('save failed'); finishStudy(); })
+    .catch(function(){ btn.disabled = false; status.textContent = 'Something went wrong saving that. Please tap Finish again.'; });
+}
+// Prolific: every version on screen needs a rating before moving on to the design step.
+function allVersionsRated(){
+  if (!PROLIFIC) return true;
+  const list = savedVersions.length ? savedVersions : [currentCardText];
+  return list.every(function(t){ return !t || (rateState[t] && rateState[t].rating); });
+}
 const rateState = {};    // card text -> { id, rating, reasons, note, open }
 const versionKind = {};  // card text -> new / another / shorten / revise / edit
 var lastCardAction = 'new';
@@ -2025,6 +2206,8 @@ function refreshRating(){
   box.classList.toggle('open', st.rating === 'down' && !!st.open);
   document.querySelectorAll('#rate-chips .ex-chip').forEach(function(c){ c.classList.toggle('on', !!st.reasons && st.reasons.includes(c.dataset.val)); });
   document.getElementById('rate-note').value = st.note || '';
+  if (st.rating !== 'down' || st.open) document.getElementById('rate-nudge').style.display = 'none';
+  if (allVersionsRated()) document.getElementById('rate-required').style.display = 'none';
 }
 function rateCard(rating){
   const text = currentCardText;
@@ -2043,6 +2226,16 @@ function toggleRateChip(el){
   const v = el.dataset.val;
   st.reasons = st.reasons.includes(v) ? st.reasons.filter(function(x){ return x !== v; }) : st.reasons.concat(v);
   el.classList.toggle('on');
+  postRating(currentCardText, st); // saved right away, so nothing is lost if they skip Send feedback
+}
+// Saves the thumbs-down note if it changed (box loses focus, or a revision button is tapped).
+function saveRateNote(){
+  const st = rateState[currentCardText], el = document.getElementById('rate-note');
+  if (!st || st.rating !== 'down' || !el) return;
+  const note = el.value.trim();
+  if (note === (st.note || '')) return;
+  st.note = note;
+  postRating(currentCardText, st);
 }
 function sendRateDetail(){
   const st = rateState[currentCardText];
@@ -2052,8 +2245,10 @@ function sendRateDetail(){
   postRating(currentCardText, st);
   refreshRating();
   document.getElementById('rate-thanks').textContent = 'Thanks, that helps.';
+  if (PROLIFIC) document.getElementById('rate-nudge').style.display = 'block';
 }
 function showFeedbackPrompt(source){
+  if (PROLIFIC) return; // Prolific participants finish through the study bar instead
   const fb = document.getElementById('feedback-prompt');
   if (!fb || fb.style.display === 'block') return;
   fb.style.display = 'block';
@@ -2096,6 +2291,7 @@ function openFeedback(){
 }
 
 function handleDel(type){
+  if (type === 'mail') noteSendTried('mail');
   // Reset all d-btn active states
   document.querySelectorAll('.d-btn').forEach(b=>b.classList.remove('active'));
 
@@ -2145,6 +2341,7 @@ function handleDel(type){
 }
 
 function copyCard(){
+  noteSendTried('copy');
   const text = currentCardText || '';
   navigator.clipboard.writeText(text).then(()=>{
     document.getElementById('copy-confirm').style.display='block';
@@ -2179,6 +2376,7 @@ function startOver(){
   const noRelChk=document.getElementById('chk-norel');
   if(noRelChk){noRelChk.checked=false;const ri=document.getElementById('t-relationship-free');if(ri){ri.disabled=false;ri.style.opacity='1';}}
   document.querySelectorAll('.btn-next').forEach(b=>b.disabled=true);
+  document.getElementById('qn14').disabled=false; // greeting/sign-off page is optional, so Generate is always available
   document.querySelectorAll('.exp').forEach(e=>e.classList.remove('open'));
   document.getElementById('rev-box').classList.remove('open');
   const kl=document.getElementById('kids-list');
@@ -4883,6 +5081,7 @@ async function sendCardEmail() {
 }
 
 async function downloadPDF() {
+  noteSendTried('pdf');
   const btn = document.getElementById('btn-download-pdf');
   btn.disabled = true;
   btn.textContent = 'Generating...';

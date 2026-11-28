@@ -47,6 +47,13 @@ HeartPenned (heartpenned.com) is an AI greeting-card web app owned by Robert. Th
 - A rating saves the card text and the sender's choices only. Private free-text answers are never saved. Keep it that way.
 - Robert reviews ratings at `/feedback.html` (asks for the key once per site).
 - On a Vercel preview, the Vercel sign-in drops `?tester=1`. Add it to the address after the page loads.
+- Prolific participants start on the home page like everyone else. "Write my card" (`startQ()`) sends them to the consent screen (`#screen-consent`) until they agree, then Start goes to the first question. Consent is saved by `api/feedback.js` (`type: 'consent'`) in the Redis hash `fb:consent`, one entry per Prolific ID.
+- For Prolific links, Google Analytics and the Tally script are not loaded (the consent wording relies on this), and the Tally feedback prompt never shows.
+- The Done screen (`#screen-done`) redirects to Prolific with `PROLIFIC_COMPLETION_CODE` in `index.html`. Set that constant to the study's completion code before publishing the study.
+- Prolific participants don't see Email it or the reminder (Prolific doesn't allow asking for names or emails); Text it, Print, Copy and gift cards stay.
+- Study flow for Prolific: after each card the delivery screen shows a study bar ("That's card 1 of 2", "Would you send this card?" Yes/Maybe/No) that leads to the second card, then to the exit screen (`#screen-exit`: vs a store card, would you use it next time, device, optional comment), saved as `type: 'exit'` in `fb:exit` (one per Prolific ID), then Done. Each card's entry also records which send options were tapped (`tried`: text, copy, pdf, mail; button names only), shown on `/feedback.html`. Progress is kept in sessionStorage `hp_study`. "Love it! Pick a design" is blocked until every version on screen is rated, and a thumbs down with reasons shows a nudge toward the revision buttons. The "Write another card" link is hidden for participants.
+- `/privacy.html` is the privacy page (linked from the home page and the consent screen). Update it when what the site stores or which services it uses changes.
+- Ratings (`fb:all`), consents (`fb:consent`) and exit answers (`fb:exit`) older than 12 months are deleted whenever `/feedback.html` loads. `DELETE /api/feedback?key=...&pid=...` removes everything for one Prolific ID; `/feedback.html` has a box for it.
 
 ## Header images
 

@@ -2352,6 +2352,7 @@ function startOver(){
   const noRelChk=document.getElementById('chk-norel');
   if(noRelChk){noRelChk.checked=false;const ri=document.getElementById('t-relationship-free');if(ri){ri.disabled=false;ri.style.opacity='1';}}
   document.querySelectorAll('.btn-next').forEach(b=>b.disabled=true);
+  document.getElementById('qn14').disabled=false; // greeting/sign-off page is optional, so Generate is always available
   document.querySelectorAll('.exp').forEach(e=>e.classList.remove('open'));
   document.getElementById('rev-box').classList.remove('open');
   const kl=document.getElementById('kids-list');
